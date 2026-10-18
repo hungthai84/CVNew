@@ -168,24 +168,12 @@ export const InterviewView: React.FC = () => {
             {/* Decorative Pink-Purple Accent Line */}
             <div className="w-12 h-1 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-400 shadow-xs" />
 
-            {/* Quote Block Fleur De Leah có viền line đen */}
+            {/* Quote Block Fleur De Leah */}
             <div className="pt-0.5 bg-transparent border-none shadow-none">
-              <p
-                className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight select-none"
-                style={{
-                  WebkitTextStroke: '1px #000000',
-                  textShadow: '0 0 2px #000000, 0 2px 6px rgba(0,0,0,0.95)',
-                }}
-              >
+              <p className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
                 “Đối thoại chân thực khẳng định bản lĩnh và năng lực quản trị.”
               </p>
-              <span
-                className="text-[10px] font-bold text-amber-200 mt-0.5 block tracking-wider font-play"
-                style={{
-                  WebkitTextStroke: '0.4px #000000',
-                  textShadow: '0 1px 3px rgba(0,0,0,0.9)',
-                }}
-              >
+              <span className="text-[10px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
                 — Nguyễn Hùng Thái
               </span>
             </div>

@@ -154,23 +154,11 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
             {quote && (
               <div className="hidden sm:flex flex-col items-end text-right pointer-events-auto max-w-[48%] lg:max-w-[44%] pt-0.5">
                 <div className="p-1 sm:p-1.5 bg-transparent border-none shadow-none flex flex-col items-end">
-                  <p
-                    className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none"
-                    style={{
-                      WebkitTextStroke: '1px #000000',
-                      textShadow: '0 0 2px #000000, 0 2px 5px rgba(0,0,0,0.95)',
-                    }}
-                  >
+                  <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
                     {quote}
                   </p>
                   {quoteAuthor && (
-                    <span
-                      className="text-[10.5px] sm:text-[11.5px] font-bold text-amber-200 mt-0.5 block tracking-wider font-play"
-                      style={{
-                        WebkitTextStroke: '0.4px #000000',
-                        textShadow: '0 1px 3px rgba(0,0,0,0.9)',
-                      }}
-                    >
+                    <span className="text-[10.5px] sm:text-[11.5px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
                       {quoteAuthor}
                     </span>
                   )}

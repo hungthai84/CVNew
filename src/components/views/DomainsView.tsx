@@ -264,13 +264,7 @@ export const DomainsView: React.FC = () => {
             {/* Khối chữ bên phải: Câu trích dẫn viết tay tiếng Việt Fleur De Leah có viền line đen */}
             <div className="hidden sm:flex flex-col items-end text-right pointer-events-auto max-w-[48%] lg:max-w-[44%] pt-0.5">
               <div className="p-1 sm:p-1.5 bg-transparent border-none shadow-none flex flex-col items-end">
-                <p
-                  className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none"
-                  style={{
-                    WebkitTextStroke: '1px #000000',
-                    textShadow: '0 0 2px #000000, 0 2px 5px rgba(0,0,0,0.95)',
-                  }}
-                >
+                <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
                   “Thực chiến đa ngành kiến tạo giải pháp dịch vụ xuất sắc.”
                 </p>
                 <div className="w-24 sm:w-32 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent relative mt-1.5 flex items-center justify-center">
