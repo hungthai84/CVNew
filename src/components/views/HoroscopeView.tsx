@@ -205,31 +205,101 @@ export const HoroscopeView: React.FC = () => {
   const batTrachCat = [
     {
       direction: 'Tây Bắc',
-      star: 'Sinh Khí',
+      star: 'Thiên Y',
       meaning: 'Thu hút tài lộc, danh tiếng & thăng tiến',
-      tag: 'Cát Tinh bậc 1',
-      color: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300',
+      icon: 'mountain',
+      color: 'border-teal-200/80 bg-[#f0fdfa] text-teal-800 dark:bg-slate-800/80 dark:border-teal-800/60 dark:text-teal-300',
+      tagColor: 'text-teal-600 dark:text-teal-400',
     },
     {
       direction: 'Tây Nam',
-      star: 'Diên Niên',
+      star: 'Sinh Khí',
       meaning: 'Củng cố các mối quan hệ & đồng đội gắn kết',
-      tag: 'Cát Tinh bậc 2',
-      color: 'border-teal-500/40 bg-teal-500/10 text-teal-800 dark:text-teal-300',
+      icon: 'sprout',
+      color: 'border-emerald-200/80 bg-[#f0fdf4] text-emerald-800 dark:bg-slate-800/80 dark:border-emerald-800/60 dark:text-emerald-300',
+      tagColor: 'text-emerald-600 dark:text-emerald-400',
     },
     {
       direction: 'Đông Bắc',
-      star: 'Thiên Y',
+      star: 'Diên Niên',
       meaning: 'Cải thiện sức khỏe, trường thọ & bình an',
-      tag: 'Cát Tinh bậc 3',
-      color: 'border-cyan-500/40 bg-cyan-500/10 text-cyan-800 dark:text-cyan-300',
+      icon: 'shield',
+      color: 'border-sky-200/80 bg-[#f0f9ff] text-sky-800 dark:bg-slate-800/80 dark:border-sky-800/60 dark:text-sky-300',
+      tagColor: 'text-sky-600 dark:text-sky-400',
     },
     {
       direction: 'Chính Tây',
       star: 'Phục Vị',
       meaning: 'Củng cố sức mạnh tinh thần, may mắn thi cử',
-      tag: 'Cát Tinh bậc 4',
-      color: 'border-indigo-500/40 bg-indigo-500/10 text-indigo-800 dark:text-indigo-300',
+      icon: 'star',
+      color: 'border-purple-200/80 bg-[#faf5ff] text-purple-800 dark:bg-slate-800/80 dark:border-purple-800/60 dark:text-purple-300',
+      tagColor: 'text-purple-600 dark:text-purple-400',
+    },
+  ];
+
+  const DISPLAY_7_ZODIACS = [
+    {
+      id: 'than',
+      nameVi: 'Thân',
+      animalVi: 'Khỉ',
+      iconName: 'than',
+      displayScore: '100%',
+      badgeClass: 'bg-[#10b981]',
+      highlight: true,
+    },
+    {
+      id: 'thin',
+      nameVi: 'Thìn',
+      animalVi: 'Rồng',
+      iconName: 'thin',
+      displayScore: '98%',
+      badgeClass: 'bg-[#10b981]',
+      highlight: false,
+    },
+    {
+      id: 'suu',
+      nameVi: 'Sửu',
+      animalVi: 'Trâu',
+      iconName: 'suu',
+      displayScore: '90%',
+      badgeClass: 'bg-[#a855f7]',
+      highlight: false,
+    },
+    {
+      id: 'hoi',
+      nameVi: 'Hợi',
+      animalVi: 'Heo',
+      iconName: 'hoi',
+      displayScore: '88%',
+      badgeClass: 'bg-[#0ea5e9]',
+      highlight: false,
+    },
+    {
+      id: 'tuat',
+      nameVi: 'Tuất',
+      animalVi: 'Chó',
+      iconName: 'tuat',
+      displayScore: '88%',
+      badgeClass: 'bg-[#0ea5e9]',
+      highlight: false,
+    },
+    {
+      id: 'dau',
+      nameVi: 'Dậu',
+      animalVi: 'Gà',
+      iconName: 'dau',
+      displayScore: '82%',
+      badgeClass: 'bg-[#3b82f6]',
+      highlight: false,
+    },
+    {
+      id: 'dan',
+      nameVi: 'Dần',
+      animalVi: 'Hổ',
+      iconName: 'dan',
+      displayScore: '80%',
+      badgeClass: 'bg-[#3b82f6]',
+      highlight: false,
     },
   ];
 
@@ -239,328 +309,314 @@ export const HoroscopeView: React.FC = () => {
       className="relative w-full h-full flex-1 min-h-0 flex flex-col justify-start items-stretch font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-hidden"
     >
       {/* Main Container */}
-      <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-3 sm:gap-[15px] max-w-7xl mx-auto justify-start select-none overflow-hidden">
-        {/* HERO BANNER VỚI THANH CHUYỂN SLIDE & ÂM THANH THIỀN */}
-        <HeroBanner
-          badgeText="Phong Thủy & Cung Mệnh"
-          title="Tử Vi Tương Hợp"
-          subtitle="Giáp Tý 1984 · Hải Trung Kim · Đoài Kim Tây Tứ Mệnh · Hòa hợp nhân duyên & phát triển sự nghiệp"
-          quote="“Thiên thời – Địa lợi – Nhân hòa: Hòa khí sinh tài, đồng tâm đắc lợi.”"
-          quoteAuthor="— Nguyễn Hùng Thái"
-          badgeColor="text-amber-600 dark:text-amber-400"
-          videoSrc="https://cdn.scena.ai/project/10223/a333574db47ac4b8323deae8d3863918a26f626c40a08a507cf96db0297a65e0.mp4"
-          bottomControls={
-            <div className="flex items-center gap-2 flex-wrap">
-              <button
-                type="button"
-                onClick={toggleAudio}
-                className={`px-3 py-1 rounded-full text-[11px] font-black border shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer ${
-                  isAudioPlaying
-                    ? 'bg-amber-500 text-white border-amber-400 animate-pulse'
-                    : 'bg-white/90 dark:bg-slate-900/90 text-amber-700 dark:text-amber-300 border-amber-300 hover:bg-amber-50'
-                }`}
-                title="Bật/Tắt âm thanh thiền định tĩnh tâm"
-              >
-                <WebIcon name={isAudioPlaying ? 'pause' : 'play'} className="w-3.5 h-3.5" />
-                <span>{isAudioPlaying ? 'Thiền Định Đang Phát' : 'Âm Hưởng Thiền 432Hz'}</span>
-              </button>
-            </div>
-          }
-        />
+      <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-2.5 sm:gap-3 max-w-7xl mx-auto justify-start select-none overflow-hidden">
+        {/* HERO BANNER TỬ VI TƯƠNG HỢP (Chuẩn theo thiết kế tham chiếu) */}
+        <div className="relative w-full h-[132px] sm:h-[145px] lg:h-[150px] shrink-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm border border-amber-200/50 bg-gradient-to-r from-amber-50 via-white to-amber-50">
+          <img
+            src="/images/tuvi/hero-banner.png"
+            alt="Phong Thủy & Cung Mệnh - Tử Vi Tương Hợp"
+            className="w-full h-full object-cover select-none pointer-events-none"
+          />
+          {/* Nút bấm tương tác phát/tắt Âm Hưởng Thiền 432Hz */}
+          <button
+            type="button"
+            onClick={toggleAudio}
+            className="absolute left-[3.5%] bottom-[12%] w-[16%] h-[25%] min-w-[125px] rounded-full cursor-pointer focus:outline-none transition-all flex items-center justify-center group"
+            title={isAudioPlaying ? 'Tắt âm thanh thiền định tĩnh tâm' : 'Phát âm hưởng thiền định 432Hz'}
+            aria-label="Phát âm hưởng thiền định 432Hz"
+          >
+            {isAudioPlaying && (
+              <span className="absolute inset-0 rounded-full bg-amber-400/40 animate-ping pointer-events-none" />
+            )}
+          </button>
+        </div>
 
-        {/* BỐ CỤC 2 CỘT: TRÁI 80% CHỨA SLIDE, PHẢI 20% CHỨA CÔNG CỤ TRA HỢP CÔNG VIỆC */}
-        <div id="info-card-tuvi" className="w-full flex-1 min-h-0 flex flex-col lg:flex-row gap-3 sm:gap-4 items-stretch relative z-10 overflow-hidden">
-          {/* ================= CỘT TRÁI (80%): CHỨA CÁC SLIDE NỘI DUNG ================= */}
-          <div className="w-full lg:w-[78%] xl:w-[80%] flex flex-col min-w-0 relative h-full overflow-hidden">
-            {/* CẶP NÚT TRÒN ĐIỀU HƯỚNG SLIDE BÊN TRÁI & PHẢI (CĂN CENTER CHIỀU DỌC) */}
-            <button
-              type="button"
-              onClick={handlePrevSlide}
-              className="fixed lg:absolute left-1.5 sm:left-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-100 border border-slate-200/90 dark:border-slate-700/80 shadow-[0_4px_16px_rgba(0,0,0,0.18)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 cursor-pointer z-40 group"
-              title="Slide trước (Phím ←)"
-              aria-label="Slide trước"
-            >
-              <svg className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.8] transition-transform duration-200 group-hover:-translate-x-0.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleNextSlide}
-              className="fixed lg:absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-100 border border-slate-200/90 dark:border-slate-700/80 shadow-[0_4px_16px_rgba(0,0,0,0.18)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 cursor-pointer z-40 group"
-              title="Slide kế tiếp (Phím →)"
-              aria-label="Slide kế tiếp"
-            >
-              <svg className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.8] transition-transform duration-200 group-hover:translate-x-0.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-
-            {/* SLIDE 1: 1. Cung Mệnh, La Bàn Âm Dương & Bát Trạch Quản Trị */}
+        {/* BỐ CỤC 2 CỘT CÂN BẰNG CHIỀU CAO: TRÁI 74% (SLIDE TỬ VI), PHẢI 26% (TRA HỢP CÔNG VIỆC) */}
+        <div id="info-card-tuvi" className="w-full flex-1 min-h-0 flex flex-col lg:flex-row gap-2.5 sm:gap-3.5 items-stretch relative z-10 overflow-hidden">
+          {/* ================= CỘT TRÁI (74%): CUNG MỆNH BÁT TRẠCH & CÁC SLIDE ================= */}
+          <div className="w-full lg:w-[74%] xl:w-[74%] flex flex-col min-w-0 relative h-full min-h-0 overflow-hidden">
+            {/* SLIDE 0: Cung Mệnh, La Bàn Âm Dương & Hồ Sơ Nhân Thân (Chuẩn theo hình đính kèm) */}
             {currentSlide === 0 && (
               <div key="slide-1" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-1"
-                  className="w-full h-full bg-gradient-to-br from-white/95 via-purple-50/25 to-amber-50/30 dark:from-slate-900/95 dark:via-purple-950/20 dark:to-slate-900/95 border border-purple-200/80 dark:border-purple-800/60 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-[0_8px_32px_0_rgba(147,51,234,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] backdrop-blur-2xl flex flex-col justify-between relative overflow-hidden group"
+                  className="w-full h-full bg-white/95 dark:bg-slate-900/95 border border-purple-200/80 dark:border-purple-800/60 rounded-2xl md:rounded-3xl p-3 sm:p-3.5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden"
                 >
-                  <div className="absolute -top-24 -right-24 w-80 h-80 bg-purple-500/10 dark:bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
-                  <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
-
-                  {/* Header thẻ: 4 chữ viết hoa chữ đầu, không tạo sub tiêu đề */}
-                  <div className="relative z-10 flex items-center justify-between pb-2.5 border-b border-purple-200/50 dark:border-purple-800/40 flex-wrap gap-2.5 shrink-0">
-                    <div className="flex items-center gap-2.5 text-left">
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-amber-500 text-white flex items-center justify-center font-bold shadow-sm shadow-purple-500/25 shrink-0">
-                        <WebIcon name="compass" className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  {/* Header thẻ Cung Mệnh Bát Trạch */}
+                  <div className="relative z-10 flex items-center justify-between pb-2 border-b border-purple-100 dark:border-purple-900/40 shrink-0">
+                    <div className="flex items-center gap-2 text-left">
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-purple-600 via-indigo-600 to-amber-500 text-white flex items-center justify-center font-bold shadow-sm shadow-purple-500/25 shrink-0">
+                        <WebIcon name="compass" className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
                       </div>
                       <h3 className="text-base sm:text-lg font-black tracking-wide font-play bg-gradient-to-r from-purple-700 via-indigo-600 to-amber-600 dark:from-purple-300 dark:via-indigo-300 dark:to-amber-300 bg-clip-text text-transparent">
                         Cung Mệnh Bát Trạch
                       </h3>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] sm:text-xs font-black px-2.5 py-0.5 rounded-full bg-purple-500/10 dark:bg-purple-500/20 text-purple-800 dark:text-purple-200 border border-purple-300/40 dark:border-purple-700/50 shadow-2xs flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-ping" />
+                      <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/40 text-purple-800 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/60 shadow-2xs flex items-center gap-1.5">
+                        <span className="text-xs">☯</span>
                         <span>Đoài Kim Tây Tứ</span>
                       </span>
                     </div>
                   </div>
 
-                  <div className="relative z-10 flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-3 pr-1">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-stretch">
-                      {/* Cột trái: La Bàn Âm Dương */}
-                      <div className="lg:col-span-4 bg-gradient-to-br from-purple-500/15 via-white/80 dark:via-slate-800/80 to-amber-500/15 border border-purple-300/60 dark:border-purple-700/50 rounded-2xl p-3.5 sm:p-4 flex flex-col items-center justify-between text-center space-y-3 shadow-sm backdrop-blur-xl relative overflow-hidden">
-                        <div className="flex items-center justify-between pb-2 border-b border-purple-200/50 dark:border-purple-800/40 w-full text-left">
-                          <div className="flex items-center gap-1.5">
-                            <span className="w-1.5 h-3.5 bg-gradient-to-b from-purple-600 to-amber-500 rounded-full shrink-0" />
-                            <WebIcon name="sparkles" className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
-                            <h4 className="text-xs sm:text-sm font-black text-purple-800 dark:text-purple-300 tracking-wide">
-                              La Bàn Âm Dương
-                            </h4>
+                  {/* Body chia 2 cột con: Trái La Bàn Âm Dương (34%), Phải Hồ Sơ Nhân Thân (66%) */}
+                  <div className="relative z-10 flex-1 min-h-0 pt-2 flex flex-col lg:flex-row gap-2.5 sm:gap-3 items-stretch overflow-hidden">
+                    {/* Cột con 1: La Bàn Âm Dương */}
+                    <div className="w-full lg:w-[34%] shrink-0 bg-gradient-to-b from-[#faf5ff]/60 to-[#ffffff] dark:from-slate-900/90 dark:to-slate-900/70 border border-purple-200/70 dark:border-purple-800/50 rounded-2xl p-2.5 sm:p-3 flex flex-col justify-between items-center text-center shadow-2xs relative overflow-hidden">
+                      <div className="flex items-center justify-between pb-1.5 border-b border-purple-100 dark:border-purple-900/40 w-full text-left shrink-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-amber-500 text-sm">✦</span>
+                          <h4 className="text-xs sm:text-[13px] font-black text-purple-900 dark:text-purple-300 tracking-wide">
+                            La Bàn Âm Dương
+                          </h4>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setCompassMode(compassMode === 'yinyang' ? 'battrach' : 'yinyang')}
+                          className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-[#7c3aed] text-white hover:brightness-110 shadow-xs cursor-pointer transition-all"
+                          title="Chuyển chế độ xem Âm Dương / Bát Trạch"
+                        >
+                          {compassMode === 'yinyang' ? 'Xem Bát Trạch' : 'Xem Âm Dương'}
+                        </button>
+                      </div>
+
+                      {compassMode === 'yinyang' ? (
+                        <div className="relative w-full flex-1 min-h-0 max-h-[195px] flex items-center justify-center my-auto">
+                          {/* Đồ hình La Bàn Âm Dương sơn thủy phong thủy */}
+                          <div className="relative w-full h-full flex items-center justify-center">
+                            <img
+                              src="/images/tuvi/compass-view.png"
+                              alt="La Bàn Âm Dương"
+                              className={`max-h-full max-w-full object-contain cursor-pointer transition-transform duration-300 hover:scale-[1.02] ${
+                                isAudioPlaying ? 'filter drop-shadow-[0_0_12px_rgba(245,158,11,0.55)]' : ''
+                              }`}
+                              onClick={toggleAudio}
+                              title={isAudioPlaying ? 'Tắt âm thanh thiền định' : 'Nhấp la bàn để nghe thiền định 432Hz'}
+                            />
+
+                            {/* Cặp nút điều hướng slide mượt mà trên la bàn */}
+                            <button
+                              type="button"
+                              onClick={handlePrevSlide}
+                              className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/95 dark:bg-slate-800/95 hover:bg-white text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700 shadow-md flex items-center justify-center cursor-pointer transition-all hover:scale-110 z-20"
+                              title="Slide trước"
+                              aria-label="Slide trước"
+                            >
+                              <svg className="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                              </svg>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={handleNextSlide}
+                              className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/95 dark:bg-slate-800/95 hover:bg-white text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700 shadow-md flex items-center justify-center cursor-pointer transition-all hover:scale-110 z-20"
+                              title="Slide kế tiếp"
+                              aria-label="Slide kế tiếp"
+                            >
+                              <svg className="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                              </svg>
+                            </button>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => setCompassMode(compassMode === 'yinyang' ? 'battrach' : 'yinyang')}
-                            className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:brightness-110 shadow-xs cursor-pointer transition-all"
-                            title="Chuyển chế độ xem Âm Dương / Bát Trạch"
-                          >
-                            {compassMode === 'yinyang' ? 'Xem Bát Trạch' : 'Xem Âm Dương'}
-                          </button>
+                        </div>
+                      ) : (
+                        <div className="relative my-auto w-28 h-28 sm:w-32 sm:h-32 rounded-full border-2 border-indigo-400/50 bg-indigo-950/80 p-1.5 flex items-center justify-center text-white shadow-inner">
+                          <div className="w-full h-full rounded-full border border-indigo-300/30 flex flex-col items-center justify-center relative text-center">
+                            <div className="text-[10px] font-black text-amber-300">TÂY TỨ MỆNH</div>
+                            <div className="text-sm sm:text-base font-black text-cyan-300 my-0.5 font-play">Đoài Kim</div>
+                            <div className="text-[8px] text-slate-300">Kim Tứ Cục · Cung Tý</div>
+                            <span className="absolute top-0.5 text-[8px] font-black text-emerald-300 bg-emerald-950/70 px-1 rounded">TB Sinh Khí</span>
+                            <span className="absolute bottom-0.5 text-[8px] font-black text-teal-300 bg-teal-950/70 px-1 rounded">TN Diên Niên</span>
+                            <span className="absolute left-0.5 text-[8px] font-black text-cyan-300 bg-cyan-950/70 px-1 rounded">ĐB Thiên Y</span>
+                            <span className="absolute right-0.5 text-[8px] font-black text-indigo-300 bg-indigo-950/70 px-1 rounded">T Phục Vị</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Nút bấm nghe thiền định ở chân la bàn */}
+                      <button
+                        type="button"
+                        onClick={toggleAudio}
+                        className={`w-full py-1 sm:py-1.5 px-2 rounded-full border text-[10px] sm:text-[10.5px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shrink-0 ${
+                          isAudioPlaying
+                            ? 'bg-amber-500/15 border-amber-400 text-amber-800 dark:text-amber-300 shadow-xs'
+                            : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-amber-950/30'
+                        }`}
+                      >
+                        <span className="text-xs">🎧</span>
+                        <span>{isAudioPlaying ? 'Đang phát thiền định 432Hz' : 'Nhấp la bàn để nghe thiền định 432Hz'}</span>
+                      </button>
+                    </div>
+
+                    {/* Cột con 2: Hồ Sơ Nhân Thân & Hướng Cát Bát Trạch */}
+                    <div className="w-full lg:w-[66%] flex-1 flex flex-col justify-between rounded-2xl border border-purple-200/70 dark:border-purple-800/50 bg-white/95 dark:bg-slate-900/90 p-2.5 sm:p-3 shadow-2xs overflow-hidden">
+                      {/* Tiêu đề Hồ sơ nhân thân */}
+                      <div className="flex items-center justify-between pb-1.5 border-b border-purple-100 dark:border-purple-900/40 shrink-0">
+                        <div className="flex items-center gap-1.5">
+                          <WebIcon name="user" className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                          <h4 className="text-xs sm:text-[13px] font-black text-purple-900 dark:text-purple-300 tracking-wide">
+                            Hồ Sơ Nhân Thân
+                          </h4>
+                        </div>
+                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs">
+                          Hải Trung Kim • Đoài Kim
+                        </span>
+                      </div>
+
+                      {/* 6 Khối thông số nhân thân (Grid 3 cols x 2 rows) */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 my-auto">
+                        {/* 1. Dương Lịch */}
+                        <div className="p-1.5 sm:p-2 bg-[#f0f7ff] dark:bg-slate-800/80 rounded-xl border border-blue-100 dark:border-blue-900/40 flex items-center gap-2">
+                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                            <WebIcon name="calendar" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400 truncate">
+                              DƯƠNG LỊCH KHỞI SINH
+                            </div>
+                            <div className="text-[10.5px] sm:text-[11px] font-black text-slate-800 dark:text-slate-100 truncate">
+                              16/06/1984
+                            </div>
+                          </div>
                         </div>
 
-                        {compassMode === 'yinyang' ? (
-                          <div className="relative my-1">
-                            <div
-                              role="button"
-                              tabIndex={0}
-                              aria-label={isAudioPlaying ? 'Tắt âm thanh tĩnh tâm' : 'Phát âm thanh thiền định'}
-                              onClick={toggleAudio}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                  e.preventDefault();
-                                  toggleAudio();
-                                }
-                              }}
-                              className={`w-28 h-28 sm:w-32 sm:h-32 rounded-full p-2 shadow-md flex items-center justify-center cursor-pointer transition-all duration-500 group relative ${
-                                isAudioPlaying
-                                  ? 'bg-gradient-to-br from-amber-300 via-amber-500 to-amber-600 ring-3 ring-amber-400/60 shadow-[0_0_25px_rgba(245,158,11,0.65)]'
-                                  : 'bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 ring-2 ring-amber-300/40 hover:brightness-105'
-                              }`}
-                              title={isAudioPlaying ? 'Tắt âm thanh tĩnh tâm' : 'Phát âm thanh thiền định'}
-                            >
-                              <div className="w-full h-full rounded-full bg-slate-950 border-2 border-amber-300 flex items-center justify-center relative overflow-hidden shadow-inner">
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                  <img
-                                    src="https://i.ibb.co/nsKpgT8V/Yin-Yan.jpg"
-                                    alt="Yin Yang Compass"
-                                    className={`w-full h-full rounded-full object-cover transition-all duration-700 ${
-                                      isAudioPlaying ? 'animate-[spin_10s_linear_infinite]' : ''
-                                    }`}
-                                    onError={(e) => {
-                                      (e.target as HTMLImageElement).src =
-                                        'https://placehold.co/200x200/1e1b4b/fbbf24?text=Yin-Yang';
-                                    }}
-                                  />
-                                </div>
-
-                                <div className="absolute inset-0 bg-slate-950/20 dark:bg-slate-950/30 rounded-full flex items-center justify-center transition-opacity group-hover:bg-slate-950/45">
-                                  <div
-                                    className={`p-2 rounded-full text-white shadow-lg backdrop-blur-sm border border-white/50 transition-all ${
-                                      isAudioPlaying
-                                        ? 'bg-amber-500 shadow-amber-500/50 ring-2 ring-white'
-                                        : 'bg-black/70 hover:brightness-110'
-                                    }`}
-                                  >
-                                    <WebIcon name={isAudioPlaying ? 'pause' : 'play'} className="w-3.5 h-3.5 fill-current" />
-                                  </div>
-                                </div>
-
-                                <span className="absolute top-1 text-[9px] font-black text-amber-300 z-10 pointer-events-none drop-shadow">N</span>
-                                <span className="absolute bottom-1 text-[9px] font-black text-amber-300 z-10 pointer-events-none drop-shadow">S</span>
-                                <span className="absolute left-1.5 text-[9px] font-black text-amber-300 z-10 pointer-events-none drop-shadow">W</span>
-                                <span className="absolute right-1.5 text-[9px] font-black text-amber-300 z-10 pointer-events-none drop-shadow">E</span>
-                              </div>
+                        {/* 2. Âm Lịch */}
+                        <div className="p-1.5 sm:p-2 bg-[#faf5ff] dark:bg-slate-800/80 rounded-xl border border-purple-100 dark:border-purple-900/40 flex items-center gap-2">
+                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                            <WebIcon name="clock" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-purple-600 dark:text-purple-400 truncate">
+                              ÂM LỊCH GIÁP TÝ
+                            </div>
+                            <div className="text-[10.5px] sm:text-[11px] font-black text-slate-800 dark:text-slate-100 truncate">
+                              17 tháng 05 năm Giáp Tý
                             </div>
                           </div>
-                        ) : (
-                          <div className="relative my-1 w-28 h-28 sm:w-32 sm:h-32 rounded-full border-2 border-indigo-400/50 bg-indigo-950/80 p-1.5 flex items-center justify-center text-white shadow-inner">
-                            <div className="w-full h-full rounded-full border border-indigo-300/30 flex flex-col items-center justify-center relative text-center">
-                              <div className="text-[10px] font-black text-amber-300">TÂY TỨ MỆNH</div>
-                              <div className="text-sm sm:text-base font-black text-cyan-300 my-0.5 font-play">Đoài Kim</div>
-                              <div className="text-[8px] text-slate-300">Kim Tứ Cục · Cung Tý</div>
-                              <span className="absolute top-0.5 text-[8px] font-black text-emerald-300 bg-emerald-950/70 px-1 rounded">TB Sinh Khí</span>
-                              <span className="absolute bottom-0.5 text-[8px] font-black text-teal-300 bg-teal-950/70 px-1 rounded">TN Diên Niên</span>
-                              <span className="absolute left-0.5 text-[8px] font-black text-cyan-300 bg-cyan-950/70 px-1 rounded">ĐB Thiên Y</span>
-                              <span className="absolute right-0.5 text-[8px] font-black text-indigo-300 bg-indigo-950/70 px-1 rounded">T Phục Vị</span>
+                        </div>
+
+                        {/* 3. Giờ Sinh Can Chi */}
+                        <div className="p-1.5 sm:p-2 bg-[#fffbeb] dark:bg-slate-800/80 rounded-xl border border-amber-100 dark:border-amber-900/40 flex items-center gap-2">
+                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                            <WebIcon name="award" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400 truncate">
+                              GIỜ SINH CAN CHI
+                            </div>
+                            <div className="text-[10.5px] sm:text-[11px] font-black text-slate-800 dark:text-slate-100 truncate">
+                              Giờ Dậu (17h - 19h)
                             </div>
                           </div>
-                        )}
+                        </div>
 
-                        <div className="w-full flex flex-col items-center gap-1.5">
-                          <div className="flex items-center gap-1.5 h-3">
-                            {[40, 70, 100, 60, 90, 50, 80, 40].map((height, i) => (
-                              <span
-                                key={i}
-                                className={`w-1 rounded-full transition-all duration-300 ${
-                                  isAudioPlaying ? 'bg-amber-500 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'
-                                }`}
-                                style={{ height: isAudioPlaying ? `${height}%` : '30%' }}
-                              />
-                            ))}
+                        {/* 4. Bản Mệnh Nạp Âm */}
+                        <div className="p-1.5 sm:p-2 bg-[#f0fdf4] dark:bg-slate-800/80 rounded-xl border border-emerald-100 dark:border-emerald-900/40 flex items-center gap-2">
+                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                            <WebIcon name="shield" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                           </div>
-                          <p className="text-[11px] font-bold text-slate-700 dark:text-slate-200">
-                            {isAudioPlaying ? 'Đang phát âm thanh thiền định tĩnh tâm' : 'Nhấp la bàn để nghe thiền định 432Hz'}
-                          </p>
+                          <div className="min-w-0">
+                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 truncate">
+                              BẢN MỆNH NẠP ÂM
+                            </div>
+                            <div className="text-[10.5px] sm:text-[11px] font-black text-emerald-800 dark:text-emerald-300 truncate">
+                              Hải Trung Kim
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 5. Cung Mệnh Bối Kim */}
+                        <div className="p-1.5 sm:p-2 bg-[#ecfeff] dark:bg-slate-800/80 rounded-xl border border-cyan-100 dark:border-cyan-900/40 flex items-center gap-2">
+                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
+                            <WebIcon name="globe" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 truncate">
+                              CUNG MỆNH BỐI KIM
+                            </div>
+                            <div className="text-[10.5px] sm:text-[11px] font-black text-cyan-800 dark:text-cyan-300 truncate">
+                              Đoài Kim
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 6. Kim Tứ Cục Vận */}
+                        <div className="p-1.5 sm:p-2 bg-[#fff1f2] dark:bg-slate-800/80 rounded-xl border border-rose-100 dark:border-rose-900/40 flex items-center gap-2">
+                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                            <WebIcon name="hash" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-rose-600 dark:text-rose-400 truncate">
+                              KIM TỨ CỤC VẬN
+                            </div>
+                            <div className="text-[10.5px] sm:text-[11px] font-black text-rose-800 dark:text-rose-300 truncate">
+                              Kim Tứ Cục (Số 4)
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Cột phải: Thẻ chi tiết thông số nhân thân */}
-                      <div className="lg:col-span-8 flex flex-col justify-between space-y-3">
-                        <div className="space-y-3 p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-purple-200/70 dark:border-purple-800/60 shadow-sm backdrop-blur-xl h-full flex flex-col justify-between">
-                          <div className="w-full flex flex-col gap-1.5 pb-2 border-b border-purple-200/40 dark:border-purple-800/40">
-                            <div className="flex items-center justify-between flex-wrap gap-2">
-                              <div className="flex items-center gap-1.5">
-                                <WebIcon name="user" className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
-                                <h4 className="text-xs sm:text-sm font-black text-purple-800 dark:text-purple-300 tracking-wide">
-                                  Hồ Sơ Nhân Thân
-                                </h4>
-                              </div>
-                              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shrink-0 shadow-2xs">
-                                Hải Trung Kim • Đoài Kim
-                              </span>
+                      {/* Hướng Cát Bát Trạch (4 Thẻ: Tây Bắc, Sinh Khí, Diên Niên, Phục Vị) */}
+                      <div className="pt-1.5 border-t border-purple-100 dark:border-purple-900/40 space-y-1 sm:space-y-1.5 shrink-0">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5 text-[11px] font-black text-purple-900 dark:text-purple-300">
+                            <WebIcon name="compass" className="w-3 h-3 text-purple-600 dark:text-purple-400" />
+                            <span>Hướng Cát Bát Trạch</span>
+                          </div>
+                          <span className="text-[9.5px] font-semibold px-2 py-0.2 rounded-full bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800/50">
+                            Tây Tứ Trạch
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                          {/* 1. Tây Bắc / Thiên Y */}
+                          <div className="p-1.5 sm:p-2 rounded-xl bg-[#f0fdfa] dark:bg-slate-800/80 border border-teal-200/60 dark:border-teal-800/40 text-left shadow-2xs">
+                            <div className="flex items-center gap-1 text-[10px] font-black text-teal-900 dark:text-teal-200">
+                              <span className="text-teal-600 font-bold">▲</span>
+                              <span>Tây Bắc</span>
                             </div>
+                            <div className="text-[9px] font-bold text-teal-600 dark:text-teal-400">Thiên Y</div>
+                            <p className="text-[9px] sm:text-[9.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
+                              Thu hút tài lộc, danh tiếng & thăng tiến
+                            </p>
                           </div>
 
-                          {/* 6 Thẻ thông số: Tiêu đề 4 chữ viết hoa chữ đầu, không sub tiêu đề */}
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                            <div className="p-2 sm:p-2.5 bg-indigo-50/70 dark:bg-indigo-950/30 rounded-xl border border-indigo-200/50 dark:border-indigo-800/40 flex items-start gap-2 transition-all hover:border-indigo-400 shadow-2xs text-left">
-                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
-                                <WebIcon name="calendar" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                              </div>
-                              <div className="min-w-0">
-                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 truncate">
-                                  Dương Lịch Khởi Sinh
-                                </div>
-                                <div className="text-[11px] font-black text-slate-900 dark:text-slate-100 truncate">
-                                  {TU_VI_PROFILE.birthDateSolar}
-                                </div>
-                              </div>
+                          {/* 2. Sinh Khí / Tây Nam */}
+                          <div className="p-1.5 sm:p-2 rounded-xl bg-[#f0fdf4] dark:bg-slate-800/80 border border-emerald-200/60 dark:border-emerald-800/40 text-left shadow-2xs">
+                            <div className="flex items-center gap-1 text-[10px] font-black text-emerald-900 dark:text-emerald-200">
+                              <span className="text-emerald-600 font-bold">🌱</span>
+                              <span>Sinh Khí</span>
                             </div>
-
-                            <div className="p-2 sm:p-2.5 bg-purple-50/70 dark:bg-purple-950/30 rounded-xl border border-purple-200/50 dark:border-purple-800/40 flex items-start gap-2 transition-all hover:border-purple-400 shadow-2xs text-left">
-                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 mt-0.5">
-                                <WebIcon name="moon" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                              </div>
-                              <div className="min-w-0">
-                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-purple-600 dark:text-purple-400 truncate">
-                                  Âm Lịch Giáp Tý
-                                </div>
-                                <div className="text-[11px] font-black text-slate-900 dark:text-slate-100 truncate">
-                                  {TU_VI_PROFILE.birthDateLunar}
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="p-2 sm:p-2.5 bg-amber-50/70 dark:bg-amber-950/30 rounded-xl border border-amber-200/50 dark:border-amber-800/40 flex items-start gap-2 transition-all hover:border-amber-400 shadow-2xs text-left">
-                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
-                                <WebIcon name="clock" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                              </div>
-                              <div className="min-w-0">
-                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400 truncate">
-                                  Giờ Sinh Can Chi
-                                </div>
-                                <div className="text-[11px] font-black text-slate-900 dark:text-slate-100 truncate">
-                                  {TU_VI_PROFILE.birthHourLunar}
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="p-2 sm:p-2.5 bg-emerald-50/70 dark:bg-emerald-950/30 rounded-xl border border-emerald-200/50 dark:border-emerald-800/40 flex items-start gap-2 transition-all hover:border-emerald-400 shadow-2xs text-left">
-                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                                <WebIcon name="shield" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                              </div>
-                              <div className="min-w-0">
-                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 truncate">
-                                  Bản Mệnh Nạp Âm
-                                </div>
-                                <div className="text-[11px] font-black text-emerald-800 dark:text-emerald-300 truncate">
-                                  {TU_VI_PROFILE.elementNapAm}
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="p-2 sm:p-2.5 bg-cyan-50/70 dark:bg-cyan-950/30 rounded-xl border border-cyan-200/50 dark:border-cyan-800/40 flex items-start gap-2 transition-all hover:border-cyan-400 shadow-2xs text-left">
-                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 mt-0.5">
-                                <WebIcon name="compass" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                              </div>
-                              <div className="min-w-0">
-                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 truncate">
-                                  Cung Mệnh Đoài Kim
-                                </div>
-                                <div className="text-[11px] font-black text-cyan-800 dark:text-cyan-300 truncate">
-                                  {TU_VI_PROFILE.menhQuai}
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="p-2 sm:p-2.5 bg-rose-50/70 dark:bg-rose-950/30 rounded-xl border border-rose-200/50 dark:border-rose-800/40 flex items-start gap-2 transition-all hover:border-rose-400 shadow-2xs text-left">
-                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mt-0.5">
-                                <WebIcon name="hash" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                              </div>
-                              <div className="min-w-0">
-                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-rose-600 dark:text-rose-400 truncate">
-                                  Kim Tứ Cục Vận
-                                </div>
-                                <div className="text-[11px] font-black text-rose-700 dark:text-rose-300 truncate">
-                                  {TU_VI_PROFILE.cucVan}
-                                </div>
-                              </div>
-                            </div>
+                            <div className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400">Tây Nam</div>
+                            <p className="text-[9px] sm:text-[9.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
+                              Củng cố các mối quan hệ & đồng đội gắn kết
+                            </p>
                           </div>
 
-                          {/* Bát Trạch: Tiêu đề 4 chữ viết hoa chữ đầu, không sub tiêu đề */}
-                          <div className="pt-2 border-t border-slate-200/80 dark:border-slate-800/80 space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-slate-700 dark:text-slate-300">
-                                <WebIcon name="compass" className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
-                                <span>Hướng Cát Bát Trạch</span>
-                              </div>
-                              <span className="text-[9.5px] font-bold text-slate-500">Tây Tứ Trạch</span>
+                          {/* 3. Diên Niên / Đông Bắc */}
+                          <div className="p-1.5 sm:p-2 rounded-xl bg-[#f0f9ff] dark:bg-slate-800/80 border border-sky-200/60 dark:border-sky-800/40 text-left shadow-2xs">
+                            <div className="flex items-center gap-1 text-[10px] font-black text-sky-900 dark:text-sky-200">
+                              <span className="text-sky-600 font-bold">🛡️</span>
+                              <span>Diên Niên</span>
                             </div>
+                            <div className="text-[9px] font-bold text-sky-600 dark:text-sky-400">Đông Bắc</div>
+                            <p className="text-[9px] sm:text-[9.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
+                              Cải thiện sức khỏe, trường thọ & bình an
+                            </p>
+                          </div>
 
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                              {batTrachCat.map((item) => (
-                                <div
-                                  key={item.direction}
-                                  className={`p-2 rounded-xl border text-left shadow-2xs ${item.color}`}
-                                >
-                                  <div className="flex items-center justify-between text-[9.5px] font-black">
-                                    <span>{item.direction}</span>
-                                    <span className="opacity-90">{item.star}</span>
-                                  </div>
-                                  <p className="text-[10px] font-semibold mt-0.5 leading-snug line-clamp-2">{item.meaning}</p>
-                                </div>
-                              ))}
+                          {/* 4. Phục Vị / Chính Tây */}
+                          <div className="p-1.5 sm:p-2 rounded-xl bg-[#faf5ff] dark:bg-slate-800/80 border border-purple-200/60 dark:border-purple-800/40 text-left shadow-2xs">
+                            <div className="flex items-center gap-1 text-[10px] font-black text-purple-900 dark:text-purple-200">
+                              <span className="text-purple-600 font-bold">★</span>
+                              <span>Phục Vị</span>
                             </div>
+                            <div className="text-[9px] font-bold text-purple-600 dark:text-purple-400">Chính Tây</div>
+                            <p className="text-[9px] sm:text-[9.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
+                              Củng cố sức mạnh tinh thần, may mắn thi cử
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -926,196 +982,158 @@ export const HoroscopeView: React.FC = () => {
             )}
           </div>
 
-          {/* ================= CỘT PHẢI (20%): CÔNG CỤ TRA HỢP CÔNG VIỆC ================= */}
-          <div className="w-full lg:w-[22%] xl:w-[20%] shrink-0 flex flex-col min-w-0 h-full overflow-hidden">
-            <div
-              id="tuvi-tool-zodiac"
-              className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-teal-200/90 dark:border-teal-500/30 rounded-2xl md:rounded-3xl p-3 sm:p-4 shadow-sm backdrop-blur-2xl flex flex-col min-h-0 justify-between overflow-hidden text-left"
-            >
-              {/* Header thẻ: 4 chữ viết hoa chữ đầu, không tạo sub tiêu đề */}
-              <div className="flex items-center justify-between pb-2 border-b border-teal-200/50 dark:border-teal-800/50 shrink-0">
-                <div className="flex items-center gap-1.5">
-                  <WebIcon name="users" className="w-3.5 h-3.5 text-teal-500 shrink-0" />
-                  <h3 className="text-xs sm:text-sm font-black font-play bg-gradient-to-r from-teal-600 to-sky-600 bg-clip-text text-transparent">
-                    Tra Hợp Công Việc
-                  </h3>
+          {/* ================= CỘT PHẢI (26%): CÔNG CỤ TRA HỢP CÔNG VIỆC (Chuẩn theo hình đính kèm) ================= */}
+          <div className="w-full lg:w-[26%] xl:w-[26%] shrink-0 flex flex-col min-w-0 h-full min-h-0 rounded-2xl md:rounded-3xl border border-teal-200/80 dark:border-teal-800/60 bg-white/95 dark:bg-slate-900/95 p-3 sm:p-3.5 shadow-sm backdrop-blur-2xl overflow-hidden justify-between text-left">
+            {/* Header thẻ: Tra Hợp Công Việc & 12 Con giáp */}
+            <div className="flex items-center justify-between pb-2 border-b border-teal-100 dark:border-teal-900/40 shrink-0">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <WebIcon name="briefcase" className="w-3.5 h-3.5" />
                 </div>
-                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
-                  12 Con Giáp
-                </span>
+                <h3 className="text-xs sm:text-sm font-black font-play text-teal-800 dark:text-teal-300">
+                  Tra Hợp Công Việc
+                </h3>
               </div>
+              <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800 flex items-center gap-1 shadow-2xs">
+                <WebIcon name="layers" className="w-3 h-3 text-teal-600" />
+                <span>12 Con giáp</span>
+              </span>
+            </div>
 
-              {/* Scrollable Tool Body */}
-              <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-2 pr-1 space-y-2 flex flex-col">
-                {/* Tra cứu năm sinh & Bộ lọc 12 Con Giáp (Icon Filter tích hợp trong mục tìm kiếm) */}
-                <div className="space-y-1.5 shrink-0">
-                  <div className="flex items-center gap-1.5 w-full">
-                    <div className="relative flex-1">
-                      <WebIcon
-                        name="search"
-                        className="w-3 h-3 text-slate-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none"
+            {/* Ô tìm kiếm năm sinh */}
+            <div className="pt-2 pb-1 shrink-0 flex items-center gap-1.5 w-full">
+              <div className="relative flex-1">
+                <WebIcon
+                  name="search"
+                  className="w-3 h-3 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                />
+                <input
+                  type="number"
+                  placeholder="Năm sinh (vd: 1990, 1988, ...)"
+                  value={searchYearInput}
+                  onChange={(e) => setSearchYearInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleYearSearch()}
+                  className="w-full pl-7 pr-2.5 py-1 rounded-full text-[10.5px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-medium"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleYearSearch}
+                className="px-3 py-1 rounded-full text-[10.5px] font-black bg-teal-600 hover:bg-teal-700 text-white transition-all cursor-pointer shrink-0 shadow-xs active:scale-95"
+              >
+                Tra
+              </button>
+            </div>
+
+            {/* Danh sách 7 Con Giáp tương hợp khớp 100% hình tham chiếu */}
+            <div className="flex-1 min-h-0 flex flex-col justify-between py-1 gap-1 sm:gap-1.5 overflow-hidden">
+              {DISPLAY_7_ZODIACS.map((item) => {
+                const isSelected = selectedZodiacId === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setSelectedZodiacId(item.id)}
+                    className={`w-full p-1.5 px-2.5 rounded-xl border flex items-center justify-between text-left transition-all duration-200 cursor-pointer ${
+                      item.highlight
+                        ? 'bg-[#ecfdf5] dark:bg-teal-950/40 border-teal-300 dark:border-teal-700 shadow-2xs'
+                        : isSelected
+                        ? 'bg-teal-50 dark:bg-teal-950/60 border-teal-400 dark:border-teal-600 shadow-xs ring-1 ring-teal-400/50'
+                        : 'bg-white/80 dark:bg-slate-900/80 border-slate-100 dark:border-slate-800 hover:border-teal-200 hover:bg-teal-50/40'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <img
+                        src={`/images/tuvi/icon-${item.iconName}.png`}
+                        alt={item.nameVi}
+                        className="w-4.5 h-4.5 object-contain shrink-0"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
                       />
-                      <input
-                        type="number"
-                        placeholder="Năm sinh (vd: 1992)..."
-                        value={searchYearInput}
-                        onChange={(e) => setSearchYearInput(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleYearSearch()}
-                        className="w-full pl-7 pr-8 py-1 rounded-lg text-[10.5px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-semibold"
-                      />
-
-                      {/* Icon Filter tích hợp trực tiếp trong mục tìm kiếm */}
-                      <div className="absolute right-1 top-1/2 -translate-y-1/2" ref={zodiacFilterRef}>
-                        <button
-                          type="button"
-                          onClick={() => setIsZodiacFilterOpen((prev) => !prev)}
-                          className={`w-5 h-5 rounded-md flex items-center justify-center transition-all cursor-pointer relative ${
-                            zodiacFilterTier !== 'all' || isZodiacFilterOpen
-                              ? 'bg-teal-600 text-white shadow-xs'
-                              : 'text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                          }`}
-                          title={`Lọc 12 Con Giáp: ${
-                            [
-                              { id: 'all', label: 'Tất cả 12 Giáp' },
-                              { id: 'best', label: 'Tam / Lục Hợp' },
-                              { id: 'support', label: 'Tương Trợ' },
-                              { id: 'caution', label: 'Tránh Xung' },
-                            ].find((f) => f.id === zodiacFilterTier)?.label || 'Bộ lọc'
-                          }`}
-                        >
-                          <WebIcon name="filter" className="w-3 h-3" />
-                          {zodiacFilterTier !== 'all' && (
-                            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-amber-400 ring-1 ring-white dark:ring-slate-900" />
-                          )}
-                        </button>
-
-                        {/* Dropdown danh sách bộ lọc khi click icon filter */}
-                        {isZodiacFilterOpen && (
-                          <div className="absolute right-0 top-full mt-1.5 z-40 w-36 p-1.5 rounded-xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-teal-200/90 dark:border-teal-500/30 shadow-xl space-y-1 animate-in fade-in zoom-in-95 duration-150">
-                            <div className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-white/5">
-                              Lọc 12 Con Giáp
-                            </div>
-                            {[
-                              { id: 'all', label: 'Tất cả 12 Giáp' },
-                              { id: 'best', label: 'Tam / Lục Hợp' },
-                              { id: 'support', label: 'Tương Trợ' },
-                              { id: 'caution', label: 'Tránh Xung' },
-                            ].map((f) => {
-                              const isActive = zodiacFilterTier === f.id;
-                              return (
-                                <button
-                                  key={f.id}
-                                  type="button"
-                                  onClick={() => {
-                                    setZodiacFilterTier(f.id);
-                                    setIsZodiacFilterOpen(false);
-                                  }}
-                                  className={`w-full px-2 py-1 rounded-lg text-[10px] font-bold text-left transition-all flex items-center justify-between cursor-pointer ${
-                                    isActive
-                                      ? 'bg-teal-600 text-white shadow-xs'
-                                      : 'text-slate-700 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-teal-950/40 hover:text-teal-600'
-                                  }`}
-                                >
-                                  <span>{f.label}</span>
-                                  {isActive && <WebIcon name="check" className="w-3 h-3 text-white" />}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
+                      <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-100 truncate">
+                        Tuổi {item.nameVi} ({item.animalVi})
+                      </span>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={handleYearSearch}
-                      className="px-2 py-1 rounded-lg text-[10.5px] font-black bg-teal-600 hover:bg-teal-700 text-white transition-all cursor-pointer shrink-0 shadow-xs active:scale-95"
-                    >
-                      Tra
-                    </button>
-                  </div>
-                </div>
-
-                {/* Danh sách 12 Con Giáp: Hiển thị 1 cột duy nhất theo yêu cầu */}
-                <div className="flex flex-col gap-1 shrink-0 p-0.5 max-h-[220px] overflow-y-auto custom-scrollbar">
-                  {filteredZodiacList.map((item) => {
-                    const isSelected = selectedZodiacId === item.id;
-                    const theme = getZodiacTheme(item.tier);
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => setSelectedZodiacId(item.id)}
-                        className={`p-1.5 px-2 rounded-lg flex items-center justify-between text-left transition-all duration-200 cursor-pointer border ${
-                          isSelected ? theme.bgSelected : `${theme.bgUnselected} hover:brightness-105`
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-base leading-none shrink-0">{item.icon}</span>
-                          <span className="text-[10px] font-bold text-slate-900 dark:text-white truncate">
-                            Tuổi {item.nameVi} ({item.animalVi})
-                          </span>
-                        </div>
-                        <span className={`text-[8.5px] font-mono font-black px-1.5 py-0.2 rounded-xs shrink-0 ${theme.badge}`}>
-                          {item.score.split(' ')[0]}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Chi tiết tương hợp con giáp được chọn */}
-                {currentZodiac && (
-                  (() => {
-                    const activeTheme = getZodiacTheme(currentZodiac.tier);
-                    return (
-                      <div className={`p-2 rounded-xl bg-gradient-to-br ${activeTheme.gradientBox} border space-y-1.5 text-xs shrink-0`}>
-                        <div className="flex items-center justify-between gap-1.5 pb-1 border-b border-slate-200/50 dark:border-slate-800/60">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="text-xl shrink-0">{currentZodiac.icon}</span>
-                            <div className="min-w-0">
-                              <h4 className="text-[11px] font-black text-slate-900 dark:text-white truncate">
-                                Tuổi {currentZodiac.nameVi} ({currentZodiac.animalVi})
-                              </h4>
-                              <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 block truncate">
-                                {currentZodiac.relationshipVi}
-                              </span>
-                            </div>
-                          </div>
-                          <span className={`px-1.5 py-0.5 rounded-full text-[8.5px] font-black shrink-0 ${activeTheme.badge}`}>
-                            {currentZodiac.score}
-                          </span>
-                        </div>
-
-                        <div className="space-y-1 text-[9.5px]">
-                          <div className="p-1 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50 dark:border-slate-800/50">
-                            <span className="font-bold text-slate-700 dark:text-slate-300 block">📅 Năm sinh:</span>
-                            <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.years}</span>
-                          </div>
-                          <div className="p-1 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50 dark:border-slate-800/50">
-                            <span className="font-bold text-slate-700 dark:text-slate-300 block">🏢 Môi trường:</span>
-                            <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.workplaceFitVi}</span>
-                          </div>
-                          <div className="p-1 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50 dark:border-slate-800/50">
-                            <span className="font-bold text-slate-700 dark:text-slate-300 block">🧭 Hướng bàn:</span>
-                            <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.deskDirectionVi}</span>
-                          </div>
-                          <div className={`p-1 rounded-md ${activeTheme.accentBg} border`}>
-                            <span className={`font-bold ${activeTheme.textColor} block`}>💡 Lời khuyên:</span>
-                            <p className="text-slate-800 dark:text-slate-200 leading-snug line-clamp-3">
-                              {currentZodiac.workplaceAdviceVi}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()
-                )}
-              </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full text-white shadow-2xs ${item.badgeClass}`}>
+                        {item.displayScore}
+                      </span>
+                      <span className="text-[11px] text-slate-400 font-bold">›</span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
+
+      {/* MODAL DIALOG CHI TIẾT TƯƠNG HỢP CON GIÁP (Đảm bảo thẻ không bị tràn chiều cao) */}
+      {currentZodiac && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+          onClick={() => setSelectedZodiacId(null)}
+        >
+          <div
+            className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-2xl border border-teal-200/80 dark:border-teal-700/80 text-left space-y-3.5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header Modal */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-teal-50 dark:bg-teal-950/50 flex items-center justify-center text-2xl border border-teal-200/50 dark:border-teal-800/50">
+                  {currentZodiac.icon}
+                </div>
+                <div>
+                  <h4 className="text-base font-black text-slate-900 dark:text-white">
+                    Tuổi {currentZodiac.nameVi} ({currentZodiac.animalVi})
+                  </h4>
+                  <span className="text-xs font-semibold text-teal-600 dark:text-teal-400">
+                    {currentZodiac.relationshipVi}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-full text-xs font-black bg-teal-600 text-white shadow-xs">
+                  {currentZodiac.score}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedZodiacId(null)}
+                  className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 flex items-center justify-center cursor-pointer transition-all"
+                  aria-label="Đóng"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Chi tiết tương hợp */}
+            <div className="space-y-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                <span className="font-bold text-slate-700 dark:text-slate-300 block mb-0.5">📅 Các năm sinh:</span>
+                <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.years}</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                <span className="font-bold text-slate-700 dark:text-slate-300 block mb-0.5">🏢 Vị trí cộng tác tối ưu:</span>
+                <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.workplaceFitVi}</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                <span className="font-bold text-slate-700 dark:text-slate-300 block mb-0.5">🧭 Hướng bàn làm việc cát lợi:</span>
+                <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.deskDirectionVi}</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-teal-50/60 dark:bg-teal-950/30 border border-teal-200/50 dark:border-teal-800/50">
+                <span className="font-bold text-teal-800 dark:text-teal-300 block mb-0.5">💡 Lời khuyên phối hợp quản trị:</span>
+                <p className="text-slate-800 dark:text-slate-200 leading-relaxed">
+                  {currentZodiac.workplaceAdviceVi}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
