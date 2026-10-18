@@ -344,7 +344,7 @@ export const SystemsView: React.FC = () => {
         </div>
 
         {/* VÙNG BÊN PHẢI: BANNER THEO CHIỀU DỌC (CĂN CHỈNH CHIỀU CAO VỪA VẶN THẺ CHÍNH) */}
-        <aside className="w-full lg:w-[310px] xl:w-[335px] shrink-0 h-full flex flex-col overflow-hidden">
+        <aside className="w-full lg:w-[300px] xl:w-[300px] shrink-0 h-full flex flex-col overflow-hidden">
           <div
             className="theme-hero-banner relative rounded-[20px] overflow-hidden border-none shadow-xl flex flex-col justify-between p-3 sm:p-3.5 text-white h-full group/banner overflow-y-auto no-scrollbar"
             style={{

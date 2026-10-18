@@ -121,7 +121,7 @@ export const InterviewView: React.FC = () => {
             ? 'w-0 opacity-0 pointer-events-none -translate-x-full lg:w-0'
             : isBannerCollapsed
             ? 'w-full lg:w-[46px] xl:w-[48px] h-[48px] lg:h-full opacity-100'
-            : 'w-full lg:w-[270px] xl:w-[290px] opacity-100 translate-x-0'
+            : 'w-full lg:w-[300px] xl:w-[300px] opacity-100 translate-x-0'
         }`}
       >
         {isBannerCollapsed ? (
@@ -148,7 +148,7 @@ export const InterviewView: React.FC = () => {
           </div>
         ) : (
           <div
-            className="theme-hero-banner relative rounded-2xl overflow-hidden border-none shadow-xl flex flex-col justify-between p-3.5 sm:p-4 text-white h-full group/banner overflow-y-auto no-scrollbar w-[270px] xl:w-[290px] max-w-full"
+            className="theme-hero-banner relative rounded-2xl overflow-hidden border-none shadow-xl flex flex-col justify-between p-3.5 sm:p-4 text-white h-full group/banner overflow-y-auto no-scrollbar w-full lg:w-[300px] xl:w-[300px] max-w-full"
             style={{
               background: 'linear-gradient(160deg, #0f172a 0%, #3b0764 45%, #1e1b4b 100%)',
             }}

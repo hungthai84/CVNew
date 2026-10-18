@@ -248,7 +248,7 @@ export const ProjectsView: React.FC = () => {
       ) : (
         <div
           id="projects-vertical-banner"
-          className="w-full lg:w-[280px] xl:w-[300px] shrink-0 h-[220px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-col justify-between p-4 sm:p-5 border border-purple-200/90 shadow-md bg-purple-950/80 text-white group/vertBanner transition-all duration-300 lg:order-2"
+          className="w-full lg:w-[300px] xl:w-[300px] shrink-0 h-[300px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-col justify-between p-4 sm:p-5 border border-purple-200/90 shadow-md bg-purple-950/80 text-white group/vertBanner transition-all duration-300 lg:order-2"
         >
           {/* Background Video (Hình banner sáng rõ, sống động) */}
           <video
