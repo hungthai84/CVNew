@@ -110,8 +110,177 @@ export const InterviewView: React.FC = () => {
 
   return (
     <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[12px] sm:gap-[15px] max-w-7xl mx-auto justify-start select-none relative text-slate-800 overflow-hidden text-left">
-      {/* 1. VÙNG BÊN TRÁI: VIDEO PHỎNG VẤN TRỰC TIẾP */}
-      <div className="flex-1 min-w-0 flex flex-col h-full min-h-[340px] lg:min-h-0">
+      {/* 1. VÙNG BÊN TRÁI: BANNER THEO CHIỀU DỌC (ĐÃ CHUYỂN QUA BÊN TRÁI, KHI PHÁT VIDEO SẼ TỰ ĐỘNG BỊ ĐẨY VÀ ẨN) */}
+      <aside
+        className={`shrink-0 h-full flex flex-col overflow-hidden transition-all duration-700 ease-in-out ${
+          isVideoPlaying
+            ? 'w-0 opacity-0 pointer-events-none -translate-x-full lg:w-0'
+            : 'w-full lg:w-[270px] xl:w-[290px] opacity-100 translate-x-0'
+        }`}
+      >
+        <div
+          className="theme-hero-banner relative rounded-2xl overflow-hidden border-none shadow-xl flex flex-col justify-between p-3.5 sm:p-4 text-white h-full group/banner overflow-y-auto no-scrollbar w-[270px] xl:w-[290px] max-w-full"
+          style={{
+            background: 'linear-gradient(160deg, #0f172a 0%, #3b0764 45%, #1e1b4b 100%)',
+          }}
+        >
+          {/* Background Video: banner dọc dùng link video dự án (hình nền sáng rõ) */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            src="https://cdn.scena.ai/project/10223/cc106cb37b8d219cca59af9a71a4d7a8cd019515a3e9a8282d16909bb21d88b9.mp4"
+            className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none brightness-[1.10] contrast-[1.08] group-hover/banner:scale-105 transition-transform duration-700"
+          />
+
+          {/* Dark Ambient Overlay nhẹ mỏng để lộ rõ hình nền sống động */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/55 via-transparent to-slate-950/65 pointer-events-none" />
+
+          {/* Ambient Watermark */}
+          <div className="card-watermark opacity-15 pointer-events-none -right-4 -bottom-6">
+            <WebIcon name="headphones" className="w-24 h-24 text-pink-400" />
+          </div>
+
+          {/* PHẦN 1: HEADER BANNER (Tiêu đề, Badge, Subtitle & Quote) */}
+          <div className="relative z-10 flex flex-col gap-1.5 shrink-0">
+            <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-white/15">
+              <span className="font-handwriting font-bold text-xl sm:text-2xl text-pink-400 leading-none drop-shadow-xs">
+                Đối thoại
+              </span>
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-pink-500/20 border border-pink-400/40 text-[9.5px] font-extrabold text-pink-300">
+                <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
+                <span>Trực tiếp · 24/7</span>
+              </div>
+            </div>
+
+            {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, không đóng khung icon */}
+            <h2 className="text-base sm:text-lg font-black font-play text-white tracking-tight leading-snug drop-shadow-xs flex items-center gap-2">
+              <span className="inline-flex animate-banner-icon shrink-0 text-pink-400">
+                <WebIcon name="chat" className="w-5 h-5" />
+              </span>
+              <span>Phỏng Vấn Thực Chiến</span>
+            </h2>
+            <p className="text-[10.5px] font-medium text-slate-200 leading-tight">
+              Tương tác trực tiếp – Giải pháp thực chiến – Đo lường vượt trội
+            </p>
+
+            {/* Decorative Pink-Purple Accent Line */}
+            <div className="w-12 h-1 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-400 shadow-xs" />
+
+            {/* Quote Block Fleur De Leah có viền line đen */}
+            <div className="pt-0.5 bg-transparent border-none shadow-none">
+              <p
+                className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight select-none"
+                style={{
+                  WebkitTextStroke: '1px #000000',
+                  textShadow: '0 0 2px #000000, 0 2px 6px rgba(0,0,0,0.95)',
+                }}
+              >
+                “Đối thoại chân thực khẳng định bản lĩnh và năng lực quản trị.”
+              </p>
+              <span
+                className="text-[10px] font-bold text-amber-200 mt-0.5 block tracking-wider font-play"
+                style={{
+                  WebkitTextStroke: '0.4px #000000',
+                  textShadow: '0 1px 3px rgba(0,0,0,0.9)',
+                }}
+              >
+                — Nguyễn Hùng Thái
+              </span>
+            </div>
+          </div>
+
+          {/* PHẦN 2: PROFILE CANDIDATE ROW */}
+          <div className="relative z-10 my-1.5 flex flex-col gap-1.5 shrink-0">
+            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm">
+              <div className="relative w-10 h-10 rounded-xl overflow-hidden ring-1 ring-pink-300/50 shadow-md shrink-0 bg-slate-900">
+                <img
+                  src="https://i.ibb.co/RT3jX4Mv/H-ng-Th-i-Avata-Gif.gif"
+                  alt="Nguyễn Hùng Thái"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-black font-play text-white truncate tracking-wide">
+                  Nguyễn Hùng Thái
+                </span>
+                <span className="text-[10px] font-bold text-pink-200 truncate">
+                  Trưởng Phòng CSKH
+                </span>
+                <span className="text-[9px] text-slate-300 truncate">
+                  22+ Năm Kinh Nghiệm CX
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* PHẦN 3: NHÓM NÚT LỌC DANH MỤC CÂU HỎI TRONG BANNER */}
+          <div className="relative z-10 flex flex-col gap-1 w-full shrink-0">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-pink-200 font-black flex items-center justify-between pb-0.5">
+              <span>Chủ đề câu hỏi</span>
+              <span className="text-[9.5px] text-cyan-300 font-mono">14 Câu</span>
+            </span>
+            <div className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible no-scrollbar pb-0.5">
+              {INTERVIEW_TABS.map((tab) => {
+                const isActive = activeFilter === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setActiveFilter(tab.key)}
+                    className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all duration-200 flex items-center justify-between gap-1.5 cursor-pointer border ${
+                      isActive
+                        ? 'bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 text-white border-pink-400 shadow-md shadow-pink-500/30 scale-[1.02]'
+                        : 'bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white border-white/15'
+                    }`}
+                  >
+                    <span className="truncate">{tab.labelVi}</span>
+                    {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* PHẦN 4: THỐNG KÊ VÀ HÀNH ĐỘNG TƯƠNG TÁC */}
+          <div className="relative z-10 pt-2 border-t border-white/15 flex flex-col gap-1.5 shrink-0">
+            <div className="grid grid-cols-2 gap-1.5">
+              <button
+                type="button"
+                onClick={togglePlay}
+                className="px-2 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-500 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 shadow-md shadow-pink-500/30 transition cursor-pointer active:scale-95"
+              >
+                <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                  {isVideoPlaying ? (
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                  ) : (
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  )}
+                </svg>
+                <span>{isVideoPlaying ? 'Tạm Dừng' : 'Phát Video'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={toggleAudio}
+                className="px-2 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 transition cursor-pointer active:scale-95"
+              >
+                <WebIcon name={isAudioOn ? 'volume' : 'volume-x'} className="w-2.5 h-2.5" />
+                <span>{isAudioOn ? 'Tắt Tiếng' : 'Bật Tiếng'}</span>
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between text-[9px] text-slate-400 font-medium px-0.5">
+              <span>Trực tiếp HD 1080p</span>
+              <span className="text-pink-400 font-bold">14 Phân Cảnh</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* 2. VÙNG VIDEO PHỎNG VẤN TRỰC TIẾP (CHIẾM VỊ TRÍ BANNER KHI PHÁT) */}
+      <div className="flex-1 min-w-0 flex flex-col h-full min-h-[340px] lg:min-h-0 transition-all duration-700 ease-in-out">
         <div className="relative w-full h-full rounded-2xl overflow-hidden border border-slate-200/90 shadow-md bg-slate-950 flex flex-col flex-1 group">
           <video
             ref={videoRef}
@@ -201,159 +370,6 @@ export const InterviewView: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* 2. VÙNG CHÍNH GIỮA: BANNER THEO CHIỀU DỌC (NẰM CHÍNH GIỮA VIDEO VÀ THẺ CHI TIẾT) */}
-      <aside className="w-full lg:w-[270px] xl:w-[290px] shrink-0 h-full flex flex-col overflow-hidden">
-        <div
-          className="theme-hero-banner relative rounded-2xl overflow-hidden border-none shadow-xl flex flex-col justify-between p-3.5 sm:p-4 text-white h-full group/banner overflow-y-auto no-scrollbar"
-          style={{
-            background: 'linear-gradient(160deg, #0f172a 0%, #3b0764 45%, #1e1b4b 100%)',
-          }}
-        >
-          {/* Background Video with Poster fallback (Hình nền sáng rõ, sống động) */}
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            poster="/images/interview/interview-overview.png"
-            className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none opacity-85 brightness-[1.10] contrast-[1.08] group-hover/banner:scale-105 transition-transform duration-700"
-          >
-            <source src="/videos/domains-banner.mp4" type="video/mp4" />
-            <source
-              src="https://cdn.scena.ai/project/10223/cc106cb37b8d219cca59af9a71a4d7a8cd019515a3e9a8282d16909bb21d88b9.mp4"
-              type="video/mp4"
-            />
-          </video>
-
-          {/* Dark Ambient Overlay nhẹ mỏng để lộ rõ hình nền sống động */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-950/30 to-slate-950/80 pointer-events-none" />
-
-          {/* Ambient Watermark */}
-          <div className="card-watermark opacity-15 pointer-events-none -right-4 -bottom-6">
-            <WebIcon name="headphones" className="w-24 h-24 text-pink-400" />
-          </div>
-
-          {/* PHẦN 1: HEADER BANNER (Tiêu đề, Badge, Subtitle & Quote) */}
-          <div className="relative z-10 flex flex-col gap-1.5 shrink-0">
-            <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-white/15">
-              <span className="font-handwriting font-bold text-xl sm:text-2xl text-pink-400 leading-none drop-shadow-xs">
-                Đối thoại
-              </span>
-              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-pink-500/20 border border-pink-400/40 text-[9.5px] font-extrabold text-pink-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
-                <span>Trực tiếp · 24/7</span>
-              </div>
-            </div>
-
-            <h2 className="text-base sm:text-lg font-black font-play text-white tracking-tight leading-snug drop-shadow-xs">
-              Phỏng Vấn Thực Chiến
-            </h2>
-            <p className="text-[10.5px] font-medium text-slate-200 leading-tight">
-              Tương tác trực tiếp – Giải pháp thực chiến – Đo lường vượt trội
-            </p>
-
-            {/* Decorative Pink-Purple Accent Line */}
-            <div className="w-12 h-1 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-400 shadow-xs" />
-
-            {/* Quote Block Fleur De Leah */}
-            <div className="pt-0.5 bg-transparent border-none shadow-none">
-              <p className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
-                “Đối thoại chân thực khẳng định bản lĩnh và năng lực quản trị.”
-              </p>
-              <span className="text-[10px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
-                — Nguyễn Hùng Thái
-              </span>
-            </div>
-          </div>
-
-          {/* PHẦN 2: PROFILE CANDIDATE ROW */}
-          <div className="relative z-10 my-1.5 flex flex-col gap-1.5 shrink-0">
-            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm">
-              <div className="relative w-10 h-10 rounded-xl overflow-hidden ring-1 ring-pink-300/50 shadow-md shrink-0 bg-slate-900">
-                <img
-                  src="https://i.ibb.co/RT3jX4Mv/H-ng-Th-i-Avata-Gif.gif"
-                  alt="Nguyễn Hùng Thái"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-xs font-black font-play text-white truncate tracking-wide">
-                  Nguyễn Hùng Thái
-                </span>
-                <span className="text-[10px] font-bold text-pink-200 truncate">
-                  Trưởng Phòng CSKH
-                </span>
-                <span className="text-[9px] text-slate-300 truncate">
-                  22+ Năm Kinh Nghiệm CX
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* PHẦN 3: NHÓM NÚT LỌC DANH MỤC CÂU HỎI TRONG BANNER */}
-          <div className="relative z-10 flex flex-col gap-1 w-full shrink-0">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-pink-200 font-black flex items-center justify-between pb-0.5">
-              <span>Chủ đề phỏng vấn</span>
-              <span className="text-[9.5px] text-emerald-300 font-mono">14 Câu hỏi</span>
-            </span>
-            <div className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible no-scrollbar pb-0.5">
-              {INTERVIEW_TABS.map((tab) => {
-                const isActive = activeFilter === tab.key;
-                return (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    onClick={() => setActiveFilter(tab.key)}
-                    className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all duration-200 flex items-center justify-between gap-1.5 cursor-pointer border ${
-                      isActive
-                        ? 'bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 text-white border-pink-400 shadow-md shadow-pink-500/30 scale-[1.02]'
-                        : 'bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white border-white/15'
-                    }`}
-                  >
-                    <span className="truncate">{tab.labelVi}</span>
-                    {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* PHẦN 4: THỐNG KÊ VÀ HÀNH ĐỘNG TƯƠNG TÁC */}
-          <div className="relative z-10 pt-2 border-t border-white/15 flex flex-col gap-1.5 shrink-0">
-            <div className="grid grid-cols-2 gap-1.5">
-              <button
-                type="button"
-                onClick={togglePlay}
-                className="px-2 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-500 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 shadow-md shadow-pink-500/30 transition cursor-pointer active:scale-95"
-              >
-                <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
-                  {isVideoPlaying ? (
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                  ) : (
-                    <polygon points="5 3 19 12 5 21 5 3" />
-                  )}
-                </svg>
-                <span>{isVideoPlaying ? 'Tạm Dừng' : 'Phát Video'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={toggleAudio}
-                className="px-2 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 transition cursor-pointer active:scale-95"
-              >
-                <WebIcon name={isAudioOn ? 'volume' : 'volume-x'} className="w-2.5 h-2.5" />
-                <span>{isAudioOn ? 'Tắt Tiếng' : 'Bật Tiếng'}</span>
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between text-[9px] text-slate-400 font-medium px-0.5">
-              <span>Trực tiếp HD 1080p</span>
-              <span className="text-pink-400 font-bold">14 Phân Cảnh</span>
-            </div>
-          </div>
-        </div>
-      </aside>
 
       {/* 3. VÙNG BÊN PHẢI: THẺ CHI TIẾT CÂU TRẢ LỜI */}
       <div className="w-full lg:w-[350px] xl:w-[380px] shrink-0 flex flex-col h-full overflow-hidden">

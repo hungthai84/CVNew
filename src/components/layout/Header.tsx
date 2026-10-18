@@ -163,7 +163,8 @@ export const Header: React.FC<HeaderProps> = ({
         ref={navRef}
         id="header-center"
         onWheel={handleWheel}
-        className="w-full h-full flex items-center overflow-x-auto no-scrollbar py-[2px] px-2 z-10"
+        className="w-full h-full flex items-center overflow-x-auto no-scrollbar p-[1px] z-10"
+        style={{ padding: '1px' }}
       >
         <div
           ref={containerRef}

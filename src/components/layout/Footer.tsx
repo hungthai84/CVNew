@@ -39,8 +39,10 @@ export const Footer: React.FC<FooterProps> = ({
 
   const [isPageMenuOpen, setIsPageMenuOpen] = useState<boolean>(false);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState<boolean>(false);
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState<boolean>(false);
   const pageMenuContainerRef = useRef<HTMLDivElement>(null);
   const contactContainerRef = useRef<HTMLDivElement>(null);
+  const themeMenuContainerRef = useRef<HTMLDivElement>(null);
 
   // Close popup menus when clicking outside
   useEffect(() => {
@@ -51,14 +53,17 @@ export const Footer: React.FC<FooterProps> = ({
       if (contactContainerRef.current && !contactContainerRef.current.contains(event.target as Node)) {
         setIsContactMenuOpen(false);
       }
+      if (themeMenuContainerRef.current && !themeMenuContainerRef.current.contains(event.target as Node)) {
+        setIsThemeMenuOpen(false);
+      }
     };
-    if (isPageMenuOpen || isContactMenuOpen) {
+    if (isPageMenuOpen || isContactMenuOpen || isThemeMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isPageMenuOpen, isContactMenuOpen]);
+  }, [isPageMenuOpen, isContactMenuOpen, isThemeMenuOpen]);
 
   return (
     <footer
@@ -290,56 +295,29 @@ export const Footer: React.FC<FooterProps> = ({
             </span>
           </button>
 
-          {/* Tiện ích 3: Nút Giao Diện - Click mở Danh sách Giao diện (ThemeSelectorModal) */}
-          <button
-            id="theme-toggle-footer-btn"
-            type="button"
-            onClick={() => {
-              if (onOpenThemeModal) {
-                onOpenThemeModal();
-              } else if (onSelectTheme) {
-                const nextTheme: SiteTheme =
-                  currentTheme === 'dark-neon'
-                    ? 'flat-rainbow'
-                    : currentTheme === 'flat-rainbow'
-                    ? 'light-glass'
-                    : 'dark-neon';
-                onSelectTheme(nextTheme);
-              }
-            }}
-            className="footer-util-btn border -ml-[64px] cursor-pointer"
-            style={{
-              background:
-                currentTheme === 'dark-neon'
-                  ? 'linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.85) 100%)'
-                  : currentTheme === 'flat-rainbow'
-                  ? 'linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, rgba(240, 253, 244, 0.9) 50%, rgba(238, 242, 255, 0.95) 100%)'
-                  : 'linear-gradient(135deg, rgba(245, 243, 255, 0.9) 0%, rgba(254, 243, 199, 0.85) 100%)',
-              borderColor:
-                currentTheme === 'dark-neon'
-                  ? 'rgba(56, 189, 248, 0.5)'
-                  : currentTheme === 'flat-rainbow'
-                  ? 'rgba(236, 72, 153, 0.8)'
-                  : 'rgba(252, 211, 77, 0.8)',
-              color:
-                currentTheme === 'dark-neon'
-                  ? '#38bdf8'
-                  : currentTheme === 'flat-rainbow'
-                  ? '#db2777'
-                  : '#d97706',
-              zIndex: 30,
-            }}
-            title="Tùy chọn giao diện hệ thống (Nhấp để mở danh sách chọn)"
-          >
-            <div
-              className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs"
+          {/* Tiện ích 3: Nút Giao Diện - Click mở Danh sách Giao diện (Icon & Tiêu đề 4 chữ) */}
+          <div ref={themeMenuContainerRef} className="relative -ml-[64px] z-30">
+            <button
+              id="theme-toggle-footer-btn"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsThemeMenuOpen((prev) => !prev);
+              }}
+              className="footer-util-btn border cursor-pointer"
               style={{
                 background:
                   currentTheme === 'dark-neon'
-                    ? 'rgba(56, 189, 248, 0.2)'
+                    ? 'linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.85) 100%)'
                     : currentTheme === 'flat-rainbow'
-                    ? 'rgba(236, 72, 153, 0.2)'
-                    : 'rgba(251, 191, 36, 0.25)',
+                    ? 'linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, rgba(240, 253, 244, 0.9) 50%, rgba(238, 242, 255, 0.95) 100%)'
+                    : 'linear-gradient(135deg, rgba(245, 243, 255, 0.9) 0%, rgba(254, 243, 199, 0.85) 100%)',
+                borderColor:
+                  currentTheme === 'dark-neon'
+                    ? 'rgba(56, 189, 248, 0.5)'
+                    : currentTheme === 'flat-rainbow'
+                    ? 'rgba(236, 72, 153, 0.8)'
+                    : 'rgba(252, 211, 77, 0.8)',
                 color:
                   currentTheme === 'dark-neon'
                     ? '#38bdf8'
@@ -347,29 +325,113 @@ export const Footer: React.FC<FooterProps> = ({
                     ? '#db2777'
                     : '#d97706',
               }}
+              title="Tùy chọn giao diện hệ thống (Nhấp để mở danh sách chọn)"
             >
-              {currentTheme === 'dark-neon' ? (
-                <WebIcon name="moon" className="w-[16px] h-[16px]" />
-              ) : currentTheme === 'flat-rainbow' ? (
-                <WebIcon name="palette" className="w-[16px] h-[16px]" />
-              ) : (
-                <WebIcon name="sun" className="w-[16px] h-[16px]" />
-              )}
-            </div>
-            <span
-              className="text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play"
-              style={{
-                color:
-                  currentTheme === 'dark-neon'
-                    ? '#38bdf8'
-                    : currentTheme === 'flat-rainbow'
-                    ? '#db2777'
-                    : '#d97706',
-              }}
-            >
-              Giao Diện
-            </span>
-          </button>
+              <div
+                className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs"
+                style={{
+                  background:
+                    currentTheme === 'dark-neon'
+                      ? 'rgba(56, 189, 248, 0.2)'
+                      : currentTheme === 'flat-rainbow'
+                      ? 'rgba(236, 72, 153, 0.2)'
+                      : 'rgba(251, 191, 36, 0.25)',
+                  color:
+                    currentTheme === 'dark-neon'
+                      ? '#38bdf8'
+                      : currentTheme === 'flat-rainbow'
+                      ? '#db2777'
+                      : '#d97706',
+                }}
+              >
+                {currentTheme === 'dark-neon' ? (
+                  <WebIcon name="moon" className="w-[16px] h-[16px]" />
+                ) : currentTheme === 'flat-rainbow' ? (
+                  <WebIcon name="palette" className="w-[16px] h-[16px]" />
+                ) : (
+                  <WebIcon name="sun" className="w-[16px] h-[16px]" />
+                )}
+              </div>
+              <span
+                className="text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play"
+                style={{
+                  color:
+                    currentTheme === 'dark-neon'
+                      ? '#38bdf8'
+                      : currentTheme === 'flat-rainbow'
+                      ? '#db2777'
+                      : '#d97706',
+                }}
+              >
+                Giao Diện
+              </span>
+            </button>
+
+            {/* Popup Menu Danh sách Giao diện (Icon & Tiêu đề 4 chữ) */}
+            {isThemeMenuOpen && (
+              <div
+                className="absolute bottom-[calc(100%+14px)] right-0 w-64 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-2xl p-2.5 text-left z-[100] flex flex-col gap-1.5 font-play select-none animate-in fade-in zoom-in-95 duration-150"
+                style={{
+                  boxShadow: '0 20px 45px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.2)',
+                }}
+              >
+                <div className="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-white/10 px-1">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Chọn Giao Diện
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsThemeMenuOpen(false)}
+                    className="w-5 h-5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 flex items-center justify-center cursor-pointer text-xs"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="flex flex-col gap-1">
+                  {THEME_LIST.map((theme) => {
+                    const isSelected = currentTheme === theme.id;
+                    const iconName = theme.icon.toLowerCase();
+                    return (
+                      <button
+                        key={theme.id}
+                        type="button"
+                        onClick={() => {
+                          if (onSelectTheme) {
+                            onSelectTheme(theme.id);
+                          }
+                          setIsThemeMenuOpen(false);
+                          showToast(`Đã chuyển sang ${theme.fourWordName}`);
+                        }}
+                        className={`w-full p-2 rounded-xl border flex items-center justify-between gap-2.5 transition cursor-pointer text-left ${
+                          isSelected
+                            ? 'bg-indigo-50 dark:bg-indigo-950/70 border-indigo-300 dark:border-cyan-400 text-indigo-700 dark:text-cyan-300 font-bold shadow-2xs'
+                            : 'bg-white/70 dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 border-slate-200/60 dark:border-white/10 text-slate-700 dark:text-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span
+                            className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 shadow-2xs"
+                            style={{
+                              background: theme.accentColor + '22',
+                              color: theme.accentColor,
+                            }}
+                          >
+                            <WebIcon name={iconName} className="w-3.5 h-3.5" />
+                          </span>
+                          <span className="text-xs font-bold truncate">
+                            {theme.fourWordName}
+                          </span>
+                        </div>
+                        {isSelected && (
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 shadow-xs" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Tiện ích 4: Avatar Hùng Thái biến đổi hình thái từ pill -> circle -> bay lên + Pure CSS Circle Menu */}
           <div ref={contactContainerRef} className="avatar-circle-menu-container -ml-[64px] z-42">

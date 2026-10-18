@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { DOMAINS_DATA } from '@/data/domains';
 import { DomainData } from '@/types';
+import { WebIcon } from '@/components/ui/WebIcon';
 
 export const DomainsView: React.FC = () => {
   const [filter, setFilter] = useState<string>('all');
@@ -247,8 +248,12 @@ export const DomainsView: React.FC = () => {
               <span className="font-handwriting text-sky-600 font-bold text-xl sm:text-2xl lg:text-3xl leading-tight drop-shadow-xs select-none">
                 Khám phá
               </span>
-              <h2 className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play text-blue-950 tracking-tight leading-tight mt-0.5 drop-shadow-xs select-none">
-                Lĩnh Vực Hoạt Động
+              {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, không đóng khung icon */}
+              <h2 className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play text-blue-950 tracking-tight leading-tight mt-0.5 drop-shadow-xs select-none flex items-center gap-2">
+                <span className="inline-flex animate-banner-icon shrink-0 text-amber-500">
+                  <WebIcon name="globe" className="w-5 h-5 sm:w-6 sm:h-6" />
+                </span>
+                <span>Lĩnh Vực Hoạt Động</span>
               </h2>
               <p className="text-[11px] sm:text-xs md:text-sm font-semibold text-slate-700/95 tracking-normal mt-0.5 drop-shadow-2xs select-none">
                 Học tập không giới hạn – Kiến tạo tương lai
@@ -256,10 +261,16 @@ export const DomainsView: React.FC = () => {
               <div className="w-12 sm:w-16 h-1.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 shadow-xs mt-1.5" />
             </div>
 
-            {/* Khối chữ bên phải: Câu trích dẫn viết tay tiếng Việt Fleur De Leah + Gạch ngang chấm vàng */}
+            {/* Khối chữ bên phải: Câu trích dẫn viết tay tiếng Việt Fleur De Leah có viền line đen */}
             <div className="hidden sm:flex flex-col items-end text-right pointer-events-auto max-w-[48%] lg:max-w-[44%] pt-0.5">
               <div className="p-1 sm:p-1.5 bg-transparent border-none shadow-none flex flex-col items-end">
-                <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+                <p
+                  className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none"
+                  style={{
+                    WebkitTextStroke: '1px #000000',
+                    textShadow: '0 0 2px #000000, 0 2px 5px rgba(0,0,0,0.95)',
+                  }}
+                >
                   “Thực chiến đa ngành kiến tạo giải pháp dịch vụ xuất sắc.”
                 </p>
                 <div className="w-24 sm:w-32 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent relative mt-1.5 flex items-center justify-center">
@@ -362,22 +373,45 @@ export const DomainsView: React.FC = () => {
           <div className="w-full h-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-[15px] items-stretch">
             {filteredDomains.map((domain) => {
               const cfg = getCardVisualConfig(domain.id);
+              // Card "Dịch Vụ Viễn Thông" (id 01): nền trong suốt 100%, bỏ toàn bộ hiệu ứng
+              const isPlainCard = domain.id === '01';
               return (
                 <div
                   key={domain.id}
                   onClick={() => setSelectedDomain(domain)}
                   onMouseEnter={() => setHoveredCardId(domain.id)}
                   onMouseLeave={() => setHoveredCardId(null)}
-                  style={{ background: cfg.cardBg }}
-                  className={`theme-pastel-card rounded-[20px] px-4 py-2.5 border ${cfg.cardBorder} shadow-[0_10px_26px_-4px_rgba(15,23,42,0.12),0_4px_10px_-2px_rgba(15,23,42,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)] hover:shadow-[0_24px_50px_-8px_rgba(15,23,42,0.24),0_12px_24px_-4px_rgba(15,23,42,0.12),inset_0_1px_2px_rgba(255,255,255,1)] hover:-translate-y-2 hover:scale-[1.018] active:scale-[0.985] cursor-pointer group/card overflow-hidden relative transition-all duration-300 ease-out flex flex-col justify-between h-full min-h-0 text-left`}
+                  style={
+                    isPlainCard
+                      ? {
+                          background: 'transparent',
+                          boxShadow: 'none',
+                          backdropFilter: 'none',
+                          WebkitBackdropFilter: 'none',
+                          transform: 'none',
+                          transition: 'none',
+                          animation: 'none',
+                          filter: 'none',
+                        }
+                      : { background: cfg.cardBg }
+                  }
+                  className={
+                    isPlainCard
+                      ? 'rounded-[20px] px-4 py-2.5 border border-transparent bg-transparent shadow-none cursor-pointer group/card overflow-hidden relative flex flex-col justify-between h-full min-h-0 text-left'
+                      : `theme-pastel-card rounded-[20px] px-4 py-2.5 border ${cfg.cardBorder} shadow-[0_10px_26px_-4px_rgba(15,23,42,0.12),0_4px_10px_-2px_rgba(15,23,42,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)] hover:shadow-[0_24px_50px_-8px_rgba(15,23,42,0.24),0_12px_24px_-4px_rgba(15,23,42,0.12),inset_0_1px_2px_rgba(255,255,255,1)] hover:-translate-y-2 hover:scale-[1.018] active:scale-[0.985] cursor-pointer group/card overflow-hidden relative transition-all duration-300 ease-out flex flex-col justify-between h-full min-h-0 text-left`
+                  }
                   title="Bấm để xem chi tiết đầy đủ"
                 >
                   {/* Soft ambient background sampled directly from descriptive illustration surroundings */}
-                  <div
-                    className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full pointer-events-none transition-all duration-500 opacity-75 group-hover/card:opacity-100 group-hover/card:scale-120 blur-2xl"
-                    style={{ background: cfg.ambientGlow }}
-                  />
-                  <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-white/60 blur-xl pointer-events-none group-hover/card:scale-125 transition-transform duration-500" />
+                  {!isPlainCard && (
+                    <>
+                      <div
+                        className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full pointer-events-none transition-all duration-500 opacity-75 group-hover/card:opacity-100 group-hover/card:scale-120 blur-2xl"
+                        style={{ background: cfg.ambientGlow }}
+                      />
+                      <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-white/60 blur-xl pointer-events-none group-hover/card:scale-125 transition-transform duration-500" />
+                    </>
+                  )}
 
                   {/* Top & Middle Section: Left Content (6 cols) + Right 2x 3D Illustration (6 cols) */}
                   <div className="relative z-10 grid grid-cols-12 gap-2 items-center flex-1 min-h-0">

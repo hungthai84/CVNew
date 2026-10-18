@@ -48,8 +48,8 @@ export const HoroscopeView: React.FC = () => {
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Zodiac Synergy Tab / Interactive Lookup State
-  const [selectedZodiacId, setSelectedZodiacId] = useState<string>('than');
+  // Zodiac Synergy Tab / Interactive Lookup State (Mặc định null: không hiển thị nội dung tra cứu)
+  const [selectedZodiacId, setSelectedZodiacId] = useState<string | null>(null);
   const [searchYearInput, setSearchYearInput] = useState<string>('');
   const [zodiacFilterTier, setZodiacFilterTier] = useState<string>('all');
 
@@ -87,10 +87,8 @@ export const HoroscopeView: React.FC = () => {
 
   // Memoize active zodiac data
   const currentZodiac = useMemo(() => {
-    return (
-      ZODIAC_SYNERGY_LIST.find((z) => z.id === selectedZodiacId) ||
-      ZODIAC_SYNERGY_LIST[0]
-    );
+    if (!selectedZodiacId) return null;
+    return ZODIAC_SYNERGY_LIST.find((z) => z.id === selectedZodiacId) || null;
   }, [selectedZodiacId]);
 
   // Handle year search
@@ -983,8 +981,8 @@ export const HoroscopeView: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Grid 12 Con Giáp (3 cột) */}
-                <div className="grid grid-cols-3 gap-1 shrink-0 p-0.5">
+                {/* Danh sách 12 Con Giáp: Hiển thị 1 cột duy nhất theo yêu cầu */}
+                <div className="flex flex-col gap-1 shrink-0 p-0.5 max-h-[220px] overflow-y-auto no-scrollbar">
                   {filteredZodiacList.map((item) => {
                     const isSelected = selectedZodiacId === item.id;
                     const theme = getZodiacTheme(item.tier);
@@ -993,15 +991,17 @@ export const HoroscopeView: React.FC = () => {
                         key={item.id}
                         type="button"
                         onClick={() => setSelectedZodiacId(item.id)}
-                        className={`p-1 rounded-lg flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer border ${
+                        className={`p-1.5 px-2 rounded-lg flex items-center justify-between text-left transition-all duration-200 cursor-pointer border ${
                           isSelected ? theme.bgSelected : `${theme.bgUnselected} hover:brightness-105`
                         }`}
                       >
-                        <span className="text-base leading-none">{item.icon}</span>
-                        <span className="text-[9.5px] font-bold text-slate-900 dark:text-white mt-0.5 truncate max-w-full">
-                          {item.nameVi}
-                        </span>
-                        <span className={`text-[8px] font-mono font-black px-1 rounded-xs mt-0.5 ${theme.badge}`}>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-base leading-none shrink-0">{item.icon}</span>
+                          <span className="text-[10px] font-bold text-slate-900 dark:text-white truncate">
+                            Tuổi {item.nameVi} ({item.animalVi})
+                          </span>
+                        </div>
+                        <span className={`text-[8.5px] font-mono font-black px-1.5 py-0.2 rounded-xs shrink-0 ${theme.badge}`}>
                           {item.score.split(' ')[0]}
                         </span>
                       </button>

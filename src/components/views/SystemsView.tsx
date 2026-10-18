@@ -228,19 +228,10 @@ export const SystemsView: React.FC = () => {
         <div className="flex-1 min-h-0 flex flex-col gap-[12px] h-full overflow-hidden">
           {/* Thanh điều khiển: Nút lọc danh mục & Hộp tìm kiếm */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 w-full shrink-0">
-            {/* Thống kê phân hệ & Trạng thái */}
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 font-bold text-xs flex items-center gap-1.5 shadow-2xs">
-                <WebIcon name="layers" className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                <span>12 Phân Hệ Vận Hành C-Level</span>
-              </span>
-              <span className="text-[11.5px] text-slate-500 dark:text-slate-400 font-medium hidden sm:inline">
-                Hiển thị: <strong className="text-indigo-600 dark:text-indigo-400 font-bold">{filteredSystems.length}</strong> / 12 phân hệ
-              </span>
-            </div>
+            {/* Khối "12 Phân Hệ Vận Hành C-Level" đã chuyển vào banner bên phải */}
 
             {/* Real-time Search Box */}
-            <div className="relative w-full sm:w-64 md:w-72">
+            <div className="relative w-full">
               <svg
                 className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                 fill="none"
@@ -360,24 +351,18 @@ export const SystemsView: React.FC = () => {
               background: 'linear-gradient(160deg, #0f172a 0%, #1e1b4b 45%, #0c4a6e 100%)',
             }}
           >
-            {/* Background Video with Poster fallback (Hình nền sáng rõ, sắc nét) */}
+            {/* Background Video: banner dọc dùng link video banner Dự Án (hình nền sáng rõ) */}
             <video
               autoPlay
               loop
               muted
               playsInline
-              poster="/images/domains/hero-banner.webp"
-              className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none opacity-85 brightness-[1.10] contrast-[1.08] group-hover/banner:scale-105 transition-transform duration-700"
-            >
-              <source src="/videos/domains-banner.mp4" type="video/mp4" />
-              <source
-                src="https://cdn.scena.ai/project/10169/e07c498cfd5e7e1a0a537b3f12eeaaf42cb878f5300f99d73c9b02a7aa05efce.mp4"
-                type="video/mp4"
-              />
-            </video>
+              src="https://cdn.scena.ai/project/10223/cc106cb37b8d219cca59af9a71a4d7a8cd019515a3e9a8282d16909bb21d88b9.mp4"
+              className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none brightness-[1.10] contrast-[1.08] group-hover/banner:scale-105 transition-transform duration-700"
+            />
 
             {/* Dark Ambient Overlay nhẹ mỏng để lộ rõ hình nền sống động */}
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/75 via-slate-950/30 to-slate-950/80 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/55 via-transparent to-slate-950/65 pointer-events-none" />
 
             {/* Ambient Watermark */}
             <div className="card-watermark opacity-15 pointer-events-none -right-4 -bottom-6">
@@ -396,8 +381,12 @@ export const SystemsView: React.FC = () => {
                 </div>
               </div>
 
-              <h2 className="text-base sm:text-lg font-black font-play text-white tracking-tight leading-snug drop-shadow-xs">
-                Kiến Trúc Hệ Thống & Tự Động Hóa
+              {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, không đóng khung icon */}
+              <h2 className="text-base sm:text-lg font-black font-play text-white tracking-tight leading-snug drop-shadow-xs flex items-center gap-2">
+                <span className="inline-flex animate-banner-icon shrink-0 text-sky-400">
+                  <WebIcon name="layers" className="w-5 h-5" />
+                </span>
+                <span>Kiến Trúc Hệ Thống</span>
               </h2>
               <p className="text-[10.5px] font-medium text-slate-200 leading-tight">
                 PowerService – Hạ tầng số hoá tập trung 12 phân hệ quản trị
@@ -406,39 +395,46 @@ export const SystemsView: React.FC = () => {
               {/* Decorative Amber Accent Line */}
               <div className="w-12 h-1 rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-amber-300 shadow-xs" />
 
-              {/* Quote Block Fleur De Leah */}
+              {/* Quote Block Fleur De Leah có viền line đen */}
               <div className="pt-1 bg-transparent border-none shadow-none">
-                <p className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+                <p
+                  className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight select-none"
+                  style={{
+                    WebkitTextStroke: '1px #000000',
+                    textShadow: '0 0 2px #000000, 0 2px 6px rgba(0,0,0,0.95)',
+                  }}
+                >
                   “Số hóa quy trình – Tự động hóa vận hành toàn diện.”
                 </p>
-                <span className="text-[10px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
+                <span
+                  className="text-[10px] font-bold text-amber-200 mt-0.5 block tracking-wider font-play"
+                  style={{
+                    WebkitTextStroke: '0.4px #000000',
+                    textShadow: '0 1px 3px rgba(0,0,0,0.9)',
+                  }}
+                >
                   — Nguyễn Hùng Thái
                 </span>
               </div>
             </div>
 
-            {/* PHẦN 2: ARCHITECT ROW & VIDEO DEMO PREVIEW */}
+            {/* KHỐI 12 PHÂN HỆ VẬN HÀNH C-LEVEL CHUYỂN VÀO BANNER (ĐÃ XÓA KHỐI ARCHITECT NGUYỄN HÙNG THÁI) */}
             <div className="relative z-10 my-2 flex flex-col gap-2 shrink-0">
-              {/* Architect Row */}
-              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm">
-                <div className="relative w-10 h-10 rounded-xl overflow-hidden ring-1 ring-sky-300/50 shadow-md shrink-0 bg-slate-900">
-                  <img
-                    src="https://i.ibb.co/RT3jX4Mv/H-ng-Th-i-Avata-Gif.gif"
-                    alt="Kiến Trúc Sư"
-                    className="w-full h-full object-cover"
-                  />
+              <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/15 border border-white/20 backdrop-blur-md shadow-xs">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-500/30 border border-indigo-400/40 text-indigo-300 flex items-center justify-center shrink-0 shadow-2xs">
+                    <WebIcon name="layers" className="w-4 h-4 text-indigo-200" />
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[11px] font-bold text-white tracking-wide truncate">
+                      12 Phân Hệ Vận Hành C-Level
+                    </span>
+                    <span className="text-[9.5px] text-slate-300 truncate">
+                      Hiển thị: <strong className="text-cyan-300 font-bold">{filteredSystems.length}</strong> / 12 phân hệ
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col min-w-0">
-                  <span className="text-xs font-black font-play text-white truncate tracking-wide">
-                    Nguyễn Hùng Thái
-                  </span>
-                  <span className="text-[10px] font-bold text-sky-200 truncate">
-                    Kiến Trúc Sư Hệ Thống CX
-                  </span>
-                  <span className="text-[9px] text-slate-300 truncate">
-                    Enterprise Suite · 12 Phân hệ
-                  </span>
-                </div>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
               </div>
 
               {/* Video Demo Frame */}

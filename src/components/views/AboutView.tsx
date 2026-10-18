@@ -215,18 +215,10 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact }) => {
 
           {/* 2. MAIN CONTENT VÙNG BÊN PHẢI (HERO PORTRAIT VIDEO + THÔNG TIN CÁ NHÂN) */}
           <div className="flex-1 min-w-0 grid grid-cols-1 lg:grid-cols-12 gap-[15px] items-stretch">
-            {/* Left Column: Hero Portrait Video Card (7 Cols) */}
-            <div className="lg:col-span-7 relative flex flex-col">
-              {/* Ribbon Tag on Top Left */}
-              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-[999px] bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold shadow-md shadow-blue-500/25 mb-2 self-start z-10">
-                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
-                </svg>
-                <span>22+ Năm kinh nghiệm CX & CS</span>
-              </div>
-
-              {/* Hero Image Container */}
-              <div className="relative w-full rounded-3xl overflow-hidden border border-white/80 dark:border-white/10 shadow-lg bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 aspect-[16/9] sm:aspect-[16/9.5] flex items-center justify-center group">
+            {/* Left Column: Hero Portrait Video Card (5 Cols in 9:16 portrait layout) */}
+            <div className="lg:col-span-5 relative flex flex-col items-center justify-center">
+              {/* Hero Image Container: Chuẩn 9:16 chiều dọc */}
+              <div className="relative w-full max-w-[340px] rounded-3xl overflow-hidden border border-white/80 dark:border-white/10 shadow-lg bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 aspect-[9/16] flex items-center justify-center group">
                 {/* Video 1: Idle Video (Autoplay loop muted) */}
                 <video
                   src={IDLE_VIDEO_URL}
@@ -248,16 +240,16 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact }) => {
                 />
 
                 {/* Overlaid Clickable Elements aligned with mockup */}
-                {/* 1. Metric Top-Left: Kinh nghiệm CX & CS */}
-                <div className="absolute top-3.5 left-3.5 z-20 bg-white/95 dark:bg-slate-900/90 backdrop-blur-md border border-white/90 dark:border-white/10 p-2 sm:p-2.5 rounded-2xl shadow-lg flex items-center gap-2 hover:scale-105 transition cursor-default">
-                  <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-                    <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2.4" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                {/* Metric Top-Right: Quy mô lớn */}
+                <div className="absolute top-3.5 right-3.5 z-20 bg-white/95 dark:bg-slate-900/90 backdrop-blur-md border border-white/90 dark:border-white/10 p-2 sm:p-2.5 rounded-2xl shadow-lg flex items-center gap-2 hover:scale-105 transition cursor-default">
+                  <div className="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                    <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   </div>
                   <div className="text-left">
-                    <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block leading-tight">Kinh nghiệm CX & CS</span>
-                    <span className="text-sm sm:text-base font-black text-blue-700 dark:text-blue-400 tracking-tight leading-none">22+ Năm</span>
+                    <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block leading-tight">Quy mô lớn</span>
+                    <span className="text-sm sm:text-base font-black text-purple-700 dark:text-purple-400 tracking-tight leading-none">8+ Môi trường</span>
                   </div>
                 </div>
 
@@ -325,8 +317,8 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact }) => {
               </div>
             </div>
 
-            {/* Right Column: Personal Information Card (5 Cols) */}
-            <div className={`lg:col-span-5 rounded-3xl p-5 flex flex-col justify-between text-left ${getGlassCardClass()}`}>
+            {/* Right Column: Personal Information Card (7 Cols) */}
+            <div className={`lg:col-span-7 rounded-3xl p-5 flex flex-col justify-between text-left ${getGlassCardClass()}`}>
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2.5">
@@ -472,9 +464,9 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact }) => {
 
           {/* 3 COLUMNS SECTION (BẢN THÂN - BA TRỤ CỘT - TRIẾT LÝ & TẦM NHÌN) */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-[15px] items-stretch w-full text-left">
-            {/* Column 1: Giới thiệu bản thân tôi */}
-            <div className={`rounded-3xl p-5 sm:p-6 flex flex-col justify-between ${getGlassCardClass()}`}>
-              <div className="space-y-4">
+            {/* Column 1: Giới thiệu bản thân tôi (Tự co giãn card và sub-card tối ưu khoảng trắng) */}
+            <div className={`rounded-3xl p-5 sm:p-6 flex flex-col justify-between h-auto min-h-full transition-all duration-300 ${getGlassCardClass()}`}>
+              <div className="space-y-4 flex-1">
                 {/* Header */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                   <div className="flex items-center gap-3">
@@ -507,8 +499,8 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact }) => {
                 </p>
               </div>
 
-              {/* Bottom Highlight Box: Giá trị cốt lõi */}
-              <div className="mt-5 p-4 rounded-2xl bg-[#FFF9EE] dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 shadow-xs flex flex-col gap-2">
+              {/* Bottom Highlight Box: Giá trị cốt lõi (Tự co giãn theo kích thước nội dung) */}
+              <div className="mt-4 p-4 rounded-2xl bg-[#FFF9EE] dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 shadow-xs flex flex-col gap-2 shrink-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center font-serif text-xs font-bold">
@@ -519,7 +511,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact }) => {
                   <span className="text-amber-400 font-bold tracking-widest text-xs">•••</span>
                 </div>
 
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed mt-1">
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed mt-0.5">
                   Tôi tin rằng sự hài lòng không đến từ sự hoàn hảo tuyệt đối, mà đến từ sự{' '}
                   <span className="text-rose-600 dark:text-rose-400 font-bold">tận tâm kịp thời</span> và{' '}
                   <span className="text-rose-600 dark:text-rose-400 font-bold">đồng cảm chân thành</span>.

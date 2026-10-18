@@ -324,32 +324,32 @@ export const SkillsView: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Skill Items: Thẻ Bento Grid Smart Adaptive co giãn theo nội dung, không cắt chữ */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 pt-1.5 flex-1 items-stretch">
+                  {/* Skill Items: Chuyển thành dạng danh sách 1 cột có icon trước mỗi kỹ năng, thêm % */}
+                  <div className="flex flex-col gap-1.5 pt-1.5 flex-1 justify-between">
                     {card.items.map((item) => (
                       <div
                         key={item.name}
-                        className="p-2 sm:p-2.5 rounded-xl sm:rounded-[14px] bg-slate-50/90 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/70 dark:border-white/10 shadow-2xs hover:shadow-sm transition-all duration-200 flex flex-col justify-between gap-1.5 group/item hover:-translate-y-0.5 min-w-0"
+                        className="p-1.5 sm:p-2 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/70 dark:border-white/10 shadow-2xs hover:shadow-xs transition-all duration-200 flex flex-col justify-between gap-1 group/item min-w-0"
                       >
-                        <div className="flex items-start justify-between gap-1.5 min-w-0">
-                          <div className="flex items-start gap-1.5 min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2 min-w-0">
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
                             <span
-                              className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 shadow-2xs mt-0.5"
+                              className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 shadow-2xs"
                               style={{
                                 background: `${card.accentColor}18`,
                                 color: card.accentColor,
                               }}
                             >
-                              <WebIcon name={item.icon} className="w-3 h-3" />
+                              <WebIcon name={item.icon} className="w-3.5 h-3.5" />
                             </span>
-                            <span className="text-[11px] sm:text-[11.5px] font-bold text-slate-800 dark:text-slate-100 break-words [overflow-wrap:anywhere] leading-snug">
+                            <span className="text-[11px] sm:text-[11.5px] font-bold text-slate-800 dark:text-slate-100 truncate">
                               {item.name}
                             </span>
                           </div>
                           <span
-                            className="text-[10px] sm:text-[10.5px] font-mono font-black shrink-0 px-1.5 py-0.2 rounded shadow-2xs mt-0.5"
+                            className="text-[10px] sm:text-[11px] font-mono font-black shrink-0 px-2 py-0.5 rounded shadow-2xs"
                             style={{
-                              background: `${card.accentColor}14`,
+                              background: `${card.accentColor}18`,
                               color: card.accentColor,
                             }}
                           >
@@ -358,7 +358,7 @@ export const SkillsView: React.FC = () => {
                         </div>
 
                         {/* Mini bar */}
-                        <div className="w-full h-1 bg-slate-200/70 dark:bg-white/10 rounded-full overflow-hidden mt-1">
+                        <div className="w-full h-1 bg-slate-200/70 dark:bg-white/10 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full bg-gradient-to-r ${card.barGradient}`}
                             style={{ width: `${item.percent}%` }}

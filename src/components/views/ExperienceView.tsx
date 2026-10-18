@@ -52,6 +52,9 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Nhân viên CSKH',
       headcountLabel: '12 Nhân sự',
       logo: 'https://i.ibb.co/hxHm9TsZ/Mobifone.png',
+      products: [
+        { name: 'MobiFone', icon: 'https://i.ibb.co/hxHm9TsZ/Mobifone.png' },
+      ],
       badgeBg: 'linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)',
       badgeColor: '#4f46e5',
       cardBg: 'linear-gradient(180deg, #f5f7ff 0%, #ffffff 55%, #eef2ff 100%)',
@@ -68,6 +71,9 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Trưởng nhóm CSKH / Giám sát (Supervisor)',
       headcountLabel: '12 Nhân sự',
       logo: 'https://i.ibb.co/QvtbdnfP/V247.png',
+      products: [
+        { name: 'Call 247', icon: 'https://i.ibb.co/QvtbdnfP/V247.png' },
+      ],
       badgeBg: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
       badgeColor: '#8b5cf6',
       cardBg: 'linear-gradient(180deg, #faf5ff 0%, #ffffff 55%, #f3e8ff 100%)',
@@ -84,6 +90,10 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Trưởng Phòng CSKH',
       headcountLabel: '12 Nhân sự',
       logo: 'https://i.ibb.co/R4YXWyzF/LBC.png',
+      products: [
+        { name: 'LBC', icon: 'https://i.ibb.co/R4YXWyzF/LBC.png' },
+        { name: 'HTVC', icon: 'https://i.ibb.co/1fNw0hBq/HTVC.png' },
+      ],
       badgeBg: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
       badgeColor: '#10b981',
       cardBg: 'linear-gradient(180deg, #ecfdf5 0%, #ffffff 55%, #d1fae5 100%)',
@@ -99,7 +109,13 @@ export const ExperienceView: React.FC = () => {
       shortName: 'VED (GARENA/SHOPEE...)',
       roleSummary: 'Trưởng Phòng CSKH',
       headcountLabel: '130 Nhân sự',
-      logo: 'https://i.ibb.co/BSVS4xf/Shopee.png',
+      logo: 'https://i.ibb.co/fYPJLfbw/VED.png',
+      products: [
+        { name: 'Garena', icon: 'https://i.ibb.co/h1Md65yV/Garena.png' },
+        { name: 'Shopee', icon: 'https://i.ibb.co/BSVS4xf/Shopee.png' },
+        { name: 'AirPay', icon: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png' },
+        { name: 'GCafe', icon: 'https://i.ibb.co/FkWk3s4W/GCafe.png' },
+      ],
       badgeBg: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
       badgeColor: '#ea580c',
       cardBg: 'linear-gradient(180deg, #fff7ed 0%, #fffbf7 50%, #ffedd5 100%)',
@@ -116,6 +132,9 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Trưởng Phòng CallCenter',
       headcountLabel: '12 Nhân sự',
       logo: 'https://i.ibb.co/XfpQphWF/Prudential.png',
+      products: [
+        { name: 'Prudential', icon: 'https://i.ibb.co/XfpQphWF/Prudential.png' },
+      ],
       badgeBg: 'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)',
       badgeColor: '#f43f5e',
       cardBg: 'linear-gradient(180deg, #fff1f2 0%, #ffffff 55%, #ffe4e6 100%)',
@@ -132,6 +151,9 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Trưởng Phòng CSKH',
       headcountLabel: '60 Nhân sự',
       logo: 'https://i.ibb.co/k2QtrgTw/Momo.png',
+      products: [
+        { name: 'Ví MoMo', icon: 'https://i.ibb.co/k2QtrgTw/Momo.png' },
+      ],
       badgeBg: 'linear-gradient(135deg, #f472b6 0%, #db2777 100%)',
       badgeColor: '#ec4899',
       cardBg: 'linear-gradient(180deg, #fdf2f8 0%, #ffffff 55%, #fce7f3 100%)',
@@ -148,6 +170,10 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Trưởng Phòng CSKH',
       headcountLabel: '17 Nhân sự',
       logo: 'https://i.ibb.co/7NtSSz4d/Finviet.png',
+      products: [
+        { name: 'Finviet', icon: 'https://i.ibb.co/7NtSSz4d/Finviet.png' },
+        { name: 'ECO SCC', icon: 'https://i.ibb.co/cSXPhWcp/Finviet.png' },
+      ],
       badgeBg: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
       badgeColor: '#f59e0b',
       cardBg: 'linear-gradient(180deg, #fffbeb 0%, #ffffff 55%, #fef3c7 100%)',
@@ -164,6 +190,9 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Head of CS / CS Director',
       headcountLabel: '100 Nhân sự',
       logo: 'https://i.ibb.co/G4QnNzWb/Power-Service.png',
+      products: [
+        { name: 'Power Service', icon: 'https://i.ibb.co/G4QnNzWb/Power-Service.png' },
+      ],
       badgeBg: 'linear-gradient(135deg, #60a5fa 0%, #2563eb 100%)',
       badgeColor: '#3b82f6',
       cardBg: 'linear-gradient(180deg, #eff6ff 0%, #ffffff 55%, #dbeafe 100%)',
@@ -434,6 +463,28 @@ export const ExperienceView: React.FC = () => {
                           {item.roleSummary}
                         </p>
                       </div>
+
+                      {/* Khối icon sản phẩm chuyển vào trong card (Phạm vi: Áp dụng toàn bộ 2003 - 2026+) */}
+                      {item.products && item.products.length > 0 && (
+                        <div
+                          className="w-full flex items-center justify-center gap-1 py-0.5 px-0.5 shrink-0 flex-wrap"
+                          title={`Sản phẩm: ${item.products.map((p) => p.name).join(', ')}`}
+                        >
+                          {item.products.map((prod, pIdx) => (
+                            <div
+                              key={pIdx}
+                              title={prod.name}
+                              className="w-5 h-5 rounded-full overflow-hidden bg-white shadow-2xs border border-slate-200/90 flex items-center justify-center p-0.5 transition-transform duration-200 hover:scale-115 shrink-0"
+                            >
+                              <img
+                                src={prod.icon}
+                                alt={prod.name}
+                                className="w-full h-full object-contain rounded-full block"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
                       {/* Headcount Pill at Bottom */}
                       <div className="w-full pt-0.5 shrink-0">
