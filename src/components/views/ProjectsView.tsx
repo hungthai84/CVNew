@@ -94,11 +94,24 @@ const PROJECT_CARD_GROUPS: ProjectCardGroup[] = [
   },
 ];
 
+const PROJECT_CATEGORIES = [
+  { key: 'all', label: 'Tất cả (21)', icon: 'globe' },
+  { key: 'strategy', label: '1. Chiến lược (2)', icon: 'compass' },
+  { key: 'sop', label: '2. Chuẩn hóa SOP (5)', icon: 'shield' },
+  { key: 'cx', label: '3. Trải nghiệm CX (4)', icon: 'sparkles' },
+  { key: 'tech', label: '4. Công nghệ & AI (4)', icon: 'database' },
+  { key: 'learning', label: '5. Đào tạo (6)', icon: 'graduation' },
+];
+
 export const ProjectsView: React.FC = () => {
   const [filter, setFilter] = useState<string>('all');
   const [selectedGroup, setSelectedGroup] = useState<ProjectCardGroup | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<ProjectData | null>(null);
   const [mindmapProject, setMindmapProject] = useState<ProjectData | null>(null);
+  // Trạng thái thu gọn danh mục dự án trong banner (Mặc định thu gọn lại, khi bấm vào sẽ hiện ra)
+  const [isCategoryOpen, setIsCategoryOpen] = useState<boolean>(false);
+  // Trạng thái thu gọn toàn bộ banner dự án
+  const [isBannerCollapsed, setIsBannerCollapsed] = useState<boolean>(false);
 
   // Visual theme config per card matching DomainsView & SkillsView
   const getCardVisualConfig = (visualId: string) => {
@@ -209,100 +222,177 @@ export const ProjectsView: React.FC = () => {
         selectedGroup || selectedArticle ? 'overflow-y-auto no-scrollbar pb-2' : 'overflow-hidden'
       }`}
     >
-      {/* 1. VERTICAL HERO BANNER BÊN TRÁI (Banner Chiều Dọc Bên Trái) */}
-      <div
-        id="projects-vertical-banner"
-        className="w-full lg:w-[280px] xl:w-[300px] shrink-0 h-[220px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-col justify-between p-4 sm:p-5 border border-purple-200/90 shadow-md bg-purple-950/80 text-white group/vertBanner"
-      >
-        {/* Background Video (Hình banner sáng rõ, sống động) */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none brightness-[1.08] contrast-[1.05] transition-transform duration-700 group-hover/vertBanner:scale-105"
-          src="https://cdn.scena.ai/project/10223/cc106cb37b8d219cca59af9a71a4d7a8cd019515a3e9a8282d16909bb21d88b9.mp4"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-slate-950/35 pointer-events-none" />
-
-        {/* Top Content: Badge & Title */}
-        <div className="relative z-10 flex flex-col gap-2">
-          <div className="self-start px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-cyan-300 font-bold text-xs shadow-xs flex items-center gap-1.5">
-            <WebIcon name="sparkles" className="w-3.5 h-3.5" />
-            <span>Dự án</span>
+      {/* 1. VERTICAL HERO BANNER BÊN TRÁI: THU GỌN / MỞ RỘNG */}
+      {isBannerCollapsed ? (
+        <div
+          onClick={() => setIsBannerCollapsed(false)}
+          className="w-full lg:w-[46px] xl:w-[48px] shrink-0 h-[48px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-row lg:flex-col justify-between items-center p-2.5 sm:p-3 border border-purple-300/70 shadow-md bg-purple-950/90 text-white cursor-pointer hover:border-cyan-400 group/collapsedBanner transition-all duration-300 select-none z-10"
+          title="Bấm để mở rộng Banner Danh mục dự án"
+        >
+          <div className="flex items-center gap-2 lg:flex-col lg:gap-3">
+            <div className="w-7 h-7 rounded-lg bg-white/20 text-cyan-300 flex items-center justify-center shrink-0 group-hover/collapsedBanner:scale-110 transition-transform">
+              <WebIcon name="sparkles" className="w-4 h-4 animate-banner-icon" />
+            </div>
+            <span className="text-[11px] font-black text-cyan-200 tracking-wider font-play [writing-mode:horizontal-tb] lg:[writing-mode:vertical-rl] lg:rotate-180 uppercase">
+              Banner Dự Án
+            </span>
           </div>
 
-          <h2 className="text-base sm:text-lg lg:text-xl font-black text-white tracking-tight leading-tight drop-shadow-md">
-            Dự Án Trọng Điểm &amp; Thành Tựu
-          </h2>
-
-          <p className="text-[11px] sm:text-xs text-white/90 font-medium leading-relaxed drop-shadow-sm line-clamp-2 lg:line-clamp-none">
-            21 Dự án thực chiến quy mô lớn – Đo lường KPI &amp; ROI vượt trội
-          </p>
-        </div>
-
-        {/* Middle Content: Quote & Highlights */}
-        <div className="relative z-10 my-auto py-1.5 hidden lg:flex flex-col gap-2.5">
-          <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-inner">
-            <p className="text-xs italic text-white/95 leading-relaxed font-serif">
-              “Thành công của dự án nằm ở sự tỉ mỉ trong từng quy trình.”
-            </p>
-            <p className="text-[11px] font-bold text-cyan-300 mt-1 text-right font-play">
-              — Nguyễn Hùng Thái
-            </p>
-          </div>
-
-          {/* Metric Badges */}
-          <div className="grid grid-cols-2 gap-2">
-            <div className="p-1.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-center">
-              <div className="text-sm font-black text-amber-400">21+</div>
-              <div className="text-[9.5px] text-white/80 font-medium">Dự Án Thực Chiến</div>
-            </div>
-            <div className="p-1.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-center">
-              <div className="text-base font-black text-emerald-400">98%</div>
-              <div className="text-[9.5px] text-white/80 font-medium">SLA Hoàn Thành</div>
-            </div>
+          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/15 border border-white/25 text-[10px] font-extrabold text-cyan-300 group-hover/collapsedBanner:bg-cyan-500 group-hover/collapsedBanner:text-white transition-colors">
+            <span>Mở</span>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
           </div>
         </div>
+      ) : (
+        <div
+          id="projects-vertical-banner"
+          className="w-full lg:w-[280px] xl:w-[300px] shrink-0 h-[220px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-col justify-between p-4 sm:p-5 border border-purple-200/90 shadow-md bg-purple-950/80 text-white group/vertBanner transition-all duration-300"
+        >
+          {/* Background Video (Hình banner sáng rõ, sống động) */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none brightness-[1.08] contrast-[1.05] transition-transform duration-700 group-hover/vertBanner:scale-105"
+            src="https://cdn.scena.ai/project/10223/cc106cb37b8d219cca59af9a71a4d7a8cd019515a3e9a8282d16909bb21d88b9.mp4"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-slate-950/35 pointer-events-none" />
 
-        {/* NHÓM NÚT LỌC CHUYỂN VÀO BANNER (Theo yêu cầu người dùng) */}
-        <div className="relative z-10 flex flex-col gap-1.5 w-full pt-2 border-t border-white/20 shrink-0">
-          <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-200/90 font-black flex items-center justify-between">
-            <span>Danh mục dự án</span>
-            <span className="text-[9px] text-emerald-300 font-mono">21 Dự án</span>
-          </span>
-          <div className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible no-scrollbar pb-0.5">
-            {[
-              { key: 'all', label: 'Tất cả (21)', icon: 'globe' },
-              { key: 'strategy', label: '1. Chiến lược (2)', icon: 'compass' },
-              { key: 'sop', label: '2. Chuẩn hóa SOP (5)', icon: 'shield' },
-              { key: 'cx', label: '3. Trải nghiệm CX (4)', icon: 'sparkles' },
-              { key: 'tech', label: '4. Công nghệ & AI (4)', icon: 'database' },
-              { key: 'learning', label: '5. Đào tạo (6)', icon: 'graduation' },
-            ].map((item) => {
-              const isActive = filter === item.key;
-              return (
-                <button
-                  key={item.key}
-                  type="button"
-                  onClick={() => setFilter(item.key)}
-                  className={`w-full text-left px-2.5 py-1.5 rounded-xl text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center justify-between gap-1.5 active:scale-95 ${
-                    isActive
-                      ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white border-cyan-300 shadow-md shadow-cyan-500/30 scale-[1.02]'
-                      : 'bg-white/10 hover:bg-white/20 text-white/90 border-white/15'
+          {/* Top Content: Badge & Title + Nút Thu Gọn Banner */}
+          <div className="relative z-10 flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-2">
+              <div className="self-start px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-cyan-300 font-bold text-xs shadow-xs flex items-center gap-1.5">
+                <WebIcon name="sparkles" className="w-3.5 h-3.5" />
+                <span>Dự án</span>
+              </div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsBannerCollapsed(true);
+                }}
+                className="px-2 py-0.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/25 text-white/90 hover:text-white text-[10px] font-bold transition flex items-center gap-1 cursor-pointer"
+                title="Bấm để thu gọn banner"
+              >
+                <span>Thu gọn</span>
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            </div>
+
+            <h2 className="text-base sm:text-lg lg:text-xl font-black text-white tracking-tight leading-tight drop-shadow-md">
+              Dự Án Trọng Điểm &amp; Thành Tựu
+            </h2>
+
+            <p className="text-[11px] sm:text-xs text-white/90 font-medium leading-relaxed drop-shadow-sm line-clamp-2 lg:line-clamp-none">
+              21 Dự án thực chiến quy mô lớn – Đo lường KPI &amp; ROI vượt trội
+            </p>
+          </div>
+
+          {/* Middle Content: Quote & Highlights */}
+          <div className="relative z-10 my-auto py-1.5 hidden lg:flex flex-col gap-2.5">
+            <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-inner">
+              <p className="text-xs italic text-white/95 leading-relaxed font-serif">
+                “Thành công của dự án nằm ở sự tỉ mỉ trong từng quy trình.”
+              </p>
+              <p className="text-[11px] font-bold text-cyan-300 mt-1 text-right font-play">
+                — Nguyễn Hùng Thái
+              </p>
+            </div>
+
+            {/* Metric Badges */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-1.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-center">
+                <div className="text-sm font-black text-amber-400">21+</div>
+                <div className="text-[9.5px] text-white/80 font-medium">Dự Án Thực Chiến</div>
+              </div>
+              <div className="p-1.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-center">
+                <div className="text-base font-black text-emerald-400">98%</div>
+                <div className="text-[9.5px] text-white/80 font-medium">SLA Hoàn Thành</div>
+              </div>
+            </div>
+          </div>
+
+          {/* NHÓM NÚT LỌC CHUYỂN VÀO BANNER: THU GỌN LẠI, KHI BẤM VÀO SẼ HIỆN RA */}
+          <div className="relative z-10 flex flex-col gap-1 w-full pt-2 border-t border-white/20 shrink-0">
+            <button
+              type="button"
+              onClick={() => setIsCategoryOpen((prev) => !prev)}
+              className="w-full flex items-center justify-between p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all cursor-pointer text-left group/catBtn"
+              title={isCategoryOpen ? "Thu gọn danh mục dự án" : "Bấm để mở danh mục dự án"}
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-6 h-6 rounded-lg bg-cyan-400/20 text-cyan-300 flex items-center justify-center shrink-0 animate-icon-inplace">
+                  <WebIcon name="layers" className="w-3.5 h-3.5" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-200/90 font-black truncate">
+                    Danh mục dự án
+                  </span>
+                  <span className="text-[10.5px] text-white font-bold truncate">
+                    {PROJECT_CATEGORIES.find((c) => c.key === filter)?.label || 'Tất cả (21)'}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-500/25 text-cyan-200 border border-cyan-400/30 font-mono">
+                  {isCategoryOpen ? 'Thu gọn' : 'Hiện ra'}
+                </span>
+                <svg
+                  className={`w-3.5 h-3.5 text-cyan-300 transition-transform duration-300 ${
+                    isCategoryOpen ? 'rotate-180' : 'rotate-0'
                   }`}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
                 >
-                  <div className="flex items-center gap-1.5 truncate">
-                    <WebIcon name={item.icon} className="w-3.5 h-3.5 shrink-0" />
-                    <span className="truncate">{item.label}</span>
-                  </div>
-                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
-                </button>
-              );
-            })}
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </button>
+
+            {/* Danh sách các danh mục: thu gọn lại, khi bấm vào sẽ hiện ra */}
+            <div
+              className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                isCategoryOpen
+                  ? 'max-h-[300px] opacity-100 mt-1'
+                  : 'max-h-0 opacity-0 pointer-events-none'
+              }`}
+            >
+              <div className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-y-auto no-scrollbar max-h-[200px] pb-0.5">
+                {PROJECT_CATEGORIES.map((item) => {
+                  const isActive = filter === item.key;
+                  return (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => {
+                        setFilter(item.key);
+                      }}
+                      className={`w-full text-left px-2.5 py-1.5 rounded-xl text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center justify-between gap-1.5 active:scale-95 ${
+                        isActive
+                          ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white border-cyan-300 shadow-md shadow-cyan-500/30 scale-[1.02]'
+                          : 'bg-white/10 hover:bg-white/20 text-white/90 border-white/15'
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5 truncate">
+                        <WebIcon name={item.icon} className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">{item.label}</span>
+                      </div>
+                      {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 2. MAIN RIGHT AREA: 21 THẺ DỰ ÁN VỚI HÌNH BANNER LẮP ĐẦY THẺ */}
       <div className="flex-1 min-w-0 h-full flex flex-col gap-2 overflow-hidden">
