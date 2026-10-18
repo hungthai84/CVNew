@@ -40,7 +40,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto flex-grow flex flex-col gap-3.5 sm:gap-4 justify-start text-slate-800 dark:text-slate-100 font-play pb-4 select-none">
+    <div className="w-full h-full flex-1 min-h-0 overflow-y-auto custom-scrollbar flex flex-col gap-3.5 sm:gap-4 justify-start text-slate-800 dark:text-slate-100 font-play max-w-7xl mx-auto pr-1 sm:pr-2 pb-8 select-none">
       {/* ========================================================================= */}
       {/* SECTION 1 (TOP ROW): HERO AI BANNER + THÔNG TIN CÁ NHÂN                    */}
       {/* ========================================================================= */}

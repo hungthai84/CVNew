@@ -303,7 +303,7 @@ export const LetterView: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-full flex-grow flex flex-col gap-[15px] justify-start relative z-10 text-slate-800 dark:text-slate-100 select-none pb-4">
+    <div className="w-full h-full flex-1 min-h-0 overflow-y-auto custom-scrollbar flex flex-col gap-[15px] justify-start relative z-10 text-slate-800 dark:text-slate-100 select-none pr-1 sm:pr-2 pb-8">
       {/* ========================================================================= */}
       {/* CẶP NÚT TRÒN ĐIỀU HƯỚNG SLIDE BÊN TRÁI & PHẢI (CĂN CENTER CHIỀU DỌC)        */}
       {/* ========================================================================= */}
