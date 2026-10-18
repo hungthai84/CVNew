@@ -1,4 +1,27 @@
 import { ProjectData } from '@/types';
+import {
+  article_1_1,
+  article_1_2,
+  article_2_1,
+  article_2_2,
+  article_2_3,
+  article_2_4,
+  article_2_5,
+  article_3_1,
+  article_3_2,
+  article_3_3,
+  article_3_4,
+  article_4_1,
+  article_4_2,
+  article_4_3,
+  article_4_4,
+  article_5_1,
+  article_5_2,
+  article_5_3,
+  article_5_4,
+  article_5_5,
+  article_5_6,
+} from './projectArticles';
 
 export const PROJECTS_DATA: ProjectData[] = [
   // 8.1 - 1.1
@@ -19,234 +42,7 @@ export const PROJECTS_DATA: ProjectData[] = [
     image: "https://i.ibb.co/ymvZmbMM/1-1-X-y-d-ng-Ph-ng-D-ch-v-Kh-ch-h-ng.png",
     mindmap: "https://i.ibb.co/sdxtx0hR/1-1-X-y-d-ng-Ph-ng-D-ch-v-Kh-ch-h-ng.png",
     quote: "Xây dựng nền tảng vận hành vững chắc – Chuẩn hóa hệ thống – Phát triển đội ngũ – Nâng cao trải nghiệm khách hàng.",
-    fullContent: `# 1.1 · Xây dựng và vận hành Phòng Dịch vụ Khách hàng
-
-**Customer Service Department Establishment & Operations Management**
-
-*Xây dựng nền tảng vận hành vững chắc – Chuẩn hóa hệ thống – Phát triển đội ngũ – Nâng cao trải nghiệm khách hàng.*
-
-## 1. Tổng quan dự án
-
-Xây dựng và vận hành Phòng Dịch vụ Khách hàng là dự án quản trị tổng thể nhằm hình thành một bộ phận CSKH có cơ cấu tổ chức rõ ràng, chức năng nhiệm vụ đầy đủ, quy trình vận hành thống nhất và hệ thống đo lường hiệu quả minh bạch.
-
-Dự án không chỉ tập trung vào việc tổ chức tổng đài hay bố trí nhân viên tiếp nhận yêu cầu, mà hướng đến xây dựng một hệ thống dịch vụ có khả năng vận hành ổn định, kiểm soát chất lượng, tối ưu chi phí và thích ứng với sự phát triển của doanh nghiệp.
-
-Với vai trò Trưởng phòng Chăm sóc Khách hàng, trọng tâm là kết nối con người, quy trình, công nghệ và dữ liệu thành một mô hình vận hành thống nhất, trong đó mọi hoạt động đều hướng đến việc giải quyết nhu cầu khách hàng một cách hiệu quả, kịp thời và nhất quán.
-
-## 2. Bối cảnh và bài toán cần giải quyết
-
-Khi doanh nghiệp phát triển về quy mô khách hàng, sản phẩm và kênh giao tiếp, hoạt động CSKH thường đối mặt với nhiều thách thức:
-
-- Cơ cấu tổ chức và trách nhiệm giữa các vị trí chưa được phân định rõ ràng.
-- Quy trình xử lý phụ thuộc vào kinh nghiệm cá nhân, thiếu tính thống nhất và khả năng kế thừa.
-- Lưu lượng tương tác tăng nhưng nguồn lực nhân sự chưa được phân bổ tối ưu.
-- Thông tin khách hàng phân tán trên nhiều hệ thống, gây khó khăn trong việc tra cứu lịch sử và phối hợp xử lý.
-- Chất lượng phục vụ chưa đồng đều giữa nhân viên, nhóm nghiệp vụ và các kênh hỗ trợ.
-- Hệ thống KPI, SLA và báo cáo chưa phản ánh đầy đủ hiệu quả vận hành.
-- Việc phối hợp giữa CSKH với Kinh doanh, Marketing, Công nghệ và các phòng ban liên quan chưa có cơ chế rõ ràng.
-
-Từ thực trạng đó, dự án được định hướng giải quyết đồng thời ba bài toán cốt lõi: **tổ chức đúng, vận hành chuẩn và kiểm soát bằng dữ liệu.**
-
-## 3. Mục tiêu dự án
-
-### 3.1. Mục tiêu tổ chức
-
-- Xây dựng mô hình tổ chức phù hợp với quy mô và định hướng phát triển của doanh nghiệp.
-- Xác định rõ chức năng, nhiệm vụ, quyền hạn và trách nhiệm của từng vị trí.
-- Thiết lập cơ chế phối hợp liên phòng ban và quy trình chuyển cấp xử lý.
-- Phát triển đội ngũ nhân sự có năng lực chuyên môn và tinh thần phục vụ khách hàng.
-
-### 3.2. Mục tiêu vận hành
-
-- Chuẩn hóa quy trình tiếp nhận, phân loại, xử lý và hoàn tất yêu cầu khách hàng.
-- Thiết lập tiêu chuẩn phục vụ, KPI, SLA và cơ chế kiểm soát chất lượng.
-- Tối ưu nguồn lực theo lưu lượng tương tác và nhu cầu thực tế.
-- Tăng khả năng kiểm soát tiến độ, hạn chế tồn đọng và giảm sai sót nghiệp vụ.
-
-### 3.3. Mục tiêu phát triển
-
-- Xây dựng nền tảng để mở rộng quy mô dịch vụ khi doanh nghiệp tăng trưởng.
-- Tạo điều kiện tích hợp CRM, tổng đài, hệ thống báo cáo và tự động hóa.
-- Hình thành văn hóa cải tiến liên tục, lấy trải nghiệm khách hàng làm trọng tâm.
-
-## 4. Phạm vi triển khai và các hạng mục công việc
-
-### Hạng mục 1: Khảo sát và đánh giá hiện trạng
-
-Tiến hành đánh giá toàn diện hoạt động CSKH trước khi thiết kế mô hình vận hành.
-
-Các công việc bao gồm:
-
-- Khảo sát cơ cấu tổ chức, chức năng nhiệm vụ và năng lực nhân sự.
-- Phân tích số lượng khách hàng, lưu lượng tương tác, thời gian phục vụ và khung giờ cao điểm.
-- Rà soát quy trình, kịch bản giao tiếp, phương pháp xử lý khiếu nại và cơ chế phối hợp.
-- Đánh giá hệ thống tổng đài, CRM, cơ sở tri thức và các công cụ hỗ trợ.
-- Phân tích dữ liệu vận hành để xác định điểm nghẽn, rủi ro và cơ hội cải tiến.
-
-**Kết quả đầu ra:** Báo cáo hiện trạng, danh mục vấn đề ưu tiên, phân tích khoảng cách và đề xuất mô hình mục tiêu.
-
-### Hạng mục 2: Thiết kế cơ cấu tổ chức và chức năng nhiệm vụ
-
-Xây dựng cơ cấu phòng ban theo nguyên tắc rõ trách nhiệm, phù hợp nghiệp vụ và thuận tiện trong quản lý.
-
-Các công việc bao gồm:
-
-- Thiết kế sơ đồ tổ chức và tuyến báo cáo.
-- Xác định chức năng của từng nhóm nghiệp vụ.
-- Xây dựng bản mô tả công việc cho quản lý, trưởng nhóm, nhân viên, QA và đào tạo theo nhu cầu thực tế.
-- Thiết lập ma trận phân quyền và trách nhiệm phối hợp.
-- Xác định yêu cầu năng lực cho từng vị trí và phương án nhân sự dự phòng.
-
-Tùy mô hình doanh nghiệp, cơ cấu có thể bao gồm các nhóm tiếp nhận tương tác, xử lý yêu cầu chuyên sâu, quản lý khiếu nại, kiểm soát chất lượng, đào tạo và quản trị dữ liệu.
-
-**Kết quả đầu ra:** Sơ đồ tổ chức, bộ mô tả công việc, ma trận trách nhiệm và định hướng phát triển nhân sự.
-
-### Hạng mục 3: Xây dựng mô hình vận hành CSKH
-
-Thiết kế mô hình hoạt động từ lúc khách hàng phát sinh nhu cầu đến khi vấn đề được giải quyết và kết quả được ghi nhận.
-
-Các công việc bao gồm:
-
-- Xây dựng quy trình tiếp nhận và phân loại yêu cầu.
-- Thiết lập nguyên tắc phân công, chuyển cấp và phối hợp xử lý.
-- Xác định thời hạn phản hồi, thời hạn giải quyết và cơ chế cảnh báo.
-- Xây dựng quy trình xử lý trường hợp phức tạp, khiếu nại nghiêm trọng và sự cố dịch vụ.
-- Thiết lập quy trình bàn giao giữa các ca và theo dõi những yêu cầu chưa hoàn tất.
-- Xây dựng cơ chế báo cáo, giao ban và xử lý vấn đề vượt thẩm quyền.
-
-**Kết quả đầu ra:** Mô hình vận hành, sơ đồ luồng nghiệp vụ, ma trận escalation và cơ chế quản lý yêu cầu xuyên suốt.
-
-### Hạng mục 4: Chuẩn hóa quy trình và tiêu chuẩn phục vụ
-
-Chuyển kinh nghiệm vận hành thành các tiêu chuẩn có thể đào tạo, áp dụng và kiểm tra.
-
-Các công việc bao gồm:
-
-- Xây dựng SOP cho những nghiệp vụ trọng yếu.
-- Chuẩn hóa kịch bản giao tiếp, hướng dẫn xử lý và biểu mẫu nghiệp vụ.
-- Xây dựng tiêu chuẩn xác minh thông tin và bảo vệ dữ liệu khách hàng.
-- Thiết lập checklist kiểm soát chất lượng tương tác.
-- Xác định tiêu chí hoàn tất yêu cầu và phương pháp kiểm tra tuân thủ.
-- Thiết lập quy trình cập nhật tài liệu khi sản phẩm hoặc chính sách thay đổi.
-
-**Kết quả đầu ra:** Bộ SOP, thư viện kịch bản, biểu mẫu, checklist và hệ thống tài liệu nghiệp vụ.
-
-### Hạng mục 5: Hoạch định nhân sự và quản trị hiệu suất
-
-Bảo đảm nguồn lực phù hợp với nhu cầu phục vụ và mục tiêu chất lượng.
-
-Các công việc bao gồm:
-
-- Phân tích lưu lượng tương tác, thời gian xử lý và nhu cầu nhân sự theo từng khung giờ.
-- Xây dựng phương án định biên và lịch làm việc.
-- Thiết lập KPI theo cấp phòng, nhóm và cá nhân.
-- Xây dựng cơ chế theo dõi năng suất, chất lượng và mức độ tuân thủ.
-- Tổ chức họp đánh giá hiệu suất, coaching và cải thiện các chỉ số chưa đạt.
-- Xây dựng kế hoạch tuyển dụng, đào tạo và phát triển đội ngũ kế thừa.
-
-**Kết quả đầu ra:** Kế hoạch định biên, lịch trực, bộ KPI, dashboard hiệu suất và kế hoạch phát triển nhân sự.
-
-### Hạng mục 6: Thiết lập hệ thống công nghệ hỗ trợ
-
-Tổ chức các công cụ cần thiết để hoạt động CSKH được quản lý tập trung và có dữ liệu phục vụ điều hành.
-
-Các công việc bao gồm:
-
-- Xác định yêu cầu sử dụng tổng đài và hệ thống quản lý tương tác.
-- Thiết kế yêu cầu nghiệp vụ CRM để quản lý hồ sơ, lịch sử và trạng thái yêu cầu.
-- Xây dựng phương án kết nối giữa các kênh hỗ trợ.
-- Thiết lập báo cáo vận hành và cơ chế cảnh báo SLA.
-- Chuẩn hóa quyền truy cập, quản lý dữ liệu và phương án dự phòng.
-- Phối hợp kiểm thử, đào tạo và nghiệm thu trước khi vận hành chính thức.
-
-**Kết quả đầu ra:** Bộ yêu cầu công nghệ, quy trình sử dụng hệ thống, danh mục báo cáo và kế hoạch triển khai.
-
-### Hạng mục 7: Đào tạo và đưa vào vận hành
-
-Bảo đảm nhân sự có đủ kiến thức và công cụ để thực hiện công việc theo mô hình mới.
-
-Các công việc bao gồm:
-
-- Đào tạo quy trình, sản phẩm, chính sách và kỹ năng giao tiếp.
-- Tổ chức thực hành tình huống, kiểm tra kiến thức và đánh giá năng lực.
-- Vận hành thử để phát hiện lỗi quy trình và vấn đề hệ thống.
-- Thiết lập cơ chế hỗ trợ nhân viên trong giai đoạn đầu triển khai.
-- Theo dõi chất lượng, tiến độ xử lý và mức độ tuân thủ.
-- Điều chỉnh các điểm chưa phù hợp trước khi chuyển sang vận hành ổn định.
-
-**Kết quả đầu ra:** Kế hoạch đào tạo, kết quả đánh giá năng lực, biên bản nghiệm thu và kế hoạch vận hành chính thức.
-
-## 5. Phương pháp quản trị và triển khai
-
-Dự án được triển khai theo hướng kết hợp quản trị dự án với cải tiến vận hành liên tục.
-
-**Giai đoạn 1 – Khảo sát và xác định yêu cầu:** Thu thập dữ liệu, phỏng vấn các bên liên quan, đánh giá hiện trạng và xác định ưu tiên.
-
-**Giai đoạn 2 – Thiết kế mô hình:** Xây dựng cơ cấu tổ chức, quy trình, tiêu chuẩn chất lượng, hệ thống chỉ số và phương án công nghệ.
-
-**Giai đoạn 3 – Triển khai và kiểm thử:** Phân công trách nhiệm, đào tạo nhân sự, cấu hình hệ thống và kiểm thử các tình huống nghiệp vụ.
-
-**Giai đoạn 4 – Vận hành và kiểm soát:** Theo dõi KPI, SLA, chất lượng tương tác, năng suất và các vấn đề phát sinh.
-
-**Giai đoạn 5 – Đánh giá và cải tiến:** Phân tích nguyên nhân gốc rễ, điều chỉnh quy trình và chuẩn hóa các giải pháp đã chứng minh hiệu quả.
-
-Trong quá trình thực hiện, các bên liên quan cần thống nhất mục tiêu, phạm vi, trách nhiệm, tiêu chí nghiệm thu và cơ chế báo cáo nhằm bảo đảm dự án được triển khai đồng bộ.
-
-## 6. Hệ thống chỉ số đánh giá hiệu quả
-
-Hiệu quả của dự án cần được đo lường bằng các chỉ số phù hợp với mô hình dịch vụ và yêu cầu kinh doanh.
-
-| Nhóm đánh giá | Chỉ số theo dõi |
-|---|---|
-| Khả năng đáp ứng | Service Level, ASA, tỷ lệ cuộc gọi nhỡ |
-| Hiệu quả xử lý | AHT, FCR, tỷ lệ xử lý đúng hạn |
-| Chất lượng dịch vụ | QA Score, tỷ lệ lỗi nghiệp vụ |
-| Trải nghiệm khách hàng | CSAT, NPS, CES |
-| Quản trị tồn đọng | Số yêu cầu tồn, tuổi tồn, tỷ lệ quá SLA |
-| Hiệu quả nguồn lực | Năng suất nhân viên, chi phí trên tương tác |
-| Tuân thủ quy trình | Tỷ lệ hoàn thành đào tạo, tỷ lệ tuân thủ SOP |
-
-Các chỉ số cần có định nghĩa, công thức, nguồn dữ liệu, tần suất đo lường và người chịu trách nhiệm. Mục tiêu cụ thể được thiết lập dựa trên số liệu nền, năng lực nguồn lực và cam kết dịch vụ của doanh nghiệp.
-
-## 7. Vai trò và trách nhiệm quản lý dự án
-
-Trong vai trò Trưởng phòng Chăm sóc Khách hàng, trách nhiệm quản lý tập trung vào:
-
-- **Định hướng:** Xác lập mục tiêu, phạm vi và mô hình tổ chức phù hợp.
-- **Tổ chức:** Phân bổ nguồn lực, giao trách nhiệm và xây dựng cơ chế phối hợp.
-- **Điều hành:** Kiểm soát tiến độ, chất lượng, ngân sách và các rủi ro vận hành.
-- **Kết nối:** Phối hợp với Ban lãnh đạo và các phòng ban liên quan để xử lý các vấn đề liên chức năng.
-- **Phát triển:** Đào tạo, đánh giá và xây dựng đội ngũ có khả năng vận hành độc lập.
-- **Cải tiến:** Sử dụng dữ liệu và phản hồi khách hàng để xác định nguyên nhân và nâng cao hiệu quả.
-- **Duy trì:** Bảo đảm các quy trình, tiêu chuẩn và công cụ tiếp tục được áp dụng sau khi dự án hoàn tất.
-
-## 8. Kết quả và giá trị kỳ vọng
-
-Khi được triển khai đầy đủ và phù hợp với thực tế doanh nghiệp, dự án hướng đến các kết quả:
-
-**Về tổ chức:** Cơ cấu rõ ràng, trách nhiệm minh bạch, giảm chồng chéo và tăng khả năng phối hợp.
-
-**Về vận hành:** Quy trình thống nhất, kiểm soát tốt hơn thời gian xử lý, hạn chế sai sót và nâng cao khả năng đáp ứng.
-
-**Về nhân sự:** Năng lực được chuẩn hóa, hiệu suất được đo lường và hình thành nền tảng phát triển đội ngũ kế thừa.
-
-**Về công nghệ:** Dữ liệu tập trung hơn, tăng khả năng truy xuất lịch sử khách hàng và hỗ trợ điều hành bằng báo cáo.
-
-**Về khách hàng:** Tăng tính nhất quán trong phục vụ, giảm nỗ lực khi tìm kiếm hỗ trợ và cải thiện khả năng giải quyết vấn đề.
-
-**Về doanh nghiệp:** Hình thành nền tảng CSKH có thể mở rộng, kiểm soát chi phí và đóng góp tích cực vào mục tiêu kinh doanh dài hạn.
-
-Các kết quả định lượng cần được xác nhận bằng báo cáo trước và sau triển khai, dữ liệu vận hành hoặc tài liệu nghiệm thu thực tế.
-
-## 9. Quan điểm quản trị
-
-Một Phòng Dịch vụ Khách hàng hoạt động tốt không chỉ được đánh giá bằng số lượng cuộc gọi đã xử lý, mà còn bằng khả năng giải quyết đúng vấn đề, duy trì chất lượng và tạo ra trải nghiệm đáng tin cậy cho khách hàng.
-
-Công nghệ giúp tăng tốc độ. Quy trình tạo ra sự nhất quán. Dữ liệu giúp nhìn thấy vấn đề. Nhưng chính con người và văn hóa phục vụ mới quyết định cách doanh nghiệp đồng hành với khách hàng trong những thời điểm quan trọng.
-
-Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn thành một sơ đồ tổ chức hay ban hành một bộ quy trình, mà là thiết lập một hệ thống có khả năng học hỏi, thích ứng và cải tiến liên tục.
-
-**Thông điệp cốt lõi:** Xây dựng hệ thống để vận hành hiệu quả, phát triển con người để phục vụ tốt hơn và lấy trải nghiệm khách hàng làm nền tảng cho sự phát triển bền vững.`,
+    fullContent: article_1_1,
     star: {
       situation: "Khi doanh nghiệp phát triển về quy mô khách hàng, sản phẩm và kênh giao tiếp, hoạt động CSKH đối mặt nhiều thách thức: cơ cấu tổ chức chưa phân định rõ ràng, quy trình phụ thuộc kinh nghiệm cá nhân, thông tin phân tán, chất lượng phục vụ chưa đồng đều và hệ thống KPI/SLA chưa phản ánh đầy đủ hiệu quả. Dự án được định hướng giải quyết ba bài toán cốt lõi: tổ chức đúng, vận hành chuẩn và kiểm soát bằng dữ liệu.",
       approach: "Triển khai theo hướng kết hợp quản trị dự án với cải tiến vận hành liên tục qua 5 giai đoạn: Giai đoạn 1 – Khảo sát và xác định yêu cầu; Giai đoạn 2 – Thiết kế mô hình; Giai đoạn 3 – Triển khai và kiểm thử; Giai đoạn 4 – Vận hành và kiểm soát; Giai đoạn 5 – Đánh giá và cải tiến.",
@@ -272,6 +68,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "1.2",
     number: "8.2",
     title: "1.2 · Thiết lập mục tiêu phòng ban (Department Objectives & KPI/OKR Alignment)",
+    englishTitle: "Department Objectives & KPI/OKR Alignment",
     groupTitle: "Chiến lược & Cấu trúc Vận hành CSKH",
     groupKey: "strategy",
     description: "Chuẩn hóa bộ chỉ số đo lường hiệu suất cho toàn bộ đội ngũ >100 nhân sự trực tiếp và các đối tác BPO liên quan, kết nối mục tiêu CSKH với mục tiêu kinh doanh chung.",
@@ -283,6 +80,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/jv0GzTdF/1-2-Thi-t-l-p-m-c-ti-u-ph-ng-ban.png",
     mindmap: "https://i.ibb.co/1fNzL0x5/1-2-Thi-t-l-p-m-c-ti-u-ph-ng-ban.png",
     quote: "Mục tiêu rõ ràng, dữ liệu minh bạch, vận hành đột phá.",
+    fullContent: article_1_2,
     star: {
       situation: "Mục tiêu của phòng CSKH phân tán, chưa đồng bộ với mục tiêu kinh doanh chung của công ty; thiếu công cụ theo dõi hiệu suất thời gian thực cho nhân sự. Thách thức cốt lõi là chuyển đổi từ quản lý theo cảm tính sang quản trị bằng dữ liệu, xây dựng bộ KPI/OKR công bằng, đo lường chính xác cả hiệu quả vận hành và chất lượng dịch vụ.",
       approach: "Kết hợp ma trận KPI & OKR: Đồng bộ mục tiêu chiến lược của công ty xuống từng cá nhân, đảm bảo tính minh bạch và theo dõi thời gian thực.",
@@ -305,6 +103,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "3.1",
     number: "8.3",
     title: "3.1 · Nâng cao chất lượng trải nghiệm khách hàng (Customer Experience - CX Design)",
+    englishTitle: "Customer Experience (CX) Design & Journey Mapping",
     groupTitle: "Thiết kế Trải nghiệm Khách hàng (CX Design)",
     groupKey: "cx",
     description: "Thiết kế và đồng bộ bản đồ hành trình khách hàng (CJM) trên toàn bộ hệ thống phục vụ hàng triệu người dùng, liên kết các điểm chạm đứt gãy.",
@@ -316,6 +115,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/wHMFW7f/1-3-N-ng-cao-tr-i-nghi-m-kh-ch-h-ng.png",
     mindmap: "https://i.ibb.co/BkVdp76/1-3-N-ng-cao-tr-i-nghi-m-kh-ch-h-ng.png",
     quote: "Thấu cảm từng điểm chạm, nâng tầm trải nghiệm 5 sao.",
+    fullContent: article_3_1,
     star: {
       situation: "Hành trình khách hàng bị đứt gãy giữa các kênh; khách hàng phải lặp lại thông tin nhiều lần; thiếu cơ chế lắng nghe phản hồi thời gian thực (VoC). Thách thức cốt lõi là xóa bỏ điểm nghẽn trải nghiệm tại các điểm chạm nhạy cảm, giảm tỷ lệ khách hàng bất mãn (Detractor) và tăng chỉ số trung thành thương hiệu.",
       approach: "Thiết kế CJM 6 giai đoạn: Chuẩn hóa điểm chạm kết hợp phân tích cảm xúc lời thoại/văn bản AI Sentiment Analytics và quy trình Closed-Loop.",
@@ -337,6 +137,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "3.2",
     number: "8.4",
     title: "3.2 · Quản lý dự án CSKH (CS Project Management)",
+    englishTitle: "Customer Service Project Management (Agile & Kanban Operations)",
     groupTitle: "Thiết kế Trải nghiệm Khách hàng (CX Design)",
     groupKey: "cx",
     description: "Điều hành trực tiếp các chuỗi dự án cải tiến hạ tầng và quy trình CSKH liên phòng ban theo phương pháp luận Agile/Kanban, kiểm soát tiến độ và khối lượng công việc WIP.",
@@ -348,6 +149,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/0RtGZR9b/1-4-Qu-n-l-d-n-CSKH.png",
     mindmap: "https://i.ibb.co/4ZtQD8gK/1-4-Qu-n-l-d-n-CSKH.png",
     quote: "Điều hành khoa học, tiến độ chuẩn xác, tối ưu giá trị vận hành.",
+    fullContent: article_3_2,
     star: {
       situation: "Các sáng kiến cải tiến dịch vụ thường xuyên trễ hạn, thiếu công cụ theo dõi tiến độ công khai và quản lý khối lượng công việc đang thực hiện (WIP). Thách thức cốt lõi là kiểm soát xung đột nguồn lực giữa vận hành hàng ngày và triển khai dự án, đảm bảo hoàn thành đúng tiến độ mà không phát sinh thêm chi phí.",
       approach: "Áp dụng Agile/Kanban & Trực quan hóa công việc: Xây dựng Project Charter chuẩn chỉnh, quản lý luồng công việc minh bạch qua Trello/Jira để tối ưu thời gian hoàn thành (lead time).",
@@ -372,6 +174,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "3.3",
     number: "8.5",
     title: "3.3 · Thúc đẩy cải tiến sản phẩm (Product Improvement Driving)",
+    englishTitle: "Customer-Driven Product Improvement & Closed-Loop Engineering",
     groupTitle: "Thiết kế Trải nghiệm Khách hàng (CX Design)",
     groupKey: "cx",
     description: "Xây dựng cầu nối tương tác dữ liệu giữa phòng CSKH, Product và IT Team nhằm định lượng các pain-point người dùng và thúc đẩy cải tiến sản phẩm.",
@@ -383,6 +186,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/VcxnwPrH/1-5-Th-c-y-c-i-ti-n-s-n-ph-m.png",
     mindmap: "https://i.ibb.co/Fk5Vd9bV/1-5-Th-c-y-c-i-ti-n-s-n-ph-m.png",
     quote: "Lắng nghe tiếng nói thực địa, liên tục hoàn thiện sản phẩm.",
+    fullContent: article_3_3,
     star: {
       situation: "Phòng CSKH tiếp nhận rất nhiều phản hồi về lỗi sản phẩm nhưng dữ liệu này bị bỏ ngỏ, không được phản hồi lại cho khối Sản phẩm (Product) để cải tiến. Thách thức cốt lõi là phân loại và định lượng chính xác các 'pain-point' của người dùng để thuyết phục khối Sản phẩm ưu tiên xử lý các lỗi ảnh hưởng lớn nhất.",
       approach: "Vòng lặp phản hồi VoC (Closed-Loop VoC): Gắn nhãn phân loại lỗi tự động trên CRM và tổ chức họp giao ban định kỳ tuần giữa CSKH và Product Team.",
@@ -404,6 +208,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "3.4",
     number: "8.6",
     title: "3.4 · Quản lý khủng hoảng và giảm khách hàng rời bỏ (Crisis Management & Churn Reduction)",
+    englishTitle: "Crisis Management & Customer Churn Prevention",
     groupTitle: "Thiết kế Trải nghiệm Khách hàng (CX Design)",
     groupKey: "cx",
     description: "Xây dựng cơ chế phản ứng khẩn cấp cho Contact Center và phối hợp cùng PR/Pháp lý để xử lý gián đoạn hệ thống lớn, giảm tỷ lệ rời bỏ dịch vụ.",
@@ -415,6 +220,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/Df95199p/1-6-Qu-n-l-kh-ng-ho-ng-v-gi-m-kh-ch-h-ng-r-i-b.png",
     mindmap: "https://i.ibb.co/nMJCLcjz/1-6-Qu-n-l-kh-ng-ho-ng-v-gi-m-kh-ch-h-ng-r-i-b.jpg",
     quote: "Bản lĩnh trước sóng gió, bảo vệ trọn vẹn niềm tin thương hiệu.",
+    fullContent: article_3_4,
     star: {
       situation: "Các sự cố gián đoạn hệ thống lớn gây tràn tổng đài, nguy cơ bùng nổ khủng hoảng truyền thông và gia tăng tỷ lệ rời bỏ dịch vụ (Churn Rate). Thách thức cốt lõi là xử lý khối lượng cuộc gọi/tin nhắn tăng gấp 20 lần bình thường trong thời gian cực ngắn; ổn định tâm lý người dùng và giữ vững uy tín thương hiệu.",
       approach: "Mô hình War-Room & Dự báo AI Churn: Thiết lập phòng ứng phó khẩn cấp, đẩy thông báo tự động qua Smart IVR/App và ứng dụng thuật toán AI Churn Prediction để giữ chân nhóm rủi ro cao.",
@@ -435,6 +241,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "2.1",
     number: "8.7",
     title: "2.1 · Chuẩn hóa quy trình CSKH (Standard Operating Procedures - SOP Standardization)",
+    englishTitle: "Standard Operating Procedures (SOP) Standardization",
     groupTitle: "Chuẩn hóa Quy trình & Vận hành Xuất sắc (SOP & Operational Excellence)",
     groupKey: "sop",
     description: "Xây dựng và hệ thống hóa 100% quy trình vận hành tiêu chuẩn (Visual SOP) trực quan cho toàn bộ các dịch vụ, rút ngắn thời gian Onboarding nhân sự.",
@@ -446,6 +253,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/SDRxyVYm/2-1-Chu-n-h-a-quy-tr-nh-CSKH.png",
     mindmap: "https://i.ibb.co/F4TQSP1H/2-1-Chu-n-h-a-quy-tr-nh-CSKH.png",
     quote: "Quy trình chuẩn hóa, vận hành mượt mà, chất lượng đồng nhất.",
+    fullContent: article_2_1,
     star: {
       situation: "Quy trình xử lý yêu cầu khách hàng phân tán, không nhất quán giữa các tuyến nhân viên, dẫn đến thời gian Onboarding nhân sự mới kéo dài. Thách thức cốt lõi là đóng gói hàng trăm kịch bản nghiệp vụ phức tạp thành định dạng trực quan, dễ tra cứu tức thì trong khi nhân viên đang thao tác hỗ trợ.",
       approach: "Thư viện Visual SOP & Ma trận OLA/SLA: Thiết lập thư viện quy trình trực quan trên Notion/Confluence, xây dựng ma trận leo thang 3 tuyến và cam kết OLA liên phòng ban.",
@@ -466,6 +274,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "2.2",
     number: "8.8",
     title: "2.2 · Tối ưu hóa kênh hỗ trợ (Support Channel Optimization - Omnichannel)",
+    englishTitle: "Support Channel Optimization & Omnichannel Management",
     groupTitle: "Chuẩn hóa Quy trình & Vận hành Xuất sắc (SOP & Operational Excellence)",
     groupKey: "sop",
     description: "Hợp nhất các kênh tương tác (Hotline, Chat, Email, Social) về một không gian làm việc duy nhất (Single Agent Workspace), loại bỏ ma sát chuyển kênh.",
@@ -477,6 +286,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/BVbDG6yQ/2-2-T-i-u-h-a-k-nh-h-tr.png",
     mindmap: "https://i.ibb.co/hFBv9tcX/2-2-T-i-u-h-a-k-nh-h-tr.png",
     quote: "Hợp nhất điểm chạm, trải nghiệm mượt mà, tối ưu chi phí.",
+    fullContent: article_2_2,
     star: {
       situation: "Các kênh tương tác (Hotline, Chat, Email, Social) hoạt động rời rạc; nhân viên phải chuyển đổi nhiều phần mềm gây tốn thời gian và dễ bỏ sót thông tin. Thách thức cốt lõi là đảm bảo độ trễ dữ liệu bằng 0 khi khách hàng chuyển từ kênh Chat sang Call; tối ưu hóa chi phí viễn thông và hạ tầng phần mềm.",
       approach: "Nền tảng True Omnichannel & Định tuyến kỹ năng: Tích hợp giao diện làm việc hợp nhất (Zendesk/AICC) và phân bổ luồng xử lý thông minh theo Skill-based Routing.",
@@ -497,6 +307,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "2.3",
     number: "8.9",
     title: "2.3 · Triển khai tự động hóa (RPA & Workflow Automation)",
+    englishTitle: "Customer Service RPA & Workflow Automation",
     groupTitle: "Chuẩn hóa Quy trình & Vận hành Xuất sắc (SOP & Operational Excellence)",
     groupKey: "sop",
     description: "Tự động hóa các tác vụ thủ công lặp đi lặp lại như nhập liệu, đối soát giao dịch và hoàn tiền bằng RPA, giải phóng sức lao động cho Agent.",
@@ -508,6 +319,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/vvXvMjZ1/2-3-Tri-n-khai-t-ng-h-a-2.png",
     mindmap: "https://i.ibb.co/KzLgL3YG/2-3-Tri-n-khai-t-ng-h-a.png",
     quote: "Tự động hóa thao tác, giải phóng tư duy, nâng tầm giá trị.",
+    fullContent: article_2_3,
     star: {
       situation: "Nhân viên mất quá nhiều thời gian cho các tác vụ thủ công lặp đi lặp lại như nhập liệu, kiểm tra đối soát giao dịch và phân loại ticket. Thách thức cốt lõi là tích hợp phần mềm tự động hóa với hệ thống Core cũ mà không làm ảnh hưởng đến độ ổn định của dữ liệu giao dịch.",
       approach: "Ứng dụng Robot RPA (UiPath) & Macro 1-Click: Tự động hóa luồng hoàn tiền, phân loại ticket tự động và tối ưu hóa thao tác xử lý cho chuyên viên.",
@@ -528,6 +340,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "2.4",
     number: "8.10",
     title: "2.4 · Quản lý chiến dịch Outbound (Outbound CS Campaign Management)",
+    englishTitle: "Outbound Customer Care Campaign Management",
     groupTitle: "Chuẩn hóa Quy trình & Vận hành Xuất sắc (SOP & Operational Excellence)",
     groupKey: "sop",
     description: "Thiết kế kịch bản, quản trị dữ liệu cuộc gọi và điều hành các chiến dịch tiếp cận chủ động (Welcome Call, NPS, Win-back) nhằm giữ chân người dùng.",
@@ -539,6 +352,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/HDWHvvHN/2-4-Qu-n-l-chi-n-d-ch-Outbound.png",
     mindmap: "https://i.ibb.co/4nt76fLN/2-4-Qu-n-l-chi-n-d-ch-Outbound.png",
     quote: "Chủ động kết nối, thấu hiểu nhu cầu, gia tăng gắn kết.",
+    fullContent: article_2_4,
     star: {
       situation: "Doanh nghiệp cần các chiến dịch chủ động tiếp cận người dùng để chào đón (Welcome Call), khảo sát độ hài lòng và tái kích hoạt người dùng rời bỏ. Thách thức cốt lõi là nâng cao tỷ lệ bắt máy thành công, tối ưu năng suất quay số và tránh gây phiền hà cho khách hàng.",
       approach: "Predictive Auto-Dialer & Phân tập hành vi: Triển khai hệ thống quay số tự động, phân tập dữ liệu khách hàng theo hành vi và chuẩn hóa kịch bản cuộc gọi theo cảm xúc.",
@@ -559,6 +373,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "2.5",
     number: "8.11",
     title: "2.5 · Quản lý đối tác thuê ngoài BPO (BPO Partner Governance)",
+    englishTitle: "BPO Partner Governance & Hybrid Operations",
     groupTitle: "Chuẩn hóa Quy trình & Vận hành Xuất sắc (SOP & Operational Excellence)",
     groupKey: "sop",
     description: "Quản trị toàn diện đối tác BPO thuê ngoài (150+ vị trí), đảm bảo đồng bộ chất lượng dịch vụ và tuân thủ SLA trong các đợt cao điểm.",
@@ -570,6 +385,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/RTzjNW01/2-5-Qu-n-l-i-t-c-thu-ngo-i-ch-m-s-c-kh-ch-h-ng.png",
     mindmap: "https://i.ibb.co/Z6472L7S/2-5-Qu-n-l-i-t-c-thu-ngo-i-ch-m-s-c-kh-ch-h-ng.jpg",
     quote: "Đối tác tin cậy, linh hoạt quy mô, đảm bảo tiêu chuẩn.",
+    fullContent: article_2_5,
     star: {
       situation: "Nhu cầu nhân sự bùng nổ trong các đợt cao điểm chiến dịch; chất lượng tư vấn của các đơn vị BPO thuê ngoài không đồng đều, nguy cơ vi phạm SLA. Thách thức cốt lõi là đồng bộ chất lượng dịch vụ giữa nhân sự nội bộ và nhân sự BPO; kiểm soát chặt chẽ tuân thủ quy trình và bảo mật thông tin.",
       approach: "Khung Quản trị BPO & Outcome-based SLA: Ban hành bộ tiêu chuẩn vận hành BPO toàn diện, áp dụng mô hình thưởng phạt theo kết quả SLA và kiểm tra QA chéo hàng tuần.",
@@ -590,6 +406,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "4.1",
     number: "8.12",
     title: "4.1 · Xây dựng hệ thống CRM (CRM System Architecture & Implementation)",
+    englishTitle: "CRM System Architecture & Customer 360 View",
     groupTitle: "Công nghệ, Dữ liệu & AI CSKH (CS Tech, Data & AI)",
     groupKey: "tech",
     description: "Kiến trúc và thiết kế luồng dữ liệu CRM tập trung (MoMo Admin/Finviet CRM) phục vụ >5 triệu tài khoản, xây dựng hồ sơ khách hàng 360 độ.",
@@ -601,6 +418,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/xt535vdy/3-1-X-y-d-ng-h-th-ng-CRM.png",
     mindmap: "https://i.ibb.co/Xxgqd4Rn/3-1-X-y-d-ng-h-th-ng-CRM.png",
     quote: "Dữ liệu tập trung, thấu hiểu khách hàng, hỗ trợ tức thì.",
+    fullContent: article_4_1,
     star: {
       situation: "Dữ liệu thông tin và lịch sử giao dịch khách hàng phân tán ở nhiều hệ thống riêng biệt, Agent tốn nhiều thời gian tra cứu khi hỗ trợ. Thách thức cốt lõi là tích hợp API thời gian thực với Core Banking, hệ thống máy chủ ứng dụng và mạng tổng đài telephony mà vẫn bảo mật thông tin tuyệt đối.",
       approach: "Hồ sơ 360 độ & CTI Screen Pop-up: Xây dựng giao diện xem thông tin khách hàng tập trung và tự động bật popup cuộc gọi đến gắn kèm thông tin tài khoản.",
@@ -621,6 +439,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "4.2",
     number: "8.13",
     title: "4.2 · Phân tích & Báo cáo (Business Intelligence & Analytics)",
+    englishTitle: "Business Intelligence & Realtime Operations Analytics",
     groupTitle: "Công nghệ, Dữ liệu & AI CSKH (CS Tech, Data & AI)",
     groupKey: "tech",
     description: "Xây dựng hệ thống báo cáo phân tích dữ liệu vận hành tự động (Power BI/Tableau) và Realtime Command Center Wallboard cho C-Level và Quản lý ca.",
@@ -632,6 +451,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/ymm7WSMJ/3-2-Ph-n-t-ch-B-o-c-o.png",
     mindmap: "https://i.ibb.co/cj0W4bJ/3-2-Ph-n-t-ch-B-o-c-o.png",
     quote: "Số liệu minh bạch, quyết định tức thì, vận hành chủ động.",
+    fullContent: article_4_2,
     star: {
       situation: "Việc lập báo cáo vận hành thủ công bằng file Excel gây mất thời gian, độ trễ cao và dễ phát sinh sai sót số liệu khi gửi C-Level. Thách thức cốt lõi là gom tự động dữ liệu từ nhiều nguồn (Call, Chat, Ticket, CSAT) và hiển thị trực quan theo thời gian thực phục vụ điều hành ca kíp.",
       approach: "Realtime Command Center & Executive Dashboard: Số hóa toàn bộ đường ống dữ liệu, xây dựng màn hình giám sát ca kíp và báo cáo C-Level tự động.",
@@ -652,6 +472,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "4.3",
     number: "8.14",
     title: "4.3 · Khảo sát & Đánh giá khách hàng (Automated CSAT/NPS/CES Survey)",
+    englishTitle: "Automated Customer Feedback & Survey Framework (CSAT/NPS/CES)",
     groupTitle: "Công nghệ, Dữ liệu & AI CSKH (CS Tech, Data & AI)",
     groupKey: "tech",
     description: "Xây dựng hệ thống đo lường trải nghiệm CSAT/NPS/CES tự động 1-click đa kênh và luồng xử lý Closed-Loop cho Detractor trong 60 phút.",
@@ -663,6 +484,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/FL3jmJPP/3-3-Kh-o-s-t-nh-gi-kh-ch-h-ng.jpg",
     mindmap: "https://i.ibb.co/wFmLP6wQ/3-3-Kh-o-s-t-nh-gi-kh-ch-h-ng.png",
     quote: "Lắng nghe đo lường, phản hồi kịp thời, giữ trọn niềm tin.",
+    fullContent: article_4_3,
     star: {
       situation: "Tỷ lệ khách hàng phản hồi khảo sát thấp; câu hỏi chưa tối ưu; thiếu công cụ tự động theo dõi và giải quyết phản hồi tiêu cực. Thách thức cốt lõi là gia tăng tỷ lệ hoàn thành khảo sát của người dùng mà không gây phiền thoái; tự động hóa luồng xử lý thông tin phản hồi bất mãn.",
       approach: "Khảo sát 1-Click & AI Text Analytics: Tự động gửi khảo sát siêu ngắn sau giao dịch, ứng dụng AI phân tích ý kiến đóng góp và kích hoạt quy trình gán ticket tự động cho Detractor.",
@@ -683,6 +505,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "4.4",
     number: "8.15",
     title: "4.4 · Xây dựng AI Bot (Generative AI Chatbot & Voicebot RAG)",
+    englishTitle: "Generative AI Chatbot & Voicebot (RAG Architecture)",
     groupTitle: "Công nghệ, Dữ liệu & AI CSKH (CS Tech, Data & AI)",
     groupKey: "tech",
     description: "Triển khai giải pháp Trợ lý ảo AI Bot (Generative AI & RAG) hỗ trợ tự động trả lời 24/7/365, giảm tải cho nhân viên tổng đài.",
@@ -694,6 +517,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/603Z7tXj/3-4-X-y-d-ng-AI-Bot.png",
     mindmap: "https://i.ibb.co/Z658Pr76/3-4-X-y-d-ng-AI-Bot.png",
     quote: "Trợ lý AI thông minh, hỗ trợ tức thì 24/7, tối ưu nguồn lực.",
+    fullContent: article_4_4,
     star: {
       situation: "Lượng tin nhắn/cuộc gọi hỏi nghiệp vụ đơn giản dồn về quá lớn gây quá tải cho Agent, làm tăng thời gian chờ của khách hàng có ca khẩn cấp. Thách thức cốt lõi là đảm bảo AI trả lời chính xác, tránh hiện tượng 'ảo giác' (Hallucination) thông tin; chuyển giao cuộc gọi mượt mà cho con người khi quá tầm xử lý của Bot.",
       approach: "Generative AI & Kiến trúc RAG chống ảo giác: Tích hợp cơ sở tri thức nội bộ chuẩn xác, ứng dụng NLP tiếng Việt và thiết lập cơ chế Human Handoff thông minh.",
@@ -714,6 +538,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "5.1",
     number: "8.16",
     title: "5.1 · Phát triển đào tạo trực tuyến (CS Academy Online Learning LMS)",
+    englishTitle: "Customer Service Academy & Online Learning Management System (LMS)",
     groupTitle: "Đào tạo, Phát triển & Văn hóa Dịch vụ (CS Learning & Culture)",
     groupKey: "learning",
     description: "Xây dựng Học viện Đào tạo trực tuyến CS Academy LMS với >85 module Micro-learning, mô phỏng cuộc gọi và sát hạch tự động.",
@@ -725,6 +550,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/svQ9F4Tz/4-1-Ph-t-tri-n-o-t-o-tr-c-tuy-n.png",
     mindmap: "https://i.ibb.co/0yDjkH17/4-1-Ph-t-tri-n-o-t-o-tr-c-tuy-n.png",
     quote: "Đào tạo chủ động, kiến thức vững vàng, tự tin phục vụ.",
+    fullContent: article_5_1,
     star: {
       situation: "Đào tạo tập trung truyền thống tốn nhiều chi phí, thời gian và khó đảm bảo tính cập nhật liên tục khi nghiệp vụ thay đổi hàng tuần. Thách thức cốt lõi là số hóa toàn bộ bài giảng nghiệp vụ thành các bài học nhỏ (Micro-learning) hấp dẫn và đo lường chính xác kết quả học tập của nhân viên.",
       approach: "Micro-learning LMS & Mô phỏng tương tác: Xây dựng >85 bài học ngắn, áp dụng công cụ mô phỏng cuộc gọi và chấm điểm bài sát hạch tự động trước khi nhận ca.",
@@ -745,6 +571,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "5.2",
     number: "8.17",
     title: "5.2 · Khung năng lực và lộ trình phát triển (CS Career Path & ASK Framework)",
+    englishTitle: "CS Career Path & Competency Framework (ASK Model)",
     groupTitle: "Đào tạo, Phát triển & Văn hóa Dịch vụ (CS Learning & Culture)",
     groupKey: "learning",
     description: "Thiết lập Khung năng lực ASK và Lộ trình thăng tiến kép (Dual Career Path), nâng cao sự gắn kết nhân sự và đào tạo lãnh đạo kế thừa.",
@@ -756,6 +583,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/JRd7wxyC/4-2-X-y-d-ng-khung-n-ng-l-c-v-l-tr-nh-ph-t-tri-n.png",
     mindmap: "https://i.ibb.co/kVtqcFW8/4-2-X-y-d-ng-khung-n-ng-l-c-v-l-tr-nh-ph-t-tri-n.png",
     quote: "Lộ trình rõ ràng, phát triển bản thân, gắn kết bền vững.",
+    fullContent: article_5_2,
     star: {
       situation: "Tỷ lệ xoay dòng nhân sự (Attrition Rate) trong ngành CSKH cao do thiếu lộ trình thăng tiến rõ ràng và khung tiêu chí đánh giá năng lực minh bạch. Thách thức cốt lõi là xây dựng tiêu chí đánh giá khách quan, tạo động lực phát triển cho cả nhóm hướng theo Quản lý lẫn nhóm định hướng Chuyên gia kỹ thuật.",
       approach: "Lộ trình thăng tiến kép (Dual Career Path): Phân định 2 nhánh phát triển (Quản lý vs Chuyên gia), chuẩn hóa ma trận ASK và mã hóa tiêu chí đánh giá trên hệ thống HRM.",
@@ -776,6 +604,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "5.3",
     number: "8.18",
     title: "5.3 · Thành lập Trung tâm Hỗ trợ Khách hàng (Self-Service Help Center)",
+    englishTitle: "Customer Self-Service Help Center & Knowledge Base",
     groupTitle: "Đào tạo, Phát triển & Văn hóa Dịch vụ (CS Learning & Culture)",
     groupKey: "learning",
     description: "Xây dựng Trung tâm Hỗ trợ Tự phục vụ (Self-Service Help Center) tập trung, biên soạn >650 bài viết FAQ chuẩn SEO giúp người dùng tự tra cứu.",
@@ -787,6 +616,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/5bcHqqz/5-1-Th-nh-l-p-trung-t-m-h-tr.png",
     mindmap: "https://i.ibb.co/BVc2W8bJ/5-1-Th-nh-l-p-trung-t-m-h-tr.png",
     quote: "Tự phục vụ thông minh, chủ động giải đáp, nâng tầm trải nghiệm.",
+    fullContent: article_5_3,
     star: {
       situation: "Khách hàng khó khăn trong việc tự tìm kiếm thông tin hướng dẫn dịch vụ; số lượng ticket lặp lại về cùng một chủ đề quá cao. Thách thức cốt lõi là biên soạn và cấu trúc kho tri thức khổng lồ sao cho chuẩn SEO, dễ hiểu và tích hợp công cụ tìm kiếm thông minh.",
       approach: "Self-Service Help Center & AI Search: Chuẩn hóa kho bài viết hướng dẫn, tích hợp công cụ tìm kiếm AI Search và cổng tra cứu trạng thái Ticket tự động 24/7.",
@@ -807,6 +637,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "5.4",
     number: "8.19",
     title: "5.4 · Chiến lược Lấy Khách hàng làm Trung tâm & Khung TQA chuẩn COPC (Customer-Centricity & COPC TQA Framework)",
+    englishTitle: "Customer-Centricity Strategy & COPC-Aligned Total Quality Assurance (TQA)",
     groupTitle: "Đào tạo, Phát triển & Văn hóa Dịch vụ (CS Learning & Culture)",
     groupKey: "learning",
     description: "Triển khai khung quản trị chất lượng TQA chuẩn COPC quốc tế cho đội ngũ >300 nhân sự, thẩm thấu văn hóa Customer-Centric vào vận hành.",
@@ -818,6 +649,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/dsN12n0H/6-1-Kh-ch-h-ng-l-trung-t-m.png",
     mindmap: "https://i.ibb.co/ccxHsCYw/6-1-Kh-ch-h-ng-l-trung-t-m.png",
     quote: "Tiêu chuẩn quốc tế, chất lượng đồng nhất, tận tâm phụng sự.",
+    fullContent: article_5_4,
     star: {
       situation: "Hoạt động đánh giá chất lượng dịch vụ (QA) thiếu chuẩn mực quốc tế, chấm điểm chủ quan và chưa phản ánh đúng cảm nhận thực tế của khách hàng. Thách thức cốt lõi là thống nhất tiêu chí đánh giá chất lượng giữa các QA; chuyển đổi tư duy của Agent từ 'bị bắt lỗi' sang 'được đồng hành phát triển'.",
       approach: "Khung TQA chuẩn COPC & Chu kỳ Calibration: Chuẩn hóa 100% mẫu biểu đánh giá theo chuẩn COPC, tổ chức hiệu chuẩn chéo hằng tuần và tích hợp phần mềm chấm điểm tự động.",
@@ -838,6 +670,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "5.5",
     number: "8.20",
     title: "5.5 · Quản trị sự thay đổi và khủng hoảng dịch vụ (Service Change Management & Crisis Control)",
+    englishTitle: "Service Change Management & Operational Resilience",
     groupTitle: "Đào tạo, Phát triển & Văn hóa Dịch vụ (CS Learning & Culture)",
     groupKey: "learning",
     description: "Quản trị sự thay đổi và ứng phó biến động cho toàn bộ khối dịch vụ khách hàng, thiết lập Ma trận cảnh báo sớm 4 cấp độ.",
@@ -849,6 +682,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/jv4g1xKB/6-2-Qu-n-tr-s-thay-i-v-kh-ng-ho-ng-d-ch-v.png",
     mindmap: "https://i.ibb.co/xq60FfQk/6-2-Qu-n-tr-s-thay-i-v-kh-ng-ho-ng-d-ch-v.png",
     quote: "Chủ động thích ứng, thông tin minh bạch, biến đổi thành công.",
+    fullContent: article_5_5,
     star: {
       situation: "Sự thay đổi chính sách dịch vụ hoặc hệ thống nâng cấp đột xuất gây bối rối cho nhân viên và bất an cho khách hàng. Thách thức cốt lõi là truyền thông thông suốt, kịp thời về các thay đổi chính sách để không gây ra phản ứng tiêu cực từ thị trường.",
       approach: "Ma trận cảnh báo 4 cấp độ & Holding Statements: Thiết lập cơ chế cảnh báo sớm và chuẩn hóa bộ thông điệp phát ngôn đồng nhất trong 15 phút khi xảy ra biến động.",
@@ -869,6 +703,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     code: "5.6",
     number: "8.21",
     title: "5.6 · Ứng dụng trí tuệ nhân tạo nâng cao hiệu suất CSKH (Generative AI Agent Copilot & Speech-to-Text Auto-QA)",
+    englishTitle: "Generative AI Agent Copilot & Speech-to-Text Automated QA",
     groupTitle: "Đào tạo, Phát triển & Văn hóa Dịch vụ (CS Learning & Culture)",
     groupKey: "learning",
     description: "Tiên phong ứng dụng AI Agent Copilot gợi ý câu trả lời và Speech-to-Text Auto-QA tự động chấm điểm 100% cuộc gọi toàn Contact Center.",
@@ -880,6 +715,7 @@ Vì vậy, xây dựng Phòng Dịch vụ Khách hàng không phải là hoàn t
     image: "https://i.ibb.co/4gf9BC3S/6-3-ng-d-ng-tr-tu-nh-n-t-o-n-ng-cao-hi-u-su-t-CSKH.png",
     mindmap: "https://i.ibb.co/wFZ1qXFt/6-3-ng-d-ng-tr-tu-nh-n-t-o-n-ng-cao-hi-u-su-t-CSKH.png",
     quote: "Trí tuệ nhân tạo, đột phá hiệu suất, quản trị toàn diện.",
+    fullContent: article_5_6,
     star: {
       situation: "Khối lượng cuộc gọi khổng lồ khiến việc kiểm tra chất lượng (QA) mẫu thủ công chỉ đạt <5% tổng số cuộc gọi, dễ bỏ sót rủi ro tuân thủ. Thách thức cốt lõi là chuyển đổi dữ liệu giọng nói tiếng Việt đa vùng miền thành văn bản chính xác và phân tích cảm xúc thời gian thực.",
       approach: "AI Agent Copilot & Auto-QA Speech-to-Text: Gợi ý câu trả lời và tóm tắt cuộc gọi 1-click cho Agent, đồng thời tự động chấm điểm và phân tích cảm xúc 100% cuộc gọi.",
