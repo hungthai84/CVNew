@@ -367,45 +367,22 @@ export const DomainsView: React.FC = () => {
           <div className="w-full h-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-[15px] items-stretch">
             {filteredDomains.map((domain) => {
               const cfg = getCardVisualConfig(domain.id);
-              // Card "Dịch Vụ Viễn Thông" (id 01): nền trong suốt 100%, bỏ toàn bộ hiệu ứng
-              const isPlainCard = domain.id === '01';
               return (
                 <div
                   key={domain.id}
                   onClick={() => setSelectedDomain(domain)}
                   onMouseEnter={() => setHoveredCardId(domain.id)}
                   onMouseLeave={() => setHoveredCardId(null)}
-                  style={
-                    isPlainCard
-                      ? {
-                          background: 'transparent',
-                          boxShadow: 'none',
-                          backdropFilter: 'none',
-                          WebkitBackdropFilter: 'none',
-                          transform: 'none',
-                          transition: 'none',
-                          animation: 'none',
-                          filter: 'none',
-                        }
-                      : { background: cfg.cardBg }
-                  }
-                  className={
-                    isPlainCard
-                      ? 'rounded-[20px] px-4 py-2.5 border border-transparent bg-transparent shadow-none cursor-pointer group/card overflow-hidden relative flex flex-col justify-between h-full min-h-0 text-left'
-                      : `theme-pastel-card rounded-[20px] px-4 py-2.5 border ${cfg.cardBorder} shadow-[0_10px_26px_-4px_rgba(15,23,42,0.12),0_4px_10px_-2px_rgba(15,23,42,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)] hover:shadow-[0_24px_50px_-8px_rgba(15,23,42,0.24),0_12px_24px_-4px_rgba(15,23,42,0.12),inset_0_1px_2px_rgba(255,255,255,1)] hover:-translate-y-2 hover:scale-[1.018] active:scale-[0.985] cursor-pointer group/card overflow-hidden relative transition-all duration-300 ease-out flex flex-col justify-between h-full min-h-0 text-left`
-                  }
+                  style={{ background: cfg.cardBg }}
+                  className={`theme-pastel-card rounded-[20px] px-4 py-2.5 border ${cfg.cardBorder} shadow-[0_10px_26px_-4px_rgba(15,23,42,0.12),0_4px_10px_-2px_rgba(15,23,42,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)] hover:shadow-[0_24px_50px_-8px_rgba(15,23,42,0.24),0_12px_24px_-4px_rgba(15,23,42,0.12),inset_0_1px_2px_rgba(255,255,255,1)] hover:-translate-y-2 hover:scale-[1.018] active:scale-[0.985] cursor-pointer group/card overflow-hidden relative transition-all duration-300 ease-out flex flex-col justify-between h-full min-h-0 text-left`}
                   title="Bấm để xem chi tiết đầy đủ"
                 >
                   {/* Soft ambient background sampled directly from descriptive illustration surroundings */}
-                  {!isPlainCard && (
-                    <>
-                      <div
-                        className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full pointer-events-none transition-all duration-500 opacity-75 group-hover/card:opacity-100 group-hover/card:scale-120 blur-2xl"
-                        style={{ background: cfg.ambientGlow }}
-                      />
-                      <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-white/60 blur-xl pointer-events-none group-hover/card:scale-125 transition-transform duration-500" />
-                    </>
-                  )}
+                  <div
+                    className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full pointer-events-none transition-all duration-500 opacity-75 group-hover/card:opacity-100 group-hover/card:scale-120 blur-2xl"
+                    style={{ background: cfg.ambientGlow }}
+                  />
+                  <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-white/60 blur-xl pointer-events-none group-hover/card:scale-125 transition-transform duration-500" />
 
                   {/* Top & Middle Section: Left Content (6 cols) + Right 2x 3D Illustration (6 cols) */}
                   <div className="relative z-10 grid grid-cols-12 gap-2 items-center flex-1 min-h-0">
