@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   INTERVIEW_QUESTIONS,
-  INTERVIEW_TABS,
   INTERVIEW_VIDEO_1_URL,
   INTERVIEW_VIDEO_2_URL,
 } from '@/data/interview';
@@ -13,579 +12,449 @@ import { WebIcon } from '@/components/ui/WebIcon';
 export const InterviewView: React.FC = () => {
   const { showToast } = useToast();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const [activeFilter, setActiveFilter] = useState<string>('all');
   const [currentQIdx, setCurrentQIdx] = useState<number>(0);
-  const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(false);
-  const [isAudioOn, setIsAudioOn] = useState<boolean>(false);
-  const [progressPct, setProgressPct] = useState<number>(0);
-  // Trạng thái thu gọn chủ đề câu hỏi trong banner (Mặc định thu gọn lại, khi bấm vào sẽ hiện ra)
-  const [isCategoryOpen, setIsCategoryOpen] = useState<boolean>(false);
-  // Trạng thái thu gọn toàn bộ banner phỏng vấn
-  const [isBannerCollapsed, setIsBannerCollapsed] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [currentTimeSec, setCurrentTimeSec] = useState<number>(0);
+  const [durationSec, setDurationSec] = useState<number>(405); // 06:45 = 405s
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [volume, setVolume] = useState<number>(1);
+  const [showSubtitles, setShowSubtitles] = useState<boolean>(true);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
+  const totalQuestions = INTERVIEW_QUESTIONS.length;
   const currentQ = INTERVIEW_QUESTIONS[currentQIdx] || INTERVIEW_QUESTIONS[0];
 
-  const filteredQuestions = INTERVIEW_QUESTIONS.filter((q) => {
-    if (activeFilter === 'all') return true;
-    return q.categoryKey === activeFilter;
-  });
+  const formatTime = (secs: number) => {
+    if (isNaN(secs) || secs < 0) return '00:00';
+    const m = Math.floor(secs / 60);
+    const s = Math.floor(secs % 60);
+    return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+  };
 
-  const selectQuestion = (idx: number) => {
-    const clamped = Math.max(0, Math.min(INTERVIEW_QUESTIONS.length - 1, idx));
-    setCurrentQIdx(clamped);
-    const q = INTERVIEW_QUESTIONS[clamped];
-
+  const handleTimeUpdate = () => {
     const video = videoRef.current;
     if (!video) return;
+    setCurrentTimeSec(video.currentTime);
 
-    if (!isVideoPlaying || video.src !== INTERVIEW_VIDEO_2_URL) {
-      setIsVideoPlaying(true);
-      setIsAudioOn(true);
-      video.src = INTERVIEW_VIDEO_2_URL;
-      video.loop = false;
-      video.muted = false;
-      video.currentTime = q.startSec;
-      video.play().catch(() => {});
-    } else {
-      video.currentTime = q.startSec;
-      if (video.paused) {
-        video.play().catch(() => {});
+    if (video.duration && !isNaN(video.duration) && video.duration > 0) {
+      setDurationSec(video.duration);
+    }
+
+    // Auto sync active question with video playback timestamp
+    if (isPlaying) {
+      const matchedIdx = INTERVIEW_QUESTIONS.findIndex(
+        (item) => video.currentTime >= item.startSec && video.currentTime < item.endSec
+      );
+      if (matchedIdx !== -1 && matchedIdx !== currentQIdx) {
+        setCurrentQIdx(matchedIdx);
       }
     }
-    showToast(`Đã chọn Câu 0${q.stt}: ${q.categoryVi}`);
+  };
+
+  const handleLoadedMetadata = () => {
+    const video = videoRef.current;
+    if (video && video.duration && !isNaN(video.duration)) {
+      setDurationSec(video.duration);
+    }
   };
 
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    if (isVideoPlaying) {
-      setIsVideoPlaying(false);
-      video.src = INTERVIEW_VIDEO_1_URL;
-      video.loop = true;
-      video.muted = true;
+    if (!isPlaying) {
+      if (!video.src.includes('87d892c1c37f70cfae99aa55e5888f93ea6b7015050fe44e5d1f54418f0b06b9')) {
+        video.src = INTERVIEW_VIDEO_2_URL;
+        video.currentTime = currentQ.startSec;
+      }
+      video.muted = isMuted;
       video.play().catch(() => {});
+      setIsPlaying(true);
+      showToast(`Đang phát phỏng vấn: Câu ${currentQIdx + 1}/${totalQuestions}`);
     } else {
-      setIsVideoPlaying(true);
-      setIsAudioOn(true);
-      video.src = INTERVIEW_VIDEO_2_URL;
-      video.loop = false;
-      video.muted = false;
-      video.currentTime = currentQ.startSec;
-      video.play().catch(() => {});
+      video.pause();
+      setIsPlaying(false);
     }
   };
 
-  const toggleAudio = () => {
+  const selectQuestion = (idx: number) => {
+    const clamped = Math.max(0, Math.min(totalQuestions - 1, idx));
+    setCurrentQIdx(clamped);
+    const targetQ = INTERVIEW_QUESTIONS[clamped];
+
     const video = videoRef.current;
     if (!video) return;
-    const nextAudio = !isAudioOn;
-    setIsAudioOn(nextAudio);
-    video.muted = !nextAudio;
-    showToast(nextAudio ? 'Đã bật tiếng video phỏng vấn' : 'Đã tắt tiếng video phỏng vấn');
-  };
 
-  const handleTimeUpdate = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    const time = video.currentTime;
-
-    if (isVideoPlaying) {
-      const matchedIdx = INTERVIEW_QUESTIONS.findIndex(
-        (item) => time >= item.startSec && time < item.endSec
-      );
-      if (matchedIdx !== -1 && matchedIdx !== currentQIdx) {
-        setCurrentQIdx(matchedIdx);
+    if (!isPlaying || !video.src.includes('87d892c1c37f70cfae99aa55e5888f93ea6b7015050fe44e5d1f54418f0b06b9')) {
+      video.src = INTERVIEW_VIDEO_2_URL;
+      video.currentTime = targetQ.startSec;
+      video.muted = isMuted;
+      video.play().catch(() => {});
+      setIsPlaying(true);
+    } else {
+      video.currentTime = targetQ.startSec;
+      if (video.paused) {
+        video.play().catch(() => {});
+        setIsPlaying(true);
       }
     }
-
-    const qDuration = Math.max(1, currentQ.endSec - currentQ.startSec);
-    const elapsed = Math.max(0, Math.min(qDuration, time - currentQ.startSec));
-    const pct = isVideoPlaying ? (elapsed / qDuration) * 100 : 0;
-    setProgressPct(pct);
+    showToast(`Đã chuyển sang Câu ${clamped + 1}/${totalQuestions}`);
   };
 
-  const handleEnded = () => {
-    if (isVideoPlaying) {
-      togglePlay();
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    video.muted = nextMuted;
+    showToast(nextMuted ? 'Đã tắt tiếng' : 'Đã bật tiếng');
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const targetSec = parseFloat(e.target.value);
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (!video.src.includes('87d892c1c37f70cfae99aa55e5888f93ea6b7015050fe44e5d1f54418f0b06b9')) {
+      video.src = INTERVIEW_VIDEO_2_URL;
+    }
+    video.currentTime = targetSec;
+    setCurrentTimeSec(targetSec);
+  };
+
+  const toggleFullscreen = () => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    if (!document.fullscreenElement) {
+      container.requestFullscreen().catch(() => {});
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen().catch(() => {});
+      setIsFullscreen(false);
     }
   };
 
-  return (
-    <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[12px] sm:gap-[15px] max-w-7xl mx-auto justify-start select-none relative text-slate-800 overflow-hidden text-left">
-      {/* 1. VÙNG BÊN TRÁI: BANNER THEO CHIỀU DỌC (ĐÃ CHUYỂN QUA BÊN TRÁI, CÓ NÚT THU GỌN / MỞ RỘNG VÀ TỰ ĐỘNG ĐẨY KHI PHÁT VIDEO) */}
-      <aside
-        className={`shrink-0 h-full flex flex-col overflow-hidden transition-all duration-700 ease-in-out ${
-          isVideoPlaying
-            ? 'w-0 opacity-0 pointer-events-none -translate-x-full lg:w-0'
-            : isBannerCollapsed
-            ? 'w-full lg:w-[46px] xl:w-[48px] h-[48px] lg:h-full opacity-100'
-            : 'w-full lg:w-[300px] xl:w-[300px] opacity-100 translate-x-0'
-        }`}
-      >
-        {isBannerCollapsed ? (
-          <div
-            onClick={() => setIsBannerCollapsed(false)}
-            className="w-full lg:w-[46px] xl:w-[48px] shrink-0 h-[48px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-row lg:flex-col justify-between items-center p-2.5 sm:p-3 border border-pink-400/50 shadow-md bg-gradient-to-b from-[#0f172a] via-[#3b0764] to-[#1e1b4b] text-white cursor-pointer hover:border-pink-300 group/collapsedBanner transition-all duration-300 select-none z-10"
-            title="Bấm để mở rộng Banner Phỏng Vấn"
-          >
-            <div className="flex items-center gap-2 lg:flex-col lg:gap-3">
-              <div className="w-7 h-7 rounded-lg bg-pink-500/20 text-pink-300 flex items-center justify-center shrink-0 group-hover/collapsedBanner:scale-110 transition-transform">
-                <WebIcon name="chat" className="w-4 h-4 animate-banner-icon" />
-              </div>
-              <span className="text-[11px] font-black text-pink-200 tracking-wider font-play [writing-mode:horizontal-tb] lg:[writing-mode:vertical-rl] lg:rotate-180 uppercase">
-                Banner Phỏng Vấn
-              </span>
-            </div>
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
 
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-pink-500/20 border border-pink-400/30 text-[10px] font-extrabold text-pink-300 group-hover/collapsedBanner:bg-pink-500 group-hover/collapsedBanner:text-white transition-colors">
-              <span>Mở</span>
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+  return (
+    <section
+      id="interview"
+      className="w-full h-full max-h-full flex flex-col justify-start items-stretch font-sans text-slate-800 transition-colors duration-500 select-none bg-transparent overflow-hidden text-left"
+    >
+      {/* Outer Card Container */}
+      <div className="w-full h-full flex-1 flex flex-col justify-between p-4 sm:p-5 rounded-[24px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 shadow-sm backdrop-blur-xl overflow-hidden gap-3.5">
+        {/* 1. TOP HEADER BAR: TỌA ĐÀM PHỎNG VẤN & TRÍCH DẪN */}
+        <div className="flex items-center justify-between gap-4 pb-2 border-b border-slate-100 dark:border-white/5 shrink-0">
+          {/* Left: Video Camera Icon + Title + Subtitle */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/80 dark:border-blue-800/80 flex items-center justify-center shrink-0 shadow-2xs">
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M4 4.5A2.5 2.5 0 0 0 1.5 7v10A2.5 2.5 0 0 0 4 19.5h11a2.5 2.5 0 0 0 2.5-2.5v-2.28l3.66 2.44A1.25 1.25 0 0 0 23 16.12V7.88a1.25 1.25 0 0 0-1.84-1.04L17.5 9.28V7A2.5 2.5 0 0 0 15 4.5H4Z" />
               </svg>
             </div>
+            <div className="min-w-0">
+              <h2 className="text-lg sm:text-xl font-bold font-play text-blue-600 dark:text-blue-400 tracking-tight leading-tight">
+                Tọa đàm phỏng vấn
+              </h2>
+              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5 font-normal">
+                Chia sẻ kinh nghiệm, góc nhìn và những bài học quý giá từ các chuyên gia trong ngành.
+              </p>
+            </div>
           </div>
-        ) : (
+
+          {/* Right: Handwriting Quote */}
+          <div className="shrink-0 text-right hidden sm:block">
+            <p className="font-banner-quote text-base sm:text-lg text-blue-600 dark:text-blue-400 font-normal leading-snug italic">
+              “Học hỏi từ những người đi trước là cách nhanh nhất để trưởng thành.”
+            </p>
+            <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 block text-right mt-0.5">
+              — Nguyễn Hùng Thái
+            </span>
+          </div>
+        </div>
+
+        {/* 2. MAIN CONTENT AREA: 2 CỘT (VIDEO PLAYER BÊN TRÁI & CHI TIẾT PHỎNG VẤN BÊN PHẢI) */}
+        <div className="w-full flex-1 min-h-0 flex flex-col lg:flex-row gap-4 items-stretch overflow-hidden">
+          {/* CỘT BÊN TRÁI: KHUNG VIDEO PLAYER CHUYÊN NGHIỆP */}
           <div
-            className="theme-hero-banner relative rounded-2xl overflow-hidden border-none shadow-xl flex flex-col justify-between p-3.5 sm:p-4 text-white h-full group/banner overflow-y-auto no-scrollbar w-full lg:w-[300px] xl:w-[300px] max-w-full"
-            style={{
-              background: 'linear-gradient(160deg, #0f172a 0%, #3b0764 45%, #1e1b4b 100%)',
-            }}
+            ref={containerRef}
+            className="flex-[1.4] min-w-0 h-full flex flex-col justify-between rounded-[22px] overflow-hidden bg-black relative border border-slate-200/60 dark:border-white/10 shadow-lg group select-none"
           >
-            {/* Background Video: banner dọc dùng link video dự án (hình nền sáng rõ) */}
+            {/* HTML5 Video Element */}
             <video
+              ref={videoRef}
+              src={isPlaying ? INTERVIEW_VIDEO_2_URL : INTERVIEW_VIDEO_1_URL}
               autoPlay
-              loop
-              muted
+              loop={!isPlaying}
+              muted={isMuted || !isPlaying}
               playsInline
-              src="https://cdn.scena.ai/project/10223/cc106cb37b8d219cca59af9a71a4d7a8cd019515a3e9a8282d16909bb21d88b9.mp4"
-              className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none brightness-[1.10] contrast-[1.08] group-hover/banner:scale-105 transition-transform duration-700"
+              onTimeUpdate={handleTimeUpdate}
+              onLoadedMetadata={handleLoadedMetadata}
+              onEnded={() => setIsPlaying(false)}
+              className="w-full h-full object-cover select-none pointer-events-none"
             />
 
-            {/* Dark Ambient Overlay nhẹ mỏng để lộ rõ hình nền sống động */}
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/55 via-transparent to-slate-950/65 pointer-events-none" />
+            {/* Gradient Scrims */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
 
-            {/* Ambient Watermark */}
-            <div className="card-watermark opacity-15 pointer-events-none -right-4 -bottom-6">
-              <WebIcon name="headphones" className="w-24 h-24 text-pink-400" />
+            {/* Top-Left Badge: Video giới thiệu sẵn sàng */}
+            <div className="absolute top-3.5 left-3.5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white text-[11px] font-semibold shadow-md">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              <span>Video giới thiệu sẵn sàng</span>
             </div>
 
-            {/* PHẦN 1: HEADER BANNER (Tiêu đề, Badge, Subtitle & Quote + Nút Thu Gọn) */}
-            <div className="relative z-10 flex flex-col gap-1.5 shrink-0">
-              <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-white/15">
-                <span className="font-handwriting font-bold text-xl sm:text-2xl text-pink-400 leading-none drop-shadow-xs">
-                  Đối thoại
+            {/* Big Center Circular Play Button (khi đang tạm dừng) */}
+            {!isPlaying && (
+              <button
+                type="button"
+                onClick={togglePlay}
+                aria-label="Phát video phỏng vấn"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-2xl transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+              >
+                <svg className="w-6 h-6 sm:w-7 sm:h-7 ml-1 fill-white" viewBox="0 0 24 24">
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+              </button>
+            )}
+
+            {/* Floating Pill on Bottom Right: ▶ Phát phỏng vấn > */}
+            <div className="absolute bottom-14 right-3.5 z-20">
+              <button
+                type="button"
+                onClick={togglePlay}
+                className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-fuchsia-600 text-white font-bold text-xs shadow-xl flex items-center gap-2 hover:opacity-95 active:scale-95 transition-all cursor-pointer border border-white/30"
+              >
+                <div className="w-5 h-5 rounded-full bg-white text-blue-600 flex items-center justify-center shrink-0">
+                  {isPlaying ? (
+                    <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                      <rect x="6" y="4" width="4" height="16" />
+                      <rect x="14" y="4" width="4" height="16" />
+                    </svg>
+                  ) : (
+                    <svg className="w-2.5 h-2.5 ml-0.5 fill-current" viewBox="0 0 24 24">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                  )}
+                </div>
+                <span>{isPlaying ? 'Tạm dừng phỏng vấn' : 'Phát phỏng vấn'}</span>
+                <span className="text-white/80">›</span>
+              </button>
+            </div>
+
+            {/* Subtitle Caption Overlay (khi bật CC) */}
+            {showSubtitles && isPlaying && (
+              <div className="absolute bottom-16 inset-x-4 z-20 flex justify-center pointer-events-none">
+                <span className="px-3.5 py-1.5 rounded-lg bg-black/75 backdrop-blur-xs text-white text-xs sm:text-sm font-medium text-center max-w-xl shadow-md border border-white/10">
+                  {currentQ.answerVi.slice(0, 110)}...
                 </span>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-pink-500/20 border border-pink-400/40 text-[9.5px] font-extrabold text-pink-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
-                    <span>Trực tiếp · 24/7</span>
-                  </div>
+              </div>
+            )}
+
+            {/* Bottom Controls Bar */}
+            <div className="relative z-30 p-2.5 sm:p-3 bg-black/80 backdrop-blur-md border-t border-white/10 flex flex-col gap-1.5 text-white">
+              {/* Progress Slider Bar */}
+              <div className="w-full relative flex items-center">
+                <input
+                  type="range"
+                  min="0"
+                  max={durationSec}
+                  step="0.5"
+                  value={currentTimeSec}
+                  onChange={handleSeek}
+                  aria-label="Thanh thời gian video"
+                  className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                />
+              </div>
+
+              {/* Controls Buttons Row */}
+              <div className="flex items-center justify-between gap-2 text-xs">
+                {/* Left Controls: Play + Time */}
+                <div className="flex items-center gap-3">
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsBannerCollapsed(true);
-                    }}
-                    className="px-2 py-0.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/25 text-white/90 hover:text-white text-[10px] font-bold transition flex items-center gap-1 cursor-pointer"
-                    title="Bấm để thu gọn banner"
+                    onClick={togglePlay}
+                    aria-label={isPlaying ? 'Tạm dừng' : 'Phát'}
+                    className="w-7 h-7 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white transition cursor-pointer"
                   >
-                    <span>Thu gọn</span>
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    {isPlaying ? (
+                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                        <rect x="6" y="4" width="4" height="16" />
+                        <rect x="14" y="4" width="4" height="16" />
+                      </svg>
+                    ) : (
+                      <svg className="w-3.5 h-3.5 ml-0.5 fill-current" viewBox="0 0 24 24">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                      </svg>
+                    )}
+                  </button>
+
+                  <span className="font-mono text-[11px] text-slate-300">
+                    {formatTime(currentTimeSec)} / {formatTime(durationSec)}
+                  </span>
+                </div>
+
+                {/* Right Controls: Volume + CC + Settings + Fullscreen */}
+                <div className="flex items-center gap-2">
+                  {/* Volume Toggle */}
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    aria-label="Bật/Tắt âm thanh"
+                    className="p-1 rounded text-slate-300 hover:text-white transition cursor-pointer"
+                  >
+                    {isMuted ? (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                      </svg>
+                    )}
+                  </button>
+
+                  {/* CC Subtitles Toggle */}
+                  <button
+                    type="button"
+                    onClick={() => setShowSubtitles(!showSubtitles)}
+                    aria-label="Bật/Tắt phụ đề"
+                    className={`px-1.5 py-0.5 rounded text-[10px] font-bold border transition cursor-pointer ${
+                      showSubtitles
+                        ? 'bg-blue-600 text-white border-blue-500'
+                        : 'bg-transparent text-slate-400 border-slate-600 hover:text-white'
+                    }`}
+                  >
+                    CC
+                  </button>
+
+                  {/* Settings Gear */}
+                  <button
+                    type="button"
+                    onClick={() => showToast('Tùy chỉnh độ phân giải HD 1080p tự động')}
+                    aria-label="Cài đặt video"
+                    className="p-1 rounded text-slate-300 hover:text-white transition cursor-pointer"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="3" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                    </svg>
+                  </button>
+
+                  {/* Fullscreen Toggle */}
+                  <button
+                    type="button"
+                    onClick={toggleFullscreen}
+                    aria-label="Toàn màn hình"
+                    className="p-1 rounded text-slate-300 hover:text-white transition cursor-pointer"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
                     </svg>
                   </button>
                 </div>
               </div>
-
-              {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, màu tiêu đề giống màu icon và màu menu icon ở trang */}
-              <h2 className="text-base sm:text-lg font-black font-play text-pink-400 tracking-tight leading-snug drop-shadow-xs flex items-center gap-2">
-                <span className="inline-flex animate-banner-icon shrink-0 text-pink-400">
-                  <WebIcon name="chat" className="w-5 h-5" />
-                </span>
-                <span>Phỏng Vấn Thực Chiến</span>
-              </h2>
-              <p className="text-[10.5px] font-medium text-slate-200 leading-tight">
-                Tương tác trực tiếp – Giải pháp thực chiến – Đo lường vượt trội
-              </p>
-
-              {/* Decorative Pink-Purple Accent Line */}
-              <div className="w-12 h-1 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-400 shadow-xs" />
-
-              {/* Quote Block Fleur De Leah (chỉ để font chữ màu vàng, xóa viền đen) */}
-              <div className="pt-0.5 bg-transparent border-none shadow-none">
-                <p className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight select-none">
-                  “Đối thoại chân thực khẳng định bản lĩnh và năng lực quản trị.”
-                </p>
-                <span className="text-[10px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play">
-                  — Nguyễn Hùng Thái
-                </span>
-              </div>
             </div>
+          </div>
 
-            {/* PHẦN 2: PROFILE CANDIDATE ROW */}
-            <div className="relative z-10 my-1.5 flex flex-col gap-1.5 shrink-0">
-              <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm">
-                <div className="relative w-10 h-10 rounded-xl overflow-hidden ring-1 ring-pink-300/50 shadow-md shrink-0 bg-slate-900">
-                  <img
-                    src="https://i.ibb.co/RT3jX4Mv/H-ng-Th-i-Avata-Gif.gif"
-                    alt="Nguyễn Hùng Thái"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="flex flex-col min-w-0">
-                  <span className="text-xs font-black font-play text-white truncate tracking-wide">
-                    Nguyễn Hùng Thái
-                  </span>
-                  <span className="text-[10px] font-bold text-pink-200 truncate">
-                    Trưởng Phòng CSKH
-                  </span>
-                  <span className="text-[9px] text-slate-300 truncate">
-                    22+ Năm Kinh Nghiệm CX
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* PHẦN 3: NHÓM NÚT LỌC DANH MỤC CÂU HỎI TRONG BANNER: THU GỌN LẠI, KHI BẤM VÀO SẼ HIỆN RA */}
-            <div className="relative z-10 flex flex-col gap-1 w-full shrink-0">
-              <button
-                type="button"
-                onClick={() => setIsCategoryOpen((prev) => !prev)}
-                className="w-full flex items-center justify-between p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-sm transition-all cursor-pointer text-left group/catBtn"
-                title={isCategoryOpen ? "Thu gọn danh mục câu hỏi" : "Bấm để mở danh mục câu hỏi"}
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-6 h-6 rounded-lg bg-pink-400/20 text-pink-300 flex items-center justify-center shrink-0 animate-icon-inplace">
-                    <WebIcon name="layers" className="w-3.5 h-3.5" />
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-pink-200 font-black truncate">
-                      Chủ đề câu hỏi
-                    </span>
-                    <span className="text-[10.5px] text-white font-bold truncate">
-                      {INTERVIEW_TABS.find((t) => t.key === activeFilter)?.labelVi || 'Tất cả (14)'}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-pink-500/20 text-pink-200 border border-pink-400/30 font-mono">
-                    {isCategoryOpen ? 'Thu gọn' : 'Hiện ra'}
-                  </span>
-                  <svg
-                    className={`w-3.5 h-3.5 text-pink-300 transition-transform duration-300 ${
-                      isCategoryOpen ? 'rotate-180' : 'rotate-0'
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          {/* CỘT BÊN PHẢI: CHI TIẾT PHỎNG VẤN (CARD TRẮNG SÁNG CHUẨN MOCKUP) */}
+          <div className="flex-1 min-w-0 h-full flex flex-col justify-between rounded-[22px] bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-white/10 p-5 sm:p-6 shadow-sm text-left overflow-hidden">
+            {/* Top Row: Icon + Tiêu đề 'Chi tiết phỏng vấn' + Badge 'Câu 1 / 13' */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5 shrink-0">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                  <svg className="w-5 h-5 fill-none stroke-current stroke-[2.2]" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
-              </button>
-
-              {/* Danh sách chủ đề: thu gọn lại, khi bấm vào sẽ hiện ra */}
-              <div
-                className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                  isCategoryOpen
-                    ? 'max-h-[300px] opacity-100 mt-1'
-                    : 'max-h-0 opacity-0 pointer-events-none'
-                }`}
-              >
-                <div className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-y-auto no-scrollbar max-h-[190px] pb-0.5">
-                  {INTERVIEW_TABS.map((tab) => {
-                    const isActive = activeFilter === tab.key;
-                    return (
-                      <button
-                        key={tab.key}
-                        type="button"
-                        onClick={() => setActiveFilter(tab.key)}
-                        className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all duration-200 flex items-center justify-between gap-1.5 cursor-pointer border whitespace-nowrap active:scale-95 ${
-                          isActive
-                            ? 'bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 text-white border-pink-400 shadow-md shadow-pink-500/30 scale-[1.02]'
-                            : 'bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white border-white/15'
-                        }`}
-                      >
-                        <span className="truncate">{tab.labelVi}</span>
-                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-          {/* PHẦN 4: THỐNG KÊ VÀ HÀNH ĐỘNG TƯƠNG TÁC */}
-          <div className="relative z-10 pt-2 border-t border-white/15 flex flex-col gap-1.5 shrink-0">
-            <div className="grid grid-cols-2 gap-1.5">
-              <button
-                type="button"
-                onClick={togglePlay}
-                className="px-2 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-500 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 shadow-md shadow-pink-500/30 transition cursor-pointer active:scale-95"
-              >
-                <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
-                  {isVideoPlaying ? (
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                  ) : (
-                    <polygon points="5 3 19 12 5 21 5 3" />
-                  )}
-                </svg>
-                <span>{isVideoPlaying ? 'Tạm Dừng' : 'Phát Video'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={toggleAudio}
-                className="px-2 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 transition cursor-pointer active:scale-95"
-              >
-                <WebIcon name={isAudioOn ? 'volume' : 'volume-x'} className="w-2.5 h-2.5" />
-                <span>{isAudioOn ? 'Tắt Tiếng' : 'Bật Tiếng'}</span>
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between text-[9px] text-slate-400 font-medium px-0.5">
-              <span>Trực tiếp HD 1080p</span>
-              <span className="text-pink-400 font-bold">14 Phân Cảnh</span>
-            </div>
-          </div>
-        </div>
-        )}
-      </aside>
-
-      {/* 2. VÙNG VIDEO PHỎNG VẤN TRỰC TIẾP (CHIẾM VỊ TRÍ BANNER KHI PHÁT) */}
-      <div className="flex-1 min-w-0 flex flex-col h-full min-h-[340px] lg:min-h-0 transition-all duration-700 ease-in-out">
-        <div className="relative w-full h-full rounded-2xl overflow-hidden border border-slate-200/90 shadow-md bg-slate-950 flex flex-col flex-1 group">
-          <video
-            ref={videoRef}
-            autoPlay
-            loop={!isVideoPlaying}
-            muted={!isAudioOn}
-            playsInline
-            src={isVideoPlaying ? INTERVIEW_VIDEO_2_URL : INTERVIEW_VIDEO_1_URL}
-            onTimeUpdate={handleTimeUpdate}
-            onEnded={handleEnded}
-            className="h-full w-full object-cover transition-all duration-700 brightness-105 contrast-100 flex-1 min-h-0"
-          />
-
-          {/* Gradient vignette */}
-          <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-950/85 via-transparent to-slate-950/45" />
-
-          {/* Top Left: Active Question Badge & Timecode */}
-          <div className="pointer-events-none absolute left-3.5 top-3.5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-white/20 backdrop-blur-md text-xs font-bold text-white shadow-md truncate max-w-[calc(100%-80px)]">
-            <span
-              className={`w-2 h-2 rounded-full shrink-0 ${
-                isVideoPlaying ? 'bg-emerald-400 animate-ping' : 'bg-cyan-400'
-              }`}
-            />
-            <span className="font-mono text-cyan-300 tracking-wide">
-              {isVideoPlaying ? `Đang phát câu 0${currentQ.stt}` : 'Sẵn sàng phỏng vấn'}
-            </span>
-            <span className="text-white/40">·</span>
-            <span className="text-slate-300 font-mono text-[11px] truncate">
-              {currentQ.timestamp}
-            </span>
-          </div>
-
-          {/* Bottom Right: Rotating Glowing Laser Beam Capsule Button */}
-          <div className="pointer-events-auto absolute right-3.5 bottom-3.5 z-20">
-            <div className="relative inline-flex items-center justify-between rounded-full p-[2px] select-none group/container transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] w-auto max-w-fit h-[42px] sm:h-[46px] overflow-hidden shadow-[0_0_20px_rgba(78,86,246,0.5)] ring-2 ring-indigo-400/50">
-              <div className="absolute -inset-[220%] animate-[spin_4s_linear_infinite] pointer-events-none bg-[conic-gradient(from_0deg,transparent_0_200deg,#4E56F6_250deg,#F125D6_300deg,#ffffff_340deg,#4E56F6_360deg)] opacity-100" />
-
-              <div className="relative z-10 inline-flex items-center justify-between w-auto max-w-fit h-full rounded-full bg-gradient-to-r from-[#4E56F6] via-[#8938F8] to-[#F125D6] px-2.5 py-1 gap-2 shadow-inner backdrop-blur-md">
-                {/* Speaker Toggle Button */}
-                <button
-                  type="button"
-                  onClick={toggleAudio}
-                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shrink-0 p-0 transition-all duration-300 cursor-pointer active:scale-95 shadow-md ${
-                    isAudioOn
-                      ? 'bg-[#4E56F6] hover:bg-[#3b43e3] text-white shadow-[0_0_12px_rgba(78,86,246,0.9)]'
-                      : 'bg-[#E60026] hover:bg-red-500 text-white shadow-[0_0_12px_rgba(230,0,38,0.9)]'
-                  }`}
-                  title="Bật/Tắt âm thanh"
-                >
-                  {isAudioOn ? (
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-                    </svg>
-                  )}
-                </button>
-
-                <div className="w-[1.5px] h-4 sm:h-5 bg-white/40 shrink-0 mx-0.5 rounded-full" />
-
-                {/* Play / Pause Toggle Button */}
-                <button
-                  type="button"
-                  onClick={togglePlay}
-                  className="flex items-center justify-center gap-1.5 px-2.5 py-1 flex-1 min-w-0 text-white font-extrabold text-xs tracking-wide transition-all duration-300 cursor-pointer hover:opacity-95 active:scale-98"
-                >
-                  <span className="drop-shadow-sm font-black uppercase tracking-wider text-xs text-white truncate">
-                    {isVideoPlaying ? 'Dừng phát' : 'Phát phỏng vấn'}
-                  </span>
-                  <span>
-                    {isVideoPlaying ? (
-                      <svg className="w-4 h-4 shrink-0 fill-current text-white" viewBox="0 0 24 24">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                      </svg>
-                    ) : (
-                      <svg className="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    )}
-                  </span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. VÙNG BÊN PHẢI: THẺ CHI TIẾT CÂU TRẢ LỜI */}
-      <div className="w-full lg:w-[350px] xl:w-[380px] shrink-0 flex flex-col h-full overflow-hidden">
-        <div className="w-full h-full flex-1 rounded-2xl border border-white/70 dark:border-white/10 bg-white/80 dark:bg-slate-900/90 p-4 sm:p-5 backdrop-blur-2xl shadow-md transition-all duration-300 text-left flex flex-col justify-between gap-3 relative overflow-hidden">
-          <div className="space-y-2.5 flex-1 flex flex-col min-h-0 relative z-10">
-            {/* Header Tiêu đề thẻ */}
-            <div className="space-y-2 shrink-0">
-              <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-pink-100 dark:bg-pink-950/60 text-pink-600 dark:text-pink-400 flex items-center justify-center shrink-0">
-                    <svg className="w-4 h-4 stroke-[2.3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                    </svg>
-                  </div>
-                  <h4 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
-                    Chi Tiết Câu Trả Lời
-                  </h4>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  <span className="px-2 py-0.5 rounded-md bg-indigo-600 text-white text-[10px] font-mono font-black shadow-xs tracking-wide">
-                    CÂU 0{currentQ.stt}
-                  </span>
-                  <div className="flex items-center gap-0.5 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-bold text-slate-700 dark:text-slate-300">
-                    <span
-                      className={`w-1 rounded-full ${
-                        isVideoPlaying ? 'bg-cyan-500 h-3 animate-pulse' : 'bg-slate-400 h-1.5'
-                      }`}
-                    />
-                    <span
-                      className={`w-1 rounded-full ${
-                        isVideoPlaying ? 'bg-pink-500 h-4 animate-bounce' : 'bg-slate-400 h-2.5'
-                      }`}
-                    />
-                    <span className="ml-1 text-[9px]">
-                      {isVideoPlaying ? 'Đang phát' : 'Sẵn sàng'}
-                    </span>
-                  </div>
-                </div>
+                <h3 className="text-base sm:text-lg font-bold font-play text-slate-800 dark:text-white leading-tight">
+                  Chi tiết phỏng vấn
+                </h3>
               </div>
 
-              <div className="h-[2px] w-full rounded-full bg-gradient-to-r from-pink-500 via-indigo-500 to-cyan-400 shadow-2xs" />
+              <span className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold text-xs border border-blue-200/80 dark:border-blue-800">
+                Câu {currentQIdx + 1} / {totalQuestions}
+              </span>
             </div>
 
-            {/* Segment Progress Bar */}
-            <div className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shrink-0 text-xs font-semibold">
-              <div className="flex items-center gap-1 text-slate-600 dark:text-slate-300 font-mono text-[11px]">
-                <WebIcon name="clock" className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                <span>{currentQ.timestamp}</span>
-              </div>
-              <div className="flex items-center gap-2 flex-1 max-w-[150px]">
-                <div className="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-pink-500 to-indigo-600 rounded-full transition-all duration-200"
-                    style={{ width: `${progressPct}%` }}
-                  />
+            {/* Middle Content: Số câu + Thời lượng + Chủ đề + Câu hỏi + Câu trả lời */}
+            <div className="flex-1 min-h-0 py-3 flex flex-col justify-start overflow-y-auto custom-scrollbar pr-1">
+              {/* Row: Circle Number + Time */}
+              <div className="flex items-center gap-2.5 mb-2.5">
+                <div className="w-6 h-6 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                  {currentQIdx + 1}
                 </div>
-                <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 shrink-0">
-                  {Math.round(currentQ.endSec - currentQ.startSec)}s
+                <span className="text-xs text-blue-600 dark:text-blue-400 font-medium font-mono flex items-center gap-1">
+                  <span>🕒</span>
+                  <span>{currentQ.timestamp} (0g)</span>
                 </span>
               </div>
+
+              {/* Topic Pill Badge */}
+              <div className="mb-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-semibold">
+                  <span>🎯</span>
+                  <span>Chủ đề: {currentQ.categoryVi}</span>
+                </span>
+              </div>
+
+              {/* Question Title (In đậm rõ nét) */}
+              <h4 className="text-sm sm:text-base font-bold font-play text-slate-900 dark:text-white leading-snug mb-3">
+                {currentQ.questionVi}
+              </h4>
+
+              {/* Answer Content */}
+              <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                {currentQ.answerVi}
+              </p>
             </div>
 
-            {/* Dialogue Bubble: Asker & Answerer & Key Takeaway */}
-            <div className="flex-1 space-y-2 overflow-y-auto pr-1 no-scrollbar min-h-0 text-xs">
-              {/* Asker (Hiển thị Câu hỏi số ở đầu câu hỏi) */}
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 space-y-1">
-                <div className="flex items-center gap-1.5">
-                  <WebIcon name="building" className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
-                  <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
-                    {currentQ.askerVi.toUpperCase()}
-                  </span>
-                </div>
-                <h5 className="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white leading-snug">
-                  <span className="text-pink-600 dark:text-pink-400 font-extrabold mr-1.5">
-                    Câu hỏi {currentQ.stt < 10 ? `0${currentQ.stt}` : currentQ.stt}:
-                  </span>
-                  <span>{currentQ.questionVi.replace(/^Câu hỏi\s*\d+:\s*/, '')}</span>
-                </h5>
-              </div>
+            {/* Bottom Row: Navigation Buttons (← Câu trước | 1 / 13 | Câu tiếp theo →) */}
+            <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-white/5 shrink-0 gap-2">
+              <button
+                type="button"
+                disabled={currentQIdx === 0}
+                onClick={() => selectQuestion(currentQIdx - 1)}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1 cursor-pointer ${
+                  currentQIdx === 0
+                    ? 'text-slate-400 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-60'
+                    : 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200/80'
+                }`}
+              >
+                <span>←</span>
+                <span>Câu trước</span>
+              </button>
 
-              {/* Answerer */}
-              <div className="p-2.5 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800/60 space-y-1">
-                <div className="flex items-center gap-1.5">
-                  <WebIcon name="user" className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
-                    {currentQ.answererVi.toUpperCase()}
-                  </span>
-                </div>
-                <p className="text-xs sm:text-[13px] text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-                  {currentQ.answerVi}
-                </p>
-              </div>
+              <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
+                {currentQIdx + 1} / {totalQuestions}
+              </span>
 
-              {/* Takeaway */}
-              <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-start gap-2 shrink-0">
-                <WebIcon name="trophy" className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                <div className="text-[11.5px] text-amber-950 dark:text-amber-200 font-medium leading-relaxed">
-                  <span className="font-extrabold text-amber-800 dark:text-amber-300 inline-flex items-center gap-1 mr-1">
-                    <WebIcon name="target" className="w-3 h-3 text-amber-700 dark:text-amber-400" />
-                    <span>Trọng tâm:</span>
-                  </span>
-                  <span>{currentQ.keyTakeawayVi}</span>
-                </div>
-              </div>
+              <button
+                type="button"
+                disabled={currentQIdx === totalQuestions - 1}
+                onClick={() => selectQuestion(currentQIdx + 1)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1 cursor-pointer ${
+                  currentQIdx === totalQuestions - 1
+                    ? 'text-slate-400 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-not-allowed opacity-60'
+                    : 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200/80 shadow-2xs'
+                }`}
+              >
+                <span>Câu tiếp theo</span>
+                <span>→</span>
+              </button>
             </div>
-          </div>
-
-          {/* Navigation Footer */}
-          <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between mt-auto shrink-0 relative z-10">
-            <button
-              type="button"
-              disabled={currentQIdx === 0}
-              onClick={() => selectQuestion(currentQIdx - 1)}
-              className="text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-cyan-400 disabled:opacity-30 disabled:pointer-events-none cursor-pointer flex items-center gap-1 transition-colors py-1.5 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              <span>‹ Trước</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => selectQuestion(currentQIdx)}
-              className="text-xs font-bold text-indigo-700 dark:text-cyan-400 hover:underline flex items-center gap-1 cursor-pointer py-1 px-2"
-              title="Phát lại từ đầu đoạn này"
-            >
-              <WebIcon name="refresh" className="w-3.5 h-3.5" />
-              <span>Phát lại</span>
-            </button>
-
-            <button
-              type="button"
-              disabled={currentQIdx === INTERVIEW_QUESTIONS.length - 1}
-              onClick={() => selectQuestion(currentQIdx + 1)}
-              className="text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-cyan-400 disabled:opacity-30 disabled:pointer-events-none cursor-pointer flex items-center gap-1 transition-colors py-1.5 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              <span>Tiếp ›</span>
-            </button>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
