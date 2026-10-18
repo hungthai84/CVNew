@@ -277,7 +277,7 @@ export default function HomePage() {
                 ? 'flex-1 p-0 overflow-hidden relative flex flex-col h-full w-full'
                 : currentPage === 1 || currentPage === 2
                 ? 'flex-1 p-[15px] overflow-hidden relative flex flex-col h-full w-full'
-                : (currentPage >= 3 && currentPage <= 7) || currentPage === 9 || currentPage === 10 || currentPage === 12
+                : (currentPage >= 1 && currentPage <= 7) || currentPage === 9 || currentPage === 10 || currentPage === 12
                 ? 'flex-1 p-[15px] overflow-y-auto lg:overflow-hidden relative flex flex-col gap-[15px] h-full w-full'
                 : 'flex-1 p-[15px] overflow-y-auto custom-scrollbar flex flex-col gap-[15px]'
             }`}
