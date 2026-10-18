@@ -236,10 +236,10 @@ export const HoroscopeView: React.FC = () => {
   return (
     <section
       id="tuvi"
-      className="relative w-full h-auto flex flex-col justify-start items-stretch font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent pb-8"
+      className="relative w-full h-full flex-1 min-h-0 flex flex-col justify-start items-stretch font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-hidden"
     >
       {/* Main Container */}
-      <div className="w-full flex-grow flex flex-col gap-[15px] max-w-7xl mx-auto justify-start select-none">
+      <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-3 sm:gap-[15px] max-w-7xl mx-auto justify-start select-none overflow-hidden">
         {/* HERO BANNER VỚI THANH CHUYỂN SLIDE & ÂM THANH THIỀN */}
         <HeroBanner
           badgeText="Phong Thủy & Cung Mệnh"
@@ -269,10 +269,9 @@ export const HoroscopeView: React.FC = () => {
         />
 
         {/* BỐ CỤC 2 CỘT: TRÁI 80% CHỨA SLIDE, PHẢI 20% CHỨA CÔNG CỤ TRA HỢP CÔNG VIỆC */}
-        {/* BỐ CỤC 2 CỘT: TRÁI 80% CHỨA SLIDE, PHẢI 20% CHỨA CÔNG CỤ TRA HỢP CÔNG VIỆC */}
-        <div id="info-card-tuvi" className="w-full flex flex-col lg:flex-row gap-4 items-stretch lg:h-[620px] xl:h-[640px] relative z-10">
+        <div id="info-card-tuvi" className="w-full flex-1 min-h-0 flex flex-col lg:flex-row gap-3 sm:gap-4 items-stretch relative z-10 overflow-hidden">
           {/* ================= CỘT TRÁI (80%): CHỨA CÁC SLIDE NỘI DUNG ================= */}
-          <div className="w-full lg:w-[78%] xl:w-[80%] flex flex-col min-w-0 relative h-full">
+          <div className="w-full lg:w-[78%] xl:w-[80%] flex flex-col min-w-0 relative h-full overflow-hidden">
             {/* CẶP NÚT TRÒN ĐIỀU HƯỚNG SLIDE BÊN TRÁI & PHẢI (CĂN CENTER CHIỀU DỌC) */}
             <button
               type="button"
@@ -300,7 +299,7 @@ export const HoroscopeView: React.FC = () => {
 
             {/* SLIDE 1: 1. Cung Mệnh, La Bàn Âm Dương & Bát Trạch Quản Trị */}
             {currentSlide === 0 && (
-              <div key="slide-1" className={`w-full h-full flex flex-col ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
+              <div key="slide-1" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-1"
                   className="w-full h-full bg-gradient-to-br from-white/95 via-purple-50/25 to-amber-50/30 dark:from-slate-900/95 dark:via-purple-950/20 dark:to-slate-900/95 border border-purple-200/80 dark:border-purple-800/60 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-[0_8px_32px_0_rgba(147,51,234,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] backdrop-blur-2xl flex flex-col justify-between relative overflow-hidden group"
@@ -326,7 +325,7 @@ export const HoroscopeView: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar pt-3 pr-0.5">
+                  <div className="relative z-10 flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-3 pr-1">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-stretch">
                       {/* Cột trái: La Bàn Âm Dương */}
                       <div className="lg:col-span-4 bg-gradient-to-br from-purple-500/15 via-white/80 dark:via-slate-800/80 to-amber-500/15 border border-purple-300/60 dark:border-purple-700/50 rounded-2xl p-3.5 sm:p-4 flex flex-col items-center justify-between text-center space-y-3 shadow-sm backdrop-blur-xl relative overflow-hidden">
@@ -573,7 +572,7 @@ export const HoroscopeView: React.FC = () => {
 
             {/* SLIDE 2: 2. Phong Cách Quản Trị */}
             {currentSlide === 1 && (
-              <div key="slide-2" className={`w-full h-full flex flex-col ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
+              <div key="slide-2" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-2"
                   className="w-full h-full bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-blue-400/30 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden"
@@ -591,7 +590,7 @@ export const HoroscopeView: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="flex-1 overflow-y-auto no-scrollbar pt-3 pr-0.5">
+                  <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-3 pr-1">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-left">
                       {WORK_PERSONALITY_TRAITS.map((trait, index) => {
                         const colorPalette = [
@@ -677,7 +676,7 @@ export const HoroscopeView: React.FC = () => {
 
             {/* SLIDE 3: 3. Lục Cung Ngũ Hành */}
             {currentSlide === 2 && (
-              <div key="slide-3" className={`w-full h-full flex flex-col ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
+              <div key="slide-3" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-3"
                   className="w-full h-full bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-emerald-400/30 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
@@ -696,7 +695,7 @@ export const HoroscopeView: React.FC = () => {
                   </div>
 
                   {/* 6 Cung cốt lõi & 5 Hành tố */}
-                  <div className="flex-1 overflow-y-auto no-scrollbar pt-3 pr-0.5 space-y-3.5">
+                  <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-3 pr-1 space-y-3.5">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {SIX_CORE_PALACES.map((palace, index) => {
                         const palette = [
@@ -826,7 +825,7 @@ export const HoroscopeView: React.FC = () => {
 
             {/* SLIDE 4: 4. Triết Lý Lãnh Đạo (Đổi tên & tách thành Slide 4) */}
             {currentSlide === 3 && (
-              <div key="slide-4" className={`w-full h-full flex flex-col ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
+              <div key="slide-4" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-5"
                   className="w-full h-full bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-amber-400/30 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
@@ -844,7 +843,7 @@ export const HoroscopeView: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="flex-1 overflow-y-auto no-scrollbar pt-3 pr-0.5 space-y-3.5">
+                  <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-3 pr-1 space-y-3.5">
                     {/* 6 Thẻ triết lý: Tiêu đề 4 chữ viết hoa chữ đầu, không sub tiêu đề */}
                     <div
                       id="tuvi-philosophy-cards"
@@ -928,10 +927,10 @@ export const HoroscopeView: React.FC = () => {
           </div>
 
           {/* ================= CỘT PHẢI (20%): CÔNG CỤ TRA HỢP CÔNG VIỆC ================= */}
-          <div className="w-full lg:w-[22%] xl:w-[20%] shrink-0 flex flex-col min-w-0 h-full">
+          <div className="w-full lg:w-[22%] xl:w-[20%] shrink-0 flex flex-col min-w-0 h-full overflow-hidden">
             <div
               id="tuvi-tool-zodiac"
-              className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-teal-200/90 dark:border-teal-500/30 rounded-2xl p-3 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
+              className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-teal-200/90 dark:border-teal-500/30 rounded-2xl md:rounded-3xl p-3 sm:p-4 shadow-sm backdrop-blur-2xl flex flex-col min-h-0 justify-between overflow-hidden text-left"
             >
               {/* Header thẻ: 4 chữ viết hoa chữ đầu, không tạo sub tiêu đề */}
               <div className="flex items-center justify-between pb-2 border-b border-teal-200/50 dark:border-teal-800/50 shrink-0">
@@ -947,7 +946,7 @@ export const HoroscopeView: React.FC = () => {
               </div>
 
               {/* Scrollable Tool Body */}
-              <div className="flex-1 overflow-y-auto no-scrollbar pt-2 pr-0.5 space-y-2 flex flex-col">
+              <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-2 pr-1 space-y-2 flex flex-col">
                 {/* Tra cứu năm sinh & Bộ lọc 12 Con Giáp (Icon Filter tích hợp trong mục tìm kiếm) */}
                 <div className="space-y-1.5 shrink-0">
                   <div className="flex items-center gap-1.5 w-full">
@@ -1038,7 +1037,7 @@ export const HoroscopeView: React.FC = () => {
                 </div>
 
                 {/* Danh sách 12 Con Giáp: Hiển thị 1 cột duy nhất theo yêu cầu */}
-                <div className="flex flex-col gap-1 shrink-0 p-0.5 max-h-[220px] overflow-y-auto no-scrollbar">
+                <div className="flex flex-col gap-1 shrink-0 p-0.5 max-h-[220px] overflow-y-auto custom-scrollbar">
                   {filteredZodiacList.map((item) => {
                     const isSelected = selectedZodiacId === item.id;
                     const theme = getZodiacTheme(item.tier);
