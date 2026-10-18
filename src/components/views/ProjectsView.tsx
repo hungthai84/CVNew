@@ -95,23 +95,21 @@ const PROJECT_CARD_GROUPS: ProjectCardGroup[] = [
 ];
 
 const PROJECT_CATEGORIES = [
-  { key: 'all', label: 'Tất cả (21)', icon: 'globe' },
-  { key: 'strategy', label: '1. Chiến lược (2)', icon: 'compass' },
-  { key: 'sop', label: '2. Chuẩn hóa SOP (5)', icon: 'shield' },
-  { key: 'cx', label: '3. Trải nghiệm CX (4)', icon: 'sparkles' },
-  { key: 'tech', label: '4. Công nghệ & AI (4)', icon: 'database' },
-  { key: 'learning', label: '5. Đào tạo (6)', icon: 'graduation' },
+  { key: 'all', label: 'Tất cả (21)', icon: 'folder' },
+  { key: 'strategy', label: 'Chiến lược ()', icon: 'compass' },
+  { key: 'sop', label: 'Chuẩn hóa SOP', icon: 'shield' },
+  { key: 'cx', label: 'Trải nghiệm CX', icon: 'heart' },
+  { key: 'tech', label: 'Công nghệ & AI', icon: 'database' },
+  { key: 'learning', label: 'Đào tạo', icon: 'graduation' },
 ];
 
 export const ProjectsView: React.FC = () => {
   const [filter, setFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
   const [selectedGroup, setSelectedGroup] = useState<ProjectCardGroup | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<ProjectData | null>(null);
   const [mindmapProject, setMindmapProject] = useState<ProjectData | null>(null);
-  // Trạng thái thu gọn danh mục dự án trong banner (Mặc định thu gọn lại, khi bấm vào sẽ hiện ra)
-  const [isCategoryOpen, setIsCategoryOpen] = useState<boolean>(false);
-  // Trạng thái thu gọn toàn bộ banner dự án
-  const [isBannerCollapsed, setIsBannerCollapsed] = useState<boolean>(false);
 
   // Visual theme config per card matching DomainsView & SkillsView
   const getCardVisualConfig = (visualId: string) => {
@@ -191,9 +189,61 @@ export const ProjectsView: React.FC = () => {
     );
   };
 
+  const getCategoryCount = (key: string) => {
+    if (key === 'all') return PROJECTS_DATA.length;
+    return PROJECTS_DATA.filter((p) => p.groupKey === key).length;
+  };
+
+  const getCategoryMeta = (groupKey: string) => {
+    switch (groupKey) {
+      case 'strategy':
+        return { name: 'Chiến lược', dotColor: '#3b82f6' };
+      case 'sop':
+        return { name: 'Chuẩn hóa SOP', dotColor: '#a855f7' };
+      case 'cx':
+        return { name: 'Trải nghiệm CX', dotColor: '#ec4899' };
+      case 'tech':
+        return { name: 'Công nghệ & AI', dotColor: '#06b6d4' };
+      case 'learning':
+        return { name: 'Đào tạo', dotColor: '#10b981' };
+      default:
+        return { name: 'Dự án', dotColor: '#3b82f6' };
+    }
+  };
+
+  const getProgressBadge = (proj: ProjectData) => {
+    const isCompleted = proj.progressPercent >= 100 || proj.progressText?.includes('100%');
+    if (isCompleted) {
+      return {
+        bg: 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300',
+        dot: 'bg-emerald-500',
+        text: proj.progressText || 'Giai đoạn 1 - Đã hoàn thành (100%)',
+      };
+    }
+    return {
+      bg: 'bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300',
+      dot: 'bg-amber-500',
+      text: proj.progressText || 'Giai đoạn 3 - Đang triển khai (80%)',
+    };
+  };
+
   const filteredProjects = PROJECTS_DATA.filter((p) => {
-    if (filter === 'all') return true;
-    return p.groupKey === filter;
+    const matchesFilter = filter === 'all' || p.groupKey === filter;
+    if (!matchesFilter) return false;
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
+    return (
+      p.title.toLowerCase().includes(q) ||
+      p.code.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q) ||
+      p.role.toLowerCase().includes(q) ||
+      p.hashtags.some((tag) => tag.toLowerCase().includes(q))
+    );
+  }).sort((a, b) => {
+    if (sortBy === 'oldest') {
+      return a.code.localeCompare(b.code, undefined, { numeric: true });
+    }
+    return 0;
   });
 
   const handleOpenGroup = (group: ProjectCardGroup, initialProject?: ProjectData) => {
@@ -220,193 +270,191 @@ export const ProjectsView: React.FC = () => {
     <div
       className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 overflow-hidden"
     >
-      {/* 1. VERTICAL HERO BANNER BÊN PHẢI: THU GỌN / MỞ RỘNG */}
-      {isBannerCollapsed ? (
-        <div
-          onClick={() => setIsBannerCollapsed(false)}
-          className="w-full lg:w-[46px] xl:w-[48px] shrink-0 h-[48px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-row lg:flex-col justify-between items-center p-2.5 sm:p-3 border border-purple-300/70 shadow-md bg-purple-950/90 text-white cursor-pointer hover:border-cyan-400 group/collapsedBanner transition-all duration-300 select-none z-10 lg:order-2"
-          title="Bấm để mở rộng Banner Danh mục dự án"
-        >
-          <div className="flex items-center gap-2 lg:flex-col lg:gap-3">
-            <div className="w-7 h-7 rounded-lg bg-white/20 text-cyan-300 flex items-center justify-center shrink-0 group-hover/collapsedBanner:scale-110 transition-transform">
-              <WebIcon name="sparkles" className="w-4 h-4 animate-banner-icon" />
-            </div>
-            <span className="text-[11px] font-black text-cyan-200 tracking-wider font-play [writing-mode:horizontal-tb] lg:[writing-mode:vertical-rl] lg:rotate-180 uppercase">
-              Banner Dự Án
-            </span>
+      {/* 1. BANNER DỰ ÁN TRỌNG ĐIỂM & THÀNH TỰU (BÊN PHẢI THEO HÌNH VÀ YÊU CẦU CỦA USER) */}
+      <div
+        id="projects-vertical-banner"
+        className="w-full lg:w-[300px] xl:w-[300px] shrink-0 h-full rounded-[22px] overflow-hidden relative flex flex-col justify-between p-4 sm:p-4.5 bg-gradient-to-b from-[#eaf4ff]/95 via-[#f0f7ff]/90 to-[#e6f0fa]/95 dark:from-slate-900/95 dark:via-slate-850/90 dark:to-slate-900/95 backdrop-blur-xl border border-white/90 dark:border-white/10 shadow-[0_10px_30px_rgba(30,58,138,0.08)] text-slate-800 dark:text-white transition-all duration-300 lg:order-2 select-none"
+      >
+        {/* Top Content: Badge & Title */}
+        <div className="relative z-10 flex flex-col text-left">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600 text-white font-bold text-[11px] shadow-xs max-w-fit mb-2">
+            <span className="text-amber-300 text-xs">★</span>
+            <span>Dự án</span>
           </div>
 
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/15 border border-white/25 text-[10px] font-extrabold text-cyan-300 group-hover/collapsedBanner:bg-cyan-500 group-hover/collapsedBanner:text-white transition-colors">
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>Mở</span>
-          </div>
+          <h2 className="text-xl sm:text-[22px] font-black text-slate-900 dark:text-white leading-tight tracking-tight font-play">
+            Dự Án Trọng Điểm &amp;<br />Thành Tựu
+          </h2>
+
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed mt-1.5">
+            21 dự án thực chiến gắn với tầm nhìn<br />– Đo lường KPI &amp; ROI vượt trội.
+          </p>
         </div>
-      ) : (
-        <div
-          id="projects-vertical-banner"
-          className="w-full lg:w-[300px] xl:w-[300px] shrink-0 h-[300px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-col justify-between p-4 sm:p-5 border border-purple-200/90 shadow-md bg-purple-950/80 text-white group/vertBanner transition-all duration-300 lg:order-2"
-        >
-          {/* Background Video (Hình banner sáng rõ, sống động) */}
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none brightness-[1.08] contrast-[1.05] transition-transform duration-700 group-hover/vertBanner:scale-105"
-            src="https://cdn.scena.ai/project/10223/cc106cb37b8d219cca59af9a71a4d7a8cd019515a3e9a8282d16909bb21d88b9.mp4"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-slate-950/35 pointer-events-none" />
 
-          {/* Top Content: Badge & Title + Nút Thu Gọn Banner */}
-          <div className="relative z-10 flex flex-col gap-2">
-            <div className="flex items-center justify-between gap-2">
-              <div className="self-start px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-cyan-300 font-bold text-xs shadow-xs flex items-center gap-1.5">
-                <WebIcon name="sparkles" className="w-3.5 h-3.5" />
-                <span>Dự án</span>
-              </div>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsBannerCollapsed(true);
-                }}
-                className="px-2 py-0.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/25 text-white/90 hover:text-white text-[10px] font-bold transition flex items-center gap-1 cursor-pointer"
-                title="Bấm để thu gọn banner"
-              >
-                <span>Thu gọn</span>
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, màu tiêu đề giống màu icon và màu menu icon ở trang */}
-            <h2 className="text-base sm:text-lg lg:text-xl font-black text-purple-300 tracking-tight leading-tight flex items-center gap-2">
-              <span className="inline-flex animate-banner-icon shrink-0 text-purple-300">
-                <WebIcon name="target" className="w-5 h-5" />
-              </span>
-              <span>Dự Án Trọng Điểm</span>
-            </h2>
-
-            <p className="text-[11px] sm:text-xs text-white/90 font-medium leading-relaxed drop-shadow-sm line-clamp-2 lg:line-clamp-none">
-              21 Dự án thực chiến quy mô lớn – Đo lường KPI &amp; ROI vượt trội
+        {/* Middle Content: Quote & Stat Badges & Categories */}
+        <div className="relative z-10 flex flex-col gap-2.5 my-auto text-left">
+          {/* Quote Card */}
+          <div className="p-3 rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-white/90 dark:border-white/10 shadow-2xs relative">
+            <span className="text-2xl text-blue-500 font-serif leading-none absolute top-2 left-2.5 opacity-60">“</span>
+            <p className="font-play text-[11px] text-slate-700 dark:text-slate-200 italic leading-snug pl-4 select-none">
+              “Thành công của dự án nằm ở sự kết hợp giữa chiến lược đúng đắn, triển khai hiệu quả và đội ngũ tuyệt vời.”
+            </p>
+            <p className="text-[10px] font-bold text-blue-600 dark:text-cyan-400 mt-1 text-right font-play">
+              — Nguyễn Hùng Thái
             </p>
           </div>
 
-          {/* Middle Content: Quote & Highlights */}
-          <div className="relative z-10 my-auto py-1.5 hidden lg:flex flex-col gap-2.5">
-            <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-inner">
-              <p className="font-banner-quote text-xl text-amber-300 font-normal leading-tight select-none">
-                “Thành công của dự án nằm ở sự tỉ mỉ trong từng quy trình.”
-              </p>
-              <p className="text-[10px] font-bold text-amber-200/90 mt-1 text-right font-play">
-                — Nguyễn Hùng Thái
-              </p>
+          {/* Metric Badges (2 columns) */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-white/90 dark:border-white/10 shadow-2xs">
+              <div className="w-7 h-7 rounded-lg bg-indigo-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <WebIcon name="sparkles" className="w-3.5 h-3.5" />
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="text-sm font-black text-slate-900 dark:text-white font-play">21+</span>
+                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">Dự án tiêu biểu</span>
+              </div>
             </div>
 
-            {/* Metric Badges */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="p-1.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-center">
-                <div className="text-sm font-black text-amber-400">21+</div>
-                <div className="text-[9.5px] text-white/80 font-medium">Dự Án Thực Chiến</div>
+            <div className="flex items-center gap-2 p-2 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-white/90 dark:border-white/10 shadow-2xs">
+              <div className="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+                <WebIcon name="chart" className="w-3.5 h-3.5" />
               </div>
-              <div className="p-1.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-center">
-                <div className="text-base font-black text-emerald-400">98%</div>
-                <div className="text-[9.5px] text-white/80 font-medium">SLA Hoàn Thành</div>
+              <div className="flex flex-col leading-none">
+                <span className="text-sm font-black text-emerald-600 dark:text-emerald-400 font-play">98%</span>
+                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">SLA Hoàn thành</span>
               </div>
             </div>
           </div>
 
-          {/* NHÓM NÚT LỌC CHUYỂN VÀO BANNER: THU GỌN LẠI, KHI BẤM VÀO SẼ HIỆN RA */}
-          <div className="relative z-10 flex flex-col gap-1 w-full pt-2 border-t border-white/20 shrink-0">
-            <button
-              type="button"
-              onClick={() => setIsCategoryOpen((prev) => !prev)}
-              className="w-full flex items-center justify-between p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all cursor-pointer text-left group/catBtn"
-              title={isCategoryOpen ? "Thu gọn danh mục dự án" : "Bấm để mở danh mục dự án"}
-            >
-              <div className="flex items-center gap-2 min-w-0">
-                <div className="w-6 h-6 rounded-lg bg-cyan-400/20 text-cyan-300 flex items-center justify-center shrink-0 animate-icon-inplace">
-                  <WebIcon name="layers" className="w-3.5 h-3.5" />
-                </div>
-                <div className="flex flex-col min-w-0">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-200/90 font-black truncate">
-                    Danh mục dự án
-                  </span>
-                  <span className="text-[10.5px] text-white font-bold truncate">
-                    {PROJECT_CATEGORIES.find((c) => c.key === filter)?.label || 'Tất cả (21)'}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-500/25 text-cyan-200 border border-cyan-400/30 font-mono">
-                  {isCategoryOpen ? 'Thu gọn' : 'Hiện ra'}
-                </span>
-                <svg
-                  className={`w-3.5 h-3.5 text-cyan-300 transition-transform duration-300 ${
-                    isCategoryOpen ? 'rotate-180' : 'rotate-0'
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </button>
+          {/* Category Menu: Danh mục dự án */}
+          <div className="flex flex-col gap-1 mt-1">
+            <div className="flex items-center gap-1.5 text-xs font-black text-slate-800 dark:text-slate-100 font-play uppercase tracking-wider mb-0.5">
+              <WebIcon name="folder" className="w-4 h-4 text-blue-600" />
+              <span>Danh mục dự án</span>
+            </div>
 
-            {/* Danh sách các danh mục: thu gọn lại, khi bấm vào sẽ hiện ra */}
-            <div
-              className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                isCategoryOpen
-                  ? 'max-h-[300px] opacity-100 mt-1'
-                  : 'max-h-0 opacity-0 pointer-events-none'
-              }`}
-            >
-              <div className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-y-auto no-scrollbar max-h-[200px] pb-0.5">
-                {PROJECT_CATEGORIES.map((item) => {
-                  const isActive = filter === item.key;
-                  return (
-                    <button
-                      key={item.key}
-                      type="button"
-                      onClick={() => {
-                        setFilter(item.key);
-                      }}
-                      className={`w-full text-left px-2.5 py-1.5 rounded-xl text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center justify-between gap-1.5 active:scale-95 ${
-                        isActive
-                          ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white border-cyan-300 shadow-md shadow-cyan-500/30 scale-[1.02]'
-                          : 'bg-white/10 hover:bg-white/20 text-white/90 border-white/15'
-                      }`}
-                    >
-                      <div className="flex items-center gap-1.5 truncate">
-                        <WebIcon name={item.icon} className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate">{item.label}</span>
-                      </div>
-                      {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="flex flex-col gap-1">
+              {PROJECT_CATEGORIES.map((cat) => {
+                const isActive = filter === cat.key;
+                const count = getCategoryCount(cat.key);
+                return (
+                  <button
+                    key={cat.key}
+                    type="button"
+                    onClick={() => setFilter(cat.key)}
+                    className={`w-full px-3 py-1.5 rounded-xl text-xs font-bold font-play transition-all flex items-center justify-between cursor-pointer ${
+                      isActive
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'bg-transparent hover:bg-white/70 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 truncate">
+                      <WebIcon name={cat.icon} className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                      <span className="truncate">{cat.label}</span>
+                    </div>
+                    {isActive ? (
+                      <span className="text-white text-xs font-black">›</span>
+                    ) : (
+                      <span className="text-slate-400 text-[11px] font-mono">({count})</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
-      )}
 
-      {/* 2. MAIN AREA: 21 THẺ DỰ ÁN VỚI HÌNH BANNER LẮP ĐẦY THẺ (BÊN TRÁI) */}
-      <div className="flex-1 min-w-0 h-full flex flex-col gap-2 overflow-hidden lg:order-1">
+        {/* Bottom Mountain Graphic with sunrise and red flag on summit */}
+        <div className="relative z-0 mt-auto pt-2 w-full flex items-end justify-center pointer-events-none -mx-4 -mb-4 overflow-hidden rounded-b-[22px]">
+          <svg viewBox="0 0 300 80" className="w-full h-auto" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="mtnGrad1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#f472b6" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#c084fc" stopOpacity="0.75" />
+              </linearGradient>
+              <linearGradient id="mtnGrad2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#e0e7ff" stopOpacity="0.95" />
+                <stop offset="100%" stopColor="#93c5fd" stopOpacity="0.8" />
+              </linearGradient>
+              <linearGradient id="skyGlow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#ffedd5" stopOpacity="0.7" />
+                <stop offset="100%" stopColor="#f472b6" stopOpacity="0.15" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="300" height="80" fill="url(#skyGlow)" />
+            <path d="M0 80 L40 40 L90 60 L150 20 L210 55 L270 30 L300 50 L300 80 Z" fill="url(#mtnGrad1)" />
+            <path d="M0 80 L50 52 L110 65 L160 32 L220 60 L280 42 L300 55 L300 80 Z" fill="url(#mtnGrad2)" opacity="0.9" />
+            <line x1="150" y1="20" x2="150" y2="7" stroke="#dc2626" strokeWidth="1.8" strokeLinecap="round" />
+            <polygon points="150,8 162,12 150,16" fill="#ef4444" />
+          </svg>
+        </div>
+      </div>
+
+      {/* 2. MAIN AREA: DANH SÁCH DỰ ÁN (BÊN TRÁI THEO HÌNH VÀ YÊU CẦU CỦA USER) */}
+      <div className="flex-1 min-w-0 h-full flex flex-col gap-2.5 overflow-hidden lg:order-1">
+        {/* Top Control Bar: Danh sách dự án (count) + Sắp xếp + Tìm kiếm */}
+        <div className="flex items-center justify-between gap-3 px-1 py-0.5 shrink-0 flex-wrap sm:flex-nowrap">
+          <div className="flex items-center gap-2">
+            <span className="text-base">📁</span>
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+              <span>Danh sách dự án</span>
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                ({filteredProjects.length})
+              </span>
+            </h3>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            {/* Sort selector */}
+            <div className="relative inline-flex items-center">
+              <select
+                aria-label="Sắp xếp dự án"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest')}
+                className="appearance-none pl-3 pr-7 py-1.5 rounded-xl text-xs font-medium bg-white/90 dark:bg-slate-800/90 border border-slate-200/90 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:border-blue-400 focus:outline-hidden cursor-pointer shadow-2xs transition"
+              >
+                <option value="newest">Sắp xếp: Mới nhất</option>
+                <option value="oldest">Sắp xếp: Cũ nhất</option>
+              </select>
+              <div className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-[10px]">
+                ▼
+              </div>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Tìm kiếm dự án..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-8 pr-3 py-1.5 rounded-xl text-xs bg-white/90 dark:bg-slate-800/90 border border-slate-200/90 dark:border-white/10 text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-hidden focus:border-blue-500 w-36 sm:w-44 shadow-2xs transition"
+              />
+              <svg
+                className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
         {/* Responsive Grid Card View Container */}
         <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
         {!selectedGroup && !selectedArticle ? (
           <div className="relative w-full h-full flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-1 py-0.5">
-            {/* 21 THẺ DỰ ÁN ĐỘC LẬP - HÌNH BANNER LẮP ĐẦY THẺ DỰ ÁN 100% */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-3.5 auto-rows-[200px] sm:auto-rows-[215px] pb-4">
+            {/* 21 THẺ DỰ ÁN 3 CỘT THEO BỐ CỤC CHUẨN TRONG HÌNH */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 sm:gap-3 pb-4">
               {filteredProjects.map((proj) => {
-                const cfg = getVisualConfigForProject(proj);
                 const parentGroup = getParentGroupForProject(proj);
+                const catMeta = getCategoryMeta(proj.groupKey);
+                const prog = getProgressBadge(proj);
                 const displayTitle = proj.title.includes('·')
                   ? proj.title.split('·')[1].trim()
                   : proj.title;
@@ -415,105 +463,76 @@ export const ProjectsView: React.FC = () => {
                   <div
                     key={proj.id}
                     onClick={() => handleOpenGroup(parentGroup, proj)}
-                    className="group/card relative rounded-[18px] overflow-hidden border border-white/80 dark:border-white/20 shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-300 hover:-translate-y-1 h-full min-h-0 text-left bg-slate-900"
+                    className="group/card relative rounded-[18px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-white/10 p-3 sm:p-3.5 shadow-2xs hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 cursor-pointer flex flex-col justify-between text-left h-full"
                     title={`Bấm để xem Case Study STAR: ${proj.title}`}
                   >
-                    {/* HÌNH BANNER LẮP ĐẦY TOÀN BỘ THẺ DỰ ÁN (Rõ ràng, sắc nét) */}
-                    <img
-                      src={proj.image}
-                      alt={proj.title}
-                      className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.06] contrast-[1.06] group-hover/card:scale-108 transition-transform duration-700 select-none pointer-events-none"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = parentGroup.illustrationSrc;
-                      }}
-                    />
-
-                    {/* Gradient Scrim nhẹ mỏng làm nổi bật hình ảnh và chữ */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent pointer-events-none" />
-
-                    {/* Default Top Badges */}
-                    <div className="absolute top-2.5 inset-x-2.5 flex items-center justify-between z-10">
-                      <span
-                        style={{ background: cfg.accentColor }}
-                        className="px-2 py-0.5 rounded-md text-white font-mono text-[10px] font-black shadow-md border border-white/30"
-                      >
-                        {proj.code}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-emerald-300 font-mono text-[9px] font-bold shadow-xs border border-white/20 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span>{proj.progressText || '100% Hoàn thành'}</span>
-                      </span>
-                    </div>
-
-                    {/* KHỐI DƯỚI NẰM TRỰC TIẾP TRÊN HÌNH BANNER: TÊN DỰ ÁN & MŨI TÊN */}
-                    <div className="absolute bottom-0 inset-x-0 p-3 z-10 flex items-end justify-between gap-2 bg-gradient-to-t from-slate-950/90 via-slate-950/60 to-transparent pt-6">
-                      <div className="min-w-0 flex-1">
-                        <span className="text-[9.5px] font-bold uppercase tracking-wider text-cyan-300/90 font-mono block truncate">
-                          {parentGroup.fourWordTitle}
+                    {/* Phần trên: Thumbnail (trái) + Thông tin & Tiêu đề (phải) */}
+                    <div className="flex gap-3 items-start">
+                      {/* Thumbnail hình ảnh kèm Badge mã số dự án ở góc trên bên trái */}
+                      <div className="w-[88px] h-[72px] sm:w-[94px] sm:h-[76px] rounded-xl overflow-hidden relative shrink-0 border border-slate-200/60 dark:border-white/10 bg-slate-100 dark:bg-slate-800 shadow-2xs">
+                        <img
+                          src={proj.image}
+                          alt={proj.title}
+                          className="w-full h-full object-cover group-hover/card:scale-106 transition-transform duration-500 select-none"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = parentGroup.illustrationSrc;
+                          }}
+                        />
+                        <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-blue-600 text-white font-mono text-[9.5px] font-black shadow-xs border border-white/20">
+                          {proj.code}
                         </span>
+                      </div>
+
+                      {/* Thông tin bên phải: Status Pill + Nhóm danh mục + Tên dự án */}
+                      <div className="flex-1 min-w-0 flex flex-col gap-1">
+                        {/* Status pill */}
+                        <div className="flex items-center">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] sm:text-[9.5px] font-semibold border ${prog.bg} max-w-full`}
+                          >
+                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${prog.dot}`} />
+                            <span className="truncate">{prog.text}</span>
+                          </span>
+                        </div>
+
+                        {/* Category pill with colored dot */}
+                        <div className="flex items-center gap-1.5 text-[10.5px] font-semibold text-slate-500 dark:text-slate-400">
+                          <span
+                            className="w-1.5 h-1.5 rounded-full shrink-0"
+                            style={{ backgroundColor: catMeta.dotColor }}
+                          />
+                          <span className="truncate">{catMeta.name}</span>
+                        </div>
+
+                        {/* Tên dự án (in đậm, rõ nét) */}
                         <h4
-                          className="text-[12.5px] font-black font-play leading-snug text-white drop-shadow-md truncate mt-0.5"
+                          className="text-[12px] sm:text-[12.5px] font-bold font-play leading-snug text-slate-800 dark:text-slate-100 group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400 transition-colors line-clamp-2"
                           title={proj.title}
                         >
                           {displayTitle}
                         </h4>
                       </div>
+                    </div>
 
-                      {/* Right: Nút mũi tên xem chi tiết */}
+                    {/* Phần dưới: Mô tả dự án tóm tắt & Nút tròn mũi tên chuyển trang */}
+                    <div className="flex items-end justify-between gap-2 pt-2.5 mt-2 border-t border-slate-100 dark:border-white/5">
+                      <p className="text-[10.5px] sm:text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2 flex-1 min-w-0 pr-1">
+                        {proj.description}
+                      </p>
+
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleOpenGroup(parentGroup, proj);
                         }}
-                        style={{ background: cfg.arrowBg, boxShadow: cfg.arrowShadow }}
-                        className="w-6 h-6 rounded-full text-white flex items-center justify-center shrink-0 transition-transform duration-300 group-hover/card:translate-x-0.5 hover:scale-115 cursor-pointer shadow-md"
-                        title="Xem STAR Case Study"
+                        aria-label="Xem chi tiết dự án"
+                        className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full bg-slate-100 hover:bg-blue-600 dark:bg-slate-800 dark:hover:bg-blue-600 text-slate-600 hover:text-white dark:text-slate-300 dark:hover:text-white transition-all flex items-center justify-center shrink-0 shadow-2xs group-hover/card:translate-x-0.5 cursor-pointer"
                       >
-                        <svg className="w-3 h-3 stroke-[2.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
-                    </div>
-
-                    {/* LỚP PHỦ CHI TIẾT KHI HOVER CHUỘT (Translucent Glass Overlay) */}
-                    <div className="absolute inset-0 bg-slate-950/78 backdrop-blur-[5px] opacity-0 group-hover/card:opacity-100 transition-all duration-300 p-3.5 flex flex-col justify-between text-white z-20 pointer-events-none">
-                      {/* Top: Nhóm & Giai đoạn */}
-                      <div className="flex items-center justify-between gap-1.5 flex-wrap">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-[10px] font-bold text-white border border-white/30 truncate max-w-[190px]">
-                          <WebIcon name={parentGroup.iconName} className="w-3.5 h-3.5 shrink-0 text-cyan-300" />
-                          <span className="truncate">{parentGroup.code}: {parentGroup.fourWordTitle}</span>
-                        </span>
-
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-mono text-[9px] font-black shadow-xs">
-                          {proj.progressText || '100% Hoàn thành'}
-                        </span>
-                      </div>
-
-                      {/* Middle: Mô tả chi tiết dự án */}
-                      <div className="my-auto py-1">
-                        <span className="text-[9px] uppercase tracking-wider font-mono text-cyan-300 font-bold block mb-1">
-                          Mô tả dự án:
-                        </span>
-                        <p className="text-[11px] text-slate-100 leading-snug line-clamp-3 font-medium">
-                          {proj.description}
-                        </p>
-                      </div>
-
-                      {/* Bottom: Hashtags & Gợi ý click */}
-                      <div className="flex items-center justify-between pt-1 border-t border-white/20 gap-1 text-[10px]">
-                        <div className="flex items-center gap-1 flex-wrap overflow-hidden">
-                          {proj.hashtags?.slice(0, 2).map((t) => (
-                            <span key={t} className="px-1.5 py-0.2 rounded bg-white/15 text-slate-200 font-mono text-[9px] font-medium truncate">
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                        <span className="text-[9.5px] text-amber-300 font-bold flex items-center gap-0.5 shrink-0">
-                          <span>Xem STAR Case Study</span>
-                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-                        </span>
-                      </div>
                     </div>
                   </div>
                 );
