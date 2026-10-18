@@ -714,9 +714,9 @@ export const DomainsView: React.FC = () => {
               <span className="font-handwriting text-sky-600 font-bold text-xl sm:text-2xl lg:text-3xl leading-tight drop-shadow-xs select-none">
                 Khám phá
               </span>
-              {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, không đóng khung icon */}
-              <h2 className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play text-blue-950 tracking-tight leading-tight mt-0.5 drop-shadow-xs select-none flex items-center gap-2">
-                <span className="inline-flex animate-banner-icon shrink-0 text-amber-500">
+              {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, màu tiêu đề giống màu icon và màu menu icon ở trang */}
+              <h2 className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play text-amber-500 dark:text-amber-400 tracking-tight leading-tight mt-0.5 drop-shadow-xs select-none flex items-center gap-2">
+                <span className="inline-flex animate-banner-icon shrink-0 text-amber-500 dark:text-amber-400">
                   <WebIcon name="globe" className="w-5 h-5 sm:w-6 sm:h-6" />
                 </span>
                 <span>Lĩnh Vực Hoạt Động</span>
@@ -727,10 +727,10 @@ export const DomainsView: React.FC = () => {
               <div className="w-12 sm:w-16 h-1.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 shadow-xs mt-1.5" />
             </div>
 
-            {/* Khối chữ bên phải: Câu trích dẫn viết tay tiếng Việt Fleur De Leah có viền line đen */}
+            {/* Khối chữ bên phải: Câu trích dẫn viết tay tiếng Việt Fleur De Leah chỉ để font chữ màu vàng (xóa viền đen) */}
             <div className="hidden sm:flex flex-col items-end text-right pointer-events-auto max-w-[48%] lg:max-w-[44%] pt-0.5">
               <div className="p-1 sm:p-1.5 bg-transparent border-none shadow-none flex flex-col items-end">
-                <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+                <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none">
                   “Thực chiến đa ngành kiến tạo giải pháp dịch vụ xuất sắc.”
                 </p>
                 <div className="w-24 sm:w-32 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent relative mt-1.5 flex items-center justify-center">

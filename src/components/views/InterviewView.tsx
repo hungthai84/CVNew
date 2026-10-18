@@ -199,8 +199,8 @@ export const InterviewView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, không đóng khung icon */}
-              <h2 className="text-base sm:text-lg font-black font-play text-white tracking-tight leading-snug drop-shadow-xs flex items-center gap-2">
+              {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, màu tiêu đề giống màu icon và màu menu icon ở trang */}
+              <h2 className="text-base sm:text-lg font-black font-play text-pink-400 tracking-tight leading-snug drop-shadow-xs flex items-center gap-2">
                 <span className="inline-flex animate-banner-icon shrink-0 text-pink-400">
                   <WebIcon name="chat" className="w-5 h-5" />
                 </span>
@@ -213,12 +213,12 @@ export const InterviewView: React.FC = () => {
               {/* Decorative Pink-Purple Accent Line */}
               <div className="w-12 h-1 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-400 shadow-xs" />
 
-              {/* Quote Block Fleur De Leah */}
+              {/* Quote Block Fleur De Leah (chỉ để font chữ màu vàng, xóa viền đen) */}
               <div className="pt-0.5 bg-transparent border-none shadow-none">
-                <p className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+                <p className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight select-none">
                   “Đối thoại chân thực khẳng định bản lĩnh và năng lực quản trị.”
                 </p>
-                <span className="text-[10px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
+                <span className="text-[10px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play">
                   — Nguyễn Hùng Thái
                 </span>
               </div>

@@ -15,6 +15,7 @@ export interface HeroBannerProps {
   imageSrc?: string;
   hideTextOverlay?: boolean;
   badgeColor?: string;
+  themeColor?: string;
   bottomControls?: React.ReactNode;
   className?: string;
 }
@@ -53,6 +54,26 @@ function resolveTitleIcon(title: string, badge?: string, propIcon?: string): str
   return 'sparkles';
 }
 
+// Tự động phân giải màu icon và tiêu đề theo đúng màu menu icon ở trang (PAGES theme color)
+function resolvePageThemeColor(title: string, badge?: string, overrideColor?: string): string {
+  if (overrideColor) return overrideColor;
+  const t = (title + ' ' + (badge || '')).toLowerCase();
+  if (t.includes('học vấn') || t.includes('chứng chỉ') || t.includes('học tập')) return '#059669'; // Emerald (Học Vấn - Page 3)
+  if (t.includes('kỹ năng') || t.includes('swot') || t.includes('năng lực')) return '#0891b2'; // Cyan (Kỹ Năng - Page 6)
+  if (t.includes('kinh nghiệm') || t.includes('hành trình') || t.includes('sự nghiệp')) return '#4f46e5'; // Indigo (Kinh Nghiệm - Page 5)
+  if (t.includes('dự án') || t.includes('thành tựu')) return '#9333ea'; // Purple (Dự Án - Page 7)
+  if (t.includes('hệ thống') || t.includes('kiến trúc') || t.includes('phân hệ')) return '#ea580c'; // Orange (Hệ Thống - Page 8)
+  if (t.includes('lĩnh vực') || t.includes('hoạt động') || t.includes('khám phá')) return '#f59e0b'; // Amber (Lĩnh Vực - Page 4)
+  if (t.includes('phỏng vấn') || t.includes('đối thoại')) return '#ec4899'; // Pink (Phỏng Vấn - Page 9)
+  if (t.includes('tử vi') || t.includes('phong thủy') || t.includes('cung mệnh')) return '#c026d3'; // Fuchsia (Tử Vi - Page 10)
+  if (t.includes('hình nền') || t.includes('giao diện')) return '#6366f1'; // Indigo (Hình Nền - Page 13)
+  if (t.includes('liên hệ') || t.includes('kết nối')) return '#2563eb'; // Blue (Liên Hệ - Page 12)
+  if (t.includes('kỷ niệm') || t.includes('hồi ức')) return '#e11d48'; // Rose (Kỷ Niệm - Page 11)
+  if (t.includes('thư ngỏ') || t.includes('tri ân') || t.includes('đối tác')) return '#e11d48'; // Rose (Thư Ngỏ - Page 1)
+  if (t.includes('giới thiệu') || t.includes('hồ sơ')) return '#8b5cf6'; // Violet (Giới Thiệu - Page 2)
+  return '#f59e0b';
+}
+
 export const HeroBanner: React.FC<HeroBannerProps> = ({
   badgeText = 'Khám phá',
   title,
@@ -65,6 +86,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   imageSrc,
   hideTextOverlay = false,
   badgeColor = 'text-sky-600',
+  themeColor,
   bottomControls,
   className = '',
 }) => {
@@ -72,6 +94,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   const hasVideo = Boolean(videoSrc);
   const displayTitle = formatBannerTitle(title);
   const iconName = resolveTitleIcon(title, badgeText, titleIcon);
+  const pageThemeColor = resolvePageThemeColor(title, badgeText, themeColor);
 
   return (
     <div
@@ -136,9 +159,12 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                 {badgeText}
               </span>
 
-              {/* Tiêu đề có icon chuyển động tại chỗ đứng trước, không đóng khung icon */}
-              <h2 className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play text-blue-950 tracking-tight leading-tight mt-0.5 drop-shadow-xs select-none flex items-center gap-2">
-                <span className="animate-banner-icon shrink-0 text-amber-500">
+              {/* Tiêu đề có icon chuyển động tại chỗ đứng trước, màu tiêu đề giống màu icon và màu menu icon ở trang */}
+              <h2
+                className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play tracking-tight leading-tight mt-0.5 select-none flex items-center gap-2"
+                style={{ color: pageThemeColor }}
+              >
+                <span className="animate-banner-icon shrink-0" style={{ color: pageThemeColor }}>
                   <WebIcon name={iconName} className="w-5 h-5 sm:w-6 sm:h-6" />
                 </span>
                 <span>{displayTitle}</span>
@@ -150,15 +176,15 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
               <div className="w-12 sm:w-16 h-1.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 shadow-xs mt-1.5" />
             </div>
 
-            {/* Khối chữ bên phải: Câu trích dẫn với chữ màu vàng, CÓ VIỀN LINE ĐEN sắc nét */}
+            {/* Khối chữ bên phải: Câu trích dẫn với chữ màu vàng, chỉ để font chữ màu vàng (xóa viền line đen) */}
             {quote && (
               <div className="hidden sm:flex flex-col items-end text-right pointer-events-auto max-w-[48%] lg:max-w-[44%] pt-0.5">
                 <div className="p-1 sm:p-1.5 bg-transparent border-none shadow-none flex flex-col items-end">
-                  <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+                  <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none">
                     {quote}
                   </p>
                   {quoteAuthor && (
-                    <span className="text-[10.5px] sm:text-[11.5px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
+                    <span className="text-[10.5px] sm:text-[11.5px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play">
                       {quoteAuthor}
                     </span>
                   )}

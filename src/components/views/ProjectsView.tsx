@@ -282,8 +282,12 @@ export const ProjectsView: React.FC = () => {
               </button>
             </div>
 
-            <h2 className="text-base sm:text-lg lg:text-xl font-black text-white tracking-tight leading-tight drop-shadow-md">
-              Dự Án Trọng Điểm &amp; Thành Tựu
+            {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, màu tiêu đề giống màu icon và màu menu icon ở trang */}
+            <h2 className="text-base sm:text-lg lg:text-xl font-black text-purple-300 tracking-tight leading-tight flex items-center gap-2">
+              <span className="inline-flex animate-banner-icon shrink-0 text-purple-300">
+                <WebIcon name="target" className="w-5 h-5" />
+              </span>
+              <span>Dự Án Trọng Điểm</span>
             </h2>
 
             <p className="text-[11px] sm:text-xs text-white/90 font-medium leading-relaxed drop-shadow-sm line-clamp-2 lg:line-clamp-none">
@@ -294,10 +298,10 @@ export const ProjectsView: React.FC = () => {
           {/* Middle Content: Quote & Highlights */}
           <div className="relative z-10 my-auto py-1.5 hidden lg:flex flex-col gap-2.5">
             <div className="p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-inner">
-              <p className="text-xs italic text-white/95 leading-relaxed font-serif">
+              <p className="font-banner-quote text-xl text-amber-300 font-normal leading-tight select-none">
                 “Thành công của dự án nằm ở sự tỉ mỉ trong từng quy trình.”
               </p>
-              <p className="text-[11px] font-bold text-cyan-300 mt-1 text-right font-play">
+              <p className="text-[10px] font-bold text-amber-200/90 mt-1 text-right font-play">
                 — Nguyễn Hùng Thái
               </p>
             </div>

@@ -238,13 +238,13 @@ export const ExperienceView: React.FC = () => {
             {/* Left: Title & Subtitle & History Pill */}
             <div className="flex-1 flex flex-col justify-between h-full text-left z-10">
               <div>
-                <span className="font-serif italic font-bold text-blue-600 dark:text-blue-400 text-base sm:text-lg block leading-tight">
-                  Hành trình
-                </span>
-                <h2 className="text-xl sm:text-[25px] font-black text-[#1E3A6D] dark:text-white tracking-tight font-play leading-tight">
-                  Hành trình sự nghiệp
+                <h2 className="text-xl sm:text-[25px] font-black tracking-tight font-play leading-tight flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+                  <span className="inline-flex animate-banner-icon shrink-0 text-indigo-600 dark:text-indigo-400">
+                    <WebIcon name="briefcase" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </span>
+                  <span>Kinh Nghiệm Thực Chiến</span>
                 </h2>
-                <div className="w-10 h-1 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 my-1" />
+                <div className="w-10 h-1 rounded-full bg-gradient-to-r from-indigo-500 to-blue-500 my-1" />
                 <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium max-w-sm leading-snug">
                   Từ những bước đi đầu tiên đến hành trình kiến tạo giá trị cùng những người đồng hành tuyệt vời.
                 </p>
@@ -253,16 +253,13 @@ export const ExperienceView: React.FC = () => {
               {/* Lịch Sử Công Tác pill */}
               <div className="mt-2.5 flex items-center gap-2">
                 <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-800/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-xs">
-                  <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-xs">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                      <circle cx="12" cy="13" r="3" />
-                    </svg>
+                  <div className="w-5 h-5 rounded-full bg-indigo-600 flex items-center justify-center text-white shadow-xs">
+                    <WebIcon name="calendar" className="w-3 h-3 text-white" />
                   </div>
                   <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-play">
                     Lịch Sử Công Tác
                   </span>
-                  <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/40 px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-700/50">
+                  <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-900/40 px-2 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-700/50">
                     2003 – 2026+
                   </span>
                 </div>
@@ -281,15 +278,15 @@ export const ExperienceView: React.FC = () => {
             {/* Right: Quote & Search Capsule */}
             <div className="flex-1 flex flex-col justify-between h-full items-end text-right z-10">
               <div className="flex flex-col items-end">
-                <div className="flex items-start gap-1">
-                  <span className="text-2xl text-blue-400 font-serif leading-none">“</span>
-                  <p className="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-200 italic leading-snug">
-                    Khách hàng là trung tâm – Tạo giá trị bền vững. ”
-                  </p>
-                </div>
-                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+                <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[32px] text-amber-300 font-normal leading-tight select-none">
+                  “Khách hàng là trung tâm – Tạo giá trị bền vững.”
+                </p>
+                <span className="text-[10px] sm:text-[11px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play">
                   — Nguyễn Hùng Thái
                 </span>
+                <div className="w-20 sm:w-28 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent relative mt-1 flex items-center justify-center">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-xs" />
+                </div>
               </div>
 
               {/* Search Input Capsule */}

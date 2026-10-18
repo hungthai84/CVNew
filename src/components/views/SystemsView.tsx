@@ -381,9 +381,9 @@ export const SystemsView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, không đóng khung icon */}
-              <h2 className="text-base sm:text-lg font-black font-play text-white tracking-tight leading-snug drop-shadow-xs flex items-center gap-2">
-                <span className="inline-flex animate-banner-icon shrink-0 text-sky-400">
+              {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, màu tiêu đề giống màu icon và màu menu icon ở trang */}
+              <h2 className="text-base sm:text-lg font-black font-play text-orange-400 tracking-tight leading-snug drop-shadow-xs flex items-center gap-2">
+                <span className="inline-flex animate-banner-icon shrink-0 text-orange-400">
                   <WebIcon name="layers" className="w-5 h-5" />
                 </span>
                 <span>Kiến Trúc Hệ Thống</span>
@@ -395,12 +395,12 @@ export const SystemsView: React.FC = () => {
               {/* Decorative Amber Accent Line */}
               <div className="w-12 h-1 rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-amber-300 shadow-xs" />
 
-              {/* Quote Block Fleur De Leah */}
+              {/* Quote Block Fleur De Leah (chỉ để font chữ màu vàng, xóa viền đen) */}
               <div className="pt-1 bg-transparent border-none shadow-none">
-                <p className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+                <p className="font-banner-quote text-xl sm:text-2xl text-amber-300 font-normal leading-tight select-none">
                   “Số hóa quy trình – Tự động hóa vận hành toàn diện.”
                 </p>
-                <span className="text-[10px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
+                <span className="text-[10px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play">
                   — Nguyễn Hùng Thái
                 </span>
               </div>
