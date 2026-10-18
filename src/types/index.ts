@@ -171,6 +171,8 @@ export interface ProjectData {
   image: string;
   mindmap: string;
   quote: string;
+  englishTitle?: string;
+  fullContent?: string;
   star: {
     situation: string;
     approach: string;

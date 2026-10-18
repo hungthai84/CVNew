@@ -6,6 +6,7 @@ import { ProjectData } from '@/types';
 import { Modal } from '@/components/ui/Modal';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { HeroBanner } from '@/components/ui/HeroBanner';
+import { ProjectArticleRenderer } from '@/components/ui/ProjectArticleRenderer';
 
 interface ProjectCardGroup {
   id: string;
@@ -110,6 +111,7 @@ export const ProjectsView: React.FC = () => {
   const [selectedGroup, setSelectedGroup] = useState<ProjectCardGroup | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<ProjectData | null>(null);
   const [mindmapProject, setMindmapProject] = useState<ProjectData | null>(null);
+  const [detailTab, setDetailTab] = useState<'article' | 'star'>('article');
 
   // Visual theme config per card matching DomainsView & SkillsView
   const getCardVisualConfig = (visualId: string) => {
@@ -247,8 +249,10 @@ export const ProjectsView: React.FC = () => {
   });
 
   const handleOpenGroup = (group: ProjectCardGroup, initialProject?: ProjectData) => {
+    const proj = initialProject || group.projects[0] || null;
     setSelectedGroup(group);
-    setSelectedArticle(initialProject || group.projects[0] || null);
+    setSelectedArticle(proj);
+    setDetailTab(proj?.fullContent ? 'article' : 'star');
   };
 
   const handleCloseDetail = () => {
@@ -601,7 +605,10 @@ export const ProjectsView: React.FC = () => {
                           <button
                             key={proj.id}
                             type="button"
-                            onClick={() => setSelectedArticle(proj)}
+                            onClick={() => {
+                              setSelectedArticle(proj);
+                              setDetailTab(proj.fullContent ? 'article' : 'star');
+                            }}
                             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer whitespace-nowrap flex items-center gap-1.5 active:scale-95 ${
                               isCurrent
                                 ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-purple-500 shadow-xs'
@@ -693,8 +700,48 @@ export const ProjectsView: React.FC = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Switcher Tab giữa Bài Viết Toàn Văn 9 Phần và Khung STAR */}
+                {selectedArticle.fullContent && (
+                  <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-slate-950/70 border border-purple-200/80 dark:border-purple-500/30">
+                    <button
+                      type="button"
+                      onClick={() => setDetailTab('article')}
+                      className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                        detailTab === 'article'
+                          ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400'
+                      }`}
+                    >
+                      <WebIcon name="file-text" className="w-4 h-4" />
+                      <span>Bài Viết Toàn Văn (9 Phần Chuẩn Quản Trị)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDetailTab('star')}
+                      className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                        detailTab === 'star'
+                          ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400'
+                      }`}
+                    >
+                      <WebIcon name="star" className="w-4 h-4" />
+                      <span>Tóm Tắt Khung STAR (Bối Cảnh & Kết Quả)</span>
+                    </button>
+                  </div>
+                )}
               </div>
 
+              {/* Nội dung chi tiết: Hiển thị Bài Viết 9 Phần hoặc 4 Thẻ Sticky STAR */}
+              {selectedArticle.fullContent && detailTab === 'article' ? (
+                <div className="w-full p-4 sm:p-7 rounded-[22px] bg-white/95 dark:bg-slate-900/95 border border-purple-200/90 dark:border-purple-500/30 shadow-[0_12px_36px_rgba(0,0,0,0.1)] backdrop-blur-2xl">
+                  <ProjectArticleRenderer
+                    content={selectedArticle.fullContent}
+                    englishTitle={selectedArticle.englishTitle}
+                  />
+                </div>
+              ) : (
+                <>
               {/* Thẻ 2 (Sticky Card 2): 1. Bối cảnh & Thách thức (Situation & Task) */}
               <div className="sticky top-6 sm:top-8 z-20 w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-amber-50/98 via-orange-50/95 to-amber-100/90 dark:from-slate-900/98 dark:via-amber-950/40 dark:to-slate-900/95 border-2 border-amber-300/90 dark:border-amber-500/40 shadow-[0_12px_32px_rgba(217,119,6,0.18)] space-y-3 transition-all duration-300 backdrop-blur-2xl">
                 <div className="flex items-center justify-between pb-2 border-b border-amber-200/80 dark:border-amber-500/30">
@@ -801,6 +848,8 @@ export const ProjectsView: React.FC = () => {
                   ))}
                 </div>
               </div>
+              </>
+              )}
             </div>
             </div>
           )
