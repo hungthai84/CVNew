@@ -222,11 +222,11 @@ export const ProjectsView: React.FC = () => {
         selectedGroup || selectedArticle ? 'overflow-y-auto no-scrollbar pb-2' : 'overflow-hidden'
       }`}
     >
-      {/* 1. VERTICAL HERO BANNER BÊN TRÁI: THU GỌN / MỞ RỘNG */}
+      {/* 1. VERTICAL HERO BANNER BÊN PHẢI: THU GỌN / MỞ RỘNG */}
       {isBannerCollapsed ? (
         <div
           onClick={() => setIsBannerCollapsed(false)}
-          className="w-full lg:w-[46px] xl:w-[48px] shrink-0 h-[48px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-row lg:flex-col justify-between items-center p-2.5 sm:p-3 border border-purple-300/70 shadow-md bg-purple-950/90 text-white cursor-pointer hover:border-cyan-400 group/collapsedBanner transition-all duration-300 select-none z-10"
+          className="w-full lg:w-[46px] xl:w-[48px] shrink-0 h-[48px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-row lg:flex-col justify-between items-center p-2.5 sm:p-3 border border-purple-300/70 shadow-md bg-purple-950/90 text-white cursor-pointer hover:border-cyan-400 group/collapsedBanner transition-all duration-300 select-none z-10 lg:order-2"
           title="Bấm để mở rộng Banner Danh mục dự án"
         >
           <div className="flex items-center gap-2 lg:flex-col lg:gap-3">
@@ -239,16 +239,16 @@ export const ProjectsView: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/15 border border-white/25 text-[10px] font-extrabold text-cyan-300 group-hover/collapsedBanner:bg-cyan-500 group-hover/collapsedBanner:text-white transition-colors">
-            <span>Mở</span>
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
+            <span>Mở</span>
           </div>
         </div>
       ) : (
         <div
           id="projects-vertical-banner"
-          className="w-full lg:w-[280px] xl:w-[300px] shrink-0 h-[220px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-col justify-between p-4 sm:p-5 border border-purple-200/90 shadow-md bg-purple-950/80 text-white group/vertBanner transition-all duration-300"
+          className="w-full lg:w-[280px] xl:w-[300px] shrink-0 h-[220px] lg:h-full rounded-[20px] overflow-hidden relative flex flex-col justify-between p-4 sm:p-5 border border-purple-200/90 shadow-md bg-purple-950/80 text-white group/vertBanner transition-all duration-300 lg:order-2"
         >
           {/* Background Video (Hình banner sáng rõ, sống động) */}
           <video
@@ -279,7 +279,7 @@ export const ProjectsView: React.FC = () => {
               >
                 <span>Thu gọn</span>
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               </button>
             </div>
@@ -394,8 +394,8 @@ export const ProjectsView: React.FC = () => {
         </div>
       )}
 
-      {/* 2. MAIN RIGHT AREA: 21 THẺ DỰ ÁN VỚI HÌNH BANNER LẮP ĐẦY THẺ */}
-      <div className="flex-1 min-w-0 h-full flex flex-col gap-2 overflow-hidden">
+      {/* 2. MAIN AREA: 21 THẺ DỰ ÁN VỚI HÌNH BANNER LẮP ĐẦY THẺ (BÊN TRÁI) */}
+      <div className="flex-1 min-w-0 h-full flex flex-col gap-2 overflow-hidden lg:order-1">
         {/* Responsive Grid Card View Container */}
         <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
         {!selectedGroup && !selectedArticle ? (
