@@ -12,6 +12,16 @@ export const THEME_LIST: ThemeOption[] = [
     isDark: false,
   },
   {
+    id: 'light-glass-multicolor',
+    name: 'Light Glass Multicolor Dashboard',
+    fourWordName: 'Kính sáng đa sắc',
+    icon: 'LayoutDashboard',
+    badge: 'Multicolor',
+    description: 'Giao diện kính sáng xanh lavender, capsule navigation, card pastel đa sắc và thanh tiện ích nổi.',
+    accentColor: '#3B82F6',
+    isDark: false,
+  },
+  {
     id: 'dark-neon',
     name: 'Cyber Sapphire Neon',
     fourWordName: 'Neon tối đa sắc',

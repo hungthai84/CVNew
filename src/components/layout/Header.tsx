@@ -200,7 +200,10 @@ export const Header: React.FC<HeaderProps> = ({
                   transform: 'none',
                   ...(isSelected
                     ? {
-                        background: page.theme,
+                        background:
+                          currentTheme === 'light-glass-multicolor'
+                            ? 'linear-gradient(135deg, #3B82F6 0%, #22C1DC 100%)'
+                            : page.theme,
                         borderColor: '#ffffff',
                         color: '#ffffff',
                         boxShadow: isOverflowing
@@ -208,11 +211,21 @@ export const Header: React.FC<HeaderProps> = ({
                           : `0 2px 8px -1px ${page.theme}70, inset 0 1px 1.5px rgba(255, 255, 255, 0.75)`,
                       }
                     : {
-                        borderColor: isDark ? `${page.theme}60` : page.borderColor || `${page.theme}45`,
+                        borderColor: isDark
+                          ? `${page.theme}60`
+                          : currentTheme === 'light-glass-multicolor'
+                          ? 'rgba(255, 255, 255, 0.9)'
+                          : page.borderColor || `${page.theme}45`,
                         background: isDark
                           ? 'rgba(15, 23, 42, 0.75)'
+                          : currentTheme === 'light-glass-multicolor'
+                          ? 'rgba(255, 255, 255, 0.72)'
                           : page.bgNormal || page.bgLight || `${page.theme}15`,
-                        color: isDark ? '#f1f5f9' : page.theme,
+                        color: isDark
+                          ? '#f1f5f9'
+                          : currentTheme === 'light-glass-multicolor'
+                          ? '#1E3A6D'
+                          : page.theme,
                         boxShadow: isOverflowing
                           ? '-2px 0 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.45)'
                           : undefined,

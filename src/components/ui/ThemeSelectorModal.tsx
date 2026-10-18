@@ -56,6 +56,23 @@ const THEME_PREVIEWS: Record<SiteTheme, ThemePreviewData> = {
       </div>
     ),
   } as ThemePreviewData,
+  'light-glass-multicolor': {
+    badgeBg: 'bg-blue-100 text-blue-900 border-blue-300',
+    previewStyle: {
+      background: 'linear-gradient(135deg, #EAF4FF 0%, #F1F5FF 50%, #F5F3FF 100%)',
+    },
+    sampleElements: (
+      <div className="w-full p-2.5 rounded-2xl bg-white/80 border border-white/95 shadow-sm relative overflow-hidden flex items-center justify-between text-xs text-[#1E3A6D]">
+        <span className="font-extrabold relative z-10 flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#22C1DC] to-[#A78BFA]" />
+          Kính Sáng Đa Sắc
+        </span>
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded-[999px] bg-blue-100 text-blue-800 font-black relative z-10">
+          Multicolor
+        </span>
+      </div>
+    ),
+  },
   'dark-neon': {
     badgeBg: 'bg-cyan-950 text-cyan-300 border-cyan-500/50',
     previewStyle: {

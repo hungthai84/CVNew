@@ -2157,6 +2157,218 @@ html.theme-transitioning footer {
               color 0.4s ease !important;
 }
 
+/* =====================================================================
+   THEME: LIGHT GLASS MULTICOLOR DASHBOARD
+   - Light Glassmorphism, Ice Blue & Lavender Background
+   - Multicolor Pastel Components, Floating Capsule Navigation
+   - Smart Adaptive Cards, Soft Ambient Lighting
+   - 12-Component Design System Coverage
+   ===================================================================== */
+[data-theme="light-glass-multicolor"] {
+  color-scheme: light;
+
+  /* 1. Background Palette Tokens */
+  --page-bg: #EAF4FF;
+  --page-bg-secondary: #F1F5FF;
+  --surface-lavender: #F5F3FF;
+  --surface-white: #FFFFFF;
+  --ice-blue: #DCEEFF;
+  --soft-blue: #EFF6FF;
+  --soft-green: #ECFDF5;
+  --soft-yellow: #FFFBEB;
+  --soft-coral: #FFF1F2;
+  --soft-purple: #F5F3FF;
+
+  /* 2. Typography Colors */
+  --primary-ink: #1E3A6D;
+  --secondary-text: #58749A;
+  --muted-text: #7890B0;
+  --text-primary: #1E3A6D;
+  --text-secondary: #58749A;
+
+  /* 3. Accent Colors */
+  --accent-blue: #3B82F6;
+  --accent-cyan: #22C1DC;
+  --accent-green: #34D399;
+  --accent-yellow: #FCD34D;
+  --accent-orange: #FB923C;
+  --accent-coral: #FB7185;
+  --accent-purple: #A78BFA;
+  --accent-teal: #2DD4BF;
+
+  /* 4. Glass Tokens */
+  --glass-surface: rgba(255, 255, 255, 0.68);
+  --glass-surface-strong: rgba(255, 255, 255, 0.84);
+  --glass-border: rgba(255, 255, 255, 0.92);
+  --glass-colored-border: rgba(96, 165, 250, 0.20);
+  --glass-blur: 16px;
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-saturate: 180%;
+  --glass-shadow: 0 8px 28px rgba(62, 115, 180, 0.10);
+  --glass-shadow-hover: 0 12px 32px rgba(62, 115, 180, 0.16);
+
+  /* 5. Brand Standard Roles */
+  --color-primary: #3B82F6;
+  --color-secondary: #22C1DC;
+  --color-accent: #FB7185;
+  --color-success: #34D399;
+  --color-warning: #FCD34D;
+  --color-danger: #FB7185;
+}
+
+/* Base Body & Glass Panels in Light Glass Multicolor */
+[data-theme="light-glass-multicolor"] body {
+  background-color: #EAF4FF !important;
+  color: #1E3A6D;
+}
+
+[data-theme="light-glass-multicolor"] .glass-panel {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1.5px solid rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 8px 28px rgba(62, 115, 180, 0.10), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+}
+
+/* COMPONENT 01 — HEADER & CAPSULE NAVIGATION */
+[data-theme="light-glass-multicolor"] #app-header {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 12px 32px rgba(62, 115, 180, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="light-glass-multicolor"] .neonav-item {
+  color: #1E3A6D !important;
+  transition: all 0.22s ease-in-out;
+}
+
+[data-theme="light-glass-multicolor"] .neonav-item:hover {
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #3B82F6 !important;
+  box-shadow: 0 4px 14px rgba(62, 115, 180, 0.12) !important;
+  transform: translateY(-1px);
+}
+
+[data-theme="light-glass-multicolor"] .neonav-item.active {
+  background: linear-gradient(135deg, #3B82F6 0%, #22C1DC 100%) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.38), inset 0 1px 1.5px rgba(255, 255, 255, 0.8) !important;
+}
+
+/* COMPONENT 02 — HERO BANNER */
+[data-theme="light-glass-multicolor"] .hero-banner,
+[data-theme="light-glass-multicolor"] .theme-hero-banner {
+  border: 1.5px solid rgba(255, 255, 255, 0.92) !important;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(62, 115, 180, 0.10) !important;
+}
+
+/* COMPONENT 03 & 04 — SMART ADAPTIVE CARDS & SUB-CARDS */
+[data-theme="light-glass-multicolor"] .theme-pastel-card {
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(62, 115, 180, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+[data-theme="light-glass-multicolor"] .theme-pastel-card:hover {
+  transform: translateY(-2.5px);
+  box-shadow: 0 14px 34px rgba(62, 115, 180, 0.16);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+/* Sub-card Pastel Categories */
+[data-theme="light-glass-multicolor"] .pastel-subcard-blue {
+  background: #EFF6FF !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+  color: #1E3A6D !important;
+}
+
+[data-theme="light-glass-multicolor"] .pastel-subcard-green {
+  background: #ECFDF5 !important;
+  border: 1px solid rgba(52, 211, 153, 0.25) !important;
+  color: #065F46 !important;
+}
+
+[data-theme="light-glass-multicolor"] .pastel-subcard-yellow {
+  background: #FFFBEB !important;
+  border: 1px solid rgba(251, 146, 60, 0.25) !important;
+  color: #92400E !important;
+}
+
+[data-theme="light-glass-multicolor"] .pastel-subcard-coral {
+  background: #FFF1F2 !important;
+  border: 1px solid rgba(251, 113, 133, 0.25) !important;
+  color: #9F1239 !important;
+}
+
+[data-theme="light-glass-multicolor"] .pastel-subcard-purple {
+  background: #F5F3FF !important;
+  border: 1px solid rgba(167, 139, 250, 0.25) !important;
+  color: #5B21B6 !important;
+}
+
+/* COMPONENT 05 — TYPOGRAPHY REFINEMENTS */
+[data-theme="light-glass-multicolor"] h1,
+[data-theme="light-glass-multicolor"] h2,
+[data-theme="light-glass-multicolor"] h3,
+[data-theme="light-glass-multicolor"] h4,
+[data-theme="light-glass-multicolor"] .text-slate-900,
+[data-theme="light-glass-multicolor"] .text-blue-950,
+[data-theme="light-glass-multicolor"] .text-slate-800 {
+  color: #1E3A6D !important;
+}
+
+[data-theme="light-glass-multicolor"] p,
+[data-theme="light-glass-multicolor"] .text-slate-600,
+[data-theme="light-glass-multicolor"] .text-slate-700 {
+  color: #58749A;
+}
+
+[data-theme="light-glass-multicolor"] .text-slate-400,
+[data-theme="light-glass-multicolor"] .text-slate-500 {
+  color: #7890B0;
+}
+
+/* COMPONENT 07 — CAPSULE BUTTONS & FILTER CHIPS */
+[data-theme="light-glass-multicolor"] .capsule-chip {
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  color: #1E3A6D;
+  transition: all 0.2s ease;
+}
+
+[data-theme="light-glass-multicolor"] .capsule-chip:hover {
+  background: #EFF6FF;
+  color: #3B82F6;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+[data-theme="light-glass-multicolor"] .capsule-chip.active {
+  background: linear-gradient(135deg, #3B82F6 0%, #22C1DC 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+}
+
+/* COMPONENT 10 — FOOTER DOCK */
+[data-theme="light-glass-multicolor"] #app-footer {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-top: 2px solid rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 -12px 32px rgba(62, 115, 180, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Form Inputs Focus Ring in Light Glass Multicolor */
+[data-theme="light-glass-multicolor"] input:focus,
+[data-theme="light-glass-multicolor"] textarea:focus,
+[data-theme="light-glass-multicolor"] select:focus {
+  border-color: #3B82F6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22) !important;
+  outline: none !important;
+}
+
 
 
 

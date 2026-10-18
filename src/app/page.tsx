@@ -131,6 +131,9 @@ export default function HomePage() {
         } else if (storedTheme === 'flat-rainbow') {
           setWallpaperClass('');
           setWallpaperStyle({ backgroundColor: '#f8fafc' });
+        } else if (storedTheme === 'light-glass-multicolor') {
+          setWallpaperClass('light-glass-multicolor-bg');
+          setWallpaperStyle({});
         } else {
           setWallpaperClass('prism-light-bg');
         }
@@ -147,6 +150,8 @@ export default function HomePage() {
         ? 'dark-neon'
         : newTheme === 'flat-rainbow'
         ? 'flat-rainbow'
+        : newTheme === 'light-glass-multicolor'
+        ? 'light-glass-multicolor'
         : 'light-glass';
     
     // Trigger vivid dynamic transition wave
@@ -177,6 +182,9 @@ export default function HomePage() {
       } else if (validTheme === 'flat-rainbow') {
         setWallpaperClass('');
         setWallpaperStyle({ backgroundColor: '#f8fafc' });
+      } else if (validTheme === 'light-glass-multicolor') {
+        setWallpaperClass('light-glass-multicolor-bg');
+        setWallpaperStyle({});
       } else {
         setWallpaperClass('prism-light-bg');
         setWallpaperStyle({});

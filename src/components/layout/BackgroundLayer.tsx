@@ -138,6 +138,50 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
               />
             </div>
           )}
+          {/* THEME: Light Glass Multicolor Dashboard Ambient Lighting */}
+          {!hasCustomWallpaper && theme === 'light-glass-multicolor' && (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+              {/* Soft Ice Blue & Lavender backdrop */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: 'linear-gradient(135deg, #EAF4FF 0%, #F1F5FF 45%, #F5F3FF 100%)',
+                }}
+              />
+              {/* Soft Ice Blue glow top-left */}
+              <div
+                className="absolute -top-[10%] -left-[5%] w-[580px] h-[580px] rounded-full blur-3xl pointer-events-none opacity-70 animate-pulse"
+                style={{
+                  background: 'radial-gradient(circle, rgba(220, 238, 255, 0.85) 0%, rgba(191, 219, 254, 0.4) 50%, transparent 70%)',
+                  animationDuration: '8s',
+                }}
+              />
+              {/* Soft Lavender glow bottom-right */}
+              <div
+                className="absolute -bottom-[10%] -right-[5%] w-[600px] h-[600px] rounded-full blur-3xl pointer-events-none opacity-60 animate-pulse"
+                style={{
+                  background: 'radial-gradient(circle, rgba(245, 243, 255, 0.9) 0%, rgba(221, 214, 254, 0.45) 50%, transparent 70%)',
+                  animationDuration: '9.5s',
+                }}
+              />
+              {/* Soft Cyan accent glow top-right */}
+              <div
+                className="absolute top-[8%] right-[15%] w-[460px] h-[460px] rounded-full blur-3xl pointer-events-none opacity-35 animate-pulse"
+                style={{
+                  background: 'radial-gradient(circle, rgba(34, 193, 220, 0.45) 0%, rgba(59, 130, 246, 0.2) 50%, transparent 70%)',
+                  animationDuration: '7s',
+                }}
+              />
+              {/* Soft Coral accent glow bottom-left */}
+              <div
+                className="absolute bottom-[10%] left-[8%] w-[450px] h-[450px] rounded-full blur-3xl pointer-events-none opacity-30 animate-pulse"
+                style={{
+                  background: 'radial-gradient(circle, rgba(251, 113, 133, 0.4) 0%, rgba(244, 63, 94, 0.18) 50%, transparent 70%)',
+                  animationDuration: '10s',
+                }}
+              />
+            </div>
+          )}
         </div>
       )}
     </>

@@ -120,6 +120,8 @@ export const Footer: React.FC<FooterProps> = ({
                       ? 'bg-slate-950/90 border border-cyan-400/80 shadow-[0_0_12px_rgba(6,182,212,0.6)] text-cyan-300'
                       : currentTheme === 'flat-rainbow'
                       ? 'bg-white text-slate-900 border-2 font-black shadow-xs'
+                      : currentTheme === 'light-glass-multicolor'
+                      ? 'bg-gradient-to-r from-blue-50/90 to-indigo-50/90 border border-blue-200/90 shadow-2xs text-[#1E3A6D]'
                       : 'bg-indigo-50/90 border border-indigo-200/90 shadow-2xs text-indigo-700'
                   }`}
                   style={
@@ -311,18 +313,24 @@ export const Footer: React.FC<FooterProps> = ({
                     ? 'linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.85) 100%)'
                     : currentTheme === 'flat-rainbow'
                     ? 'linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, rgba(240, 253, 244, 0.9) 50%, rgba(238, 242, 255, 0.95) 100%)'
+                    : currentTheme === 'light-glass-multicolor'
+                    ? 'linear-gradient(135deg, rgba(234, 244, 255, 0.95) 0%, rgba(241, 245, 255, 0.9) 50%, rgba(245, 243, 255, 0.95) 100%)'
                     : 'linear-gradient(135deg, rgba(245, 243, 255, 0.9) 0%, rgba(254, 243, 199, 0.85) 100%)',
                 borderColor:
                   currentTheme === 'dark-neon'
                     ? 'rgba(56, 189, 248, 0.5)'
                     : currentTheme === 'flat-rainbow'
                     ? 'rgba(236, 72, 153, 0.8)'
+                    : currentTheme === 'light-glass-multicolor'
+                    ? 'rgba(59, 130, 246, 0.45)'
                     : 'rgba(252, 211, 77, 0.8)',
                 color:
                   currentTheme === 'dark-neon'
                     ? '#38bdf8'
                     : currentTheme === 'flat-rainbow'
                     ? '#db2777'
+                    : currentTheme === 'light-glass-multicolor'
+                    ? '#1E3A6D'
                     : '#d97706',
               }}
               title="Tùy chọn giao diện hệ thống (Nhấp để mở danh sách chọn)"
@@ -335,12 +343,16 @@ export const Footer: React.FC<FooterProps> = ({
                       ? 'rgba(56, 189, 248, 0.2)'
                       : currentTheme === 'flat-rainbow'
                       ? 'rgba(236, 72, 153, 0.2)'
+                      : currentTheme === 'light-glass-multicolor'
+                      ? 'rgba(59, 130, 246, 0.18)'
                       : 'rgba(251, 191, 36, 0.25)',
                   color:
                     currentTheme === 'dark-neon'
                       ? '#38bdf8'
                       : currentTheme === 'flat-rainbow'
                       ? '#db2777'
+                      : currentTheme === 'light-glass-multicolor'
+                      ? '#3B82F6'
                       : '#d97706',
                 }}
               >
@@ -348,6 +360,8 @@ export const Footer: React.FC<FooterProps> = ({
                   <WebIcon name="moon" className="w-[16px] h-[16px]" />
                 ) : currentTheme === 'flat-rainbow' ? (
                   <WebIcon name="palette" className="w-[16px] h-[16px]" />
+                ) : currentTheme === 'light-glass-multicolor' ? (
+                  <WebIcon name="layoutdashboard" className="w-[16px] h-[16px]" />
                 ) : (
                   <WebIcon name="sun" className="w-[16px] h-[16px]" />
                 )}
@@ -360,6 +374,8 @@ export const Footer: React.FC<FooterProps> = ({
                       ? '#38bdf8'
                       : currentTheme === 'flat-rainbow'
                       ? '#db2777'
+                      : currentTheme === 'light-glass-multicolor'
+                      ? '#1E3A6D'
                       : '#d97706',
                 }}
               >
