@@ -218,9 +218,7 @@ export const ProjectsView: React.FC = () => {
 
   return (
     <div
-      className={`w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 ${
-        selectedGroup || selectedArticle ? 'overflow-y-auto no-scrollbar pb-2' : 'overflow-hidden'
-      }`}
+      className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 overflow-hidden"
     >
       {/* 1. VERTICAL HERO BANNER BÊN PHẢI: THU GỌN / MỞ RỘNG */}
       {isBannerCollapsed ? (
@@ -399,7 +397,7 @@ export const ProjectsView: React.FC = () => {
         {/* Responsive Grid Card View Container */}
         <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
         {!selectedGroup && !selectedArticle ? (
-          <div className="relative w-full h-full flex-1 min-h-0 overflow-y-auto no-scrollbar py-0.5">
+          <div className="relative w-full h-full flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-1 py-0.5">
             {/* 21 THẺ DỰ ÁN ĐỘC LẬP - HÌNH BANNER LẮP ĐẦY THẺ DỰ ÁN 100% */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-3.5 auto-rows-[200px] sm:auto-rows-[215px] pb-4">
               {filteredProjects.map((proj) => {
@@ -521,8 +519,9 @@ export const ProjectsView: React.FC = () => {
         ) : (
           /* Detail View cho nhóm dự án & Case Study STAR đang chọn (Bố cục thẻ xếp chồng Sticky Stacking Cards) */
           selectedArticle && (
-            <div className="w-full relative flex flex-col gap-4 pb-24 text-left">
-              {/* Thẻ 1 (Sticky Card 1): Header & Tổng Quan Dự Án */}
+            <div className="relative w-full h-full flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-1.5 sm:pr-2.5 py-0.5 text-left">
+              <div className="w-full relative flex flex-col gap-4 pb-20">
+                {/* Thẻ 1 (Sticky Card 1): Header & Tổng Quan Dự Án */}
               <div className="sticky top-0 z-10 w-full p-4 sm:p-5 rounded-[22px] bg-white/95 dark:bg-slate-900/95 border border-purple-200/90 dark:border-purple-500/30 shadow-[0_10px_30px_rgba(0,0,0,0.12)] space-y-3.5 transition-all duration-300 backdrop-blur-2xl">
                 {/* Top Back Bar & Sub-Project Selector Tabs */}
                 <div className="flex flex-col gap-3 pb-3 border-b border-slate-200 dark:border-white/10">
@@ -779,6 +778,7 @@ export const ProjectsView: React.FC = () => {
                   ))}
                 </div>
               </div>
+            </div>
             </div>
           )
         )}
