@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { EXPERIENCE_MILESTONES } from '@/data/experience';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
-import { HeroBanner } from '@/components/ui/HeroBanner';
 
 export const ExperienceView: React.FC = () => {
   const { showToast } = useToast();
@@ -14,7 +13,6 @@ export const ExperienceView: React.FC = () => {
   const [carouselSlideIdx, setCarouselSlideIdx] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isPhotoLightboxOpen, setIsPhotoLightboxOpen] = useState<boolean>(false);
-  const [featuredProdPage, setFeaturedProdPage] = useState<number>(0);
 
   const activeMilestone = EXPERIENCE_MILESTONES[activeKey] || EXPERIENCE_MILESTONES['2013'];
 
@@ -52,17 +50,18 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Nhân viên CSKH',
       headcountLabel: '12 Nhân sự',
       logo: 'https://i.ibb.co/hxHm9TsZ/Mobifone.png',
-      products: [
-        { name: 'MobiFone', icon: 'https://i.ibb.co/hxHm9TsZ/Mobifone.png' },
+      bullets: [
+        'Tiếp nhận & xử lý yêu cầu khách hàng',
+        'Hỗ trợ dịch vụ di động và internet',
       ],
-      badgeBg: 'linear-gradient(135deg, #6366f1 0%, #3b82f6 100%)',
-      badgeColor: '#4f46e5',
-      cardBg: 'linear-gradient(180deg, #f5f7ff 0%, #ffffff 55%, #eef2ff 100%)',
-      borderColor: 'border-indigo-200/90',
-      activeRing: 'ring-indigo-400',
-      titleColor: 'text-blue-600',
-      pillBg: 'bg-blue-50 text-blue-700 border-blue-200',
-      arrowBg: '#6366f1',
+      badgeBg: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+      badgeColor: '#2563eb',
+      cardBg: 'linear-gradient(180deg, #f0f7ff 0%, #ffffff 50%, #e6f2ff 100%)',
+      borderColor: 'border-blue-200/90 hover:border-blue-400',
+      activeRing: 'ring-blue-400',
+      titleColor: 'text-[#1E3A6D] dark:text-cyan-300',
+      pillBg: 'bg-blue-50/90 text-blue-700 border-blue-200/90 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800',
+      arrowBg: '#3b82f6',
     },
     {
       key: '2007',
@@ -71,17 +70,18 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Trưởng nhóm CSKH / Giám sát (Supervisor)',
       headcountLabel: '12 Nhân sự',
       logo: 'https://i.ibb.co/QvtbdnfP/V247.png',
-      products: [
-        { name: 'Call 247', icon: 'https://i.ibb.co/QvtbdnfP/V247.png' },
+      bullets: [
+        'Quản lý nhóm 5-10 người',
+        'Nâng cao chất lượng dịch vụ và KPI',
       ],
-      badgeBg: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
-      badgeColor: '#8b5cf6',
-      cardBg: 'linear-gradient(180deg, #faf5ff 0%, #ffffff 55%, #f3e8ff 100%)',
-      borderColor: 'border-purple-200/90',
+      badgeBg: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+      badgeColor: '#7c3aed',
+      cardBg: 'linear-gradient(180deg, #faf5ff 0%, #ffffff 50%, #f3e8ff 100%)',
+      borderColor: 'border-purple-200/90 hover:border-purple-400',
       activeRing: 'ring-purple-400',
-      titleColor: 'text-purple-700',
-      pillBg: 'bg-purple-50 text-purple-700 border-purple-200',
-      arrowBg: '#14b8a6',
+      titleColor: 'text-purple-800 dark:text-purple-300',
+      pillBg: 'bg-purple-50/90 text-purple-700 border-purple-200/90 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800',
+      arrowBg: '#8b5cf6',
     },
     {
       key: '2011',
@@ -90,59 +90,59 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Trưởng Phòng CSKH',
       headcountLabel: '12 Nhân sự',
       logo: 'https://i.ibb.co/R4YXWyzF/LBC.png',
-      products: [
-        { name: 'LBC', icon: 'https://i.ibb.co/R4YXWyzF/LBC.png' },
-        { name: 'HTVC', icon: 'https://i.ibb.co/1fNw0hBq/HTVC.png' },
+      extraLogo: 'https://i.ibb.co/1fNw0hBq/HTVC.png',
+      bullets: [
+        'Xây dựng quy trình chăm sóc khách hàng',
+        'Đào tạo & phát triển đội ngũ',
       ],
       badgeBg: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-      badgeColor: '#10b981',
-      cardBg: 'linear-gradient(180deg, #ecfdf5 0%, #ffffff 55%, #d1fae5 100%)',
-      borderColor: 'border-emerald-200/90',
+      badgeColor: '#059669',
+      cardBg: 'linear-gradient(180deg, #ecfdf5 0%, #ffffff 50%, #d1fae5 100%)',
+      borderColor: 'border-emerald-200/90 hover:border-emerald-400',
       activeRing: 'ring-emerald-400',
-      titleColor: 'text-emerald-700',
-      pillBg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-      arrowBg: '#0d9488',
+      titleColor: 'text-emerald-800 dark:text-emerald-300',
+      pillBg: 'bg-emerald-50/90 text-emerald-700 border-emerald-200/90 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800',
+      arrowBg: '#10b981',
     },
     {
       key: '2013',
       yearBadge: 'Năm 2013',
-      shortName: 'VED (GARENA/SHOPEE...)',
+      shortName: 'VED...',
       roleSummary: 'Trưởng Phòng CSKH',
       headcountLabel: '130 Nhân sự',
-      logo: 'https://i.ibb.co/fYPJLfbw/VED.png',
-      products: [
-        { name: 'Garena', icon: 'https://i.ibb.co/h1Md65yV/Garena.png' },
-        { name: 'Shopee', icon: 'https://i.ibb.co/BSVS4xf/Shopee.png' },
-        { name: 'AirPay', icon: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png' },
-        { name: 'GCafe', icon: 'https://i.ibb.co/FkWk3s4W/GCafe.png' },
+      logo: 'https://i.ibb.co/BSVS4xf/Shopee.png',
+      bullets: [
+        'Quản lý vận hành CSKH',
+        'Tối ưu trải nghiệm khách hàng',
       ],
       badgeBg: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
       badgeColor: '#ea580c',
-      cardBg: 'linear-gradient(180deg, #fff7ed 0%, #fffbf7 50%, #ffedd5 100%)',
-      borderColor: 'border-orange-300',
+      cardBg: 'linear-gradient(180deg, #fff7ed 0%, #ffffff 50%, #ffedd5 100%)',
+      borderColor: 'border-orange-200/90 hover:border-orange-400',
       activeRing: 'ring-orange-400',
-      titleColor: 'text-red-600',
-      pillBg: 'bg-orange-100/90 text-orange-800 border-orange-300',
+      titleColor: 'text-orange-800 dark:text-orange-300',
+      pillBg: 'bg-orange-50/90 text-orange-700 border-orange-200/90 dark:bg-orange-950/60 dark:text-orange-300 dark:border-orange-800',
       arrowBg: '#f97316',
     },
     {
       key: '2016',
-      yearBadge: 'Năm 2016',
-      shortName: 'PRUDENTIAL',
+      yearBadge: 'Năm 2015',
+      shortName: '_ VED...',
       roleSummary: 'Trưởng Phòng CallCenter',
       headcountLabel: '12 Nhân sự',
       logo: 'https://i.ibb.co/XfpQphWF/Prudential.png',
-      products: [
-        { name: 'Prudential', icon: 'https://i.ibb.co/XfpQphWF/Prudential.png' },
+      bullets: [
+        'Tổ chức vận hành Call Center',
+        'Tăng hiệu suất & chất lượng dịch vụ',
       ],
       badgeBg: 'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)',
-      badgeColor: '#f43f5e',
-      cardBg: 'linear-gradient(180deg, #fff1f2 0%, #ffffff 55%, #ffe4e6 100%)',
-      borderColor: 'border-rose-200/90',
+      badgeColor: '#e11d48',
+      cardBg: 'linear-gradient(180deg, #fff1f2 0%, #ffffff 50%, #ffe4e6 100%)',
+      borderColor: 'border-rose-200/90 hover:border-rose-400',
       activeRing: 'ring-rose-400',
-      titleColor: 'text-indigo-900',
-      pillBg: 'bg-rose-50 text-rose-700 border-rose-200',
-      arrowBg: '#ec4899',
+      titleColor: 'text-rose-800 dark:text-rose-300',
+      pillBg: 'bg-rose-50/90 text-rose-700 border-rose-200/90 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800',
+      arrowBg: '#fb7185',
     },
     {
       key: '2018',
@@ -151,17 +151,18 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Trưởng Phòng CSKH',
       headcountLabel: '60 Nhân sự',
       logo: 'https://i.ibb.co/k2QtrgTw/Momo.png',
-      products: [
-        { name: 'Ví MoMo', icon: 'https://i.ibb.co/k2QtrgTw/Momo.png' },
+      bullets: [
+        'Xây dựng chiến lược CSKH',
+        'Đạt chỉ số hài lòng KH cao',
       ],
       badgeBg: 'linear-gradient(135deg, #f472b6 0%, #db2777 100%)',
-      badgeColor: '#ec4899',
-      cardBg: 'linear-gradient(180deg, #fdf2f8 0%, #ffffff 55%, #fce7f3 100%)',
-      borderColor: 'border-pink-200/90',
+      badgeColor: '#db2777',
+      cardBg: 'linear-gradient(180deg, #fdf2f8 0%, #ffffff 50%, #fce7f3 100%)',
+      borderColor: 'border-pink-200/90 hover:border-pink-400',
       activeRing: 'ring-pink-400',
-      titleColor: 'text-pink-600',
-      pillBg: 'bg-pink-50 text-pink-700 border-pink-200',
-      arrowBg: '#fb7185',
+      titleColor: 'text-pink-800 dark:text-pink-300',
+      pillBg: 'bg-pink-50/90 text-pink-700 border-pink-200/90 dark:bg-pink-950/60 dark:text-pink-300 dark:border-pink-800',
+      arrowBg: '#f472b6',
     },
     {
       key: '2023',
@@ -170,18 +171,18 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Trưởng Phòng CSKH',
       headcountLabel: '17 Nhân sự',
       logo: 'https://i.ibb.co/7NtSSz4d/Finviet.png',
-      products: [
-        { name: 'Finviet', icon: 'https://i.ibb.co/7NtSSz4d/Finviet.png' },
-        { name: 'ECO SCC', icon: 'https://i.ibb.co/cSXPhWcp/Finviet.png' },
+      bullets: [
+        'Tái cấu trúc quy trình',
+        'Ứng dụng công nghệ vào CSKH',
       ],
       badgeBg: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
       badgeColor: '#f59e0b',
-      cardBg: 'linear-gradient(180deg, #fffbeb 0%, #ffffff 55%, #fef3c7 100%)',
-      borderColor: 'border-amber-200/90',
+      cardBg: 'linear-gradient(180deg, #fffbeb 0%, #ffffff 50%, #fef3c7 100%)',
+      borderColor: 'border-amber-200/90 hover:border-amber-400',
       activeRing: 'ring-amber-400',
-      titleColor: 'text-blue-800',
-      pillBg: 'bg-amber-50 text-amber-800 border-amber-200',
-      arrowBg: '#f59e0b',
+      titleColor: 'text-amber-800 dark:text-amber-300',
+      pillBg: 'bg-amber-50/90 text-amber-800 border-amber-200/90 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800',
+      arrowBg: '#fbbf24',
     },
     {
       key: '2026',
@@ -190,57 +191,20 @@ export const ExperienceView: React.FC = () => {
       roleSummary: 'Head of CS / CS Director',
       headcountLabel: '100 Nhân sự',
       logo: 'https://i.ibb.co/G4QnNzWb/Power-Service.png',
-      products: [
-        { name: 'Power Service', icon: 'https://i.ibb.co/G4QnNzWb/Power-Service.png' },
+      bullets: [
+        'Xây dựng chiến lược CSKH',
+        'Phát triển hệ thống đa kênh',
       ],
-      badgeBg: 'linear-gradient(135deg, #60a5fa 0%, #2563eb 100%)',
-      badgeColor: '#3b82f6',
-      cardBg: 'linear-gradient(180deg, #eff6ff 0%, #ffffff 55%, #dbeafe 100%)',
-      borderColor: 'border-blue-200/90',
-      activeRing: 'ring-blue-400',
-      titleColor: 'text-blue-700',
-      pillBg: 'bg-blue-50 text-blue-700 border-blue-200',
-      arrowBg: '#3b82f6',
+      badgeBg: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
+      badgeColor: '#0284c7',
+      cardBg: 'linear-gradient(180deg, #f0f9ff 0%, #ffffff 50%, #e0f2fe 100%)',
+      borderColor: 'border-sky-200/90 hover:border-sky-400',
+      activeRing: 'ring-sky-400',
+      titleColor: 'text-sky-800 dark:text-sky-300',
+      pillBg: 'bg-sky-50/90 text-sky-700 border-sky-200/90 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800',
+      arrowBg: '#0ea5e9',
     },
   ];
-
-  // VED 5 Brands Ecosystem
-  const subEntities2013 = [
-    { key: '2013', name: 'VED', role: 'Game Online', src: 'https://i.ibb.co/fYPJLfbw/VED.png' },
-    { key: '2013-garena', name: 'Garena', role: 'Game Publisher', src: 'https://i.ibb.co/h1Md65yV/Garena.png' },
-    { key: '2013-gcafe', name: 'Gcafe', role: 'Phần mềm B2B', src: 'https://i.ibb.co/FkWk3s4W/GCafe.png' },
-    { key: '2013-shopee', name: 'Shopee', role: 'Sàn TMĐT', src: 'https://i.ibb.co/BSVS4xf/Shopee.png' },
-    { key: '2014-airpay', name: 'AirPay', role: 'Ví Điện Tử', src: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png' },
-  ];
-
-  // Featured Products Carousel (Right Widget in the image)
-  const featuredProductPages = [
-    {
-      label: '2 sản phẩm',
-      items: [
-        { name: 'Finviet', sub: 'FinTech Ecosystem', logo: 'https://i.ibb.co/7NtSSz4d/Finviet.png', targetKey: '2023' },
-        { name: 'ECO SCC', sub: 'Ví Điện Tử & Chợ Số', logo: 'https://i.ibb.co/cSXPhWcp/Finviet.png', isEcoBadge: true, targetKey: '2023' },
-      ],
-    },
-    {
-      label: '2 sản phẩm (FinTech & Bảo hiểm)',
-      items: [
-        { name: 'Ví MoMo', sub: 'Siêu ứng dụng Thanh toán', logo: 'https://i.ibb.co/k2QtrgTw/Momo.png', targetKey: '2018' },
-        { name: 'Prudential', sub: 'Bảo hiểm Nhân thọ', logo: 'https://i.ibb.co/XfpQphWF/Prudential.png', targetKey: '2016' },
-      ],
-    },
-    {
-      label: '3 sản phẩm (Viễn thông & Truyền hình)',
-      items: [
-        { name: 'MobiFone', sub: 'Viễn thông Di động', logo: 'https://i.ibb.co/hxHm9TsZ/Mobifone.png', targetKey: '2003' },
-        { name: 'Call 247 / LBC', sub: 'Viễn thông Quốc tế', logo: 'https://i.ibb.co/QvtbdnfP/V247.png', targetKey: '2007' },
-        { name: 'LBC - HTVC', sub: 'Truyền hình Cáp & Internet', logo: 'https://i.ibb.co/1fNw0hBq/HTVC.png', targetKey: '2011' },
-      ],
-    },
-  ];
-
-  const is2013GroupActive =
-    activeKey === '2013' || activeKey.startsWith('2013') || activeKey === '2014-airpay';
 
   // Filter roadmap cards if user types in search box
   const filteredRoadmapCards = roadmapCards.filter((c) => {
@@ -261,8 +225,6 @@ export const ExperienceView: React.FC = () => {
   const prevKey = currentKeyIndex > 0 ? allMilestoneKeys[currentKeyIndex - 1] : null;
   const nextKey = currentKeyIndex < allMilestoneKeys.length - 1 ? allMilestoneKeys[currentKeyIndex + 1] : null;
 
-  const currentProdSlide = featuredProductPages[featuredProdPage] || featuredProductPages[0];
-
   return (
     <div
       className={`w-full h-full flex-1 flex flex-col justify-between gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 ${
@@ -271,89 +233,111 @@ export const ExperienceView: React.FC = () => {
     >
       {!showJobCard && (
         <>
-          {/* 1. TOP HERO BANNER (ĐỒNG BỘ CHUẨN FORM TRANG LĨNH VỰC) */}
-          <HeroBanner
-            badgeText="Hành trình"
-            title="Hành Trình Sự Nghiệp"
-            subtitle="Hơn 22 năm cống hiến – Vận hành chuẩn mực & Kiến tạo giá trị bền vững"
-            quote="“Khách hàng là trung tâm – Tạo giá trị bền vững.”"
-            quoteAuthor="— Nguyễn Hùng Thái"
-            badgeColor="text-blue-600"
-            videoSrc="https://cdn.scena.ai/project/10223/7aed89cdf840dad2b1adad177bdd91b7df0cb825e5ab35a9640a65bd04d4ca9a.mp4"
-            bottomControls={
-              <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-1 px-1">
-                {/* Lịch Sử Công Tác nằm dưới banner bên trong banner */}
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md border border-white shadow-2xs">
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-xs">
-                    <svg className="w-3 h-3 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="9" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 014 9 15 15 0 01-4 9 15 15 0 01-4-9 15 15 0 014-9z" />
+          {/* 1. TOP HERO BANNER: HÀNH TRÌNH SỰ NGHIỆP */}
+          <div className="w-full relative rounded-[22px] overflow-hidden px-5 py-3 sm:px-6 sm:py-3.5 bg-gradient-to-r from-[#eaf4ff]/95 via-[#f2f7ff]/90 to-[#ffffff]/95 dark:from-slate-900/95 dark:via-slate-800/90 dark:to-slate-900/95 border border-white/90 dark:border-white/10 shadow-[0_8px_30px_rgba(62,115,180,0.08)] flex flex-col md:flex-row items-center justify-between gap-3 min-h-[148px] shrink-0">
+            {/* Left: Title & Subtitle & History Pill */}
+            <div className="flex-1 flex flex-col justify-between h-full text-left z-10">
+              <div>
+                <span className="font-serif italic font-bold text-blue-600 dark:text-blue-400 text-base sm:text-lg block leading-tight">
+                  Hành trình
+                </span>
+                <h2 className="text-xl sm:text-[25px] font-black text-[#1E3A6D] dark:text-white tracking-tight font-play leading-tight">
+                  Hành trình sự nghiệp
+                </h2>
+                <div className="w-10 h-1 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 my-1" />
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium max-w-sm leading-snug">
+                  Từ những bước đi đầu tiên đến hành trình kiến tạo giá trị cùng những người đồng hành tuyệt vời.
+                </p>
+              </div>
+
+              {/* Lịch Sử Công Tác pill */}
+              <div className="mt-2.5 flex items-center gap-2">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-800/90 backdrop-blur-md border border-slate-200/80 dark:border-white/10 shadow-xs">
+                  <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-xs">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <circle cx="12" cy="13" r="3" />
                     </svg>
                   </div>
-                  <h3 className="text-xs sm:text-sm font-black font-play tracking-tight text-blue-950">
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-play">
                     Lịch Sử Công Tác
-                  </h3>
-                  <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                  </span>
+                  <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/40 px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-700/50">
                     2003 – 2026+
                   </span>
                 </div>
-
-                {/* Tìm kiếm nằm dưới banner bên trong banner */}
-                <div className="relative flex items-center w-full sm:w-72 shrink-0">
-                  <svg
-                    className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle cx="11" cy="11" r="8" />
-                    <path strokeLinecap="round" d="M21 21l-4.35-4.35" />
-                  </svg>
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Tìm công ty, vị trí, thời gian..."
-                    className="w-full pl-8 pr-8 py-1 rounded-full bg-white/95 border border-slate-200/90 text-xs font-semibold text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 shadow-2xs"
-                  />
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setSearchQuery('')}
-                      title="Làm mới bộ lọc"
-                      className="absolute right-2.5 w-5 h-5 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-500 cursor-pointer text-xs"
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
               </div>
-            }
-          />
+            </div>
 
-          {/* =====================================================================
-              2. 8-CARD HORIZONTAL TIMELINE (Năm 2003 -> Năm 2026+)
-              - Căn chỉnh thu gọn nằm gọn trong thẻ chính
-              - Logo hình tròn lắp đầy, KHÔNG viền
-              - LBC có thêm 1 hình sản phẩm HTVC
-              - Đã bỏ line kết nối thừa
-              - Click vào logo để mở thẻ Job (ẩn tất cả kể cả banner)
-              ===================================================================== */}
-          <div className="w-full flex-1 min-h-0 p-2.5 sm:p-3 rounded-[20px] bg-white/85 backdrop-blur-xl border border-white/95 shadow-xs overflow-x-auto no-scrollbar relative flex flex-col justify-center">
-            <div className="w-full h-full min-w-[960px] grid grid-cols-8 gap-2 pt-2 pb-0.5 items-stretch">
+            {/* Center: Character Image (Executive with Headset & 3D Robot) */}
+            <div className="relative shrink-0 flex items-center justify-center h-[135px] sm:h-[148px] self-end z-10 pointer-events-none">
+              <img
+                src="/images/experience/hero-character.png"
+                alt="Nguyễn Hùng Thái & AI Assistant"
+                className="h-full w-auto object-contain drop-shadow-md select-none"
+              />
+            </div>
+
+            {/* Right: Quote & Search Capsule */}
+            <div className="flex-1 flex flex-col justify-between h-full items-end text-right z-10">
+              <div className="flex flex-col items-end">
+                <div className="flex items-start gap-1">
+                  <span className="text-2xl text-blue-400 font-serif leading-none">“</span>
+                  <p className="text-xs sm:text-[13px] font-bold text-slate-800 dark:text-slate-200 italic leading-snug">
+                    Khách hàng là trung tâm – Tạo giá trị bền vững. ”
+                  </p>
+                </div>
+                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+                  — Nguyễn Hùng Thái
+                </span>
+              </div>
+
+              {/* Search Input Capsule */}
+              <div className="mt-2.5 relative flex items-center w-full max-w-[280px]">
+                <svg
+                  className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path strokeLinecap="round" d="M21 21l-4.35-4.35" />
+                </svg>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Tìm công ty, vị trí, thời gian..."
+                  className="w-full pl-8 pr-8 py-1.5 rounded-full bg-white/95 dark:bg-slate-800/90 border border-slate-200/90 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-xs"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    title="Làm mới bộ lọc"
+                    className="absolute right-2.5 w-4 h-4 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center text-slate-500 cursor-pointer text-xs"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* 2. 8-CARD HORIZONTAL TIMELINE (Năm 2003 -> Năm 2026+) */}
+          <div className="w-full flex-1 min-h-0 rounded-[22px] p-3 sm:p-4 bg-white/80 dark:bg-[#121218]/85 border border-white/80 dark:border-white/10 backdrop-blur-[18px] shadow-[0_8px_30px_rgba(62,115,180,0.08)] overflow-x-auto no-scrollbar relative flex flex-col justify-center">
+            <div className="w-full h-full min-w-[980px] grid grid-cols-8 gap-2.5 items-stretch">
               {filteredRoadmapCards.map((item, idx) => {
-                const isSelected =
-                  activeKey === item.key || (item.key === '2013' && is2013GroupActive);
+                const isSelected = activeKey === item.key;
                 const isLast = idx === filteredRoadmapCards.length - 1;
-                const isLbcCard = item.key === '2011';
 
                 return (
                   <div key={item.key} className="relative flex flex-col items-center h-full min-h-0">
-                    {/* Top Year Pill Badge with Downward Triangle */}
+                    {/* Top Year Pill Badge with Downward Pointer */}
                     <div className="flex flex-col items-center -mb-2 z-20">
                       <div
-                        className={`px-2.5 py-0.5 rounded-full text-white font-black text-[9.5px] sm:text-[10px] tracking-tight shadow-xs flex items-center justify-center transition-all duration-300 whitespace-nowrap ${
+                        className={`px-3 py-0.5 rounded-full text-white font-extrabold text-[10px] tracking-tight shadow-xs flex items-center justify-center transition-all duration-300 whitespace-nowrap ${
                           isSelected ? 'scale-105 ring-2 ring-white shadow-sm' : ''
                         }`}
                         style={{ background: item.badgeBg }}
@@ -370,7 +354,7 @@ export const ExperienceView: React.FC = () => {
                     <div
                       onClick={() => handleSelectMilestone(item.key)}
                       style={{ background: item.cardBg }}
-                      className={`theme-pastel-card w-full flex-1 min-h-0 rounded-[16px] pt-3 pb-2 px-1.5 border transition-all duration-300 cursor-pointer flex flex-col items-center text-center justify-between gap-1 relative group ${
+                      className={`theme-pastel-card w-full flex-1 min-h-0 rounded-[18px] pt-3.5 pb-2.5 px-2 border transition-all duration-300 cursor-pointer flex flex-col items-center text-center justify-between gap-1.5 relative group ${
                         item.borderColor
                       } ${
                         isSelected
@@ -378,118 +362,73 @@ export const ExperienceView: React.FC = () => {
                           : 'shadow-2xs hover:shadow-xs hover:-translate-y-0.5'
                       }`}
                     >
-                      {/* Logo Area: Tròn lắp đầy hình tròn, KHÔNG tạo viền */}
-                      {isLbcCard ? (
-                        /* LBC: Tạo thêm 1 hình sản phẩm HTVC bên cạnh logo LBC */
-                        <div className="relative flex items-center justify-center gap-1 my-0.5 shrink-0">
-                          {/* Logo LBC */}
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleOpenJobCard(item.key);
-                            }}
-                            title="Click logo LBC để mở chi tiết công tác"
-                            className="relative flex items-center justify-center group/logo cursor-pointer"
-                          >
-                            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shadow-2xs p-0 border-0 border-none ring-0 outline-none transition-transform duration-300 group-hover/logo:scale-105 bg-white">
-                              <img
-                                src={item.logo}
-                                alt="LBC"
-                                className="w-full h-full object-cover rounded-full block border-0 border-none ring-0 outline-none"
-                              />
-                            </div>
-                            <span className="absolute -bottom-1 text-[7px] bg-slate-900/90 text-white px-1 py-0.2 rounded-full opacity-0 group-hover/logo:opacity-100 transition-opacity whitespace-nowrap shadow-xs pointer-events-none z-30">
-                              LBC
-                            </span>
-                          </div>
-
-                          {/* Hình sản phẩm HTVC */}
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleOpenJobCard(item.key);
-                            }}
-                            title="Sản phẩm HTVC - Click để mở chi tiết công tác LBC"
-                            className="relative flex items-center justify-center group/logo cursor-pointer"
-                          >
-                            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center shadow-2xs p-0 border-0 border-none ring-0 outline-none transition-transform duration-300 group-hover/logo:scale-105 bg-white">
-                              <img
-                                src="https://i.ibb.co/1fNw0hBq/HTVC.png"
-                                alt="Sản phẩm HTVC"
-                                className="w-full h-full object-cover rounded-full block border-0 border-none ring-0 outline-none"
-                              />
-                            </div>
-                            <span className="absolute -bottom-1 text-[7px] bg-emerald-700 text-white px-1 py-0.2 rounded-full opacity-0 group-hover/logo:opacity-100 transition-opacity whitespace-nowrap shadow-xs pointer-events-none z-30">
-                              HTVC
-                            </span>
-                          </div>
-                        </div>
-                      ) : (
-                        /* Các mốc khác: 1 logo lắp đầy hình tròn, KHÔNG tạo viền */
-                        <div
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleOpenJobCard(item.key);
-                          }}
-                          title={`Click logo để mở chi tiết công tác ${item.shortName}`}
-                          className="relative flex items-center justify-center my-0.5 group/logo cursor-pointer shrink-0"
-                        >
-                          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden flex items-center justify-center shadow-2xs p-0 border-0 border-none ring-0 outline-none transition-transform duration-300 group-hover/logo:scale-105 bg-white">
+                      {/* Logo Area: White Rounded Box */}
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenJobCard(item.key);
+                        }}
+                        title={`Click để mở chi tiết công tác ${item.shortName}`}
+                        className="w-full h-13 rounded-xl bg-white shadow-2xs border border-slate-100 flex items-center justify-center p-1.5 group/logo cursor-pointer shrink-0 transition-transform group-hover/logo:scale-102"
+                      >
+                        {item.extraLogo ? (
+                          <div className="flex items-center justify-center gap-1.5 w-full h-full">
                             <img
                               src={item.logo}
                               alt={item.shortName}
-                              className="w-full h-full object-cover rounded-full block border-0 border-none ring-0 outline-none"
+                              className="h-7 max-w-[45%] object-contain"
+                            />
+                            <img
+                              src={item.extraLogo}
+                              alt="HTVC"
+                              className="h-7 max-w-[45%] object-contain"
                             />
                           </div>
-                          <span className="absolute -bottom-1 text-[7.5px] bg-slate-900/85 text-white px-1.5 py-0.2 rounded-full opacity-0 group-hover/logo:opacity-100 transition-opacity whitespace-nowrap shadow-xs pointer-events-none z-30">
-                            Xem chi tiết
-                          </span>
-                        </div>
-                      )}
+                        ) : (
+                          <img
+                            src={item.logo}
+                            alt={item.shortName}
+                            className="h-8 max-h-full max-w-[85%] object-contain"
+                          />
+                        )}
+                      </div>
 
                       {/* Company Short Name */}
                       <h4
-                        className={`text-[10px] sm:text-[10.5px] font-black font-play tracking-tight uppercase line-clamp-1 w-full px-0.5 shrink-0 ${item.titleColor}`}
+                        className={`text-[10.5px] font-black font-play tracking-wide uppercase line-clamp-1 w-full px-0.5 shrink-0 ${item.titleColor}`}
                       >
                         {item.shortName}
                       </h4>
 
                       {/* Role Label & Summary */}
-                      <div className="space-y-0.5 w-full flex-1 min-h-0 flex flex-col justify-start">
-                        <span className="text-[8px] sm:text-[8.5px] font-semibold text-slate-400 block leading-none">
+                      <div className="space-y-0.5 w-full shrink-0">
+                        <span className="text-[8.5px] font-semibold text-slate-400 block leading-none">
                           Vị trí
                         </span>
-                        <p className="text-[9px] sm:text-[9.5px] font-bold text-slate-700 leading-tight line-clamp-2 px-0.5">
+                        <p className="text-[9.5px] font-bold text-slate-700 dark:text-slate-200 leading-tight line-clamp-2 px-0.5 min-h-[26px] flex items-center justify-center">
                           {item.roleSummary}
                         </p>
                       </div>
 
-                      {/* Khối icon sản phẩm chuyển vào trong card (Phạm vi: Áp dụng toàn bộ 2003 - 2026+) */}
-                      {item.products && item.products.length > 0 && (
-                        <div
-                          className="w-full flex items-center justify-center gap-1 py-0.5 px-0.5 shrink-0 flex-wrap"
-                          title={`Sản phẩm: ${item.products.map((p) => p.name).join(', ')}`}
-                        >
-                          {item.products.map((prod, pIdx) => (
-                            <div
-                              key={pIdx}
-                              title={prod.name}
-                              className="w-5 h-5 rounded-full overflow-hidden bg-white shadow-2xs border border-slate-200/90 flex items-center justify-center p-0.5 transition-transform duration-200 hover:scale-115 shrink-0"
+                      {/* Bullet points */}
+                      <div className="w-full flex-1 flex flex-col justify-center px-0.5 my-0.5">
+                        <ul className="space-y-1 text-left w-full">
+                          {item.bullets.map((bullet, bIdx) => (
+                            <li
+                              key={bIdx}
+                              className="text-[8.5px] sm:text-[9px] leading-snug text-slate-600 dark:text-slate-300 font-medium flex items-start gap-1"
                             >
-                              <img
-                                src={prod.icon}
-                                alt={prod.name}
-                                className="w-full h-full object-contain rounded-full block"
-                              />
-                            </div>
+                              <span className="text-slate-400 font-bold leading-none shrink-0">•</span>
+                              <span className="line-clamp-2">{bullet}</span>
+                            </li>
                           ))}
-                        </div>
-                      )}
+                        </ul>
+                      </div>
 
                       {/* Headcount Pill at Bottom */}
-                      <div className="w-full pt-0.5 shrink-0">
+                      <div className="w-full pt-1 shrink-0 mt-auto">
                         <div
-                          className={`w-full py-0.5 px-1 rounded-full border text-[8.5px] sm:text-[9px] font-extrabold flex items-center justify-center gap-1 shadow-2xs ${item.pillBg}`}
+                          className={`w-full py-1 px-1 rounded-full border text-[9px] font-bold flex items-center justify-center gap-1 shadow-2xs ${item.pillBg}`}
                         >
                           <svg className="w-2.5 h-2.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
@@ -502,7 +441,7 @@ export const ExperienceView: React.FC = () => {
                     {/* Connector Chevron ( > ) between cards */}
                     {!isLast && (
                       <div
-                        className="absolute top-[42%] -right-[7px] z-30 w-3.5 h-3.5 rounded-full text-white flex items-center justify-center shadow-xs pointer-events-none"
+                        className="absolute top-[48%] -right-[6px] z-30 w-3.5 h-3.5 rounded-full text-white flex items-center justify-center shadow-xs pointer-events-none"
                         style={{ backgroundColor: item.arrowBg }}
                       >
                         <svg className="w-2 h-2 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -513,142 +452,6 @@ export const ExperienceView: React.FC = () => {
                   </div>
                 );
               })}
-            </div>
-          </div>
-
-          {/* =====================================================================
-              4. BOTTOM 2-WIDGET BENTO ROW (VED Ecosystem + Featured Products)
-              ===================================================================== */}
-          <div className="w-full h-[125px] sm:h-[135px] shrink-0 grid grid-cols-1 lg:grid-cols-12 gap-[15px] items-stretch">
-            {/* WIDGET 1 (7 cols): Hệ Sinh Thái Sản Phẩm VED */}
-            <div
-              className="theme-pastel-card lg:col-span-7 rounded-[18px] p-2.5 sm:p-3 border border-purple-200/90 shadow-xs flex flex-col justify-between gap-1.5 relative overflow-hidden h-full min-h-0"
-              style={{
-                background:
-                  'linear-gradient(135deg, #f5f3ff 0%, #fdf4ff 55%, #ede9fe 100%)',
-              }}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between gap-2 shrink-0">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-                    <svg className="w-3.5 h-3.5 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="9" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 014 9 15 15 0 01-4 9 15 15 0 01-4-9 15 15 0 014-9z" />
-                    </svg>
-                  </div>
-                  <h4 className="text-xs sm:text-[13px] font-black font-play tracking-tight text-slate-900 leading-tight">
-                    Hệ Sinh Thái Sản Phẩm VED
-                  </h4>
-                </div>
-                <span className="text-[9px] font-bold text-purple-700 bg-purple-100/80 px-2 py-0.5 rounded-full border border-purple-200">
-                  5 Thương hiệu VED
-                </span>
-              </div>
-
-              {/* 5 Brand Mini-Cards (Logo không tên) */}
-              <div className="grid grid-cols-5 gap-1.5 flex-1 min-h-0 items-stretch">
-                {subEntities2013.map((sub) => {
-                  const isSubSelected = activeKey === sub.key;
-                  return (
-                    <button
-                      key={sub.key}
-                      type="button"
-                      onClick={() => handleSelectMilestone(sub.key)}
-                      title={`${sub.name} - ${sub.role}`}
-                      className={`logo-pill-light p-1.5 rounded-xl bg-white border transition-all flex items-center justify-center cursor-pointer shadow-2xs hover:shadow-xs hover:-translate-y-0.5 h-full min-h-0 ${
-                        isSubSelected
-                          ? 'border-purple-500 ring-2 ring-purple-300'
-                          : 'border-slate-200/80'
-                      }`}
-                    >
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center p-0.5">
-                        <img src={sub.src} alt={sub.name} className="w-full h-full object-contain" />
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* WIDGET 2 (5 cols): Sản Phẩm Tiêu Biểu */}
-            <div
-              className="theme-pastel-card lg:col-span-5 rounded-[18px] p-2.5 sm:p-3 border border-indigo-200/90 shadow-xs flex flex-col justify-between gap-1.5 relative overflow-hidden h-full min-h-0"
-              style={{
-                background:
-                  'linear-gradient(135deg, #f8fafc 0%, #ffffff 55%, #f3e8ff 100%)',
-              }}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between gap-2 shrink-0">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  </div>
-                  <h4 className="text-xs sm:text-[13px] font-black font-play tracking-tight text-slate-900 leading-tight">
-                    Sản Phẩm Tiêu Biểu
-                  </h4>
-                </div>
-
-                {/* Bottom Carousel Controls */}
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFeaturedProdPage((prev) =>
-                        prev > 0 ? prev - 1 : featuredProductPages.length - 1
-                      )
-                    }
-                    className="w-5 h-5 rounded-full bg-slate-100 hover:bg-indigo-100 text-slate-600 hover:text-indigo-700 flex items-center justify-center text-xs font-bold transition cursor-pointer"
-                    title="Trước"
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="m15 18-6-6 6-6" /></svg>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setFeaturedProdPage((prev) =>
-                        prev < featuredProductPages.length - 1 ? prev + 1 : 0
-                      )
-                    }
-                    className="w-5 h-5 rounded-full bg-rose-100 hover:bg-rose-200 text-rose-600 flex items-center justify-center text-xs font-bold transition cursor-pointer"
-                    title="Tiếp"
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="m9 18 6-6-6-6" /></svg>
-                  </button>
-                </div>
-              </div>
-
-              {/* Product Cards inside current slide (Logo hình tròn tương tự timeline) */}
-              <div className={`grid gap-1.5 flex-1 min-h-0 items-stretch ${currentProdSlide.items.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
-                {currentProdSlide.items.map((prod) => (
-                  <div
-                    key={prod.name}
-                    onClick={() => handleSelectMilestone(prod.targetKey)}
-                    className="logo-pill-light rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs hover:border-indigo-300 transition-all p-1 flex items-center justify-center cursor-pointer group text-center h-full min-h-0"
-                    title={prod.name}
-                  >
-                    {prod.isEcoBadge ? (
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-sky-500 to-lime-500 p-[1.5px] shadow-xs flex items-center justify-center shrink-0 my-auto">
-                        <div className="w-full h-full rounded-full bg-white flex items-center justify-center gap-0.5">
-                          <span className="text-[#0284c7] font-black text-[8px] sm:text-[9px] tracking-tight">ECO</span>
-                          <span className="text-[#84cc16] font-black text-[8px] sm:text-[9px] tracking-tight">SCC</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full p-[1.5px] bg-gradient-to-tr from-indigo-500 via-sky-400 to-pink-500 shadow-xs flex items-center justify-center overflow-hidden shrink-0 my-auto border border-white">
-                        <img
-                          src={prod.logo}
-                          alt={prod.name}
-                          className="w-full h-full object-cover rounded-full group-hover:scale-105 transition-transform block border-0 ring-0 outline-none"
-                        />
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </>
