@@ -719,6 +719,55 @@ export const WebIcon: React.FC<WebIconProps> = ({ name, className = 'w-4 h-4' })
         </svg>
       );
 
+    case 'cloud':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+        </svg>
+      );
+
+    case 'cpu':
+    case 'chip':
+    case 'processor':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <rect width="16" height="16" x="4" y="4" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+          <rect width="6" height="6" x="9" y="9" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 2v2M15 20v2M2 15h2M2 9h2M20 15h2M20 9h2M9 2v2M9 20v2" />
+        </svg>
+      );
+
+    case 'link':
+    case 'chain':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+        </svg>
+      );
+
+    case 'workflow':
+    case 'git-branch':
+    case 'branch':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <line strokeLinecap="round" strokeLinejoin="round" x1="6" x2="6" y1="3" y2="15" />
+          <circle cx="18" cy="6" r="3" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="6" cy="18" r="3" strokeLinecap="round" strokeLinejoin="round" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M18 9a9 9 0 0 1-9 9" />
+        </svg>
+      );
+
+    case 'box':
+    case 'cube':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+          <polyline strokeLinecap="round" strokeLinejoin="round" points="3.27 6.96 12 12.01 20.73 6.96" />
+          <line strokeLinecap="round" strokeLinejoin="round" x1="12" y1="22.08" x2="12" y2="12" />
+        </svg>
+      );
+
     default:
       return (
         <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
