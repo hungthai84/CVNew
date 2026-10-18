@@ -284,6 +284,11 @@ export const EducationView: React.FC = () => {
     );
   };
 
+  const currentIndex = selectedBook ? filteredBooks.findIndex((b) => b.id === selectedBook.id) : -1;
+  const prevBook = currentIndex > 0 ? filteredBooks[currentIndex - 1] : null;
+  const nextBook = currentIndex >= 0 && currentIndex < filteredBooks.length - 1 ? filteredBooks[currentIndex + 1] : null;
+  const selectedMeta = selectedBook ? cardMetaMap[selectedBook.id] : null;
+
   return (
     <div className="w-full h-full flex-1 flex flex-col justify-between gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden text-left">
       {/* 1. TOP HERO BANNER */}
@@ -391,8 +396,11 @@ export const EducationView: React.FC = () => {
         }
       />
 
-      {/* 2. SUMMARY CARD OF COURSES (CARD TỔNG KẾT KHÓA HỌC - MẶC ĐỊNH HIỂN THỊ) */}
-      <div className="w-full relative z-20 shrink-0">
+      {/* 2. SUMMARY & CARDS (HIỂN THỊ KHI CHƯA CHỌN XEM CHI TIẾT KHÓA HỌC) */}
+      {!selectedBook ? (
+        <>
+          {/* 2. SUMMARY CARD OF COURSES (CARD TỔNG KẾT KHÓA HỌC - MẶC ĐỊNH HIỂN THỊ) */}
+          <div className="w-full relative z-20 shrink-0">
         <div className="w-full rounded-2xl bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/80 dark:border-white/10 p-2 sm:p-2.5 shadow-sm hover:shadow-md transition-all duration-300">
           <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2">
             {/* Left: Summary Title & Quick Badges */}
@@ -698,195 +706,314 @@ export const EducationView: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* 4. DETAIL MODAL (KHI BẤM "XEM CHI TIẾT BẰNG CẤP") */}
-      {selectedBook && (
-        <Modal
-          isOpen={!!selectedBook}
-          onClose={() => {
-            setSelectedBook(null);
-            setZoomCertImage(false);
-          }}
-          title={`Học Phần ${selectedBook.code}: ${selectedBook.title}`}
-          maxWidth="5xl"
-        >
-          <div className="flex flex-col gap-5 p-1 text-left font-play">
-            {/* Banner Top in Modal */}
-            <div className="relative w-full rounded-2xl overflow-hidden aspect-[21/9] sm:aspect-[24/8] bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-              <img
-                src={selectedBook.bannerImg || selectedBook.certImg}
-                alt={selectedBook.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent flex flex-col justify-end p-4">
-                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500 text-white font-mono font-bold text-xs max-w-fit shadow-xs mb-1">
-                  Mã {selectedBook.code} • Năm {selectedBook.year}
-                </span>
-                <h2 className="text-base sm:text-xl font-black text-white leading-tight">
-                  {selectedBook.title}
-                </h2>
-                <span className="text-xs text-sky-200 font-medium">
-                  Đơn vị: {selectedBook.org}
-                </span>
-              </div>
-            </div>
-
-            {/* Quick Summary Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                <span className="text-[10px] font-bold text-slate-400 font-mono block">HÌNH THỨC</span>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5 block">{selectedBook.format}</span>
-              </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                <span className="text-[10px] font-bold text-slate-400 font-mono block">NĂM ĐÀO TẠO</span>
-                <span className="text-xs font-bold text-blue-600 dark:text-cyan-400 mt-0.5 block">Năm {selectedBook.year}</span>
-              </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-                <span className="text-[10px] font-bold text-slate-400 font-mono block">ĐƠN VỊ ĐÀO TẠO</span>
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5 block truncate">{selectedBook.org}</span>
-              </div>
-            </div>
-
-            {/* Orientation */}
-            {selectedBook.orientation && (
-              <div className="p-3.5 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/50 border border-indigo-200/80 dark:border-indigo-800/60">
-                <span className="text-xs font-bold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider flex items-center gap-1.5 mb-1 font-mono">
-                  <WebIcon name="target" className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                  <span>Định hướng học tập</span>
-                </span>
-                <p className="text-xs text-indigo-950 dark:text-indigo-200 font-medium leading-relaxed">
-                  {selectedBook.orientation}
-                </p>
-              </div>
-            )}
-
-            {/* Curriculum Modules */}
-            <div>
-              <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 font-mono flex items-center gap-1.5">
-                <WebIcon name="book" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span>Nội dung chuyên môn chi tiết</span>
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {selectedBook.modules.map((mod, idx) => (
-                  <div
-                    key={idx}
-                    className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-start gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300"
-                  >
-                    <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M20 6 9 17l-5-5" /></svg>
-                    <span>{mod}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Competencies & Practice */}
-            {selectedBook.practice && selectedBook.practice.length > 0 && (
-              <div>
-                <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 font-mono flex items-center gap-1.5">
-                  <WebIcon name="wrench" className="w-4 h-4 text-blue-600 dark:text-cyan-400" />
-                  <span>Sản phẩm & Thực hành thực tế</span>
-                </h4>
-                <div className="space-y-1.5">
-                  {selectedBook.practice.map((p, idx) => (
-                    <div
-                      key={idx}
-                      className="p-2.5 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900 text-xs font-medium text-slate-700 dark:text-slate-300 flex items-start gap-2"
-                    >
-                      <span className="text-blue-600 dark:text-cyan-400 font-bold">•</span>
-                      <span>{p}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Competencies Achieved */}
-            {selectedBook.competencies && selectedBook.competencies.length > 0 && (
-              <div>
-                <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 font-mono flex items-center gap-1.5">
-                  <WebIcon name="award" className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-                  <span>Năng lực đạt được</span>
-                </h4>
-                <div className="space-y-1.5">
-                  {selectedBook.competencies.map((c, idx) => (
-                    <div
-                      key={idx}
-                      className="p-2.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/40 border border-amber-200/70 dark:border-amber-800 text-xs font-medium text-slate-800 dark:text-slate-200 flex items-start gap-2"
-                    >
-                      <span className="text-amber-600 dark:text-amber-400 font-bold">✔</span>
-                      <span>{c}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Career Value */}
-            {selectedBook.careerValue && (
-              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/80 dark:border-emerald-800">
-                <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider flex items-center gap-1.5 mb-1 font-mono">
-                  <WebIcon name="lightbulb" className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                  <span>Giá trị ứng dụng vào nghề nghiệp</span>
-                </span>
-                <p className="text-xs text-emerald-950 dark:text-emerald-200 font-medium leading-relaxed">
-                  {selectedBook.careerValue}
-                </p>
-              </div>
-            )}
-
-            {/* Intersection Skills / Outcome */}
-            {selectedBook.intersectionSkills && (
-              <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 font-mono uppercase">
-                  Năng lực giao thoa:
-                </span>
-                <span className="text-xs font-black text-indigo-700 dark:text-indigo-300 font-mono">
-                  {selectedBook.intersectionSkills}
-                </span>
-              </div>
-            )}
-
-            {/* Certificate Preview Image */}
-            {selectedBook.certImg && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono flex items-center gap-1.5">
-                    <WebIcon name="scroll" className="w-4 h-4 text-slate-500" />
-                    <span>Hình ảnh chứng chỉ / Bằng cấp</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setZoomCertImage(!zoomCertImage)}
-                    className="text-xs text-blue-600 dark:text-cyan-400 font-bold hover:underline cursor-pointer"
-                  >
-                    {zoomCertImage ? 'Thu nhỏ' : 'Phóng to'}
-                  </button>
-                </div>
-
-                <div
-                  className={`w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-300 dark:border-slate-700 flex items-center justify-center cursor-pointer transition-all ${
-                    zoomCertImage ? 'h-auto max-h-[700px]' : 'h-64'
-                  }`}
-                  onClick={() => setZoomCertImage(!zoomCertImage)}
-                >
-                  <img
-                    src={selectedBook.certImg}
-                    alt={`${selectedBook.title} Chứng chỉ`}
-                    className="w-full h-full object-contain p-2"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Footer Buttons */}
-            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200 dark:border-slate-700">
+        </>
+      ) : (
+        /* 2. EDUCATION DETAIL VIEW (KÍCH THƯỚC VỪA KHÍT KHUNG NỘI DUNG DƯỚI BANNER THEO ĐÚNG HÌNH ĐỎ) */
+        <div className="w-full flex-1 min-h-0 rounded-[20px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/80 dark:border-white/10 shadow-sm p-3.5 sm:p-5 overflow-y-auto custom-scrollbar flex flex-col gap-3.5 text-left animate-page-enter relative">
+          {/* Top Header / Breadcrumb Bar */}
+          <div className="w-full flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200/80 dark:border-white/10 shrink-0">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
               <button
                 type="button"
                 onClick={() => {
                   setSelectedBook(null);
                   setZoomCertImage(false);
                 }}
-                className="px-5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition cursor-pointer"
+                className="px-3.5 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-extrabold text-xs font-play transition flex items-center gap-1.5 border border-emerald-200/80 dark:border-emerald-800 shadow-2xs cursor-pointer shrink-0"
+                title="Quay lại danh sách khóa học"
+              >
+                <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span>Quay lại danh sách</span>
+              </button>
+
+              <span className="text-slate-300 dark:text-slate-600 font-bold text-sm">›</span>
+
+              <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-black text-white shadow-2xs shrink-0 ${selectedMeta?.themeColor || 'bg-emerald-600'}`}>
+                Mã {selectedBook.code}
+              </span>
+
+              <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white font-play truncate">
+                {selectedBook.title}
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              {prevBook && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedBook(prevBook)}
+                  className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs"
+                  title={`Khóa trước: ${prevBook.title}`}
+                >
+                  <span>‹</span>
+                  <span className="hidden sm:inline">Khóa trước</span>
+                </button>
+              )}
+
+              {nextBook && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedBook(nextBook)}
+                  className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs"
+                  title={`Khóa tiếp: ${nextBook.title}`}
+                >
+                  <span className="hidden sm:inline">Khóa tiếp</span>
+                  <span>›</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedBook(null);
+                  setZoomCertImage(false);
+                }}
+                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-rose-500 hover:text-white dark:bg-slate-800 dark:hover:bg-rose-600 text-slate-500 dark:text-slate-400 transition-all flex items-center justify-center cursor-pointer shadow-2xs ml-1"
+                title="Đóng chi tiết"
+              >
+                <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Detail Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-start">
+            {/* LEFT COLUMN (lg:col-span-6): Course Banner, Metadata stats, Orientation, Career Value */}
+            <div className="lg:col-span-6 flex flex-col gap-3">
+              {/* Banner Top */}
+              <div className="relative w-full rounded-2xl overflow-hidden aspect-[21/9] sm:aspect-[24/9] bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+                <img
+                  src={selectedBook.bannerImg || selectedBook.certImg || `/images/education/card-banner-${String(selectedBook.id).padStart(2, '0')}.png`}
+                  alt={selectedBook.title}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      selectedBook.certImg || 'https://placehold.co/600x240/10b981/ffffff?text=Education';
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent flex flex-col justify-end p-3.5">
+                  <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                    <span className={`px-2 py-0.5 rounded-full text-white font-mono font-bold text-[10px] shadow-xs ${selectedMeta?.themeColor || 'bg-emerald-600'}`}>
+                      Mã {selectedBook.code}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white font-mono font-bold text-[10px]">
+                      Năm {selectedBook.year}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/80 backdrop-blur-md text-white font-bold text-[10px]">
+                      {selectedBook.format}
+                    </span>
+                  </div>
+                  <h2 className="text-base sm:text-lg font-black text-white leading-tight font-play">
+                    {selectedBook.title}
+                  </h2>
+                  <span className="text-[11px] text-sky-200 font-medium mt-0.5">
+                    Đơn vị đào tạo: {selectedBook.org}
+                  </span>
+                </div>
+              </div>
+
+              {/* Quick 3-Pillar Specs */}
+              <div className="grid grid-cols-3 gap-2">
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+                  <span className="text-[9px] font-bold text-slate-400 font-mono block uppercase">HÌNH THỨC</span>
+                  <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 mt-0.5 block truncate">{selectedBook.format}</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+                  <span className="text-[9px] font-bold text-slate-400 font-mono block uppercase">NĂM TỐT NGHIỆP</span>
+                  <span className="text-[11px] font-bold text-blue-600 dark:text-cyan-400 mt-0.5 block">Năm {selectedBook.year}</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+                  <span className="text-[9px] font-bold text-slate-400 font-mono block uppercase">ĐƠN VỊ ĐÀO TẠO</span>
+                  <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 mt-0.5 block truncate" title={selectedBook.org}>{selectedBook.org}</span>
+                </div>
+              </div>
+
+              {/* Orientation */}
+              {selectedBook.orientation && (
+                <div className="p-3 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/50 border border-indigo-200/80 dark:border-indigo-800/60">
+                  <span className="text-[11px] font-bold text-indigo-900 dark:text-indigo-300 uppercase tracking-wider flex items-center gap-1.5 mb-1 font-mono">
+                    <WebIcon name="target" className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                    <span>Định hướng học tập</span>
+                  </span>
+                  <p className="text-xs text-indigo-950 dark:text-indigo-200 font-medium leading-relaxed">
+                    {selectedBook.orientation}
+                  </p>
+                </div>
+              )}
+
+              {/* Career Value */}
+              {selectedBook.careerValue && (
+                <div className="p-3 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-950/40 dark:to-teal-950/40 border border-emerald-200/80 dark:border-emerald-800">
+                  <span className="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider flex items-center gap-1.5 mb-1 font-mono">
+                    <WebIcon name="lightbulb" className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <span>Giá trị ứng dụng vào nghề nghiệp</span>
+                  </span>
+                  <p className="text-xs text-emerald-950 dark:text-emerald-200 font-medium leading-relaxed">
+                    {selectedBook.careerValue}
+                  </p>
+                </div>
+              )}
+
+              {/* Intersection Skills / Outcome */}
+              {selectedBook.intersectionSkills && (
+                <div className="p-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 font-mono uppercase">
+                    Năng lực giao thoa:
+                  </span>
+                  <span className="text-[11px] font-black text-indigo-700 dark:text-indigo-300 font-mono">
+                    {selectedBook.intersectionSkills}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* RIGHT COLUMN (lg:col-span-6): Certificate Preview & Modules & Competencies */}
+            <div className="lg:col-span-6 flex flex-col gap-3">
+              {/* Certificate Preview Image */}
+              {selectedBook.certImg && (
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                      <WebIcon name="scroll" className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Hình ảnh chứng chỉ / Bằng cấp</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setZoomCertImage(true)}
+                      className="text-[11px] text-blue-600 dark:text-cyan-400 font-bold hover:underline cursor-pointer flex items-center gap-1"
+                    >
+                      <span>Phóng to</span>
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" /></svg>
+                    </button>
+                  </div>
+
+                  <div
+                    className="w-full h-52 sm:h-56 rounded-2xl overflow-hidden bg-slate-950 border border-slate-300/80 dark:border-slate-700 flex items-center justify-center cursor-pointer transition-all hover:border-emerald-500 relative group"
+                    onClick={() => setZoomCertImage(true)}
+                    title="Nhấn để phóng to ảnh chứng chỉ"
+                  >
+                    <img
+                      src={selectedBook.certImg}
+                      alt={`${selectedBook.title} Chứng chỉ`}
+                      className="w-full h-full object-contain p-2 group-hover:scale-[1.02] transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="px-3 py-1 rounded-full bg-black/70 text-white font-bold text-[11px] backdrop-blur-sm flex items-center gap-1">
+                        🔍 Nhấn để xem toàn màn hình
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Curriculum Modules */}
+              <div>
+                <h4 className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 font-mono flex items-center gap-1.5">
+                  <WebIcon name="book" className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span>Nội dung chuyên môn chi tiết ({selectedBook.modules.length} học phần)</span>
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {selectedBook.modules.map((mod, idx) => (
+                    <div
+                      key={idx}
+                      className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 flex items-start gap-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300"
+                    >
+                      <svg className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M20 6 9 17l-5-5" /></svg>
+                      <span>{mod}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Competencies & Practice */}
+              {selectedBook.practice && selectedBook.practice.length > 0 && (
+                <div>
+                  <h4 className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 font-mono flex items-center gap-1.5">
+                    <WebIcon name="wrench" className="w-3.5 h-3.5 text-blue-600 dark:text-cyan-400" />
+                    <span>Sản phẩm & Thực hành thực tế</span>
+                  </h4>
+                  <div className="space-y-1">
+                    {selectedBook.practice.map((p, idx) => (
+                      <div
+                        key={idx}
+                        className="p-2 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900 text-[11px] font-medium text-slate-700 dark:text-slate-300 flex items-start gap-2"
+                      >
+                        <span className="text-blue-600 dark:text-cyan-400 font-bold">•</span>
+                        <span>{p}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Competencies Achieved */}
+              {selectedBook.competencies && selectedBook.competencies.length > 0 && (
+                <div>
+                  <h4 className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 font-mono flex items-center gap-1.5">
+                    <WebIcon name="award" className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                    <span>Năng lực đạt được</span>
+                  </h4>
+                  <div className="space-y-1">
+                    {selectedBook.competencies.map((c, idx) => (
+                      <div
+                        key={idx}
+                        className="p-2 rounded-xl bg-amber-50/60 dark:bg-amber-950/40 border border-amber-200/70 dark:border-amber-800 text-[11px] font-medium text-slate-800 dark:text-slate-200 flex items-start gap-2"
+                      >
+                        <span className="text-amber-600 dark:text-amber-400 font-bold">✔</span>
+                        <span>{c}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom Actions Bar */}
+          <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-slate-200/80 dark:border-white/10 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedBook(null);
+                setZoomCertImage(false);
+              }}
+              className="px-4 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition cursor-pointer flex items-center gap-1.5"
+            >
+              <span>← Quay lại danh sách</span>
+            </button>
+
+            <span className="text-[10px] font-mono text-slate-400">
+              Khóa học {currentIndex + 1} / {filteredBooks.length}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* 5. LIGHTBOX MODAL CHO HÌNH ẢNH CHỨNG CHỈ (KHI BẤM PHÓNG TO) */}
+      {zoomCertImage && selectedBook?.certImg && (
+        <Modal
+          isOpen={zoomCertImage}
+          onClose={() => setZoomCertImage(false)}
+          title={`Chứng chỉ: ${selectedBook.title}`}
+          maxWidth="5xl"
+        >
+          <div className="flex flex-col gap-3 p-1">
+            <div className="w-full max-h-[75vh] overflow-auto rounded-xl bg-slate-950 border border-slate-700 flex items-center justify-center p-2">
+              <img
+                src={selectedBook.certImg}
+                alt={`${selectedBook.title} Chứng chỉ`}
+                className="max-w-full max-h-[70vh] object-contain"
+              />
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setZoomCertImage(false)}
+                className="px-4 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 transition cursor-pointer"
               >
                 Đóng
               </button>
