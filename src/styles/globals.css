@@ -91,6 +91,24 @@ body, button, input, textarea, select, h1, h2, h3, h4, h5, h6, p, span, div, a {
   outline: none !important;
 }
 
+/* Hiệu ứng icon chuyển động tại chỗ */
+@keyframes icon-in-place {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.08) rotate(-3deg);
+  }
+  75% {
+    transform: scale(1.08) rotate(3deg);
+  }
+}
+
+.animate-icon-inplace {
+  animation: icon-in-place 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
 html, body {
   width: 100vw;
   height: 100vh;

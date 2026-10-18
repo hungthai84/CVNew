@@ -78,13 +78,13 @@ export const ContactView: React.FC = () => {
           {/* Header Card 1 */}
           <div className="space-y-1 relative z-10 shrink-0">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold shrink-0">
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold shrink-0 animate-icon-inplace">
                 <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
               </div>
-              <h4 className="text-xs sm:text-sm lg:text-[14.5px] font-black text-slate-900 tracking-tight">
-                Kết nối & Trò chuyện cùng chuyên gia
+              <h4 className="text-xs sm:text-sm lg:text-[14.5px] font-black text-indigo-600 dark:text-indigo-400 tracking-tight font-play">
+                Kết nối chuyên gia
               </h4>
             </div>
             <p className="text-[11px] sm:text-xs font-medium leading-relaxed text-slate-600">
@@ -235,8 +235,8 @@ export const ContactView: React.FC = () => {
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <WebIcon name="sparkles" className="w-3 h-3" />
-                <span>Gửi thông điệp trực tiếp</span>
+                <WebIcon name="sparkles" className="w-3 h-3 animate-icon-inplace text-indigo-600 shrink-0" />
+                <span>Thông điệp hợp tác</span>
               </button>
               <button
                 type="button"

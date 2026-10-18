@@ -113,12 +113,12 @@ const AnimatedCardTitle: React.FC<{
     <div className="w-full flex items-center justify-between gap-3 mb-2.5">
       <div className="flex items-center gap-2.5 text-left">
         <div
-          className={`w-8 h-8 rounded-xl ${scheme.bg} ${scheme.text} flex items-center justify-center font-bold shadow-xs shrink-0`}
+          className={`w-8 h-8 rounded-xl ${scheme.bg} ${scheme.text} flex items-center justify-center font-bold shadow-xs shrink-0 animate-icon-inplace`}
         >
           <WebIcon name={iconName} className="w-4 h-4" />
         </div>
         <div>
-          <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight font-play">
+          <h3 className={`text-base sm:text-lg font-black tracking-tight font-play ${scheme.text}`}>
             {title}
           </h3>
           {subtitle && (
@@ -359,7 +359,7 @@ export const LetterView: React.FC = () => {
               <div className="lg:col-span-8 w-full flex flex-col justify-center relative z-10 text-left">
                 <AnimatedCardTitle
                   iconName="book"
-                  title="Thông điệp hợp tác chiến lược"
+                  title="Thông điệp hợp tác"
                   subtitle="Tầm nhìn & Định hướng phát triển bền vững"
                   colorPreset="emerald"
                 />
