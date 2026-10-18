@@ -1,0 +1,2162 @@
+/* CSS Variables Design System for Hung Thai Executive Portal */
+:root,
+[data-theme="light-glass"] {
+  color-scheme: light;
+
+  /* Site Fonts */
+  --font-play: 'Play', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* 12+ Modern Colors Palette for Light Glass UI */
+  --color-sky: #0ea5e9;       /* 1. Electric Sky Blue */
+  --color-ocean: #2563eb;     /* 2. Ocean Royal Blue */
+  --color-teal: #14b8a6;      /* 3. Mint Teal */
+  --color-emerald: #10b981;   /* 4. Emerald Green */
+  --color-lime: #84cc16;      /* 5. Fresh Lime */
+  --color-amber: #f59e0b;     /* 6. Golden Honey / Amber */
+  --color-orange: #f97316;    /* 7. Sunset Orange */
+  --color-coral: #f43f5e;     /* 8. Coral Rose */
+  --color-pink: #ec4899;      /* 9. Hot Pink / Bright Magenta */
+  --color-violet: #8b5cf6;    /* 10. Rich Violet */
+  --color-indigo: #6366f1;    /* 11. Electric Indigo */
+  --color-fuchsia: #d946ef;   /* 12. Orchid Fuchsia */
+
+  /* Glass UI Light – Multicolor Standard Palette */
+  --page-bg: #f8fafc;
+  --surface-bg: rgba(255, 255, 255, 0.72);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --accent-blue: #0ea5e9;
+  --accent-green: #10b981;
+  --accent-yellow: #f59e0b;
+  --accent-coral: #f43f5e;
+  --accent-purple: #8b5cf6;
+  --glass-border: rgba(255, 255, 255, 0.88);
+  --glass-blur: 20px;
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-saturate: 195%;
+  --glass-shadow: 
+    0 20px 50px -12px rgba(99, 102, 241, 0.14),
+    0 8px 24px -4px rgba(15, 23, 42, 0.08),
+    0 0 24px 0 rgba(236, 72, 153, 0.06),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.98);
+
+  /* Aurora Gradient Ambient Colors (12 Modern Colors Weave) */
+  --aurora-base: #f8fafc;
+  --aurora-radial-1: rgba(244, 63, 94, 0.25);   /* Coral Rose */
+  --aurora-radial-2: rgba(14, 165, 233, 0.26);  /* Electric Sky */
+  --aurora-radial-3: rgba(245, 158, 11, 0.22);  /* Golden Amber */
+  --aurora-radial-4: rgba(16, 185, 129, 0.24);  /* Emerald Green */
+  --aurora-radial-5: rgba(139, 92, 246, 0.26);  /* Rich Violet */
+  --aurora-radial-6: rgba(217, 70, 239, 0.22);  /* Orchid Fuchsia */
+  --aurora-radial-7: rgba(20, 184, 166, 0.22);  /* Mint Teal */
+  --aurora-radial-8: rgba(249, 115, 22, 0.20);  /* Sunset Orange */
+  --aurora-radial-9: rgba(99, 102, 241, 0.25);  /* Electric Indigo */
+  --aurora-radial-10: rgba(132, 204, 22, 0.18); /* Fresh Lime */
+  --aurora-radial-11: rgba(37, 99, 235, 0.22);  /* Ocean Blue */
+  --aurora-radial-12: rgba(236, 72, 153, 0.22); /* Hot Pink */
+
+  /* Primary Brand Colors */
+  --color-primary: #0284c7;
+  --color-secondary: #8b5cf6;
+  --color-accent: #f43f5e;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #f43f5e;
+
+  /* Book / 3D Card Defaults */
+  --book-card-bg: rgba(255, 255, 255, 0.94);
+  --book-border: rgba(255, 255, 255, 0.90);
+
+  /* C-Level Bento Wave Cards */
+  --card-theme-color: #0284c7;
+  --card-wave-color: rgba(14, 165, 233, 0.28);
+  --card-wave-soft: rgba(14, 165, 233, 0.08);
+  --card-wave-glow: rgba(14, 165, 233, 0.38);
+}
+
+/* Glass panel utility & Smooth Theme Transitions */
+html {
+  transition: background-color 0.28s ease, color 0.22s ease;
+}
+
+body {
+  background-color: var(--page-bg, #f8fafc) !important;
+  color: var(--text-primary);
+  transition: background-color 0.28s ease, color 0.22s ease;
+}
+
+[data-theme="light-glass"] body {
+  background-color: var(--page-bg, #f8fafc) !important;
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1.5px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: background 0.28s ease, border-color 0.22s ease, box-shadow 0.28s ease, color 0.22s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Aurora dynamic background (12 Sắc màu Hiện đại Phối hợp) */
+.aurora-bg {
+  background-color: var(--aurora-base);
+  background-image: 
+    radial-gradient(at 4% 6%, var(--aurora-radial-1) 0px, transparent 48%),
+    radial-gradient(at 96% 8%, var(--aurora-radial-2) 0px, transparent 48%),
+    radial-gradient(at 50% 10%, var(--aurora-radial-9) 0px, transparent 45%),
+    radial-gradient(at 10% 48%, var(--aurora-radial-7) 0px, transparent 48%),
+    radial-gradient(at 90% 50%, var(--aurora-radial-8) 0px, transparent 48%),
+    radial-gradient(at 50% 50%, var(--aurora-radial-6) 0px, transparent 52%),
+    radial-gradient(at 6% 94%, var(--aurora-radial-3) 0px, transparent 48%),
+    radial-gradient(at 94% 92%, var(--aurora-radial-5) 0px, transparent 48%),
+    radial-gradient(at 50% 95%, var(--aurora-radial-4) 0px, transparent 46%),
+    radial-gradient(at 25% 75%, var(--aurora-radial-10) 0px, transparent 42%),
+    radial-gradient(at 75% 25%, var(--aurora-radial-11) 0px, transparent 42%),
+    radial-gradient(at 80% 75%, var(--aurora-radial-12) 0px, transparent 45%);
+}
+
+/* Rotating Glow Button Wrapper */
+@keyframes spin-border {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.rotate-glow-wrapper {
+  position: relative;
+  isolation: isolate;
+  flex-shrink: 0;
+}
+
+.rotate-glow-wrapper:hover::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 9999px;
+  padding: 2px;
+  background: conic-gradient(from 0deg, transparent 15%, var(--glow-color, #38bdf8), transparent 75%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin-border 2s linear infinite;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Stack group and stacked items */
+.stack-group {
+  display: flex;
+  align-items: center;
+}
+
+.stack-item {
+  transition: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.stack-group:hover .stack-item {
+  opacity: 0.85;
+}
+
+.stack-group .stack-item:hover {
+  opacity: 1 !important;
+  transform: translateY(-2px) scale(1.08);
+  z-index: 60 !important;
+  box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.18);
+}
+
+/* Footer Util Buttons (Kích thước hài hòa: 114px x 46px, bo cong 4 góc 999px) */
+.footer-util-btn {
+  width: 114px;
+  height: 46px;
+  border-radius: 999px;
+  padding: 4px 10px 4px 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.85), 0 3px 10px rgba(15, 23, 42, 0.08);
+  transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+}
+
+.footer-util-btn:hover {
+  z-index: 70 !important;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.95), 0 8px 20px -2px rgba(15, 23, 42, 0.2);
+}
+
+/* ========================================================
+   NEONAV GLASS NAVIGATION SYSTEM FOR HEADER
+   ======================================================== */
+.neonav-bar {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Sweeping light sheen across header on hover */
+.neonav-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transition: left 0.8s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.neonav-bar:hover::before {
+  left: 100%;
+}
+
+/* NeoNav Glass Menu Item */
+.neonav-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px 4px 5px;
+  height: 38px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 11.5px;
+  border-radius: 25px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+/* Semi-transparent shimmer overlay on hover */
+.neonav-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
+  border-radius: 25px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.neonav-item:hover::before {
+  opacity: 1;
+}
+
+.neonav-item:hover {
+  transform: none !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.neonav-item:hover .neonav-icon-box {
+  transform: none;
+}
+
+/* Active State - Bỏ hoàn toàn hiệu ứng nổi lên trên (no translateY, no scale) */
+.neonav-item.active {
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  transform: none !important;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 2px 8px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Icon Box inside NeoNav Item */
+.neonav-icon-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.25s ease;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Hiệu ứng xếp chồng các nút menu Header khi bị tràn (Stacking Buttons Overflow Effect) */
+.neonav-stacked {
+  gap: 0 !important;
+}
+
+.neonav-stacked .neonav-item {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.neonav-stacked .neonav-item:hover {
+  transform: none !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+}
+
+.neonav-stacked:hover .neonav-item:not(:hover) {
+  opacity: 0.9;
+}
+
+/* Header Floating Ambient Elements */
+.header-floating-elements {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.header-floating-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.04));
+  backdrop-filter: blur(4px);
+  animation: headerFloat 6s ease-in-out infinite;
+}
+
+@keyframes headerFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(180deg); }
+}
+
+/* Header Nav Item Default Theme-aware Styling (Nền trong suốt 30%, hiệu ứng đổ bóng nút) */
+.nav-item-default {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-color: rgba(255, 255, 255, 0.75);
+  color: #1e293b;
+  box-shadow:
+    0 6px 14px -2px rgba(15, 23, 42, 0.18),
+    0 3px 6px -1px rgba(15, 23, 42, 0.1),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.85);
+}
+
+.nav-item-default:hover {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  box-shadow:
+    0 10px 22px -3px rgba(15, 23, 42, 0.24),
+    0 4px 8px -2px rgba(15, 23, 42, 0.12),
+    inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
+}
+
+.nav-icon-box {
+  background: rgba(255, 255, 255, 0.75);
+  color: #334155;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.12);
+}
+
+.nav-item-default:hover .nav-icon-box {
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+}
+
+/* Theme variations for nav-item-default */
+[data-theme="dark-neon"] .nav-item-default {
+  background: rgba(13, 18, 38, 0.75) !important;
+  border-color: rgba(0, 242, 254, 0.25) !important;
+  color: #94a3b8 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark-neon"] .nav-item-default:hover {
+  background: rgba(20, 28, 58, 0.9) !important;
+  border-color: rgba(0, 242, 254, 0.5) !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark-neon"] .nav-icon-box {
+  background: rgba(24, 32, 64, 0.85) !important;
+  color: #00f2fe !important;
+}
+
+[data-theme="midnight-dark"] .nav-item-default {
+  background: rgba(15, 23, 42, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #94a3b8 !important;
+}
+
+[data-theme="midnight-dark"] .nav-item-default:hover {
+  background: rgba(30, 41, 59, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="midnight-dark"] .nav-icon-box {
+  background: rgba(30, 41, 59, 0.85) !important;
+  color: #cbd5e1 !important;
+}
+
+[data-theme="crystal-glass"] .nav-item-default {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
+  color: #334155 !important;
+}
+
+[data-theme="purple-pastel"] .nav-item-default {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  color: #4b5563 !important;
+}
+
+[data-theme="purple-pastel"] .nav-icon-box {
+  background: rgba(245, 243, 255, 0.9) !important;
+  color: #7c3aed !important;
+}
+
+/* Scrollbar Hide Utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Weather Animations */
+@keyframes icon-float {
+  0%, 100% { transform: translateY(1px) rotate(-1deg); }
+  50% { transform: translateY(-6px) rotate(1.5deg); }
+}
+@keyframes sun-pulse {
+  0%, 100% { opacity: .92; transform: scale(.98); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+@keyframes cloud-drift {
+  0%, 100% { transform: translateX(-1px); }
+  50% { transform: translateX(2px); }
+}
+@keyframes rain-fall {
+  0% { stroke-dashoffset: 0; opacity: .75; }
+  50% { opacity: 1; }
+  100% { stroke-dashoffset: -18; opacity: .8; }
+}
+@keyframes lightning-flash {
+  0%, 72%, 78%, 100% { opacity: 1; filter: brightness(1); }
+  74%, 76% { opacity: .62; filter: brightness(1.65); }
+}
+
+.sun-anim {
+  transform-box: fill-box; transform-origin: center;
+  animation: sun-pulse 3s ease-in-out infinite;
+}
+.cloud-anim {
+  transform-box: fill-box; transform-origin: center;
+  animation: cloud-drift 4.5s ease-in-out infinite;
+}
+.lightning-anim {
+  animation: lightning-flash 2.8s steps(1,end) infinite;
+  transform-box: fill-box; transform-origin: center;
+}
+.rain-anim {
+  stroke-dasharray: 8 5; animation: rain-fall 1s linear infinite;
+}
+.weather-float {
+  animation: icon-float 4s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* C-Level Bento Wave Cards */
+.card-system {
+  display: grid;
+  cursor: pointer;
+  grid-template-rows: 40px auto;
+  width: 100%;
+  height: fit-content;
+  border-radius: 14px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 25px rgba(70, 65, 150, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  outline: none !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  overflow: hidden;
+  transition: transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card-system:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(70, 65, 150, 0.16);
+}
+
+.card-system:hover .img-section {
+  transform: translateY(0.9em) scaleY(1.05);
+  filter: drop-shadow(0 6px 12px rgba(70, 65, 150, 0.22));
+}
+
+.img-section {
+  transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), filter 0.38s ease;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 14px;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes iconFloatSystem {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(3deg); }
+}
+
+.img-section svg {
+  width: 26px !important;
+  height: 26px !important;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: iconFloatSystem 3.8s ease-in-out infinite;
+  transform-origin: center center;
+  position: relative;
+  z-index: 3;
+}
+
+.card-system:hover .img-section svg {
+  transform: scale(1.2) rotate(-6deg) translateY(-1px);
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+  animation-play-state: paused;
+}
+
+.card-desc {
+  border-radius: 14px;
+  padding: 10px 14px;
+  position: relative;
+  top: -8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  height: auto;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 6px 18px rgba(70, 65, 150, 0.08);
+  z-index: 2;
+  overflow: hidden;
+}
+
+.card-desc > * {
+  position: relative;
+  z-index: 2;
+}
+
+.card-desc::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: linear-gradient(
+    180deg,
+    var(--card-wave-color) 0%,
+    var(--card-wave-soft) 45%,
+    transparent 100%
+  );
+  opacity: 0;
+  transform: translateY(-25px);
+  transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card-desc::after {
+  content: '';
+  position: absolute;
+  left: -20%;
+  top: -120%;
+  width: 140%;
+  height: 90%;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 45%,
+    var(--card-wave-glow) 65%,
+    transparent 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card-system:hover .card-desc::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card-system:hover .card-desc::after {
+  animation: waveCascadeDownSystem 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes waveCascadeDownSystem {
+  0% { top: -120%; opacity: 0.85; }
+  50% { opacity: 0.6; }
+  100% { top: 140%; opacity: 0; }
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--card-theme-color);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.card-fullname {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--card-theme-color);
+  margin-top: 1px;
+  margin-bottom: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.92;
+}
+
+.card-time {
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #1e293b;
+}
+
+.card-menu {
+  display: flex;
+  gap: 3.5px;
+  align-items: center;
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+}
+
+.card-menu:hover {
+  background: rgba(88, 101, 232, 0.15);
+}
+
+.card-system .dot {
+  width: 4.5px;
+  height: 4.5px;
+  border-radius: 50%;
+  background: var(--card-theme-color, #7C5CDB);
+}
+
+/* Weather Card Showcase */
+.weather-card-showcase {
+  --c1: #1fcbe0; --c2: #2479f5;
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; align-items: center; gap: 18px;
+  min-height: 120px; padding: 20px 24px;
+  color: #fff; border-radius: 22px;
+  background: linear-gradient(112deg, var(--c1), var(--c2));
+  box-shadow: 0 10px 20px rgba(67, 105, 183, 0.12);
+  transition: transform .25s ease, box-shadow .25s ease;
+  cursor: pointer;
+}
+.weather-card-showcase::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255,255,255,.20), transparent 48%, rgba(255,255,255,.13));
+  pointer-events: none;
+}
+.weather-card-showcase::after {
+  content: ""; position: absolute; z-index: -1;
+  width: 100px; height: 100px; right: -15px; top: -35px;
+  border: 1px solid rgba(255,255,255,.18); border-radius: 28px;
+  transform: rotate(34deg); pointer-events: none;
+}
+.weather-card-showcase:hover { transform: translateY(-5px); box-shadow: 0 16px 30px rgba(67, 105, 183, 0.20); }
+.weather-card-showcase.blue { --c1:#21d5e4; --c2:#247af5; }
+.weather-card-showcase.storm { --c1:#6d82b2; --c2:#9ec8fa; }
+.weather-card-showcase.cloud { --c1:#9abcf4; --c2:#f4e9e9; }
+.weather-card-showcase.sunny { --c1:#6be4c8; --c2:#20c8e2; }
+.weather-card-showcase.rain { --c1:#8ca9df; --c2:#244a8e; }
+.weather-card-showcase.lightning { --c1:#8137e9; --c2:#e6a0d0; }
+
+.weather-icon-view {
+  flex: 0 0 72px; width: 72px; height: 72px;
+  display: grid; place-items: center;
+  filter: drop-shadow(0 8px 8px rgba(17, 37, 86, .20));
+}
+.weather-icon-view svg { width: 100%; height: 100%; overflow: visible; }
+
+/* Floating keyframes */
+@keyframes floatA {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes floatB {
+  0%, 100% { transform: translateY(-12px); }
+  50% { transform: translateY(0); }
+}
+@keyframes floatC {
+  0%, 100% { transform: translateY(-6px) rotate(0deg); }
+  50% { transform: translateY(-16px) rotate(4deg); }
+}
+.float-a { animation: floatA 6s ease-in-out infinite; }
+.float-b { animation: floatB 7s ease-in-out infinite; }
+.float-c { animation: floatC 8s ease-in-out infinite; }
+
+/* =========================================================================
+   THEME 1: GLASS UI SÁNG ĐA MÀU SẮC (PRISM LIGHT GLASS WITH MIRROR EFFECT)
+   ========================================================================= */
+
+/* Nền Đa Màu Sắc Lăng Kính Phản Chiếu (Prism Light Background - 12 Sắc Màu Hiện Đại) */
+.prism-light-bg {
+  background-color: var(--page-bg, #f8fafc);
+  background-image: 
+    radial-gradient(at 2% 4%, var(--aurora-radial-1, rgba(244, 63, 94, 0.25)) 0px, transparent 45%),
+    radial-gradient(at 96% 6%, var(--aurora-radial-2, rgba(14, 165, 233, 0.26)) 0px, transparent 48%),
+    radial-gradient(at 50% 8%, var(--aurora-radial-9, rgba(99, 102, 241, 0.25)) 0px, transparent 42%),
+    radial-gradient(at 10% 45%, var(--aurora-radial-7, rgba(20, 184, 166, 0.22)) 0px, transparent 45%),
+    radial-gradient(at 90% 48%, var(--aurora-radial-8, rgba(249, 115, 22, 0.20)) 0px, transparent 45%),
+    radial-gradient(at 50% 50%, var(--aurora-radial-6, rgba(217, 70, 239, 0.22)) 0px, transparent 52%),
+    radial-gradient(at 6% 94%, var(--aurora-radial-3, rgba(245, 158, 11, 0.22)) 0px, transparent 48%),
+    radial-gradient(at 94% 92%, var(--aurora-radial-5, rgba(139, 92, 246, 0.26)) 0px, transparent 48%),
+    radial-gradient(at 50% 95%, var(--aurora-radial-4, rgba(16, 185, 129, 0.24)) 0px, transparent 46%),
+    radial-gradient(at 25% 75%, var(--aurora-radial-10, rgba(132, 204, 22, 0.18)) 0px, transparent 42%),
+    radial-gradient(at 75% 25%, var(--aurora-radial-11, rgba(37, 99, 235, 0.22)) 0px, transparent 42%),
+    radial-gradient(at 80% 75%, var(--aurora-radial-12, rgba(236, 72, 153, 0.22)) 0px, transparent 45%);
+  background-size: 140% 140%;
+  animation: prism-flow 18s ease-in-out infinite alternate;
+}
+
+@keyframes prism-flow {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 50% 0%; }
+}
+
+/* Hiệu ứng Gương (Mirror Effect) cho Card & Glass Panels - Theme Sáng */
+[data-theme="light-glass"] .glass-panel,
+.theme-light-glass .glass-panel {
+  position: relative;
+  background: var(--surface-bg, rgba(255, 255, 255, 0.72)) !important;
+  backdrop-filter: blur(var(--glass-blur, 20px)) saturate(var(--glass-saturate, 195%));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 20px)) saturate(var(--glass-saturate, 195%));
+  border: 1.5px solid var(--glass-border, rgba(255, 255, 255, 0.88)) !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+/* Lớp tráng gương chéo phản chiếu ánh sáng (Specular Mirror Sheen) */
+[data-theme="light-glass"] .glass-panel::before,
+.theme-light-glass .glass-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 28%,
+    transparent 55%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Vệt gương quét sáng lấp lánh khi hover (chỉ áp dụng cho card có overflow-hidden, tránh làm lệch Header/Footer) */
+@keyframes mirror-shimmer-sweep {
+  0% { transform: translateX(-160%) skewX(-25deg); opacity: 0; }
+  30% { opacity: 0.55; }
+  100% { transform: translateX(260%) skewX(-25deg); opacity: 0; }
+}
+
+[data-theme="light-glass"] .card-system:hover::after,
+[data-theme="light-glass"] .card-mirror:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: mirror-shimmer-sweep 2.2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Card Gương phản chiếu sáng */
+.card-mirror {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(20px) saturate(190%);
+  -webkit-backdrop-filter: blur(20px) saturate(190%);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 12px 30px -8px rgba(99, 102, 241, 0.18),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-mirror:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 20px 40px -10px rgba(99, 102, 241, 0.3),
+    inset 0 2px 3px rgba(255, 255, 255, 1);
+}
+
+/* =========================================================================
+   THEME 2: GLASS UI TỐI NEON ĐA MÀU SẮC (DARK CYBER NEON WITH NEON MIRROR)
+   ========================================================================= */
+
+/* Nền Tối Huyền Bí Đa Sắc Neon (Dark Neon Background) */
+.dark-neon-bg {
+  background-color: #060814;
+  background-image: 
+    radial-gradient(at 5% 10%, rgba(0, 242, 254, 0.25) 0px, transparent 48%),
+    radial-gradient(at 95% 10%, rgba(255, 0, 127, 0.28) 0px, transparent 48%),
+    radial-gradient(at 50% 50%, rgba(139, 92, 246, 0.24) 0px, transparent 55%),
+    radial-gradient(at 10% 90%, rgba(57, 255, 20, 0.2) 0px, transparent 48%),
+    radial-gradient(at 90% 90%, rgba(255, 184, 0, 0.24) 0px, transparent 48%),
+    radial-gradient(at 50% 95%, rgba(6, 182, 212, 0.22) 0px, transparent 48%);
+  background-size: 135% 135%;
+  animation: neon-ambient-drift 15s ease-in-out infinite alternate;
+}
+
+@keyframes neon-ambient-drift {
+  0% { background-position: 0% 0%; filter: hue-rotate(0deg); }
+  50% { background-position: 100% 100%; filter: hue-rotate(25deg); }
+  100% { background-position: 50% 0%; filter: hue-rotate(0deg); }
+}
+
+/* Hiệu ứng trôi bồng bềnh cho Icon Neon trên nền (Floating Neon Icons) */
+@keyframes neon-float-1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  50% { transform: translateY(-22px) rotate(8deg) scale(1.08); }
+}
+
+@keyframes neon-float-2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  50% { transform: translateY(-18px) rotate(-10deg) scale(1.05); }
+}
+
+@keyframes neon-float-3 {
+  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  50% { transform: translateY(-25px) rotate(12deg) scale(1.1); }
+}
+
+.neon-floating-icon {
+  position: absolute;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+.neon-glow-cyan {
+  color: #00f2fe;
+  filter: drop-shadow(0 0 10px #00f2fe) drop-shadow(0 0 20px rgba(0, 242, 254, 0.7));
+}
+
+.neon-glow-magenta {
+  color: #ff007f;
+  filter: drop-shadow(0 0 10px #ff007f) drop-shadow(0 0 20px rgba(255, 0, 127, 0.7));
+}
+
+.neon-glow-purple {
+  color: #a855f7;
+  filter: drop-shadow(0 0 10px #a855f7) drop-shadow(0 0 20px rgba(168, 85, 247, 0.7));
+}
+
+.neon-glow-green {
+  color: #39ff14;
+  filter: drop-shadow(0 0 10px #39ff14) drop-shadow(0 0 20px rgba(57, 255, 20, 0.7));
+}
+
+.neon-glow-amber {
+  color: #ffb800;
+  filter: drop-shadow(0 0 10px #ffb800) drop-shadow(0 0 20px rgba(255, 184, 0, 0.7));
+}
+
+/* Floating Icons dành cho Giao Diện Sáng (Light Theme Floating Icons - 12 Sắc Màu Hiện Đại) */
+.light-floating-icon {
+  position: absolute;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+.light-glow-cyan, .light-glow-sky {
+  color: #0284c7;
+  filter: drop-shadow(0 4px 12px rgba(2, 132, 199, 0.45)) drop-shadow(0 0 20px rgba(56, 189, 248, 0.35));
+}
+
+.light-glow-rose, .light-glow-coral {
+  color: #e11d48;
+  filter: drop-shadow(0 4px 12px rgba(225, 29, 72, 0.45)) drop-shadow(0 0 20px rgba(244, 63, 94, 0.35));
+}
+
+.light-glow-purple, .light-glow-violet {
+  color: #7c3aed;
+  filter: drop-shadow(0 4px 12px rgba(124, 58, 237, 0.45)) drop-shadow(0 0 20px rgba(168, 85, 247, 0.35));
+}
+
+.light-glow-emerald, .light-glow-green {
+  color: #059669;
+  filter: drop-shadow(0 4px 12px rgba(5, 150, 105, 0.45)) drop-shadow(0 0 20px rgba(16, 185, 129, 0.35));
+}
+
+.light-glow-amber, .light-glow-yellow {
+  color: #d97706;
+  filter: drop-shadow(0 4px 12px rgba(217, 119, 6, 0.45)) drop-shadow(0 0 20px rgba(245, 158, 11, 0.35));
+}
+
+.light-glow-indigo {
+  color: #4f46e5;
+  filter: drop-shadow(0 4px 12px rgba(79, 70, 229, 0.45)) drop-shadow(0 0 20px rgba(99, 102, 241, 0.35));
+}
+
+.light-glow-ocean {
+  color: #1d4ed8;
+  filter: drop-shadow(0 4px 12px rgba(29, 78, 216, 0.45)) drop-shadow(0 0 20px rgba(59, 130, 246, 0.35));
+}
+
+.light-glow-pink {
+  color: #db2777;
+  filter: drop-shadow(0 4px 12px rgba(219, 39, 119, 0.45)) drop-shadow(0 0 20px rgba(236, 72, 153, 0.35));
+}
+
+.light-glow-lime {
+  color: #65a30d;
+  filter: drop-shadow(0 4px 12px rgba(101, 163, 13, 0.45)) drop-shadow(0 0 20px rgba(132, 204, 22, 0.35));
+}
+
+.light-glow-teal {
+  color: #0d9488;
+  filter: drop-shadow(0 4px 12px rgba(13, 148, 136, 0.45)) drop-shadow(0 0 20px rgba(20, 184, 166, 0.35));
+}
+
+.light-glow-orange {
+  color: #ea580c;
+  filter: drop-shadow(0 4px 12px rgba(234, 88, 12, 0.45)) drop-shadow(0 0 20px rgba(249, 115, 22, 0.35));
+}
+
+.light-glow-fuchsia {
+  color: #c026d3;
+  filter: drop-shadow(0 4px 12px rgba(192, 38, 211, 0.45)) drop-shadow(0 0 20px rgba(217, 70, 239, 0.35));
+}
+
+/* ========================================================
+   THEME: FLAT UI RAINBOW 7 MÀU (BẢY MÀU CẦU VỒNG HIỆN ĐẠI)
+   ======================================================== */
+[data-theme="flat-rainbow"] {
+  color-scheme: light;
+
+  --font-play: 'Play', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* 7 sắc cầu vồng rực rỡ chuẩn Flat UI */
+  --rainbow-red: #ef4444;
+  --rainbow-orange: #f97316;
+  --rainbow-yellow: #eab308;
+  --rainbow-green: #22c55e;
+  --rainbow-cyan: #06b6d4;
+  --rainbow-blue: #3b82f6;
+  --rainbow-purple: #a855f7;
+
+  --page-bg: #f8fafc;
+  --surface-bg: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --accent-blue: #3b82f6;
+  --accent-green: #22c55e;
+  --accent-yellow: #eab308;
+  --accent-coral: #ef4444;
+  --accent-purple: #a855f7;
+
+  --glass-border: #e2e8f0;
+  --glass-blur: 0px;
+  --glass-bg: #ffffff;
+  --glass-saturate: 100%;
+  --glass-shadow: 
+    0 10px 25px -5px rgba(15, 23, 42, 0.08), 
+    0 4px 6px -2px rgba(15, 23, 42, 0.04),
+    0 0 0 1px #e2e8f0;
+
+  --color-primary: #3b82f6;
+  --color-secondary: #a855f7;
+  --color-accent: #ec4899;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+
+  --book-card-bg: #ffffff;
+  --book-border: #e2e8f0;
+
+  --card-theme-color: #3b82f6;
+  --card-wave-color: rgba(59, 130, 246, 0.2);
+  --card-wave-soft: rgba(59, 130, 246, 0.05);
+}
+
+[data-theme="flat-rainbow"] body {
+  background-color: #f8fafc !important;
+}
+
+[data-theme="flat-rainbow"] .glass-panel {
+  background: #ffffff !important;
+  border: 2px solid #e2e8f0 !important;
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+[data-theme="flat-rainbow"] .theme-hero-banner {
+  border-bottom: 3.5px solid transparent !important;
+  border-image: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7) 1 !important;
+}
+
+[data-theme="flat-rainbow"] .nav-item-default {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+[data-theme="flat-rainbow"] .nav-item-default:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Tùy biến toàn bộ giao diện khi bật Theme Dark Neon - Multicolor Glassmorphism UI */
+[data-theme="dark-neon"] {
+  color-scheme: dark;
+
+  /* Glass UI Dark Neon – Multicolor Glassmorphism Standard Palette */
+  --page-bg: #0B1020;
+  --surface-bg: rgba(15, 23, 42, 0.45);
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --accent-blue: #38BDF8;
+  --accent-cyan: #22D3EE;
+  --accent-green: #34D399;
+  --accent-yellow: #FDE047;
+  --accent-coral: #F472B6;
+  --accent-purple: #A78BFA;
+  --glass-border: rgba(255, 255, 255, 0.25);
+  --glass-blur: 16px;
+  --glass-bg: rgba(15, 23, 42, 0.45);
+  --glass-saturate: 180%;
+  --glass-shadow: 
+    0 16px 40px -8px rgba(0, 0, 0, 0.55),
+    0 0 24px -2px rgba(56, 189, 248, 0.16),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    inset 0 0 20px rgba(167, 139, 250, 0.08);
+
+  /* Primary Brand Colors */
+  --color-primary: #38BDF8;
+  --color-secondary: #A78BFA;
+  --color-accent: #F472B6;
+  --color-success: #34D399;
+  --color-warning: #FDE047;
+  --color-danger: #F472B6;
+
+  /* Book / 3D Card Defaults - Semi-transparent Glass Surface */
+  --book-card-bg: rgba(15, 23, 42, 0.45);
+  --book-border: rgba(255, 255, 255, 0.25);
+
+  /* C-Level Bento Wave Cards */
+  --card-theme-color: #38BDF8;
+  --card-wave-color: rgba(56, 189, 248, 0.3);
+  --card-wave-soft: rgba(56, 189, 248, 0.1);
+  --card-wave-glow: rgba(56, 189, 248, 0.45);
+}
+
+[data-theme="dark-neon"] body,
+[data-theme="dark-neon"] .glass-panel {
+  color: #f8fafc !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 
+    0 16px 40px -8px rgba(0, 0, 0, 0.55),
+    0 0 24px -2px rgba(56, 189, 248, 0.16),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Hiệu ứng Gương Neon trên Glass Panel (Dark Neon Specular Mirror Sheen) */
+[data-theme="dark-neon"] .glass-panel::before,
+[data-theme="dark-neon"] .card-system::before,
+[data-theme="dark-neon"] .education-book-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(0, 242, 254, 0.1) 30%,
+    transparent 60%,
+    rgba(255, 0, 127, 0.12) 100%
+  ) !important;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Hiệu ứng Chữ Neon Phát Sáng (Neon Text Glow) */
+[data-theme="dark-neon"] h1,
+[data-theme="dark-neon"] h2,
+[data-theme="dark-neon"] h3,
+[data-theme="dark-neon"] h4,
+[data-theme="dark-neon"] .font-play,
+[data-theme="dark-neon"] strong {
+  color: #f8fafc !important;
+  text-shadow: 
+    0 0 10px rgba(0, 242, 254, 0.65),
+    0 0 20px rgba(139, 92, 246, 0.45),
+    0 0 35px rgba(255, 0, 127, 0.3);
+}
+
+/* Hiệu ứng Glassmorphism Đa sắc cho tất cả Content Card trong Theme Tối (Trang trí mọi bề mặt, xuyên thấu nền đa sắc) */
+[data-theme="dark-neon"] .card-system,
+[data-theme="dark-neon"] .card-mirror,
+[data-theme="dark-neon"] .education-book-card,
+[data-theme="dark-neon"] .theme-pastel-card,
+[data-theme="dark-neon"] .theme-kpi-box,
+[data-theme="dark-neon"] .bg-white\/40,
+[data-theme="dark-neon"] .bg-white\/50,
+[data-theme="dark-neon"] .bg-white\/60,
+[data-theme="dark-neon"] .bg-white\/70,
+[data-theme="dark-neon"] .bg-white\/75,
+[data-theme="dark-neon"] .bg-white\/80,
+[data-theme="dark-neon"] .bg-white\/85,
+[data-theme="dark-neon"] .bg-white\/90,
+[data-theme="dark-neon"] .bg-white\/95,
+[data-theme="dark-neon"] .bg-white {
+  background: rgba(15, 23, 42, 0.42) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #f1f5f9 !important;
+  box-shadow: 
+    0 14px 35px -8px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(0, 242, 254, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+}
+
+[data-theme="dark-neon"] .elevated-float-card {
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  box-shadow: 
+    0 24px 70px -10px rgba(0, 0, 0, 0.75),
+    0 0 30px -5px rgba(0, 242, 254, 0.25),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+[data-theme="dark-neon"] .elevated-float-card:hover {
+  box-shadow: 
+    0 30px 85px -10px rgba(0, 0, 0, 0.85),
+    0 0 45px -5px rgba(0, 242, 254, 0.4),
+    0 0 25px -2px rgba(255, 0, 127, 0.2),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* Giữ nguyên nền sáng cho các pill chứa logo thương hiệu để logo luôn rõ nét */
+[data-theme="dark-neon"] .logo-pill-light,
+[data-theme="midnight-dark"] .logo-pill-light {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border-color: rgba(255, 255, 255, 0.9) !important;
+  color: #1e293b !important;
+}
+
+[data-theme="dark-neon"] .logo-pill-light .logo-pill-text,
+[data-theme="midnight-dark"] .logo-pill-light .logo-pill-text {
+  color: #1e293b !important;
+  text-shadow: none !important;
+}
+
+/* Chuyển đổi Hero Banner, Pastel Card và KPI Box sang nền kính bán trong suốt */
+[data-theme="dark-neon"] .theme-hero-banner {
+  background: linear-gradient(120deg, rgba(15, 23, 42, 0.55) 0%, rgba(30, 27, 75, 0.5) 50%, rgba(12, 74, 110, 0.48) 100%) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+[data-theme="dark-neon"] .theme-pastel-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.48) 0%, rgba(24, 32, 64, 0.42) 100%) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+[data-theme="dark-neon"] .theme-kpi-box {
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
+[data-theme="dark-neon"] .card-system:hover,
+[data-theme="dark-neon"] .card-mirror:hover,
+[data-theme="dark-neon"] .theme-pastel-card:hover {
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 
+    0 18px 45px rgba(0, 0, 0, 0.6),
+    0 0 25px rgba(0, 242, 254, 0.3),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Contrast Scrim cho chữ trên mọi vùng nền để luôn sắc nét, dễ đọc */
+[data-theme="dark-neon"] p,
+[data-theme="dark-neon"] span,
+[data-theme="dark-neon"] li {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+}
+
+/* Visible controls & focus states */
+[data-theme="dark-neon"] button:focus-visible,
+[data-theme="dark-neon"] a:focus-visible,
+[data-theme="dark-neon"] input:focus-visible,
+[data-theme="dark-neon"] select:focus-visible,
+[data-theme="dark-neon"] textarea:focus-visible {
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.65) !important;
+}
+
+/* Fallback khi người dùng bật Reduced Transparency hoặc Reduced Motion */
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="dark-neon"] .glass-panel,
+  [data-theme="dark-neon"] .card-system,
+  [data-theme="dark-neon"] .card-mirror,
+  [data-theme="dark-neon"] .education-book-card,
+  [data-theme="dark-neon"] .theme-pastel-card {
+    background: #0f172a !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  }
+}
+
+/* Màu chữ tương thích với Dark Neon (Sửa lỗi chữ tối chìm trên nền tối) */
+[data-theme="dark-neon"] .text-slate-800,
+[data-theme="dark-neon"] .text-slate-900,
+[data-theme="dark-neon"] .text-slate-700,
+[data-theme="dark-neon"] .text-gray-900,
+[data-theme="dark-neon"] .text-gray-800,
+[data-theme="dark-neon"] .text-gray-700,
+[data-theme="dark-neon"] .text-zinc-900,
+[data-theme="dark-neon"] .text-zinc-800,
+[data-theme="dark-neon"] .text-\[\#172554\],
+[data-theme="dark-neon"] .text-\[\#1e1b4b\],
+[data-theme="dark-neon"] .text-\[\#1e3a8a\],
+[data-theme="dark-neon"] .text-\[\#0c4a6e\],
+[data-theme="dark-neon"] .text-\[\#9a3412\],
+[data-theme="dark-neon"] .text-\[\#9f1239\],
+[data-theme="dark-neon"] .text-\[\#3730a3\],
+[data-theme="dark-neon"] .text-\[\#9d174d\],
+[data-theme="dark-neon"] .text-\[\#065f46\],
+[data-theme="dark-neon"] .text-indigo-900,
+[data-theme="dark-neon"] .text-indigo-950,
+[data-theme="dark-neon"] .text-blue-900,
+[data-theme="dark-neon"] .text-blue-950,
+[data-theme="dark-neon"] .text-purple-900,
+[data-theme="dark-neon"] .text-purple-950 {
+  color: #f8fafc !important;
+}
+
+[data-theme="dark-neon"] .text-slate-600,
+[data-theme="dark-neon"] .text-slate-500,
+[data-theme="dark-neon"] .text-slate-400,
+[data-theme="dark-neon"] .text-gray-600,
+[data-theme="dark-neon"] .text-gray-500 {
+  color: #cbd5e1 !important;
+}
+
+[data-theme="dark-neon"] .bg-slate-50,
+[data-theme="dark-neon"] .bg-slate-50\/70,
+[data-theme="dark-neon"] .bg-slate-50\/80,
+[data-theme="dark-neon"] .bg-slate-100,
+[data-theme="dark-neon"] .bg-slate-100\/80,
+[data-theme="dark-neon"] .bg-slate-200,
+[data-theme="dark-neon"] .bg-gray-50,
+[data-theme="dark-neon"] .bg-gray-100 {
+  background: rgba(24, 32, 64, 0.88) !important;
+  border-color: rgba(139, 92, 246, 0.35) !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="dark-neon"] .border-slate-100,
+[data-theme="dark-neon"] .border-slate-200,
+[data-theme="dark-neon"] .border-slate-200\/70,
+[data-theme="dark-neon"] .border-slate-200\/80,
+[data-theme="dark-neon"] .border-slate-200\/90,
+[data-theme="dark-neon"] .border-slate-300,
+[data-theme="dark-neon"] .border-white\/50,
+[data-theme="dark-neon"] .border-white\/60,
+[data-theme="dark-neon"] .border-white\/70,
+[data-theme="dark-neon"] .border-white\/80 {
+  border-color: rgba(0, 242, 254, 0.28) !important;
+}
+
+[data-theme="dark-neon"] input,
+[data-theme="dark-neon"] textarea,
+[data-theme="dark-neon"] select {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border-color: rgba(0, 242, 254, 0.45) !important;
+  color: #f8fafc !important;
+}
+
+/* Crystal Glass UI (Pha Lê Trong Suốt) */
+[data-theme="crystal-glass"] .glass-panel {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Midnight Dark UI (Đêm Tối Huyền Bí) */
+[data-theme="midnight-dark"] {
+  color-scheme: dark;
+}
+[data-theme="midnight-dark"] body,
+[data-theme="midnight-dark"] .glass-panel {
+  background: rgba(10, 15, 30, 0.9) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+}
+[data-theme="midnight-dark"] h1,
+[data-theme="midnight-dark"] h2,
+[data-theme="midnight-dark"] h3,
+[data-theme="midnight-dark"] h4,
+[data-theme="midnight-dark"] .font-play,
+[data-theme="midnight-dark"] strong {
+  color: #f8fafc !important;
+}
+[data-theme="midnight-dark"] .text-slate-800,
+[data-theme="midnight-dark"] .text-slate-900,
+[data-theme="midnight-dark"] .text-slate-700,
+[data-theme="midnight-dark"] .text-\[\#172554\],
+[data-theme="midnight-dark"] .text-\[\#1e1b4b\],
+[data-theme="midnight-dark"] .text-\[\#1e3a8a\],
+[data-theme="midnight-dark"] .text-\[\#0c4a6e\],
+[data-theme="midnight-dark"] .text-\[\#9a3412\],
+[data-theme="midnight-dark"] .text-\[\#9f1239\],
+[data-theme="midnight-dark"] .text-\[\#3730a3\],
+[data-theme="midnight-dark"] .text-\[\#9d174d\],
+[data-theme="midnight-dark"] .text-\[\#065f46\],
+[data-theme="midnight-dark"] .text-indigo-900,
+[data-theme="midnight-dark"] .text-indigo-950 {
+  color: #f1f5f9 !important;
+}
+[data-theme="midnight-dark"] .text-slate-600,
+[data-theme="midnight-dark"] .text-slate-500,
+[data-theme="midnight-dark"] .text-slate-400 {
+  color: #cbd5e1 !important;
+}
+[data-theme="midnight-dark"] .bg-white,
+[data-theme="midnight-dark"] .bg-white\/60,
+[data-theme="midnight-dark"] .bg-white\/70,
+[data-theme="midnight-dark"] .bg-white\/75,
+[data-theme="midnight-dark"] .bg-white\/80,
+[data-theme="midnight-dark"] .bg-white\/85,
+[data-theme="midnight-dark"] .bg-white\/90,
+[data-theme="midnight-dark"] .bg-white\/95 {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f1f5f9 !important;
+}
+[data-theme="midnight-dark"] .theme-hero-banner {
+  background: linear-gradient(120deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.92) 50%, rgba(30, 27, 75, 0.9) 100%) !important;
+  border-color: rgba(168, 85, 247, 0.35) !important;
+}
+[data-theme="midnight-dark"] .theme-pastel-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.88) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+[data-theme="midnight-dark"] .theme-kpi-box {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+[data-theme="midnight-dark"] .bg-slate-50,
+[data-theme="midnight-dark"] .bg-slate-50\/70,
+[data-theme="midnight-dark"] .bg-slate-50\/80,
+[data-theme="midnight-dark"] .bg-slate-100,
+[data-theme="midnight-dark"] .bg-slate-100\/80 {
+  background: rgba(30, 41, 59, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #e2e8f0 !important;
+}
+[data-theme="midnight-dark"] input,
+[data-theme="midnight-dark"] textarea,
+[data-theme="midnight-dark"] select {
+  background: rgba(15, 23, 42, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #f8fafc !important;
+}
+
+/* 6. Soft Pastel Purple Background (Extracted from UI Image) */
+.pastel-purple-bg {
+  background-color: #f5f3ff;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(196, 181, 253, 0.65) 0px, transparent 55%),
+    radial-gradient(at 100% 0%, rgba(199, 210, 254, 0.6) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(233, 213, 255, 0.45) 0px, transparent 50%),
+    radial-gradient(at 15% 100%, rgba(245, 208, 254, 0.55) 0px, transparent 55%),
+    radial-gradient(at 85% 100%, rgba(186, 230, 253, 0.5) 0px, transparent 50%);
+}
+
+/* Soft Pastel Purple UI (Tím Pastel Mộng Mơ - Neumorphic Glass) */
+[data-theme="purple-pastel"] {
+  --color-primary: #7c3aed;
+  --color-secondary: #6366f1;
+}
+
+[data-theme="purple-pastel"] .glass-panel {
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(26px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(26px) saturate(190%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 
+    0 16px 40px -10px rgba(124, 58, 237, 0.12),
+    0 4px 16px -2px rgba(99, 102, 241, 0.08),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="purple-pastel"] .bg-white\/85,
+[data-theme="purple-pastel"] .bg-white\/90,
+[data-theme="purple-pastel"] .bg-white\/80 {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 
+    0 12px 28px -6px rgba(139, 92, 246, 0.1),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="purple-pastel"] .bg-slate-50,
+[data-theme="purple-pastel"] .bg-slate-100 {
+  background: rgba(245, 243, 255, 0.85) !important;
+  border-color: rgba(221, 214, 254, 0.6) !important;
+}
+
+/* 7. Pastel Sky Aura Theme (Extracted from Lĩnh Vực Reference Image) */
+.pastel-sky-bg {
+  background-color: #e6f4ff;
+  background-image:
+    radial-gradient(at 0% 0%, rgba(125, 211, 252, 0.65) 0px, transparent 52%),
+    radial-gradient(at 100% 0%, rgba(186, 230, 253, 0.6) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(56, 189, 248, 0.55) 0px, transparent 52%),
+    radial-gradient(at 100% 100%, rgba(253, 224, 71, 0.65) 0px, transparent 52%),
+    radial-gradient(at 82% 85%, rgba(251, 146, 60, 0.35) 0px, transparent 48%),
+    radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.8) 0px, transparent 60%);
+}
+
+[data-theme="pastel-sky"] {
+  --color-primary: #0284c7;
+  --color-secondary: #f59e0b;
+}
+
+[data-theme="pastel-sky"] .glass-panel {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(28px) saturate(195%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(195%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.96) !important;
+  box-shadow:
+    0 18px 42px -10px rgba(2, 132, 199, 0.14),
+    0 6px 18px -4px rgba(245, 158, 11, 0.08),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.98) !important;
+}
+
+[data-theme="pastel-sky"] .nav-item-default {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.85) !important;
+  color: #1e293b !important;
+}
+
+/* Hero Banner Standard Responsive CSS (Giảm chiều cao tương đương từ 500px xuống 400px: tỷ lệ 80%) */
+.hero-banner {
+  width: 100%;
+  height: clamp(145px, 12vw, 208px);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.hero-banner img,
+.hero-banner video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* =========================================================================
+   PAGE TRANSITION & CARD 3D DEPTH ANIMATIONS (HIỆU ỨNG CHUYỂN TRANG & ĐỔ BÓNG NỔI)
+   ========================================================================= */
+
+@keyframes pageTransitionEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.988);
+    filter: blur(5px);
+  }
+  60% {
+    filter: blur(0.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-page-enter {
+  animation: pageTransitionEnter 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform, filter;
+}
+
+/* Hiệu ứng lướt trang theo chiều chuyển khi bấm Next/Prev slide */
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(48px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0px);
+    filter: blur(0px);
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-48px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0px);
+    filter: blur(0px);
+  }
+}
+
+.animate-slide-next {
+  animation: slideInFromRight 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform, filter;
+}
+
+.animate-slide-prev {
+  animation: slideInFromLeft 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform, filter;
+}
+
+/* Hiệu ứng quét tia sáng đỉnh card khi chuyển trang */
+@keyframes pageTopBeam {
+  0% {
+    left: -35%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    left: 115%;
+    opacity: 0;
+  }
+}
+
+.animate-page-beam {
+  animation: pageTopBeam 0.75s ease-out forwards;
+}
+
+/* Hiệu ứng thở bồng bềnh 3D nhẹ cho Card chính */
+@keyframes cardFloatBreathe {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+.animate-card-breathe {
+  animation: cardFloatBreathe 7s ease-in-out infinite;
+}
+
+/* Glass Spotlight Mouseover Sheen (Hiệu ứng quầng sáng chuyển động theo chuột) */
+.glass-spotlight {
+  position: absolute;
+  pointer-events: none;
+  border-radius: inherit;
+  inset: 0;
+  transition: opacity 0.35s ease;
+  z-index: 5;
+}
+
+/* Enhanced 3D floating shadows */
+.elevated-float-card {
+  box-shadow: 
+    0 24px 68px -12px rgba(30, 27, 75, 0.2),
+    0 8px 24px -6px rgba(59, 130, 246, 0.12),
+    inset 0 1.5px 2.5px rgba(255, 255, 255, 0.95);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.elevated-float-card:hover {
+  box-shadow: 
+    0 32px 85px -12px rgba(99, 102, 241, 0.28),
+    0 12px 35px -4px rgba(59, 130, 246, 0.18),
+    inset 0 2px 3px rgba(255, 255, 255, 1);
+  border-color: rgba(255, 255, 255, 0.98);
+}
+
+/* ========================================================================= */
+/* CODEPEN CARD STACKING & HOVER DISPLACEMENT EFFECT (THẺ HỌC VẤN XẾP LỚP)  */
+/* ========================================================================= */
+.edu-deck-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px 25px 22px 25px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+@media (min-width: 1280px) {
+  .edu-deck-row {
+    justify-content: flex-start;
+  }
+}
+
+.edu-stack-card {
+  width: 250px;
+  min-width: 250px;
+  height: 295px;
+  border-radius: 18px;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: -12px 0 24px rgba(15, 23, 42, 0.12);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.dark .edu-stack-card {
+  background: rgba(18, 18, 24, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: -12px 0 24px rgba(0, 0, 0, 0.45);
+}
+
+.edu-stack-card:not(:first-child) {
+  margin-left: -165px;
+}
+
+.edu-stack-card:hover {
+  transform: translateY(-16px) scale(1.03);
+  z-index: 30;
+  box-shadow: 0 20px 45px -8px rgba(15, 23, 42, 0.28), 0 0 25px rgba(59, 130, 246, 0.35);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+.dark .edu-stack-card:hover {
+  box-shadow: 0 20px 45px -8px rgba(0, 0, 0, 0.8), 0 0 25px rgba(56, 189, 248, 0.35);
+  border-color: rgba(56, 189, 248, 0.6);
+}
+
+.edu-stack-card:hover ~ .edu-stack-card {
+  transform: translateX(175px);
+}
+
+/* Single long deck for filtered subsets */
+.edu-deck-single {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 25px 25px 25px;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+@media (min-width: 1280px) {
+  .edu-deck-single {
+    justify-content: center;
+  }
+}
+
+/* ========================================================
+   PURE CSS CIRCLE / RADIAL MENU & AVATAR MORPHING
+   ======================================================== */
+
+.avatar-circle-menu-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+}
+
+/* Base button: default elongated pill morphing into circle (114px x 46px, bo cong 999px) */
+.avatar-morph-btn {
+  width: 114px;
+  height: 46px;
+  border-radius: 999px;
+  padding: 4px 10px 4px 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  cursor: pointer;
+  z-index: 50;
+  background: rgba(224, 242, 254, 0.85);
+  border: 1px solid rgba(125, 211, 252, 0.9);
+  color: #0284c7;
+  box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.95), 0 3px 10px rgba(2, 132, 199, 0.15);
+  /* Phased transition: width collapses first, then button elevates upward */
+  transition: 
+    width 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    height 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    padding 0.25s ease,
+    border-radius 0.25s ease,
+    transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s,
+    box-shadow 0.35s ease,
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.avatar-morph-btn:hover:not(.is-open) {
+  z-index: 70 !important;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.95), 0 8px 20px -2px rgba(2, 132, 199, 0.25);
+}
+
+/* Active State: Morphs into circle & floats upward */
+.avatar-morph-btn.is-open {
+  width: 46px !important;
+  height: 46px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  transform: translateY(-56px) scale(1.08) !important;
+  z-index: 100 !important;
+  background: rgba(2, 132, 199, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 
+    0 0 0 3px rgba(255, 255, 255, 0.95),
+    0 0 25px rgba(2, 132, 199, 0.7),
+    0 14px 30px rgba(15, 23, 42, 0.3) !important;
+  /* Reverse transitions when closing */
+  transition: 
+    transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+    width 0.28s ease 0.1s,
+    height 0.28s ease 0.1s,
+    padding 0.25s ease 0.1s,
+    border-radius 0.25s ease 0.1s,
+    box-shadow 0.3s ease,
+    background 0.25s ease;
+}
+
+/* Internal Avatar Wrapper */
+.avatar-morph-inner {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.avatar-morph-btn.is-open .avatar-morph-inner {
+  width: 40px;
+  height: 40px;
+}
+
+/* Label text morph */
+.avatar-morph-text {
+  max-width: 65px;
+  opacity: 1;
+  transform: scale(1);
+  transition: max-width 0.25s ease, opacity 0.2s ease, transform 0.2s ease;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.avatar-morph-btn.is-open .avatar-morph-text {
+  max-width: 0 !important;
+  opacity: 0 !important;
+  transform: scale(0.4);
+  margin: 0 !important;
+  pointer-events: none;
+}
+
+/* Close badge indicator on open button */
+.avatar-morph-close-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #f43f5e;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  border: 1.5px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: scale(0) rotate(-90deg);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) 0.32s;
+  pointer-events: none;
+}
+
+.avatar-morph-btn.is-open .avatar-morph-close-badge {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* ========================================================
+   PURE CSS CIRCLE RADIAL MENU ITEMS
+   ======================================================== */
+.pure-circle-menu {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 95;
+}
+
+/* Decorative backdrop aura */
+.circle-menu-aura {
+  position: absolute;
+  left: -100px;
+  top: -160px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.16) 0%, rgba(56, 189, 248, 0.04) 65%, transparent 75%);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.3);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s;
+}
+
+.pure-circle-menu.is-open .circle-menu-aura {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Base style for each radial node */
+.circle-menu-node {
+  position: absolute;
+  left: -20px;
+  top: -20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2), inset 0 1px 1.5px rgba(255, 255, 255, 0.85);
+  color: #ffffff;
+  /* Closed state: tucked in center origin */
+  transform: translate(0, 0) scale(0);
+  opacity: 0;
+  pointer-events: none;
+  transition: 
+    transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* Hover enlargement & glow */
+.circle-menu-node:hover {
+  transform: translate(var(--node-x), var(--node-y)) scale(1.18) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35), 0 0 16px currentColor !important;
+  z-index: 120 !important;
+}
+
+/* Node 1: LinkedIn (-77px, -90px) */
+.pure-circle-menu.is-open .circle-node-1 {
+  --node-x: -77px;
+  --node-y: -90px;
+  transform: translate(-77px, -90px) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0.24s;
+}
+
+/* Node 2: Zalo (-47px, -129px) */
+.pure-circle-menu.is-open .circle-node-2 {
+  --node-x: -47px;
+  --node-y: -129px;
+  transform: translate(-47px, -129px) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0.30s;
+}
+
+/* Node 3: Contact Details (Center Apex: 0px, -144px) */
+.pure-circle-menu.is-open .circle-node-3 {
+  --node-x: 0px;
+  --node-y: -144px;
+  transform: translate(0px, -144px) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0.36s;
+}
+
+/* Node 4: Hotline (+47px, -129px) */
+.pure-circle-menu.is-open .circle-node-4 {
+  --node-x: 47px;
+  --node-y: -129px;
+  transform: translate(47px, -129px) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0.42s;
+}
+
+/* Node 5: Email (+77px, -90px) */
+.pure-circle-menu.is-open .circle-node-5 {
+  --node-x: 77px;
+  --node-y: -90px;
+  transform: translate(77px, -90px) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0.48s;
+}
+
+/* Tooltip on node hover */
+.circle-node-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 130;
+}
+
+.circle-menu-node:hover .circle-node-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Dark mode theme adjustments */
+[data-theme="dark-neon"] .avatar-morph-btn {
+  background: rgba(14, 165, 233, 0.2) !important;
+  border-color: rgba(56, 189, 248, 0.6) !important;
+  color: #38bdf8 !important;
+}
+
+[data-theme="dark-neon"] .avatar-morph-btn.is-open {
+  background: rgba(14, 165, 233, 0.9) !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.9), 0 0 30px rgba(56, 189, 248, 0.8), 0 16px 36px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* ========================================================
+   AI POPUP SQUARE CONVERGENCE / MATRIX ASSEMBLY EFFECT
+   (Hiệu ứng các ô vuông bung ra từ từ tập hợp thành popup)
+   ======================================================== */
+@keyframes ai-assemble-window {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) translateY(60px) rotate(-3deg);
+    filter: blur(14px);
+  }
+  55% {
+    opacity: 0.92;
+    transform: scale(1.025) translateY(-6px) rotate(0.6deg);
+    filter: blur(1.5px);
+  }
+  80% {
+    transform: scale(0.99) translateY(2px) rotate(0deg);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotate(0deg);
+    filter: blur(0px);
+  }
+}
+
+@keyframes ai-tile-converge {
+  0% {
+    opacity: 0;
+    transform: translate(var(--tx, 0), var(--ty, 0)) scale(0.2) rotate(var(--rot, 0deg));
+    filter: blur(6px);
+  }
+  30% {
+    opacity: 0.95;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 10px rgba(99, 102, 241, 0.6);
+  }
+  75% {
+    opacity: 0.75;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    pointer-events: none;
+  }
+}
+
+.ai-modal-assemble {
+  animation: ai-assemble-window 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: bottom right;
+}
+
+.ai-tile-matrix-particle {
+  position: absolute;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.45), rgba(99, 102, 241, 0.55));
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.5);
+  pointer-events: none;
+  animation: ai-tile-converge 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 60;
+}
+
+/* ============================================================
+   Vivid Theme Transition Ripple & Chromatic Wave
+   "khi thay đổi giao diện thêm hiệu ứng chuyển sang giao diện sống động"
+   ============================================================ */
+.theme-vivid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99999;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.theme-vivid-overlay.is-animating {
+  animation: themeVividFlash 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.theme-vivid-wave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150vmax;
+  height: 150vmax;
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.05);
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.5) 0%, rgba(168, 85, 247, 0.45) 30%, rgba(244, 63, 94, 0.35) 55%, rgba(251, 191, 36, 0.2) 75%, transparent 100%);
+  filter: blur(24px);
+  pointer-events: none;
+}
+
+.theme-vivid-overlay.is-animating .theme-vivid-wave {
+  animation: themeVividWaveExpand 0.75s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes themeVividFlash {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes themeVividWaveExpand {
+  0% {
+    transform: translate(-50%, -50%) scale(0.08);
+    filter: blur(10px) saturate(2);
+  }
+  45% {
+    filter: blur(28px) saturate(2.6) brightness(1.25);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.18);
+    filter: blur(45px) saturate(1.8) brightness(1.05);
+  }
+}
+
+/* Smooth vivid transitions during theme switch */
+html.theme-transitioning,
+html.theme-transitioning body,
+html.theme-transitioning #app-root-layout,
+html.theme-transitioning .glass-panel,
+html.theme-transitioning nav,
+html.theme-transitioning footer {
+  transition: background-color 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              background 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              border-color 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+              color 0.4s ease !important;
+}
+
+
+
+

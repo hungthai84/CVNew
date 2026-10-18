@@ -1,0 +1,244 @@
+[
+  {
+    "id": "custom-css-1790281790561",
+    "name": "Hình nền CSS Custom",
+    "type": "css",
+    "value": "background:\n  linear-gradient(\n    to right bottom,\n    #0093E9 0%,\n    #80D0C7 100%\n  );",
+    "previewStyle": {
+      "background": "linear-gradient(to right bottom, #0093E9 0%, #80D0C7 100%)"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1790261474954",
+    "name": "Hình nền #89",
+    "type": "video",
+    "value": "https://strvid.nyc3.cdn.digitaloceanspaces.com/motionitems/source/1782066616542-motion_111.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://strvid.nyc3.cdn.digitaloceanspaces.com/motionitems/source/1782066616542-motion_111.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1790261424372",
+    "name": "Hình nền #88",
+    "type": "video",
+    "value": "https://strvid.nyc3.cdn.digitaloceanspaces.com/motionitems/source/1782066869696-motion_112.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://strvid.nyc3.cdn.digitaloceanspaces.com/motionitems/source/1782066869696-motion_112.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1787411641956",
+    "name": "Hình nền Video #23",
+    "type": "video",
+    "value": "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260613_180732_a54afbf6-b30d-470e-861f-669871f09f67.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260613_180732_a54afbf6-b30d-470e-861f-669871f09f67.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1787411610689",
+    "name": "Hình nền Video #22",
+    "type": "video",
+    "value": "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_034306_165449ef-7d2e-4e81-850f-1939c5cb442d.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_034306_165449ef-7d2e-4e81-850f-1939c5cb442d.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1787385268921",
+    "name": "Hình nền Video #20",
+    "type": "video",
+    "value": "https://v1.pinimg.com/videos/mc/720p/24/04/f5/2404f5b12afbf179a6aa0be40c5468e4.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://v1.pinimg.com/videos/mc/720p/24/04/f5/2404f5b12afbf179a6aa0be40c5468e4.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1787362648848",
+    "name": "Hình nền Video #9",
+    "type": "video",
+    "value": "https://v1.pinimg.com/videos/mc/720p/10/77/ab/1077abb576579eba02148d3a25d62246.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://v1.pinimg.com/videos/mc/720p/10/77/ab/1077abb576579eba02148d3a25d62246.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1787362485474",
+    "name": "Hình nền Video #4",
+    "type": "video",
+    "value": "https://v1.pinimg.com/videos/iht/hevcMp4V3/cd/8f/44/cd8f44dd4a75d66aeeb1c4343084966a_720w.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://v1.pinimg.com/videos/iht/hevcMp4V3/cd/8f/44/cd8f44dd4a75d66aeeb1c4343084966a_720w.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1788305458076",
+    "name": "Hình nền #58",
+    "type": "video",
+    "value": "https://v1.pinimg.com/videos/mc/720p/fa/b9/6e/fab96e55b0f2e181e4c1f2005ae2d4f2.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://v1.pinimg.com/videos/mc/720p/fa/b9/6e/fab96e55b0f2e181e4c1f2005ae2d4f2.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1788305429681",
+    "name": "Hình nền #57",
+    "type": "video",
+    "value": "https://v1.pinimg.com/videos/mc/720p/80/a2/26/80a226c99f3dd23fdb1b19511ae95800.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://v1.pinimg.com/videos/mc/720p/80/a2/26/80a226c99f3dd23fdb1b19511ae95800.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1788305326019",
+    "name": "Hình nền #56",
+    "type": "video",
+    "value": "https://v1.pinimg.com/videos/720p/0d/dd/3d/0ddd3dd500024126499b49447815d829.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://v1.pinimg.com/videos/720p/0d/dd/3d/0ddd3dd500024126499b49447815d829.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1788113643739",
+    "name": "Hình nền #48",
+    "type": "video",
+    "value": "https://v1.pinimg.com/videos/mc/720p/33/64/b5/3364b532b36f0a0dced2a4dcb3522d29.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://v1.pinimg.com/videos/mc/720p/33/64/b5/3364b532b36f0a0dced2a4dcb3522d29.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "custom-wp-1788113606770",
+    "name": "Hình nền #47",
+    "type": "video",
+    "value": "https://v1.pinimg.com/videos/iht/expMp4/f7/83/16/f7831662ced2dcc096aa27eb16a0323c_720w.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://v1.pinimg.com/videos/iht/expMp4/f7/83/16/f7831662ced2dcc096aa27eb16a0323c_720w.mp4')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": true
+  },
+  {
+    "id": "css-bryce-4color-gradient",
+    "name": "Cực quang Bryce 4 Màu (CodePen Animated)",
+    "type": "css",
+    "value": "background-color: #0b0f19;\nposition: absolute;\ninset: 0;\nwidth: 100%;\nheight: 100%;\noverflow: hidden;\n\n&::before {\n  content: \"\";\n  position: absolute;\n  inset: 0;\n  width: 100%;\n  height: 100%;\n  background-image: url(\"https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2000\");\n  background-size: cover;\n  background-position: 50% 50%;\n  background-repeat: no-repeat;\n  filter: grayscale(100%);\n  -webkit-filter: grayscale(100%);\n  z-index: 1;\n}\n\n&::after {\n  content: \"\";\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 400%;\n  height: 400%;\n  opacity: 0.82;\n  background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);\n  -webkit-animation: gradient_transition_bryce 15s ease infinite;\n  animation: gradient_transition_bryce 15s ease infinite;\n  mix-blend-mode: hard-light;\n  z-index: 2;\n}\n\n@keyframes gradient_transition_bryce {\n  0% { top: 0; left: 0; }\n  50% { top: -200%; left: -200%; }\n  100% { top: 0; left: 0; }\n}",
+    "previewStyle": {
+      "background": "linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB)"
+    },
+    "isCustom": false
+  },
+  {
+    "id": "css-aurora-borealis",
+    "name": "Cực quang Aurora CSS (Animated Mesh)",
+    "type": "css",
+    "value": "background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #064e3b 100%);\nposition: relative;\noverflow: hidden;\nbox-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);",
+    "previewStyle": {
+      "background": "linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #064e3b 100%)"
+    },
+    "isCustom": false
+  },
+  {
+    "id": "css-cyber-grid",
+    "name": "Lưới Neon Cyberpunk 3D (CSS Grid)",
+    "type": "css",
+    "value": "background-color: #05050d;\nbackground-image: \n  linear-gradient(rgba(0, 242, 254, 0.25) 1px, transparent 1px),\n  linear-gradient(90deg, rgba(0, 242, 254, 0.25) 1px, transparent 1px),\n  radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.2) 0%, transparent 70%);\nbackground-size: 40px 40px, 40px 40px, 100% 100%;",
+    "previewStyle": {
+      "backgroundColor": "#05050d",
+      "backgroundImage": "linear-gradient(rgba(0, 242, 254, 0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 254, 0.4) 1px, transparent 1px)",
+      "backgroundSize": "20px 20px"
+    },
+    "isCustom": false
+  },
+  {
+    "id": "css-sunset-mesh",
+    "name": "Hoàng hôn Sunset Flow (CSS Mesh)",
+    "type": "css",
+    "value": "background: radial-gradient(at 0% 0%, #ff5e62 0px, transparent 50%),\nradial-gradient(at 100% 0%, #ff9966 0px, transparent 50%),\nradial-gradient(at 100% 100%, #6b11ff 0px, transparent 50%),\nradial-gradient(at 0% 100%, #3a1c71 0px, transparent 50%),\n#0b0c10;",
+    "previewStyle": {
+      "background": "linear-gradient(135deg, #ff5e62 0%, #ff9966 50%, #6b11ff 100%)"
+    },
+    "isCustom": false
+  },
+  {
+    "id": "css-deep-space",
+    "name": "Vũ trụ Sao Cosmic Starfield (CSS Space)",
+    "type": "css",
+    "value": "background-color: #030014;\nbackground-image: \n  radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),\n  radial-gradient(1.5px 1.5px at 90px 40px, #f472b6, rgba(0,0,0,0)),\n  radial-gradient(ellipse at 70% 30%, rgba(99, 102, 241, 0.25) 0%, transparent 60%),\n  radial-gradient(ellipse at 20% 80%, rgba(236, 72, 153, 0.2) 0%, transparent 60%);\nbackground-size: 150px 150px, 150px 150px, 100% 100%, 100% 100%;",
+    "previewStyle": {
+      "backgroundColor": "#030014",
+      "backgroundImage": "radial-gradient(ellipse at 70% 30%, rgba(99, 102, 241, 0.6) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(236, 72, 153, 0.5) 0%, transparent 60%)"
+    },
+    "isCustom": false
+  },
+  {
+    "id": "css-emerald-matrix",
+    "name": "Ma trận Lục bảo Isometric (CSS Emerald)",
+    "type": "css",
+    "value": "background: #022c22;\nbackground-image: \n  radial-gradient(circle at 100% 150%, #022c22 24%, #059669 25%, #059669 28%, #022c22 29%, #022c22 36%, #059669 36%, #059669 40%, transparent 40%),\n  radial-gradient(circle at 0% 150%, #022c22 24%, #059669 25%, #059669 28%, #022c22 29%, #022c22 36%, #059669 36%, #059669 40%, transparent 40%),\n  radial-gradient(circle at 50% 100%, #10b981 10%, #047857 11%, #047857 23%, #064e3b 24%, #059669 31%, #022c22 44%, transparent 53%);\nbackground-size: 80px 40px;",
+    "previewStyle": {
+      "backgroundColor": "#022c22",
+      "backgroundImage": "radial-gradient(circle at 50% 100%, #10b981 10%, #047857 25%, #064e3b 50%, transparent 70%)"
+    },
+    "isCustom": false
+  },
+  {
+    "id": "video-wp-aurora-stream",
+    "name": "Cực quang Chuyển động Aurora Stream 4K",
+    "type": "video",
+    "value": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?auto=format&fit=crop&q=80&w=400')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": false
+  },
+  {
+    "id": "video-wp-cosmic-flow",
+    "name": "Dải Ngân hà Cosmic Flow Motion HD",
+    "type": "video",
+    "value": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    "previewStyle": {
+      "backgroundImage": "url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&q=80&w=400')",
+      "backgroundSize": "cover",
+      "backgroundPosition": "center"
+    },
+    "isCustom": false
+  }
+]

@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Fleur+De+Leah&family=Play:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import './variables.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Play', system-ui, -apple-system, sans-serif !important;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+/* Cho phép chọn và sao chép văn bản trên toàn bộ website */
+html,
+body,
+#__next,
+main,
+article,
+section,
+div,
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input,
+textarea,
+label,
+li,
+ul,
+ol,
+blockquote,
+q,
+strong,
+em,
+b,
+i,
+table,
+tr,
+td,
+th {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}
+
+/* Bỏ chặn select-none để người dùng có thể bôi đen và sao chép text tự do */
+.select-none {
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
+}
+
+/* Kiểu dáng bôi đen văn bản tinh tế đồng bộ Glass UI */
+::selection {
+  background: rgba(59, 130, 246, 0.35);
+  color: inherit;
+}
+::-moz-selection {
+  background: rgba(59, 130, 246, 0.35);
+  color: inherit;
+}
+
+body, button, input, textarea, select, h1, h2, h3, h4, h5, h6, p, span, div, a {
+  font-family: 'Play', system-ui, -apple-system, sans-serif !important;
+}
+
+/* Handwriting Vietnamese Font for quotes */
+.font-handwriting,
+.font-handwriting * {
+  font-family: 'Dancing Script', cursive, sans-serif !important;
+}
+
+/* Fleur De Leah Font for all Banner Quotes */
+.font-banner-quote,
+.font-banner-quote * {
+  font-family: 'Fleur De Leah', cursive, sans-serif !important;
+}
+
+/* Ẩn hoàn toàn viền của tất cả các loại Banner trên toàn bộ trang */
+.hero-banner,
+.theme-hero-banner,
+[data-theme] .hero-banner,
+[data-theme] .theme-hero-banner {
+  border: none !important;
+  border-width: 0 !important;
+  outline: none !important;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Ẩn hoàn toàn khối chuyển slide trên top/bottom, thanh tab slide và các chỉ số slide đối với tất cả các slide (Phạm vi: Áp dụng trên toàn website) */
+.slide-nav,
+.slide-navigation,
+.slide-tabs,
+.slide-tabs-container,
+.slide-indicator,
+.slide-indicators,
+.slide-control-top,
+.slide-control-bottom,
+.slide-pagination,
+.slide-footer-nav,
+.slide-header-nav,
+[data-slide-nav],
+[data-slide-tabs],
+.slide-dots,
+.slide-tabs-bar {
+  display: none !important;
+}
+
+/* Global 999px border radius for all buttons */
+button,
+.btn,
+[type="button"],
+[type="submit"],
+[type="reset"] {
+  border-radius: 999px !important;
+  user-select: none;
+  -webkit-user-select: none;
+}

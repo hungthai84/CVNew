@@ -1,0 +1,58 @@
+import { WeatherPreset } from '@/types';
+
+export const WEATHER_PRESETS: WeatherPreset[] = [
+  {
+    temp: '32',
+    condition: 'Sunny',
+    conditionVi: 'Nắng đẹp rực rỡ',
+    badge: 'Nắng đẹp',
+    bgStyle: 'linear-gradient(112deg, #6be4c8, #20c8e2)',
+    location: 'TP. Hồ Chí Minh',
+    time: '1:00 PM',
+  },
+  {
+    temp: '29',
+    condition: 'Cloudy',
+    conditionVi: 'Nhiều mây dịu mát',
+    badge: 'Nhiều mây',
+    bgStyle: 'linear-gradient(112deg, #21d5e4, #247af5)',
+    location: 'TP. Hồ Chí Minh',
+    time: '2:00 PM',
+  },
+  {
+    temp: '27',
+    condition: 'Overcast',
+    conditionVi: 'Trời râm mát mẻ',
+    badge: 'Râm mát',
+    bgStyle: 'linear-gradient(112deg, #9abcf4, #f4e9e9)',
+    location: 'TP. Hồ Chí Minh',
+    time: '3:00 PM',
+  },
+  {
+    temp: '25',
+    condition: 'Heavy Rain',
+    conditionVi: 'Mưa rào rải rác',
+    badge: 'Mưa rào',
+    bgStyle: 'linear-gradient(112deg, #8ca9df, #244a8e)',
+    location: 'TP. Hồ Chí Minh',
+    time: '6:00 PM',
+  },
+  {
+    temp: '24',
+    condition: 'Thunder Storm',
+    conditionVi: 'Giông bão sấm chớp',
+    badge: 'Giông bão',
+    bgStyle: 'linear-gradient(112deg, #6d82b2, #9ec8fa)',
+    location: 'TP. Hồ Chí Minh',
+    time: '9:27 PM',
+  },
+  {
+    temp: '23',
+    condition: 'Lightning',
+    conditionVi: 'Sét nhiệt đới đêm',
+    badge: 'Sấm sét',
+    bgStyle: 'linear-gradient(112deg, #8137e9, #e6a0d0)',
+    location: 'TP. Hồ Chí Minh',
+    time: '11:00 PM',
+  },
+];
