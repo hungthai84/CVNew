@@ -287,7 +287,12 @@ export default function HomePage() {
               />
             )}
             {currentPage === 1 && <LetterView />}
-            {currentPage === 2 && <AboutView onNavigateContact={() => setCurrentPage(12)} />}
+            {currentPage === 2 && (
+              <AboutView
+                onNavigateContact={() => setCurrentPage(12)}
+                onOpenAiChat={() => setIsAiChatOpen(true)}
+              />
+            )}
             {currentPage === 3 && <EducationView />}
             {currentPage === 4 && <DomainsView />}
             {currentPage === 5 && <ExperienceView />}
