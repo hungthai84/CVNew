@@ -52,6 +52,23 @@ export const HoroscopeView: React.FC = () => {
   const [selectedZodiacId, setSelectedZodiacId] = useState<string | null>(null);
   const [searchYearInput, setSearchYearInput] = useState<string>('');
   const [zodiacFilterTier, setZodiacFilterTier] = useState<string>('all');
+  const [isZodiacFilterOpen, setIsZodiacFilterOpen] = useState<boolean>(false);
+  const zodiacFilterRef = useRef<HTMLDivElement>(null);
+
+  // Close zodiac filter dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (zodiacFilterRef.current && !zodiacFilterRef.current.contains(e.target as Node)) {
+        setIsZodiacFilterOpen(false);
+      }
+    };
+    if (isZodiacFilterOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isZodiacFilterOpen]);
 
   // Compass view mode: Âm Dương hoặc Bát Trạch Quái
   const [compassMode, setCompassMode] = useState<'yinyang' | 'battrach'>('yinyang');
@@ -931,7 +948,7 @@ export const HoroscopeView: React.FC = () => {
 
               {/* Scrollable Tool Body */}
               <div className="flex-1 overflow-y-auto no-scrollbar pt-2 pr-0.5 space-y-2 flex flex-col">
-                {/* Tra cứu năm sinh */}
+                {/* Tra cứu năm sinh & Bộ lọc 12 Con Giáp (Icon Filter tích hợp trong mục tìm kiếm) */}
                 <div className="space-y-1.5 shrink-0">
                   <div className="flex items-center gap-1.5 w-full">
                     <div className="relative flex-1">
@@ -945,9 +962,71 @@ export const HoroscopeView: React.FC = () => {
                         value={searchYearInput}
                         onChange={(e) => setSearchYearInput(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleYearSearch()}
-                        className="w-full pl-7 pr-2 py-1 rounded-lg text-[10.5px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-semibold"
+                        className="w-full pl-7 pr-8 py-1 rounded-lg text-[10.5px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-semibold"
                       />
+
+                      {/* Icon Filter tích hợp trực tiếp trong mục tìm kiếm */}
+                      <div className="absolute right-1 top-1/2 -translate-y-1/2" ref={zodiacFilterRef}>
+                        <button
+                          type="button"
+                          onClick={() => setIsZodiacFilterOpen((prev) => !prev)}
+                          className={`w-5 h-5 rounded-md flex items-center justify-center transition-all cursor-pointer relative ${
+                            zodiacFilterTier !== 'all' || isZodiacFilterOpen
+                              ? 'bg-teal-600 text-white shadow-xs'
+                              : 'text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+                          }`}
+                          title={`Lọc 12 Con Giáp: ${
+                            [
+                              { id: 'all', label: 'Tất cả 12 Giáp' },
+                              { id: 'best', label: 'Tam / Lục Hợp' },
+                              { id: 'support', label: 'Tương Trợ' },
+                              { id: 'caution', label: 'Tránh Xung' },
+                            ].find((f) => f.id === zodiacFilterTier)?.label || 'Bộ lọc'
+                          }`}
+                        >
+                          <WebIcon name="filter" className="w-3 h-3" />
+                          {zodiacFilterTier !== 'all' && (
+                            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-amber-400 ring-1 ring-white dark:ring-slate-900" />
+                          )}
+                        </button>
+
+                        {/* Dropdown danh sách bộ lọc khi click icon filter */}
+                        {isZodiacFilterOpen && (
+                          <div className="absolute right-0 top-full mt-1.5 z-40 w-36 p-1.5 rounded-xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-teal-200/90 dark:border-teal-500/30 shadow-xl space-y-1 animate-in fade-in zoom-in-95 duration-150">
+                            <div className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-white/5">
+                              Lọc 12 Con Giáp
+                            </div>
+                            {[
+                              { id: 'all', label: 'Tất cả 12 Giáp' },
+                              { id: 'best', label: 'Tam / Lục Hợp' },
+                              { id: 'support', label: 'Tương Trợ' },
+                              { id: 'caution', label: 'Tránh Xung' },
+                            ].map((f) => {
+                              const isActive = zodiacFilterTier === f.id;
+                              return (
+                                <button
+                                  key={f.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setZodiacFilterTier(f.id);
+                                    setIsZodiacFilterOpen(false);
+                                  }}
+                                  className={`w-full px-2 py-1 rounded-lg text-[10px] font-bold text-left transition-all flex items-center justify-between cursor-pointer ${
+                                    isActive
+                                      ? 'bg-teal-600 text-white shadow-xs'
+                                      : 'text-slate-700 dark:text-slate-300 hover:bg-teal-50 dark:hover:bg-teal-950/40 hover:text-teal-600'
+                                  }`}
+                                >
+                                  <span>{f.label}</span>
+                                  {isActive && <WebIcon name="check" className="w-3 h-3 text-white" />}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
                     </div>
+
                     <button
                       type="button"
                       onClick={handleYearSearch}
@@ -955,29 +1034,6 @@ export const HoroscopeView: React.FC = () => {
                     >
                       Tra
                     </button>
-                  </div>
-
-                  {/* Filter pills */}
-                  <div className="grid grid-cols-2 gap-1">
-                    {[
-                      { id: 'all', label: 'Tất cả 12 Giáp' },
-                      { id: 'best', label: 'Tam / Lục Hợp' },
-                      { id: 'support', label: 'Tương Trợ' },
-                      { id: 'caution', label: 'Tránh Xung' },
-                    ].map((f) => (
-                      <button
-                        key={f.id}
-                        type="button"
-                        onClick={() => setZodiacFilterTier(f.id)}
-                        className={`px-1.5 py-0.5 rounded-md text-[9px] font-bold transition-all text-center truncate cursor-pointer ${
-                          zodiacFilterTier === f.id
-                            ? 'bg-teal-600 text-white shadow-xs'
-                            : 'bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200'
-                        }`}
-                      >
-                        {f.label}
-                      </button>
-                    ))}
                   </div>
                 </div>
 
