@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { 
@@ -123,559 +123,464 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
   return (
     <section 
       id="about" 
-      className="relative w-full h-full flex flex-col justify-start items-stretch p-2.5 sm:p-[15px] font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-y-auto no-scrollbar"
+      className="relative w-full h-full flex flex-col justify-between p-2 sm:p-2.5 font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-y-auto lg:overflow-hidden select-none"
     >
-      <div className="w-full flex-grow flex flex-col gap-3.5 sm:gap-[15px] max-w-7xl mx-auto justify-start">
+      <div className="w-full h-full flex flex-col justify-between gap-2 lg:gap-2.5 max-w-7xl mx-auto min-h-0">
         
         {/* ========================================================================= */}
-        {/* 1. HERO PROFILE VIDEO & PERSONAL INFORMATION ROW CARD BOX                  */}
+        {/* 1. TOP BENTO BAR: TIÊU ĐỀ HỒ SƠ & SLOGAN LÃNH ĐẠO (SHRINK-0)               */}
         {/* ========================================================================= */}
-        <div 
-          className="w-full p-3 sm:p-[15px] flex flex-col gap-3 rounded-2xl md:rounded-[20px] bg-white/80 dark:bg-[#121218]/85 border border-white/80 dark:border-white/10 backdrop-blur-[20px] shadow-[0_8px_32px_0_rgba(31,38,135,0.08)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]"
-        >
-          {/* Card Header matching style */}
-          <div className="flex items-center justify-between gap-3 pb-2.5 border-b border-slate-200/80 dark:border-white/10 shrink-0">
-            <div className="flex items-center gap-2.5 sm:gap-3">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-cyan-400 shrink-0">
-                <WebIcon name="user" className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
-              </div>
-              <h2 className="text-base sm:text-lg lg:text-xl font-bold font-play bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 dark:from-blue-400 dark:via-indigo-300 dark:to-cyan-300">
-                {isVi ? 'Hồ sơ chuyên gia & Thông tin cá nhân' : 'Executive Profile & Personal Info'}
-              </h2>
+        <div className="w-full flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-white/80 dark:border-white/10 shadow-2xs backdrop-blur-md shrink-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-6 h-6 rounded-lg bg-blue-500/10 text-blue-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
+              <WebIcon name="user" className="w-3.5 h-3.5" />
             </div>
+            <h2 className="text-xs sm:text-sm font-black font-play tracking-tight truncate bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 dark:from-blue-400 dark:via-indigo-300 dark:to-cyan-300">
+              {isVi ? 'Hồ Sơ Chuyên Gia & Bản Đồ Vận Hành CSKH' : 'Executive Profile & CS Operations Map'}
+            </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-[15px] items-stretch w-full flex-grow">
-            
-            {/* Left Column: Video Card (7 columns out of 12) */}
-            <div 
-              className="lg:col-span-7 relative overflow-hidden rounded-xl md:rounded-2xl border border-white/60 dark:border-white/15 bg-slate-950/90 backdrop-blur-2xl shadow-[0_16px_40px_rgba(0,0,0,0.15)] min-h-[340px] sm:min-h-[440px] lg:min-h-[480px] flex items-center justify-center group"
-            >
-              {/* Portrait Video */}
-              <video
-                ref={videoRef}
-                src={isPlayingIntro ? ABOUT_INTRO_VIDEO_URL : ABOUT_IDLE_VIDEO_URL}
-                className="w-full h-full object-cover object-center absolute inset-0 brightness-105"
-                autoPlay
-                loop={!isPlayingIntro}
-                muted={isVideoMuted}
-                playsInline
-                onTimeUpdate={handleTimeUpdate}
-                onEnded={handleVideoEnded}
-              />
-
-              {/* Subtle Gradient vignette */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
-
-              {/* Dynamic Video Story Overlay when intro video is active */}
-              {isPlayingIntro && (
-                <div className="absolute inset-0 z-30 flex flex-col justify-between p-3.5 sm:p-5 bg-black/40 backdrop-blur-xs text-white">
-                  {/* Top Header Row of Video Story */}
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
-                      <span className="text-xs font-black uppercase tracking-wider text-rose-300 font-mono">
-                        {isVi ? 'Đang phát Giới Thiệu Chân Dung' : 'Playing Executive Introduction'}
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={handleCancelIntro}
-                      className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md flex items-center justify-center text-white transition active:scale-95 cursor-pointer"
-                      title={isVi ? 'Đóng video' : 'Close intro video'}
-                    >
-                      <WebIcon name="x" className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  {/* Bottom Controls of Video Story */}
-                  <div className="space-y-2 bg-slate-950/70 p-3 rounded-2xl border border-white/15 backdrop-blur-md">
-                    {/* Progress Bar & Seek */}
-                    <div className="flex items-center gap-2 text-xs font-mono">
-                      <span>{formatVideoTime(videoCurrentTime)}</span>
-                      <input
-                        type="range"
-                        min="0"
-                        max={videoDuration || 210}
-                        step="0.1"
-                        value={videoCurrentTime}
-                        onChange={(e) => handleSeek(parseFloat(e.target.value))}
-                        className="flex-1 h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-cyan-400"
-                      />
-                      <span>{formatVideoTime(videoDuration)}</span>
-                    </div>
-
-                    {/* Button Row */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={togglePlayPause}
-                          className="px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white font-bold text-xs flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
-                        >
-                          <WebIcon name={isVideoPaused ? 'play' : 'pause'} className="w-3.5 h-3.5" />
-                          <span>{isVideoPaused ? (isVi ? 'Phát tiếp' : 'Resume') : (isVi ? 'Tạm dừng' : 'Pause')}</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={toggleVideoMute}
-                          className="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
-                        >
-                          <WebIcon name="headset" className="w-3.5 h-3.5" />
-                          <span>{isVideoMuted ? (isVi ? 'Bật tiếng' : 'Unmute') : (isVi ? 'Tắt tiếng' : 'Mute')}</span>
-                        </button>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={handleCancelIntro}
-                        className="px-3 py-1.5 rounded-xl bg-rose-500/80 hover:bg-rose-600 text-white font-bold text-xs flex items-center gap-1 transition active:scale-95 cursor-pointer"
-                      >
-                        <WebIcon name="x" className="w-3.5 h-3.5" />
-                        <span>{isVi ? 'Dừng & Thu nhỏ' : 'Stop Intro'}</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Floating Stat Badges around video */}
-              {!isPlayingIntro && (
-                <>
-                  {ABOUT_PROFILE_STATS.map((stat: AboutProfileStat) => (
-                    <div
-                      key={stat.id}
-                      className={`absolute z-20 pointer-events-auto bg-white/95 dark:bg-slate-900/90 backdrop-blur-md border border-white/80 dark:border-white/20 p-2 sm:p-2.5 rounded-2xl shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2 sm:gap-2.5 max-w-[145px] sm:max-w-[190px] ${stat.positionClass}`}
-                    >
-                      <div 
-                        className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 shadow-inner"
-                        style={{ backgroundColor: `${stat.color}18`, color: stat.color }}
-                      >
-                        <WebIcon name={stat.iconName.toLowerCase()} className="w-4 h-4 sm:w-5 sm:h-5" />
-                      </div>
-                      <div className="flex flex-col min-w-0 text-left">
-                        <span className="text-[8.5px] sm:text-[9.5px] font-extrabold text-slate-500 dark:text-slate-400 truncate leading-none uppercase">
-                          {isVi ? stat.labelVi : stat.labelEn}
-                        </span>
-                        <div className="flex items-baseline gap-1 mt-0.5 sm:mt-1">
-                          <span className="text-sm sm:text-base font-black tracking-tight leading-none" style={{ color: stat.color }}>
-                            {stat.metric}
-                          </span>
-                          <span className="text-[8.5px] sm:text-[9.5px] font-bold tracking-wider" style={{ color: stat.color }}>
-                            {isVi ? stat.unitVi : stat.unitEn}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Bottom Left Video Intro Trigger Button */}
-                  <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-20 pointer-events-auto">
-                    <button
-                      type="button"
-                      onClick={handlePlayIntro}
-                      className="inline-flex items-center gap-2 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-black text-xs sm:text-sm shadow-[0_8px_30px_rgba(78,86,246,0.5)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
-                    >
-                      <span className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
-                        <WebIcon name="play" className="w-3.5 h-3.5 fill-current ml-0.5" />
-                      </span>
-                      <span>{isVi ? 'Xem Giới Thiệu Chân Dung' : 'Watch Portrait Video'}</span>
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Right Column: Contact & Demographics Card (5 columns out of 12) */}
-            <div 
-              className="lg:col-span-5 h-full p-3.5 sm:p-4 rounded-xl md:rounded-2xl transition-all duration-300 flex flex-col justify-start gap-3 min-w-0 border border-slate-100 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl text-left"
-            >
-              {/* Header with Title & Floating User Icon */}
-              <div className="w-full flex items-center justify-between gap-3 pb-2 border-b border-slate-200/80 dark:border-white/10 shrink-0">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-xl bg-blue-500/10 text-blue-600 dark:text-cyan-400 flex items-center justify-center">
-                    <WebIcon name="user" className="w-4 h-4" />
-                  </div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight font-play">
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 dark:from-blue-400 dark:via-indigo-300 dark:to-cyan-300">
-                      {isVi ? 'Thông tin cá nhân' : 'Personal Profile'}
-                    </span>
-                  </h3>
-                </div>
-              </div>
-
-              {/* Sub card 2-column grid for demographic info */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 flex-1 min-h-0">
-                {PERSONAL_DEMOGRAPHICS.map((item: PersonalInfoItem) => {
-                  if (item.type === 'map') {
-                    return (
-                      <div 
-                        key={item.id}
-                        onClick={() => {
-                          setSelectedMapLocation({
-                            isOpen: true,
-                            type: item.id === 'perm_address' ? 'cu_tru' : 'tam_tru',
-                            title: item.mapTitle || (isVi ? item.labelVi : item.labelEn),
-                            address: item.href || (isVi ? item.valueVi : item.valueEn),
-                            query: item.mapQuery || (isVi ? item.valueVi : item.valueEn)
-                          });
-                        }}
-                        className={`p-2 sm:p-2.5 rounded-xl border flex items-center justify-between transition-all min-w-0 group cursor-pointer shadow-2xs hover:scale-[1.02] ${item.colorTheme.bg} ${item.colorTheme.border}`}
-                        title={isVi ? `Xem Google Maps: ${item.href}` : 'View in Google Maps'}
-                      >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg border flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform ${item.colorTheme.iconBg} ${item.colorTheme.iconColor}`}>
-                            <WebIcon name={item.iconName.toLowerCase()} className="w-4 h-4" />
-                          </div>
-                          <div className="flex flex-col min-w-0">
-                            <span className={`text-[9.5px] font-bold tracking-wider flex items-center gap-1 truncate ${item.colorTheme.labelColor}`}>
-                              <span>{isVi ? item.labelVi : item.labelEn}</span>
-                              <span className="text-[8px] px-1 py-0.2 rounded bg-purple-500/20 text-purple-700 dark:text-purple-300 font-mono">Map 📍</span>
-                            </span>
-                            <span className={`text-[11px] sm:text-xs font-black truncate ${item.colorTheme.valueColor}`}>
-                              {isVi ? item.valueVi : item.valueEn}
-                            </span>
-                          </div>
-                        </div>
-                        <WebIcon name="chevronright" className={`w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform shrink-0 ml-1 ${item.colorTheme.arrowColor}`} />
-                      </div>
-                    );
-                  }
-
-                  if (item.type === 'email' || item.type === 'phone') {
-                    return (
-                      <a 
-                        key={item.id}
-                        href={item.href}
-                        className={`col-span-1 sm:col-span-2 p-2 sm:p-2.5 rounded-xl border flex items-center justify-between transition-all min-w-0 group hover:shadow-xs hover:scale-[1.01] ${item.colorTheme.bg} ${item.colorTheme.border}`}
-                      >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg border flex items-center justify-center shrink-0 shadow-2xs ${item.colorTheme.iconBg} ${item.colorTheme.iconColor}`}>
-                            <WebIcon name={item.iconName.toLowerCase()} className="w-4 h-4" />
-                          </div>
-                          <div className="flex flex-col min-w-0">
-                            <span className={`text-[9.5px] font-bold tracking-wider truncate ${item.colorTheme.labelColor}`}>
-                              {isVi ? item.labelVi : item.labelEn}
-                            </span>
-                            <span className={`text-[11px] sm:text-xs font-black truncate ${item.colorTheme.valueColor}`}>
-                              {isVi ? item.valueVi : item.valueEn}
-                            </span>
-                          </div>
-                        </div>
-                        <WebIcon name="arrowright" className={`w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform shrink-0 ml-1 ${item.colorTheme.arrowColor}`} />
-                      </a>
-                    );
-                  }
-
-                  // Default text items
-                  return (
-                    <div 
-                      key={item.id}
-                      className={`p-2 sm:p-2.5 rounded-xl border flex items-center justify-between transition-all min-w-0 group ${item.colorTheme.bg} ${item.colorTheme.border}`}
-                    >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg border flex items-center justify-center shrink-0 shadow-2xs ${item.colorTheme.iconBg} ${item.colorTheme.iconColor}`}>
-                          <WebIcon name={item.iconName.toLowerCase()} className="w-4 h-4" />
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className={`text-[9.5px] font-bold tracking-wider truncate ${item.colorTheme.labelColor}`}>
-                            {isVi ? item.labelVi : item.labelEn}
-                          </span>
-                          <span className={`text-[11px] sm:text-xs font-black truncate ${item.colorTheme.valueColor}`}>
-                            {isVi ? item.valueVi : item.valueEn}
-                          </span>
-                        </div>
-                      </div>
-                      <WebIcon name="chevronright" className={`w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform shrink-0 ml-1 ${item.colorTheme.arrowColor}`} />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
+          <div className="hidden sm:flex items-center gap-2 text-[11px] font-medium italic text-slate-500 dark:text-slate-400">
+            <WebIcon name="sparkles" className="w-3.5 h-3.5 text-amber-500" />
+            <span>{isVi ? '“Giá trị cốt lõi tạo nên trải nghiệm khác biệt”' : '“Core values create differentiated experiences”'}</span>
           </div>
         </div>
 
         {/* ========================================================================= */}
-        {/* 2. BA TRỤ CỘT VẬN HÀNH CHIẾN LƯỢC + GIÁ TRỊ CỐT LÕI & TRIẾT LÝ            */}
+        {/* 2. MAIN BENTO GRID: BỐ CỤC 12 CỘT TỐI ƯU HÓA SINGLE-SCREEN                */}
         {/* ========================================================================= */}
-        <div className="w-full flex flex-col gap-3.5 sm:gap-[15px]">
+        <div className="w-full flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-2.5 items-stretch">
           
-          {/* Hàng Trên: Ba trụ cột vận hành Card Box */}
-          <div 
-            className="w-full p-3.5 sm:p-[15px] flex flex-col gap-3 rounded-2xl md:rounded-[20px] bg-white/80 dark:bg-[#121218]/85 border border-white/80 dark:border-white/10 backdrop-blur-[20px] shadow-[0_8px_32px_0_rgba(31,38,135,0.08)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.5)] text-left"
-          >
-            {/* Header */}
-            <div 
-              onClick={() => handleNavigate('contact')}
-              className="flex items-center justify-between gap-3 pb-2.5 border-b border-slate-200/80 dark:border-white/10 cursor-pointer hover:opacity-85 select-none transition-all active:scale-[0.99]"
-              title={isVi ? 'Nhấp để chuyển sang trang Liên hệ' : 'Click to go to Contact page'}
-            >
-              <div className="flex items-center gap-2.5 sm:gap-3">
-                <div className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
-                  <WebIcon name="target" className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
-                </div>
-                <h2 className="text-base sm:text-lg lg:text-xl font-bold font-play bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-500 dark:from-indigo-400 dark:via-violet-300 dark:to-indigo-200">
-                  {isVi ? 'Ba trụ cột vận hành chiến lược' : 'Three strategic operational pillars'}
-                </h2>
+          {/* ======================================================================= */}
+          {/* BENTO TILE 1: VIDEO CHÂN DUNG & CHỈ SỐ VẬN HÀNH (4.5 COLS)              */}
+          {/* ======================================================================= */}
+          <div className="lg:col-span-5 xl:col-span-4 h-full relative overflow-hidden rounded-2xl border border-white/80 dark:border-white/10 bg-slate-950 shadow-md flex flex-col justify-between group min-h-[280px] lg:min-h-0">
+            {/* The Video Element */}
+            <video
+              ref={videoRef}
+              src={isPlayingIntro ? ABOUT_INTRO_VIDEO_URL : ABOUT_IDLE_VIDEO_URL}
+              className="w-full h-full object-cover object-center absolute inset-0 brightness-105"
+              autoPlay
+              loop={!isPlayingIntro}
+              muted={isVideoMuted}
+              playsInline
+              onTimeUpdate={handleTimeUpdate}
+              onEnded={handleVideoEnded}
+            />
+
+            {/* Subtle Gradient vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/35 pointer-events-none" />
+
+            {/* Top Bar inside Video: Live Badge */}
+            <div className="relative z-20 flex items-center justify-between p-2.5">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/50 border border-white/20 text-white text-[9.5px] font-bold tracking-wide backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>{isPlayingIntro ? (isVi ? 'Đang phát Giới thiệu' : 'Playing Intro') : (isVi ? 'Video Chân Dung' : 'Portrait Feed')}</span>
               </div>
-              <WebIcon name="chevronright" className="w-4 h-4 text-indigo-500" />
+
+              {!isPlayingIntro && (
+                <button
+                  type="button"
+                  onClick={handlePlayIntro}
+                  className="px-2.5 py-1 rounded-full bg-blue-600/90 hover:bg-blue-600 text-white font-bold text-[10px] flex items-center gap-1 backdrop-blur-md transition shadow-xs hover:scale-105 active:scale-95 cursor-pointer"
+                >
+                  <WebIcon name="play" className="w-3 h-3 fill-current ml-0.5" />
+                  <span>{isVi ? 'Xem Giới Thiệu' : 'Watch Intro'}</span>
+                </button>
+              )}
             </div>
 
-            {/* Grid 3 Pillars (Blue, Pink/Purple, Green) */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-              
-              {/* Trụ cột 1: Hiệu quả (Xanh biển) */}
-              <div 
-                className="bg-gradient-to-b from-[#1E82FF] to-[#125CE6] border border-blue-400/20 text-white p-4 sm:p-5 rounded-2xl flex flex-col items-center text-center justify-between min-h-[220px] shadow-sm relative overflow-hidden group hover:-translate-y-1 transition-all duration-300"
-              >
-                {/* Top Double Ring Icon */}
-                <div className="w-11 h-11 rounded-full border border-white/20 bg-white/10 flex items-center justify-center relative shadow-xs">
-                  <div className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center">
-                    <WebIcon name="messagesquare" className="w-4 h-4 text-white" />
-                  </div>
+            {/* Video Story Overlay when playing intro */}
+            {isPlayingIntro && (
+              <div className="absolute inset-0 z-30 flex flex-col justify-between p-3 bg-black/50 backdrop-blur-xs text-white">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono uppercase text-cyan-300 font-bold">
+                    {formatVideoTime(videoCurrentTime)} / {formatVideoTime(videoDuration)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleCancelIntro}
+                    className="p-1 rounded-full bg-white/20 hover:bg-white/30 text-white cursor-pointer"
+                  >
+                    <WebIcon name="x" className="w-3.5 h-3.5" />
+                  </button>
                 </div>
 
-                {/* Text Content */}
-                <div className="my-2.5 space-y-1 flex-1 flex flex-col justify-center">
-                  <h5 className="text-xs sm:text-sm font-black tracking-wider uppercase font-play">
-                    01. HIỆU QUẢ
-                  </h5>
-                  <p className="text-[10px] text-blue-100 font-extrabold uppercase tracking-wide">
-                    {isVi ? 'Tối ưu & Kết quả' : 'Optimization & Results'}
-                  </p>
-                  <p className="text-[11px] sm:text-xs text-white/95 leading-relaxed font-semibold pt-1">
-                    {isVi ? 'Tối ưu hiệu suất, tạo kết quả đo lường được.' : 'Optimizing performance, delivering measurable results.'}
-                  </p>
-                </div>
-
-                {/* Bottom Double Ring Icon */}
-                <div className="w-9 h-9 rounded-full border border-white/20 bg-white/10 flex items-center justify-center relative shadow-xs shrink-0">
-                  <div className="w-7 h-7 rounded-full border border-white/15 flex items-center justify-center">
-                    <WebIcon name="chart" className="w-3.5 h-3.5 text-white" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Trụ cột 2: Nhân văn (Hồng tím) */}
-              <div 
-                className="bg-gradient-to-b from-[#FF568A] to-[#A838F5] border border-pink-400/20 text-white p-4 sm:p-5 rounded-2xl flex flex-col items-center text-center justify-between min-h-[220px] shadow-sm relative overflow-hidden group hover:-translate-y-1 transition-all duration-300"
-              >
-                {/* Top Double Ring Icon */}
-                <div className="w-11 h-11 rounded-full border border-white/20 bg-white/10 flex items-center justify-center relative shadow-xs">
-                  <div className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center">
-                    <WebIcon name="heart" className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-
-                {/* Text Content */}
-                <div className="my-2.5 space-y-1 flex-1 flex flex-col justify-center">
-                  <h5 className="text-xs sm:text-sm font-black tracking-wider uppercase font-play">
-                    02. NHÂN VĂN
-                  </h5>
-                  <p className="text-[10px] text-pink-100 font-extrabold uppercase tracking-wide">
-                    {isVi ? 'Đồng cảm & Thấu hiểu' : 'Empathy & Understanding'}
-                  </p>
-                  <p className="text-[11px] sm:text-xs text-white/95 leading-relaxed font-semibold pt-1">
-                    {isVi ? 'Lắng nghe, thấu hiểu và đặt con người làm trung tâm.' : 'Listening, empathizing, and placing humans at the center.'}
-                  </p>
-                </div>
-
-                {/* Bottom Double Ring Icon */}
-                <div className="w-9 h-9 rounded-full border border-white/20 bg-white/10 flex items-center justify-center relative shadow-xs shrink-0">
-                  <div className="w-7 h-7 rounded-full border border-white/15 flex items-center justify-center">
-                    <WebIcon name="users" className="w-3.5 h-3.5 text-white" />
+                <div className="space-y-1.5 bg-black/75 p-2 rounded-xl border border-white/20 backdrop-blur-md">
+                  <input
+                    type="range"
+                    min="0"
+                    max={videoDuration || 210}
+                    step="0.1"
+                    value={videoCurrentTime}
+                    onChange={(e) => handleSeek(parseFloat(e.target.value))}
+                    className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                  />
+                  <div className="flex items-center justify-between text-xs">
+                    <button
+                      type="button"
+                      onClick={togglePlayPause}
+                      className="px-2 py-0.5 rounded bg-cyan-500 text-white font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                    >
+                      <WebIcon name={isVideoPaused ? 'play' : 'pause'} className="w-3 h-3" />
+                      <span>{isVideoPaused ? 'Tiếp' : 'Dừng'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={toggleVideoMute}
+                      className="px-2 py-0.5 rounded bg-white/20 text-white font-bold text-[10px] flex items-center gap-1 cursor-pointer"
+                    >
+                      <WebIcon name="headset" className="w-3 h-3" />
+                      <span>{isVideoMuted ? 'Bật tiếng' : 'Tắt tiếng'}</span>
+                    </button>
                   </div>
                 </div>
               </div>
+            )}
 
-              {/* Trụ cột 3: Bền vững (Xanh lá) */}
-              <div 
-                className="bg-gradient-to-b from-[#0FC271] to-[#109B53] border border-emerald-400/20 text-white p-4 sm:p-5 rounded-2xl flex flex-col items-center text-center justify-between min-h-[220px] shadow-sm relative overflow-hidden group hover:-translate-y-1 transition-all duration-300"
-              >
-                {/* Top Double Ring Icon */}
-                <div className="w-11 h-11 rounded-full border border-white/20 bg-white/10 flex items-center justify-center relative shadow-xs">
-                  <div className="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center">
-                    <WebIcon name="trend-up" className="w-4 h-4 text-white" />
+            {/* 4 Floating Glass Stat Badges (Bento Micro Capsules) */}
+            {!isPlayingIntro && (
+              <div className="relative z-20 grid grid-cols-2 gap-1.5 p-2.5">
+                {ABOUT_PROFILE_STATS.map((stat: AboutProfileStat) => (
+                  <div
+                    key={stat.id}
+                    className="bg-slate-900/85 hover:bg-slate-900/95 border border-white/20 p-1.5 px-2 rounded-xl backdrop-blur-md flex items-center gap-1.5 shadow-sm transition-transform hover:scale-[1.03]"
+                  >
+                    <div 
+                      className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 shadow-inner"
+                      style={{ backgroundColor: `${stat.color}25`, color: stat.color }}
+                    >
+                      <WebIcon name={stat.iconName.toLowerCase()} className="w-3.5 h-3.5" />
+                    </div>
+                    <div className="flex flex-col min-w-0 text-left">
+                      <span className="text-[8px] font-bold text-slate-300 truncate leading-none uppercase">
+                        {isVi ? stat.labelVi : stat.labelEn}
+                      </span>
+                      <div className="flex items-baseline gap-0.5 mt-0.5">
+                        <span className="text-xs font-black tracking-tight leading-none" style={{ color: stat.color }}>
+                          {stat.metric}
+                        </span>
+                        <span className="text-[8px] font-bold" style={{ color: stat.color }}>
+                          {isVi ? stat.unitVi : stat.unitEn}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-
-                {/* Text Content */}
-                <div className="my-2.5 space-y-1 flex-1 flex flex-col justify-center">
-                  <h5 className="text-xs sm:text-sm font-black tracking-wider uppercase font-play">
-                    03. BỀN VỮNG
-                  </h5>
-                  <p className="text-[10px] text-emerald-100 font-extrabold uppercase tracking-wide">
-                    {isVi ? 'Giá trị & Tin cậy' : 'Value & Trust'}
-                  </p>
-                  <p className="text-[11px] sm:text-xs text-white/95 leading-relaxed font-semibold pt-1">
-                    {isVi ? 'Xây dựng niềm tin và giá trị bền vững.' : 'Building enduring trust and sustainable lifetime value.'}
-                  </p>
-                </div>
-
-                {/* Bottom Double Ring Icon */}
-                <div className="w-9 h-9 rounded-full border border-white/20 bg-white/10 flex items-center justify-center relative shadow-xs shrink-0">
-                  <div className="w-7 h-7 rounded-full border border-white/15 flex items-center justify-center">
-                    <WebIcon name="globe" className="w-3.5 h-3.5 text-white" />
-                  </div>
-                </div>
+                ))}
               </div>
-
-            </div>
+            )}
           </div>
 
-          {/* Hàng Dưới: Giá trị cốt lõi & Triết lý và tầm nhìn */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
+          {/* ======================================================================= */}
+          {/* BENTO RIGHT AREA (7.5 COLS): NHÂN KHẨU HỌC, TRỤ CỘT & TRIẾT LÝ           */}
+          {/* ======================================================================= */}
+          <div className="lg:col-span-7 xl:col-span-8 flex flex-col justify-between gap-2 sm:gap-2.5 h-full min-h-0">
             
-            {/* Card Trái: Giá trị cốt lõi */}
-            <div 
-              className="p-4 sm:p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden border text-left bg-[#FFF9F2] dark:bg-[#201712] border-orange-200/60 dark:border-orange-950/40 min-h-[180px]"
-            >
-              <div className="space-y-2.5 flex-grow mb-4">
-                {/* Title Row */}
-                <div className="flex items-center gap-2 pb-2 border-b border-orange-200/30 dark:border-orange-950/20">
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center bg-orange-500/10 text-orange-500 shrink-0">
-                    <WebIcon name="sparkles" className="w-3.5 h-3.5" />
-                  </div>
-                  <h5 className="text-xs sm:text-sm font-extrabold text-orange-950 dark:text-orange-200 font-play">
-                    {isVi ? 'Giá trị cốt lõi' : 'Core values'}
-                  </h5>
+            {/* TILE 2.1: THÔNG TIN CÁ NHÂN (GRID 4x2 COMPACT CAPSULES) */}
+            <div className="p-2.5 sm:p-3 rounded-2xl bg-white/80 dark:bg-[#121218]/85 border border-white/80 dark:border-white/10 backdrop-blur-xl shadow-xs flex flex-col justify-between gap-1.5 shrink-0">
+              <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-1.5">
+                  <WebIcon name="user" className="w-3.5 h-3.5 text-blue-600 dark:text-cyan-400" />
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-800 dark:text-white">
+                    {isVi ? 'Thông tin cá nhân & Nhân khẩu học' : 'Personal Profile & Demographics'}
+                  </span>
                 </div>
-                
-                {/* Content Paragraph */}
-                <p className="text-xs sm:text-[13px] text-slate-800 dark:text-slate-300 font-medium leading-relaxed">
-                  {isVi ? (
-                    <>
-                      Tôi tin rằng sự hài lòng không đến từ sự hoàn hảo tuyệt đối, mà đến từ{' '}
-                      <span className="font-extrabold text-[#D95F1A] dark:text-orange-400 underline decoration-orange-500/35 decoration-2 underline-offset-2">
-                        sự tận tâm kịp thời
-                      </span>{' '}
-                      và{' '}
-                      <span className="font-extrabold text-[#D95F1A] dark:text-orange-400 underline decoration-orange-500/35 decoration-2 underline-offset-2">
-                        đồng cảm chân thành
-                      </span>
-                      .
-                    </>
-                  ) : (
-                    <>
-                      I believe satisfaction comes not from absolute perfection, but from{' '}
-                      <span className="font-extrabold text-[#D95F1A] dark:text-orange-400 underline decoration-orange-500/35 decoration-2 underline-offset-2">
-                        timely dedication
-                      </span>{' '}
-                      and{' '}
-                      <span className="font-extrabold text-[#D95F1A] dark:text-orange-400 underline decoration-orange-500/35 decoration-2 underline-offset-2">
-                        sincere empathy
-                      </span>
-                      .
-                    </>
-                  )}
-                </p>
+                <span className="text-[9.5px] font-mono text-slate-400 dark:text-slate-500">22/06/1984 • 40 Tuổi</span>
               </div>
 
-              {/* Hand-written cursive signature at bottom right */}
-              <div className="self-end mr-1">
-                <span className="font-handwriting text-amber-700 dark:text-amber-400 text-base sm:text-lg select-none transform -rotate-1 block leading-none font-bold">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                {/* 1. Giới tính */}
+                <div className="p-1.5 px-2 rounded-lg bg-blue-50/70 dark:bg-slate-800/60 border border-blue-100 dark:border-slate-700/60 flex items-center gap-1.5">
+                  <div className="w-5 h-5 rounded-md bg-blue-500/15 text-blue-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
+                    <WebIcon name="user" className="w-3 h-3" />
+                  </div>
+                  <div className="min-w-0 text-left">
+                    <span className="text-[8px] font-bold text-slate-400 block leading-none">{isVi ? 'Giới tính' : 'Gender'}</span>
+                    <span className="text-[10.5px] font-black text-slate-800 dark:text-white truncate block">{isVi ? 'Nam giới' : 'Male'}</span>
+                  </div>
+                </div>
+
+                {/* 2. Dân tộc */}
+                <div className="p-1.5 px-2 rounded-lg bg-purple-50/70 dark:bg-slate-800/60 border border-purple-100 dark:border-slate-700/60 flex items-center gap-1.5">
+                  <div className="w-5 h-5 rounded-md bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                    <WebIcon name="users" className="w-3 h-3" />
+                  </div>
+                  <div className="min-w-0 text-left">
+                    <span className="text-[8px] font-bold text-slate-400 block leading-none">{isVi ? 'Dân tộc' : 'Ethnicity'}</span>
+                    <span className="text-[10.5px] font-black text-slate-800 dark:text-white truncate block">{isVi ? 'Kinh' : 'Vietnamese'}</span>
+                  </div>
+                </div>
+
+                {/* 3. Tình trạng */}
+                <div className="p-1.5 px-2 rounded-lg bg-rose-50/70 dark:bg-slate-800/60 border border-rose-100 dark:border-slate-700/60 flex items-center gap-1.5">
+                  <div className="w-5 h-5 rounded-md bg-rose-500/15 text-rose-500 flex items-center justify-center shrink-0">
+                    <WebIcon name="heart" className="w-3 h-3" />
+                  </div>
+                  <div className="min-w-0 text-left">
+                    <span className="text-[8px] font-bold text-slate-400 block leading-none">{isVi ? 'Tình trạng' : 'Marital'}</span>
+                    <span className="text-[10.5px] font-black text-rose-600 dark:text-rose-400 truncate block">{isVi ? 'Độc thân' : 'Single'}</span>
+                  </div>
+                </div>
+
+                {/* 4. Sinh nhật */}
+                <div className="p-1.5 px-2 rounded-lg bg-amber-50/70 dark:bg-slate-800/60 border border-amber-100 dark:border-slate-700/60 flex items-center gap-1.5">
+                  <div className="w-5 h-5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                    <WebIcon name="calendar" className="w-3 h-3" />
+                  </div>
+                  <div className="min-w-0 text-left">
+                    <span className="text-[8px] font-bold text-slate-400 block leading-none">{isVi ? 'Sinh nhật' : 'Birthday'}</span>
+                    <span className="text-[10.5px] font-black text-slate-800 dark:text-white truncate block">22/06/1984</span>
+                  </div>
+                </div>
+
+                {/* 5. Tạm trú (Map trigger) */}
+                <div 
+                  onClick={() => setSelectedMapLocation({
+                    isOpen: true,
+                    type: 'tam_tru',
+                    title: isVi ? 'Địa Chỉ Tạm Trú' : 'Current Residence',
+                    address: 'Quận 7, TP. Hồ Chí Minh',
+                    query: 'Quận 7, Thành phố Hồ Chí Minh, Việt Nam'
+                  })}
+                  className="p-1.5 px-2 rounded-lg bg-violet-50/70 dark:bg-slate-800/60 border border-violet-200/70 dark:border-slate-700/60 hover:border-violet-400 transition flex items-center justify-between cursor-pointer group shadow-2xs"
+                  title="Mở Google Maps"
+                >
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="w-5 h-5 rounded-md bg-violet-500/15 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0">
+                      <WebIcon name="location" className="w-3 h-3" />
+                    </div>
+                    <div className="min-w-0 text-left">
+                      <span className="text-[8px] font-bold text-violet-600 dark:text-violet-400 block leading-none flex items-center gap-0.5">
+                        <span>{isVi ? 'Tạm trú' : 'Current'}</span>
+                        <span className="text-[7.5px] text-violet-500 font-mono">📍</span>
+                      </span>
+                      <span className="text-[10px] font-black text-slate-800 dark:text-white truncate block">Q7, TP.HCM</span>
+                    </div>
+                  </div>
+                  <WebIcon name="chevronright" className="w-3 h-3 text-violet-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                </div>
+
+                {/* 6. Cư trú (Map trigger) */}
+                <div 
+                  onClick={() => setSelectedMapLocation({
+                    isOpen: true,
+                    type: 'cu_tru',
+                    title: isVi ? 'Địa Chỉ Cư Trú Thường Trú' : 'Permanent Residence',
+                    address: 'TP. Mỹ Tho, Tiền Giang',
+                    query: 'Mỹ Tho, Tiền Giang, Việt Nam'
+                  })}
+                  className="p-1.5 px-2 rounded-lg bg-emerald-50/70 dark:bg-slate-800/60 border border-emerald-200/70 dark:border-slate-700/60 hover:border-emerald-400 transition flex items-center justify-between cursor-pointer group shadow-2xs"
+                  title="Mở Google Maps"
+                >
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="w-5 h-5 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                      <WebIcon name="home" className="w-3 h-3" />
+                    </div>
+                    <div className="min-w-0 text-left">
+                      <span className="text-[8px] font-bold text-emerald-600 dark:text-emerald-400 block leading-none flex items-center gap-0.5">
+                        <span>{isVi ? 'Cư trú' : 'Permanent'}</span>
+                        <span className="text-[7.5px] text-emerald-500 font-mono">📍</span>
+                      </span>
+                      <span className="text-[10px] font-black text-slate-800 dark:text-white truncate block">Mỹ Tho, TG</span>
+                    </div>
+                  </div>
+                  <WebIcon name="chevronright" className="w-3 h-3 text-emerald-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                </div>
+
+                {/* 7. Email Direct Link (2 cols span) */}
+                <a 
+                  href="mailto:hungthai848@gmail.com"
+                  className="col-span-2 p-1.5 px-2 rounded-lg bg-sky-50/70 dark:bg-slate-800/60 border border-sky-200/70 dark:border-slate-700/60 hover:border-sky-400 transition flex items-center justify-between group shadow-2xs"
+                >
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="w-5 h-5 rounded-md bg-sky-500/15 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                      <WebIcon name="mail" className="w-3 h-3" />
+                    </div>
+                    <div className="min-w-0 text-left">
+                      <span className="text-[8px] font-bold text-sky-600 dark:text-sky-400 block leading-none">EMAIL DIRECT</span>
+                      <span className="text-[10.5px] font-black text-sky-700 dark:text-cyan-300 truncate block">hungthai848@gmail.com</span>
+                    </div>
+                  </div>
+                  <WebIcon name="arrowright" className="w-3 h-3 text-sky-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                </a>
+              </div>
+            </div>
+
+            {/* TILE 2.2: BA TRỤ CỘT VẬN HÀNH CHIẾN LƯỢC (3 BENTO PILLARS) */}
+            <div className="flex-1 min-h-0 flex flex-col justify-between gap-1">
+              <div className="flex items-center gap-1.5 px-1 shrink-0">
+                <WebIcon name="target" className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
+                <h4 className="text-[10.5px] sm:text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-white">
+                  {isVi ? 'Ba Trụ Cột Vận Hành Chiến Lược' : 'Three Strategic Operational Pillars'}
+                </h4>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-1 min-h-0">
+                {/* Trụ Cột 1: Hiệu Quả */}
+                <div className="rounded-xl p-2.5 bg-gradient-to-b from-[#1E82FF] to-[#125CE6] text-white shadow-xs flex flex-col justify-between text-left group hover:scale-[1.02] transition-transform">
+                  <div className="flex items-center justify-between">
+                    <div className="w-6 h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
+                      <WebIcon name="messagesquare" className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-blue-100">01</span>
+                  </div>
+                  <div className="my-1">
+                    <h5 className="text-[11px] sm:text-xs font-black uppercase tracking-wide font-play leading-tight">
+                      {isVi ? 'HIỆU QUẢ' : 'EFFICIENCY'}
+                    </h5>
+                    <span className="text-[9px] font-bold text-blue-100 block">{isVi ? 'Tối ưu & Kết quả' : 'Optimal Results'}</span>
+                    <p className="text-[9.5px] sm:text-[10px] text-white/90 leading-snug mt-1 font-medium line-clamp-2">
+                      {isVi ? 'Tối ưu hiệu suất, tạo kết quả đo lường được.' : 'Optimizing performance, delivering measurable outcomes.'}
+                    </p>
+                  </div>
+                  <div className="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center self-end">
+                    <WebIcon name="chart" className="w-3 h-3 text-white" />
+                  </div>
+                </div>
+
+                {/* Trụ Cột 2: Nhân Văn */}
+                <div className="rounded-xl p-2.5 bg-gradient-to-b from-[#FF568A] to-[#A838F5] text-white shadow-xs flex flex-col justify-between text-left group hover:scale-[1.02] transition-transform">
+                  <div className="flex items-center justify-between">
+                    <div className="w-6 h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
+                      <WebIcon name="heart" className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-rose-100">02</span>
+                  </div>
+                  <div className="my-1">
+                    <h5 className="text-[11px] sm:text-xs font-black uppercase tracking-wide font-play leading-tight">
+                      {isVi ? 'NHÂN VĂN' : 'HUMANITY'}
+                    </h5>
+                    <span className="text-[9px] font-bold text-pink-100 block">{isVi ? 'Đồng cảm & Thấu hiểu' : 'Empathy & Care'}</span>
+                    <p className="text-[9.5px] sm:text-[10px] text-white/90 leading-snug mt-1 font-medium line-clamp-2">
+                      {isVi ? 'Lắng nghe, thấu hiểu và đặt con người làm trung tâm.' : 'Listening, empathizing and placing humans at center.'}
+                    </p>
+                  </div>
+                  <div className="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center self-end">
+                    <WebIcon name="users" className="w-3 h-3 text-white" />
+                  </div>
+                </div>
+
+                {/* Trụ Cột 3: Bền Vững */}
+                <div className="rounded-xl p-2.5 bg-gradient-to-b from-[#0FC271] to-[#109B53] text-white shadow-xs flex flex-col justify-between text-left group hover:scale-[1.02] transition-transform">
+                  <div className="flex items-center justify-between">
+                    <div className="w-6 h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
+                      <WebIcon name="trend-up" className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-emerald-100">03</span>
+                  </div>
+                  <div className="my-1">
+                    <h5 className="text-[11px] sm:text-xs font-black uppercase tracking-wide font-play leading-tight">
+                      {isVi ? 'BỀN VỮNG' : 'SUSTAINABLE'}
+                    </h5>
+                    <span className="text-[9px] font-bold text-emerald-100 block">{isVi ? 'Giá trị & Tin cậy' : 'Value & Trust'}</span>
+                    <p className="text-[9.5px] sm:text-[10px] text-white/90 leading-snug mt-1 font-medium line-clamp-2">
+                      {isVi ? 'Xây dựng niềm tin và giá trị bền vững.' : 'Building enduring trust and long-term lifetime value.'}
+                    </p>
+                  </div>
+                  <div className="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center self-end">
+                    <WebIcon name="globe" className="w-3 h-3 text-white" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* TILE 2.3: GIÁ TRỊ CỐT LÕI & TRIẾT LÝ VẬN HÀNH (2 CARDS 50/50) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 items-stretch shrink-0">
+              {/* Card 1: Giá trị cốt lõi */}
+              <div className="p-2 sm:p-2.5 rounded-xl bg-[#FFF9F2] dark:bg-[#201712] border border-orange-200/80 dark:border-orange-950/40 flex flex-col justify-between text-left shadow-2xs">
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <WebIcon name="sparkles" className="w-3.5 h-3.5 text-orange-500" />
+                    <h5 className="text-[10.5px] font-black text-orange-950 dark:text-orange-200 uppercase font-play">
+                      {isVi ? 'Giá trị cốt lõi' : 'Core Values'}
+                    </h5>
+                  </div>
+                  <p className="text-[10px] text-slate-700 dark:text-slate-300 font-medium leading-snug">
+                    {isVi ? (
+                      <>
+                        Sự hài lòng đến từ{' '}
+                        <strong className="text-[#D95F1A] dark:text-orange-400 font-bold">
+                          sự tận tâm kịp thời
+                        </strong>{' '}
+                        và{' '}
+                        <strong className="text-[#D95F1A] dark:text-orange-400 font-bold">
+                          đồng cảm chân thành
+                        </strong>.
+                      </>
+                    ) : (
+                      <>
+                        Satisfaction comes from{' '}
+                        <strong className="text-[#D95F1A] dark:text-orange-400 font-bold">
+                          timely dedication
+                        </strong>{' '}
+                        and{' '}
+                        <strong className="text-[#D95F1A] dark:text-orange-400 font-bold">
+                          sincere empathy
+                        </strong>.
+                      </>
+                    )}
+                  </p>
+                </div>
+                <span className="font-handwriting text-amber-700 dark:text-amber-400 text-xs sm:text-[13px] font-bold self-end mt-0.5">
                   Khách hàng là trọng tâm ♡
                 </span>
               </div>
-            </div>
 
-            {/* Card Phải: Triết lý và tầm nhìn */}
-            <div 
-              className="p-4 sm:p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden border text-left bg-[#F2F7FF] dark:bg-[#121B2D] border-blue-200/60 dark:border-blue-950/40 min-h-[180px]"
-            >
-              <div className="space-y-2.5">
-                {/* Title Row */}
-                <div className="flex items-center gap-2 pb-2 border-b border-blue-200/30 dark:border-blue-950/20">
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center bg-blue-600/10 text-blue-600 dark:bg-cyan-500/10 dark:text-cyan-400 shrink-0">
-                    <WebIcon name="users" className="w-3.5 h-3.5" />
+              {/* Card 2: Triết lý và tầm nhìn */}
+              <div className="p-2 sm:p-2.5 rounded-xl bg-[#F2F7FF] dark:bg-[#121B2D] border border-blue-200/80 dark:border-blue-950/40 flex flex-col justify-between text-left shadow-2xs">
+                <div>
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <WebIcon name="users" className="w-3.5 h-3.5 text-blue-600 dark:text-cyan-400" />
+                    <h5 className="text-[10.5px] font-black text-blue-950 dark:text-cyan-200 uppercase font-play">
+                      {isVi ? 'Triết lý & Tầm nhìn' : 'Philosophy & Vision'}
+                    </h5>
                   </div>
-                  <h5 className="text-xs sm:text-sm font-extrabold text-blue-950 dark:text-cyan-200 font-play">
-                    {isVi ? 'Triết lý và tầm nhìn' : 'Philosophy & vision'}
-                  </h5>
-                </div>
-                
-                {/* Centered Quotation Phrase */}
-                <div className="relative text-center py-2 px-2 rounded-xl bg-blue-100/30 dark:bg-blue-900/20 border border-blue-200/30">
-                  <h4 className="text-xs sm:text-[13px] font-black italic text-blue-700 dark:text-cyan-300 leading-snug tracking-wide">
+                  <h6 className="text-[10px] font-black italic text-blue-700 dark:text-cyan-300 leading-tight mb-0.5">
                     “Tận Tâm & Đồng Hành Cùng Trải Nghiệm Khách Hàng”
-                  </h4>
+                  </h6>
+                  <p className="text-[9.5px] text-slate-600 dark:text-slate-300 font-medium leading-snug line-clamp-2">
+                    {isVi 
+                      ? 'Dịch vụ chất lượng cao, chi phí hợp lý để mỗi khách hàng cảm nhận được họ luôn được lắng nghe.'
+                      : 'Delivering exceptional services so every customer feels genuinely heard and valued.'}
+                  </p>
                 </div>
-
-                {/* Core Vision Description */}
-                <p className="text-[11px] sm:text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                  {isVi 
-                    ? 'Tôi luôn nỗ lực để mang lại sản phẩm, dịch vụ chất lượng cao với chi phí hợp lý. Và trên hết, để mỗi khách hàng cảm nhận được một điều đơn giản mà cốt lõi: Họ luôn được lắng nghe.'
-                    : 'I always strive to deliver high-quality products and services at reasonable costs. And above all, so that every customer feels one simple yet core truth: They are always listened to.'}
-                </p>
               </div>
             </div>
 
           </div>
-
         </div>
 
         {/* ========================================================================= */}
-        {/* 3. BOTTOM CTA COLLABORATION BANNER                                         */}
+        {/* 3. BOTTOM BENTO STRIP: BANNER HỢP TÁC & CTA ACTION (SHRINK-0)              */}
         {/* ========================================================================= */}
-        <div 
-          className="w-full relative overflow-hidden p-3.5 sm:p-4 rounded-2xl md:rounded-[20px] flex flex-col lg:flex-row items-center justify-between gap-4 border border-white/80 dark:border-white/10 bg-white/80 dark:bg-[#121218]/85 backdrop-blur-[20px] shadow-[0_8px_32px_0_rgba(31,38,135,0.08)] text-left group"
-        >
-          {/* Ambient glow decoration */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-rose-500 rounded-3xl blur-xl opacity-10 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none" />
-          
-          {/* Left Portion: Icon + Badge + Title + Subtitle */}
-          <div className="relative z-10 flex items-center gap-3.5 sm:gap-4 flex-1 min-w-0">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-blue-500/30 dark:border-cyan-400/30 bg-blue-500/10 dark:bg-cyan-500/20 backdrop-blur-md flex items-center justify-center text-blue-600 dark:text-cyan-300 shrink-0 shadow-[0_0_15px_rgba(37,99,235,0.15)] group-hover:scale-110 transition-transform duration-300">
-              <WebIcon name="send" className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-cyan-300" />
+        <div className="w-full px-3 py-2 rounded-xl bg-gradient-to-r from-blue-50/90 via-indigo-50/90 to-purple-50/90 dark:from-slate-900/90 dark:via-slate-800/90 dark:to-slate-900/90 border border-blue-200/70 dark:border-white/10 shadow-xs flex items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <WebIcon name="send" className="w-3.5 h-3.5" />
             </div>
-
-            <div className="flex flex-col min-w-0 text-left">
-              {/* Top Pill */}
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/10 dark:bg-cyan-500/20 border border-blue-500/20 dark:border-cyan-400/30 text-blue-700 dark:text-cyan-200 text-[9.5px] font-bold tracking-wider mb-1.5 self-start uppercase font-mono">
-                <WebIcon name="sparkles" className="w-3 h-3 text-blue-600 dark:text-cyan-300" />
-                <span>{isVi ? 'Hợp tác & Đồng hành' : 'Collaboration & Partnership'}</span>
+            <div className="min-w-0 text-left">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-blue-600 dark:text-cyan-400 bg-blue-100/70 dark:bg-blue-950/60 px-1.5 py-0.2 rounded font-mono">
+                  {isVi ? 'Hợp tác' : 'Partnership'}
+                </span>
+                <h4 className="text-xs sm:text-[13px] font-black text-slate-900 dark:text-white truncate font-play">
+                  {isVi ? 'Cùng tạo ra trải nghiệm khách hàng vượt trội & bền vững' : "Let's architect exceptional customer experiences"}
+                </h4>
               </div>
-
-              {/* Title and subtitle */}
-              <h3 className="text-sm sm:text-base md:text-lg font-black tracking-tight text-blue-950 dark:text-white leading-tight font-play">
-                {isVi ? 'Cùng tạo ra trải nghiệm khách hàng tốt hơn' : "Let's shape better customer experiences"}
-              </h3>
-              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-300 mt-1 max-w-2xl font-medium">
-                {isVi 
-                  ? 'Tôi luôn sẵn sàng kết nối để cùng doanh nghiệp xây dựng hệ thống Customer Experience hiệu quả, nhân văn và bền vững.'
-                  : 'Always ready to partner with forward-thinking enterprises to architect sustainable, human-centric CX ecosystems.'}
+              <p className="text-[9.5px] sm:text-[10px] text-slate-500 dark:text-slate-400 truncate hidden sm:block">
+                {isVi ? 'Sẵn sàng đồng hành cùng doanh nghiệp tối ưu hóa hệ thống CX, Contact Center và AI.' : 'Ready to partner with enterprises to optimize CX, Contact Center & AI systems.'}
               </p>
             </div>
           </div>
 
-          {/* Right Portion: Connect button */}
-          <div className="relative z-10 flex items-center shrink-0 lg:ml-auto">
-            <button
-              type="button"
-              onClick={() => handleNavigate('contact')}
-              className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-gradient-to-r from-orange-500 via-rose-500 to-amber-500 hover:brightness-105 hover:shadow-[0_8px_30px_rgba(244,63,94,0.3)] transition-all flex items-center gap-3 active:scale-95 cursor-pointer text-left border border-white/20 shadow-md group/btn shrink-0"
-            >
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0 shadow-inner">
-                <WebIcon name="messagesquare" className="w-4 h-4 text-white" />
-              </div>
-
-              <div className="flex flex-col pr-1 min-w-0">
-                <span className="text-xs sm:text-sm font-black text-white leading-none tracking-wide whitespace-nowrap uppercase font-play">
-                  {isVi ? 'Kết nối với tôi' : 'Connect with me'}
-                </span>
-                <span className="text-[9px] sm:text-[10px] text-white/80 font-bold leading-none whitespace-nowrap mt-1">
-                  {isVi ? 'Trao đổi, chia sẻ cơ hội hợp tác' : 'Explore partnership options'}
-                </span>
-              </div>
-
-              <div className="w-6 h-6 rounded-full bg-white text-orange-600 flex items-center justify-center shrink-0 shadow-md group-hover/btn:translate-x-1 transition-transform">
-                <WebIcon name="chevronright" className="w-3.5 h-3.5" />
-              </div>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => handleNavigate('contact')}
+            className="px-3 py-1.5 rounded-full bg-gradient-to-r from-orange-500 via-rose-500 to-amber-500 hover:brightness-105 active:scale-95 text-white font-extrabold text-[11px] flex items-center gap-1.5 transition shadow-xs cursor-pointer shrink-0"
+          >
+            <span>{isVi ? 'Kết nối với tôi' : 'Connect with me'}</span>
+            <WebIcon name="chevronright" className="w-3 h-3 stroke-[3]" />
+          </button>
         </div>
 
       </div>
@@ -693,21 +598,21 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
 
           {/* Modal Card */}
           <div 
-            className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 p-4 sm:p-6 rounded-2xl shadow-2xl z-10 flex flex-col gap-3.5 text-slate-800 dark:text-slate-100 font-play overflow-hidden"
+            className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 p-4 sm:p-5 rounded-2xl shadow-2xl z-10 flex flex-col gap-3 text-slate-800 dark:text-slate-100 font-play overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-white/10">
-              <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-md ${
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-white/10">
+              <div className="flex items-center gap-2.5">
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-white font-bold shadow-md ${
                   selectedMapLocation.type === 'cu_tru' ? 'bg-emerald-600 shadow-emerald-500/30' : 'bg-purple-600 shadow-purple-500/30'
                 }`}>
-                  <WebIcon name={selectedMapLocation.type === 'cu_tru' ? 'home' : 'location'} className="w-5 h-5" />
+                  <WebIcon name={selectedMapLocation.type === 'cu_tru' ? 'home' : 'location'} className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white leading-tight font-play">
                     {selectedMapLocation.title}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                     {selectedMapLocation.address}
                   </p>
                 </div>
@@ -716,14 +621,14 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
               <button
                 type="button"
                 onClick={() => setSelectedMapLocation(null)}
-                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-300 transition-colors cursor-pointer"
+                className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-300 transition-colors cursor-pointer"
               >
                 <WebIcon name="x" className="w-4 h-4" />
               </button>
             </div>
 
             {/* Interactive Google Maps Iframe Embed */}
-            <div className="relative w-full h-[280px] sm:h-[350px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-inner bg-slate-100 dark:bg-slate-950">
+            <div className="relative w-full h-[280px] sm:h-[340px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-inner bg-slate-100 dark:bg-slate-950">
               <iframe
                 title={selectedMapLocation.title}
                 src={`https://maps.google.com/maps?q=${encodeURIComponent(selectedMapLocation.query)}&t=&z=16&ie=UTF8&iwloc=&output=embed`}
@@ -735,7 +640,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
 
             {/* Footer Actions */}
             <div className="flex items-center justify-between gap-3 pt-1">
-              <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate flex items-center gap-1.5">
+              <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate flex items-center gap-1.5">
                 <WebIcon name="location" className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
                 <span className="truncate">{selectedMapLocation.address}</span>
               </div>
@@ -745,7 +650,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedMapLocation.query)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all shadow-md flex items-center gap-1"
                 >
                   <WebIcon name="navigation" className="w-3.5 h-3.5" />
                   <span>{isVi ? 'Mở Google Maps' : 'Open in Google Maps'}</span>
@@ -753,7 +658,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                 <button
                   type="button"
                   onClick={() => setSelectedMapLocation(null)}
-                  className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer"
                 >
                   {isVi ? 'Đóng' : 'Close'}
                 </button>
