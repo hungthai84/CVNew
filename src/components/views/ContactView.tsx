@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
+import { useLanguage } from '@/context/LanguageContext';
 
 export const ContactView: React.FC = () => {
   const { showToast } = useToast();
+  const { t, lang } = useLanguage();
   const [topic, setTopic] = useState<string>('Tư vấn CS & CS');
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -63,7 +65,7 @@ export const ContactView: React.FC = () => {
       <div className="relative w-full h-[132px] sm:h-[145px] lg:h-[150px] shrink-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm border border-sky-200/60 dark:border-sky-800/40 bg-gradient-to-r from-sky-50 via-white to-sky-50">
         <img
           src="/images/contact/hero-banner.png"
-          alt="Liên Hệ - Kết Nối Hợp Tác"
+          alt={t.contact.bannerAlt}
           className="w-full h-full object-cover select-none pointer-events-none"
         />
       </div>
@@ -79,25 +81,11 @@ export const ContactView: React.FC = () => {
                 <WebIcon name="chat" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
               </div>
               <h4 className="text-sm sm:text-[15px] font-black text-slate-900 dark:text-white tracking-tight font-play">
-                Kết nối & Trò chuyện cùng chuyên gia
+                {t.contact.leftTitle}
               </h4>
             </div>
             <p className="text-[11px] sm:text-xs font-normal leading-relaxed text-slate-600 dark:text-slate-300 pt-0.5">
-              Bạn có câu hỏi, đề xuất hợp tác hoặc cần tư vấn chi tiết về các dịch vụ, giải pháp? Hãy{' '}
-              <button
-                type="button"
-                onClick={() => setActiveTab('message')}
-                className="font-bold text-blue-600 dark:text-blue-400 underline decoration-blue-500 underline-offset-2 hover:text-blue-700 cursor-pointer"
-              >
-                gửi
-              </button>{' '}
-              tin nhắn hoặc{' '}
-              <a
-                href="mailto:hungthai848@gmail.com"
-                className="font-bold text-blue-600 dark:text-blue-400 underline decoration-blue-500 underline-offset-2 hover:text-blue-700"
-              >
-                gọi email trực tiếp
-              </a>.
+              {t.contact.leftDesc}
             </p>
           </div>
 
@@ -111,7 +99,7 @@ export const ContactView: React.FC = () => {
                 </div>
                 <div className="min-w-0">
                   <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 block font-mono">
-                    EMAIL DIRECT
+                    {lang === 'en' ? 'DIRECT EMAIL' : 'EMAIL DIRECT'}
                   </span>
                   <a
                     href="mailto:hungthai848@gmail.com"
@@ -125,7 +113,7 @@ export const ContactView: React.FC = () => {
               <button
                 type="button"
                 onClick={handleCopyEmail}
-                title="Sao chép Email"
+                title={lang === 'en' ? 'Copy Email' : 'Sao chép Email'}
                 className="p-1.5 rounded-xl bg-white dark:bg-slate-700 text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-slate-600 transition border border-slate-200/80 dark:border-slate-600 shadow-2xs cursor-pointer shrink-0"
               >
                 <WebIcon name="copy" className="w-3.5 h-3.5" />
@@ -140,17 +128,17 @@ export const ContactView: React.FC = () => {
                 </div>
                 <div className="min-w-0">
                   <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 block font-mono">
-                    TRỤ SỞ LÀM VIỆC
+                    {t.contact.headquarters}
                   </span>
                   <p className="text-xs sm:text-[13px] font-black text-slate-900 dark:text-slate-100 truncate">
-                    TP. Hồ Chí Minh, Việt Nam
+                    {t.contact.headquartersVal}
                   </p>
                 </div>
               </div>
 
               <span className="text-[9.5px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/80 dark:border-emerald-700/80 shrink-0 flex items-center gap-1 shadow-2xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Hiện tại / Remote</span>
+                <span>{t.contact.remoteBadge}</span>
               </span>
             </div>
 
@@ -162,10 +150,10 @@ export const ContactView: React.FC = () => {
                 </div>
                 <div className="min-w-0">
                   <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 block font-mono">
-                    KHUNG GIỜ HỖ TRỢ
+                    {t.contact.workHours}
                   </span>
                   <p className="text-xs sm:text-[13px] font-black text-slate-900 dark:text-slate-100 truncate">
-                    Thứ 2 - Thứ 6 (08:00 - 18:00 GMT+7)
+                    {t.contact.workHoursVal}
                   </p>
                 </div>
               </div>
@@ -220,11 +208,11 @@ export const ContactView: React.FC = () => {
             <div className="flex items-center gap-2 text-[10.5px] font-bold text-slate-600 dark:text-slate-300">
               <div className="inline-flex items-center gap-1">
                 <span className="text-rose-500 text-xs">❤️</span>
-                <span>Bảo mật 100%</span>
+                <span>{t.contact.privacyLabel}</span>
               </div>
               <div className="inline-flex items-center gap-1">
                 <span className="text-blue-500 text-xs">⚡</span>
-                <span>Phản hồi &lt;24h</span>
+                <span>{t.contact.responseLabel}</span>
               </div>
             </div>
           </div>
@@ -246,7 +234,7 @@ export const ContactView: React.FC = () => {
                 }`}
               >
                 <span className="text-xs">✈️</span>
-                <span>Gửi thông điệp trực tiếp</span>
+                <span>{t.contact.tabDirect}</span>
               </button>
               <button
                 type="button"
@@ -258,12 +246,12 @@ export const ContactView: React.FC = () => {
                 }`}
               >
                 <span className="text-xs">❓</span>
-                <span>Câu hỏi thường gặp</span>
+                <span>{t.contact.tabFaq}</span>
               </button>
             </div>
 
             <span className="text-[10px] sm:text-[10.5px] font-semibold text-slate-400 dark:text-slate-500 hidden sm:inline-block">
-              {activeTab === 'message' ? 'Tư vấn chuyên sâu & Phản hồi nhanh' : 'Giải đáp 5 câu hỏi cốt lõi'}
+              {activeTab === 'message' ? t.contact.tabDirectSub : t.contact.tabFaqSub}
             </span>
           </div>
 
@@ -275,7 +263,7 @@ export const ContactView: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 shrink-0">
                   <div className="space-y-0.5">
                     <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400 font-mono">
-                      1. CHỦ ĐỀ TRAO ĐỔI *
+                      {t.contact.formTopic}
                     </label>
                     <div className="relative">
                       <select
@@ -283,12 +271,12 @@ export const ContactView: React.FC = () => {
                         onChange={(e) => setTopic(e.target.value)}
                         className="w-full rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white appearance-none cursor-pointer focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 pr-8 shadow-2xs"
                       >
-                        <option value="Tư vấn CS & CS">Tư vấn CS & CS</option>
-                        <option value="Tối ưu vận hành Contact Center">Tối ưu vận hành Contact Center</option>
-                        <option value="Chiến lược Trải nghiệm Khách hàng (CX)">Chiến lược Trải nghiệm Khách hàng (CX)</option>
-                        <option value="Tự động hóa AI & Omnichannel AICC">Tự động hóa AI & Omnichannel AICC</option>
-                        <option value="Hợp tác chiến lược & Đối tác">Hợp tác chiến lược & Đối tác</option>
-                        <option value="Góp ý & Khác">Góp ý & Khác</option>
+                        <option value="Tư vấn CS & CS">{lang === 'en' ? 'CX & Customer Service Advisory' : 'Tư vấn CS & CS'}</option>
+                        <option value="Tối ưu vận hành Contact Center">{lang === 'en' ? 'Contact Center Optimization' : 'Tối ưu vận hành Contact Center'}</option>
+                        <option value="Chiến lược Trải nghiệm Khách hàng (CX)">{lang === 'en' ? 'Customer Experience (CX) Strategy' : 'Chiến lược Trải nghiệm Khách hàng (CX)'}</option>
+                        <option value="Tự động hóa AI & Omnichannel AICC">{lang === 'en' ? 'AI Automation & Omnichannel AICC' : 'Tự động hóa AI & Omnichannel AICC'}</option>
+                        <option value="Hợp tác chiến lược & Đối tác">{lang === 'en' ? 'Strategic Partnership & Alliances' : 'Hợp tác chiến lược & Đối tác'}</option>
+                        <option value="Góp ý & Khác">{lang === 'en' ? 'Feedback & Other Inquiries' : 'Góp ý & Khác'}</option>
                       </select>
                       <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-[10px]">
                         ▼
@@ -298,7 +286,7 @@ export const ContactView: React.FC = () => {
 
                   <div className="space-y-0.5">
                     <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400 font-mono">
-                      2. MẪU TIN NHẮN NHANH *
+                      {t.contact.formPreset}
                     </label>
                     <div className="relative">
                       <select
@@ -306,18 +294,18 @@ export const ContactView: React.FC = () => {
                         defaultValue=""
                         className="w-full rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 px-3 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 appearance-none cursor-pointer focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 pr-8 shadow-2xs"
                       >
-                        <option value="">- Mẫu tin nhắn gợi ý -</option>
-                        <option value="Tôi cần tư vấn xây dựng và chuẩn hóa phòng Dịch vụ Khách hàng (CSKH).">
-                          Thiết lập & Chuẩn hóa CSKH
+                        <option value="">{t.contact.presetPrompt}</option>
+                        <option value={lang === 'en' ? 'I need advisory on establishing and standardizing our Customer Service department.' : 'Tôi cần tư vấn xây dựng và chuẩn hóa phòng Dịch vụ Khách hàng (CSKH).'}>
+                          {t.contact.preset1}
                         </option>
-                        <option value="Tôi cần tư vấn tái cấu trúc và tối ưu hóa hệ thống Contact Center quy mô 100+ nhân sự.">
-                          Chiến lược Contact Center 100+
+                        <option value={lang === 'en' ? 'I need strategic consulting to restructure and optimize our 100+ headcount Contact Center.' : 'Tôi cần tư vấn tái cấu trúc và tối ưu hóa hệ thống Contact Center quy mô 100+ nhân sự.'}>
+                          {t.contact.preset2}
                         </option>
-                        <option value="Tôi muốn tìm hiểu chương trình đào tạo kỹ năng thấu cảm và quy trình QA cho đội ngũ CSKH.">
-                          Đào tạo kỹ năng QA & CSKH
+                        <option value={lang === 'en' ? 'I would like to explore QA scorecards and empathy skills training programs for CS agents.' : 'Tôi muốn tìm hiểu chương trình đào tạo kỹ năng thấu cảm và quy trình QA cho đội ngũ CSKH.'}>
+                          {t.contact.preset3}
                         </option>
-                        <option value="Tôi cần tư vấn tích hợp AI Chatbot và Omni-channel Contact Center (AICC).">
-                          Tích hợp AI & Omnichannel AICC
+                        <option value={lang === 'en' ? 'I am interested in AI Chatbots and Omnichannel Contact Center (AICC) integration.' : 'Tôi cần tư vấn tích hợp AI Chatbot và Omni-channel Contact Center (AICC).'}>
+                          {t.contact.preset4}
                         </option>
                       </select>
                       <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-[10px]">
@@ -331,27 +319,27 @@ export const ContactView: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 shrink-0">
                   <div className="space-y-0.5">
                     <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400 font-mono">
-                      HỌ VÀ TÊN *
+                      {t.contact.formName}
                     </label>
                     <input
                       type="text"
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Nguyễn Văn A"
+                      placeholder={t.contact.namePlaceholder}
                       className="w-full rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 shadow-2xs"
                     />
                   </div>
                   <div className="space-y-0.5">
                     <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400 font-mono">
-                      ĐỊA CHỈ EMAIL *
+                      {t.contact.formEmail}
                     </label>
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="name@company.com"
+                      placeholder={t.contact.emailPlaceholder}
                       className="w-full rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 shadow-2xs"
                     />
                   </div>
@@ -361,25 +349,25 @@ export const ContactView: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 shrink-0">
                   <div className="space-y-0.5">
                     <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400 font-mono">
-                      SỐ ĐIỆN THOẠI *
+                      {t.contact.formPhone}
                     </label>
                     <input
                       type="tel"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      placeholder="090 123 4567"
+                      placeholder={t.contact.phonePlaceholder}
                       className="w-full rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 shadow-2xs"
                     />
                   </div>
                   <div className="space-y-0.5">
                     <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400 font-mono">
-                      TÊN CÔNG TY / TỔ CHỨC
+                      {t.contact.formCompany}
                     </label>
                     <input
                       type="text"
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
-                      placeholder="Công ty ABC"
+                      placeholder={t.contact.companyPlaceholder}
                       className="w-full rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 shadow-2xs"
                     />
                   </div>
@@ -388,14 +376,14 @@ export const ContactView: React.FC = () => {
                 {/* Row 4: NỘI DUNG TRAO ĐỔI CHI TIẾT * */}
                 <div className="space-y-0.5 flex-1 min-h-0 flex flex-col">
                   <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 dark:text-slate-400 font-mono">
-                    NỘI DUNG TRAO ĐỔI CHI TIẾT *
+                    {t.contact.formMessage}
                   </label>
                   <textarea
                     rows={2}
                     required
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Nhập nội dung tin nhắn, yêu cầu tư vấn hoặc dự án..."
+                    placeholder={t.contact.messagePlaceholder}
                     className="w-full flex-1 min-h-[50px] max-h-[70px] rounded-xl bg-slate-50/70 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 px-3 py-1.5 text-xs font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 shadow-2xs resize-none"
                   />
                 </div>
@@ -406,13 +394,13 @@ export const ContactView: React.FC = () => {
                   className="w-full py-2.5 rounded-full bg-gradient-to-r from-[#0ea5e9] via-[#3b82f6] to-[#a855f7] hover:brightness-105 active:scale-[0.99] text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-blue-500/25 transition cursor-pointer shrink-0"
                 >
                   <span className="text-sm">✈️</span>
-                  <span>Gửi thông điệp ngay</span>
+                  <span>{t.contact.formSend}</span>
                 </button>
 
                 {isSuccess && (
                   <div className="p-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center gap-1.5 text-[10.5px] font-bold text-emerald-700 dark:text-emerald-300 shrink-0">
                     <span>✓</span>
-                    <span>Đã chuẩn bị sẵn thư gửi qua Ứng dụng Email của bạn!</span>
+                    <span>{lang === 'en' ? 'Prepared email ready to send via your email client!' : 'Đã chuẩn bị sẵn thư gửi qua Ứng dụng Email của bạn!'}</span>
                   </div>
                 )}
               </form>
@@ -424,32 +412,56 @@ export const ContactView: React.FC = () => {
             <div className="flex-1 flex flex-col justify-between gap-2 relative z-10 min-h-0 overflow-hidden pt-1">
               <div className="p-2 rounded-xl bg-blue-50/80 dark:bg-slate-800/80 border border-blue-100 dark:border-blue-900/40 flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 dark:text-blue-300 shrink-0">
                 <WebIcon name="bulb" className="w-3.5 h-3.5 shrink-0" />
-                <span>Các câu hỏi phổ biến từ đối tác & doanh nghiệp:</span>
+                <span>{t.contact.faqTitleBar}</span>
               </div>
 
               <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar space-y-1.5 pr-0.5">
-                {[
-                  {
-                    q: 'Thời gian phản hồi sau khi gửi yêu cầu liên hệ là bao lâu?',
-                    a: 'Tôi luôn ưu tiên phản hồi trong vòng 24 giờ làm việc. Với các đề xuất khẩn cấp hoặc dự án chiến lược, thời gian phản hồi thường trong vòng 2–4 giờ làm việc.',
-                  },
-                  {
-                    q: 'Anh Thái có nhận tư vấn dự án ngắn hạn hoặc đào tạo doanh nghiệp không?',
-                    a: 'Có. Tôi nhận tư vấn chiến lược CX/CSKH, thẩm định hệ thống Contact Center, xây dựng bộ tiêu chuẩn QA Scorecard và đào tạo nâng cao kỹ năng cho đội ngũ lãnh đạo & nhân sự CSKH.',
-                  },
-                  {
-                    q: 'Thông tin dự án và ý tưởng trao đổi có được cam kết bảo mật không?',
-                    a: 'Cam kết bảo mật 100%. Mọi dữ liệu trao đổi, số liệu vận hành và ý tưởng chiến lược của doanh nghiệp đều được bảo mật tuyệt đối. Sẵn sàng ký kết thỏa thuận NDA trước khi đi vào chi tiết.',
-                  },
-                  {
-                    q: 'Phương thức hợp tác và các bước triển khai dự án như thế nào?',
-                    a: 'Quy trình gồm 4 bước chuẩn: 1. Khảo sát hiện trạng & nhu cầu; 2. Đề xuất giải pháp và lộ trình; 3. Đồng hành đào tạo, thiết lập SOP & hệ thống; 4. Đánh giá KPI và nghiệm thu chuyển giao.',
-                  },
-                  {
-                    q: 'Có thể kết nối trực tiếp qua Zalo hoặc hẹn gặp tại TP.HCM không?',
-                    a: 'Hoàn toàn sẵn sàng! Bạn có thể nhắn tin qua Zalo số 0903.011.699 hoặc đặt lịch hẹn gặp trực tiếp tại TP. Hồ Chí Minh để cùng thảo luận chi tiết.',
-                  },
-                ].map((item, idx) => (
+                {(lang === 'en'
+                  ? [
+                      {
+                        q: 'What is the estimated response time after sending an inquiry?',
+                        a: 'I prioritize responding within 24 business hours. For urgent proposals or strategic executive engagements, responses are usually delivered within 2–4 hours.',
+                      },
+                      {
+                        q: 'Do you offer short-term project consulting or enterprise corporate training?',
+                        a: 'Yes. I provide advisory on CX/CS strategy, Contact Center operational audits, QA Scorecard framework development, and leadership training for customer service teams.',
+                      },
+                      {
+                        q: 'Are project details and discussions kept strictly confidential?',
+                        a: '100% Confidentiality guaranteed. All shared operational data and strategic ideas are kept strictly protected. We can sign a mutual NDA prior to detailed discussions.',
+                      },
+                      {
+                        q: 'What is the collaboration process and typical project phases?',
+                        a: 'A 4-step framework: 1. Current state assessment & needs analysis; 2. Strategic proposal & roadmap; 3. Hands-on SOP setup, systems & training; 4. KPI measurement and handover.',
+                      },
+                      {
+                        q: 'Can we connect directly via WhatsApp/Zalo or schedule an in-person meeting in HCMC?',
+                        a: 'Certainly! Feel free to reach out directly via Zalo/Phone (+84 903.011.699) or book an in-person session in Ho Chi Minh City to discuss your needs in depth.',
+                      },
+                    ]
+                  : [
+                      {
+                        q: 'Thời gian phản hồi sau khi gửi yêu cầu liên hệ là bao lâu?',
+                        a: 'Tôi luôn ưu tiên phản hồi trong vòng 24 giờ làm việc. Với các đề xuất khẩn cấp hoặc dự án chiến lược, thời gian phản hồi thường trong vòng 2–4 giờ làm việc.',
+                      },
+                      {
+                        q: 'Anh Thái có nhận tư vấn dự án ngắn hạn hoặc đào tạo doanh nghiệp không?',
+                        a: 'Có. Tôi nhận tư vấn chiến lược CX/CSKH, thẩm định hệ thống Contact Center, xây dựng bộ tiêu chuẩn QA Scorecard và đào tạo nâng cao kỹ năng cho đội ngũ lãnh đạo & nhân sự CSKH.',
+                      },
+                      {
+                        q: 'Thông tin dự án và ý tưởng trao đổi có được cam kết bảo mật không?',
+                        a: 'Cam kết bảo mật 100%. Mọi dữ liệu trao đổi, số liệu vận hành và ý tưởng chiến lược của doanh nghiệp đều được bảo mật tuyệt đối. Sẵn sàng ký kết thỏa thuận NDA trước khi đi vào chi tiết.',
+                      },
+                      {
+                        q: 'Phương thức hợp tác và các bước triển khai dự án như thế nào?',
+                        a: 'Quy trình gồm 4 bước chuẩn: 1. Khảo sát hiện trạng & nhu cầu; 2. Đề xuất giải pháp và lộ trình; 3. Đồng hành đào tạo, thiết lập SOP & hệ thống; 4. Đánh giá KPI và nghiệm thu chuyển giao.',
+                      },
+                      {
+                        q: 'Có thể kết nối trực tiếp qua Zalo hoặc hẹn gặp tại TP.HCM không?',
+                        a: 'Hoàn toàn sẵn sàng! Bạn có thể nhắn tin qua Zalo số 0903.011.699 hoặc đặt lịch hẹn gặp trực tiếp tại TP. Hồ Chí Minh để cùng thảo luận chi tiết.',
+                      },
+                    ]
+                ).map((item, idx) => (
                   <div key={idx} className="rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 overflow-hidden transition-all shadow-2xs">
                     <button
                       type="button"
@@ -485,7 +497,7 @@ export const ContactView: React.FC = () => {
                   onClick={() => setActiveTab('message')}
                   className="px-3.5 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] flex items-center gap-1.5 shadow-xs transition active:scale-95 cursor-pointer"
                 >
-                  <span>Gửi tin nhắn trao đổi ngay</span>
+                  <span>{t.contact.faqSendBtn}</span>
                   <span>→</span>
                 </button>
               </div>

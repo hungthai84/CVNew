@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import '@/styles/globals.css';
 import { ToastProvider } from '@/components/ui/Toast';
+import { LanguageProvider } from '@/context/LanguageContext';
 
 export const metadata: Metadata = {
   title: 'Hùng Thái Portal - Light Multi-Color Glass UI',
@@ -32,7 +33,9 @@ export default function RootLayout({
         />
       </head>
       <body className="text-slate-800 h-screen w-screen overflow-hidden p-0 m-0 relative bg-slate-50 dark:bg-[#080b18]">
-        <ToastProvider>{children}</ToastProvider>
+        <LanguageProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

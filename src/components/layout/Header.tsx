@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { PageMeta, SiteTheme } from '@/types';
+import { useLanguage } from '@/context/LanguageContext';
 
 export interface HeaderProps {
   pages: PageMeta[];
@@ -17,8 +18,10 @@ export const Header: React.FC<HeaderProps> = ({
   currentTheme = 'light-glass',
   onSelectPage,
 }) => {
+  const { t } = useLanguage();
+
   // Xóa icon Hình Nền khỏi thanh menu Header, giữ các mục nội dung chính
-  const headerPages = pages.filter((page) => page.shortTitle !== 'Hình Nền');
+  const headerPages = pages.filter((page) => page.id !== 13);
 
   const isDark = currentTheme === 'dark-neon';
 
@@ -91,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({
       clearTimeout(timer);
       window.removeEventListener('resize', calculateLayout);
     };
-  }, [headerPages.length, longestWidth]);
+  }, [headerPages.length, longestWidth, t]);
 
   // Tự động cuộn mượt đến nút đang chọn khi chuyển trang
   useEffect(() => {
@@ -145,17 +148,20 @@ export const Header: React.FC<HeaderProps> = ({
         aria-hidden="true"
         className="absolute -top-[9999px] -left-[9999px] pointer-events-none opacity-0 invisible flex flex-nowrap"
       >
-        {headerPages.map((page) => (
-          <div
-            key={`measure-${page.id}`}
-            className="neonav-measure-item h-[38px] w-auto min-w-max flex items-center justify-start gap-1.5 pl-1.5 pr-3 rounded-full border text-[11px] sm:text-[11.5px] font-bold"
-          >
-            <div className="w-7 h-7 rounded-full shrink-0" />
-            <span className="whitespace-nowrap font-bold text-[11px] sm:text-[11.5px] tracking-tight text-left">
-              {page.shortTitle}
-            </span>
-          </div>
-        ))}
+        {headerPages.map((page) => {
+          const displayTitle = t.pages[page.id]?.shortTitle || page.shortTitle;
+          return (
+            <div
+              key={`measure-${page.id}`}
+              className="neonav-measure-item h-[38px] w-auto min-w-max flex items-center justify-start gap-1.5 pl-1.5 pr-3 rounded-full border text-[11px] sm:text-[11.5px] font-bold"
+            >
+              <div className="w-7 h-7 rounded-full shrink-0" />
+              <span className="whitespace-nowrap font-bold text-[11px] sm:text-[11.5px] tracking-tight text-left">
+                {displayTitle}
+              </span>
+            </div>
+          );
+        })}
       </div>
 
       {/* Danh sách Tabs Menu Điều Hướng NeoNav Glass */}
@@ -231,7 +237,7 @@ export const Header: React.FC<HeaderProps> = ({
                           : undefined,
                       }),
                 }}
-                title={page.fullName}
+                title={t.pages[page.id]?.fullName || page.fullName}
               >
                 {/* NeoNav Circular Icon Container */}
                 <div
@@ -257,7 +263,7 @@ export const Header: React.FC<HeaderProps> = ({
                     color: isSelected ? '#ffffff' : isDark ? '#f1f5f9' : page.theme,
                   }}
                 >
-                  {page.shortTitle}
+                  {t.pages[page.id]?.shortTitle || page.shortTitle}
                 </span>
               </button>
             );

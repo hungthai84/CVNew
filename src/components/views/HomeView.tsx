@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
+import { useLanguage } from '@/context/LanguageContext';
 
 export interface HomeViewProps {
   slideIndex?: number;
@@ -12,6 +13,7 @@ export interface HomeViewProps {
 
 export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContact, onNavigatePage }) => {
   const { showToast } = useToast();
+  const { t, language } = useLanguage();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const IDLE_URL = 'https://cdn.scena.ai/project/10169/eae59f7007421658e611c298c206755ca060c878d07087694c06935208b9d8f9.mp4';
@@ -179,14 +181,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
               <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/10">
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-                  Đang phát: Lời Chào Giới Thiệu
+                  {t.home.nowPlaying}
                 </span>
                 <button
                   type="button"
                   onClick={handleCancelIntro}
                   className="text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
                 >
-                  Đóng ✕
+                  {t.common.close} ✕
                 </button>
               </div>
 
@@ -217,14 +219,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                       <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                       </svg>
-                      <span>Tạm dừng</span>
+                      <span>{t.home.pause}</span>
                     </>
                   ) : (
                     <>
                       <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z" />
                       </svg>
-                      <span>Phát tiếp</span>
+                      <span>{t.home.resume}</span>
                     </>
                   )}
                 </button>
@@ -234,7 +236,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                   onClick={handleToggleMute}
                   className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center gap-1.5 border border-slate-300 dark:border-white/10 shadow-sm transition cursor-pointer"
                 >
-                  <span>{isMuted ? 'Bật tiếng' : 'Tắt tiếng'}</span>
+                  <span>{isMuted ? t.home.unmute : t.home.mute}</span>
                 </button>
 
                 <button
@@ -242,7 +244,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                   onClick={handleCancelIntro}
                   className="px-3.5 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 font-semibold text-xs transition cursor-pointer"
                 >
-                  Dừng lại
+                  {t.home.stopIntro}
                 </button>
               </div>
             </div>
@@ -258,23 +260,23 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                     <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
                       <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z" />
                     </svg>
-                    <span>Giới Thiệu</span>
+                    <span>{t.home.card1Title}</span>
                   </div>
                   <span className="text-[10.5px] font-mono font-bold text-slate-500 dark:text-slate-400">01 / 03</span>
                 </div>
 
                 <div>
-                  <span className="text-xs font-semibold text-blue-600 dark:text-cyan-400 block">Xin chào! Tôi là</span>
+                  <span className="text-xs font-semibold text-blue-600 dark:text-cyan-400 block">{t.home.greeting}</span>
                   <h2 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white font-play leading-snug">
-                    Nguyễn Hùng Thái
+                    {t.home.name}
                   </h2>
                   <p className="text-xs font-bold text-slate-700 dark:text-slate-200 leading-snug">
-                    Trưởng phòng Chăm sóc Khách hàng
+                    {t.home.role}
                   </p>
                 </div>
 
                 <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium bg-blue-50/50 dark:bg-blue-950/40 p-2 sm:p-2.5 rounded-xl border border-blue-100/70 dark:border-blue-900/50">
-                  22+ năm kinh nghiệm quản trị và vận hành hệ thống Contact Center & CX đa kênh quy mô lớn, tiên phong tích hợp AI và tự động hóa.
+                  {t.home.heroDesc}
                 </p>
               </div>
 
@@ -287,14 +289,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                   <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z" />
                   </svg>
-                  <span>Xem Giới Thiệu</span>
+                  <span>{t.home.watchIntro}</span>
                 </button>
                 <button
                   type="button"
                   onClick={onNavigateContact}
                   className="flex-1 min-h-[36px] px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1 border border-slate-300 dark:border-white/15 shadow-sm active:scale-95 transition cursor-pointer"
                 >
-                  <span>Liên Hệ</span>
+                  <span>{t.common.contact}</span>
                 </button>
               </div>
             </div>
@@ -305,7 +307,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                 <div className="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-[11px] shadow-sm">
                     <WebIcon name="rocket" className="w-3.5 h-3.5" />
-                    <span>Năng Lực Cốt Lõi</span>
+                    <span>{t.home.card2Title}</span>
                   </div>
                   <span className="text-[10.5px] font-mono font-bold text-slate-500 dark:text-slate-400">02 / 03</span>
                 </div>
@@ -313,7 +315,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                 <div>
                   <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 block">Customer Centricity & Tech</span>
                   <h3 className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-play leading-snug">
-                    Vận Hành & Trải Nghiệm CX
+                    {language === 'vi' ? 'Vận Hành & Trải Nghiệm CX' : 'CX & Operations Leadership'}
                   </h3>
                 </div>
 
@@ -323,7 +325,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                       <WebIcon name="target" className="w-3.5 h-3.5" />
                     </span>
                     <span className="text-slate-700 dark:text-slate-200 font-medium truncate">
-                      Trải nghiệm KH chuẩn hóa (CSAT 98%)
+                      {language === 'vi' ? 'Trải nghiệm KH chuẩn hóa (CSAT 98%)' : 'Standardized CX Journey (CSAT 98%)'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 p-1.5 rounded-lg bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100/60 dark:border-indigo-900/50">
@@ -331,7 +333,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                       <WebIcon name="phone" className="w-3.5 h-3.5" />
                     </span>
                     <span className="text-slate-700 dark:text-slate-200 font-medium truncate">
-                      Contact Center 24/7 SLA/KPI realtime
+                      {language === 'vi' ? 'Contact Center 24/7 SLA/KPI realtime' : '24/7 Contact Center SLA/KPI Matrix'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 p-1.5 rounded-lg bg-blue-50/60 dark:bg-blue-950/40 border border-blue-100/60 dark:border-blue-900/50">
@@ -339,7 +341,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                       <WebIcon name="bot" className="w-3.5 h-3.5" />
                     </span>
                     <span className="text-slate-700 dark:text-slate-200 font-medium truncate">
-                      AI Agent Workflows & Tự động hóa
+                      {language === 'vi' ? 'AI Agent Workflows & Tự động hóa' : 'AI Agent Workflows & Automation'}
                     </span>
                   </div>
                 </div>
@@ -351,14 +353,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                   onClick={() => onNavigatePage ? onNavigatePage(6) : onNavigateContact()}
                   className="flex-1 min-h-[36px] px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-md shadow-purple-500/25 active:scale-95 transition cursor-pointer"
                 >
-                  <span>Khám Phá Kỹ Năng</span>
+                  <span>{language === 'vi' ? 'Khám Phá Kỹ Năng' : 'Explore Skills'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={onNavigateContact}
                   className="flex-1 min-h-[36px] px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1 border border-slate-300 dark:border-white/15 shadow-sm active:scale-95 transition cursor-pointer"
                 >
-                  <span>Liên Hệ</span>
+                  <span>{t.common.contact}</span>
                 </button>
               </div>
             </div>
@@ -369,15 +371,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                 <div className="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold text-[11px] shadow-sm">
                     <WebIcon name="trophy" className="w-3.5 h-3.5" />
-                    <span>Dấu Ấn Thành Tựu</span>
+                    <span>{t.home.card3Title}</span>
                   </div>
                   <span className="text-[10.5px] font-mono font-bold text-slate-500 dark:text-slate-400">03 / 03</span>
                 </div>
 
                 <div>
-                  <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 block">Hành trình 2002 - 2026+</span>
+                  <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 block">
+                    {language === 'vi' ? 'Hành trình 2002 - 2026+' : 'Journey 2002 - 2026+'}
+                  </span>
                   <h3 className="text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white font-play leading-snug">
-                    Dấu Ấn Vận Hành Bền Vững
+                    {language === 'vi' ? 'Dấu Ấn Vận Hành Bền Vững' : 'Sustainable Operational Milestones'}
                   </h3>
                 </div>
 
@@ -387,7 +391,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                       <WebIcon name="users" className="w-3.5 h-3.5" />
                     </span>
                     <span className="text-slate-700 dark:text-slate-200 font-medium truncate">
-                      Lãnh đạo & phát triển 100+ nhân sự
+                      {language === 'vi' ? 'Lãnh đạo & phát triển 100+ nhân sự' : 'Leading & Developing 100+ CS Personnel'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 p-1.5 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-100/60 dark:border-emerald-900/50">
@@ -395,7 +399,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                       <WebIcon name="chart" className="w-3.5 h-3.5" />
                     </span>
                     <span className="text-slate-700 dark:text-slate-200 font-medium truncate">
-                      Dashboard Power BI & Báo cáo C-Level
+                      {language === 'vi' ? 'Dashboard Power BI & Báo cáo C-Level' : 'Power BI Dashboards & C-Level Reporting'}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 p-1.5 rounded-lg bg-cyan-50/60 dark:bg-cyan-950/40 border border-cyan-100/60 dark:border-cyan-900/50">
@@ -403,7 +407,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                       <WebIcon name="bolt" className="w-3.5 h-3.5" />
                     </span>
                     <span className="text-slate-700 dark:text-slate-200 font-medium truncate">
-                      Giảm Cost-to-Serve 25% tối ưu chi phí
+                      {language === 'vi' ? 'Giảm Cost-to-Serve 25% tối ưu chi phí' : 'Reduced Cost-to-Serve by 25%'}
                     </span>
                   </div>
                 </div>
@@ -415,14 +419,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                   onClick={() => onNavigatePage ? onNavigatePage(7) : onNavigateContact()}
                   className="flex-1 min-h-[36px] px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-md shadow-amber-500/25 active:scale-95 transition cursor-pointer"
                 >
-                  <span>Xem Dự Án</span>
+                  <span>{language === 'vi' ? 'Xem Dự Án' : 'View Projects'}</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigatePage ? onNavigatePage(5) : onNavigateContact()}
                   className="flex-1 min-h-[36px] px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1 border border-slate-300 dark:border-white/15 shadow-sm active:scale-95 transition cursor-pointer"
                 >
-                  <span>Kinh Nghiệm</span>
+                  <span>{language === 'vi' ? 'Kinh Nghiệm' : 'Experience'}</span>
                 </button>
               </div>
             </div>

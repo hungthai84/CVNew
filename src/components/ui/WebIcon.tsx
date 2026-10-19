@@ -768,6 +768,48 @@ export const WebIcon: React.FC<WebIconProps> = ({ name, className = 'w-4 h-4' })
         </svg>
       );
 
+    case 'send':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="m22 2-7 20-4-9-9-4Z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M22 2 11 13" />
+        </svg>
+      );
+
+    case 'navigation':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <polygon strokeLinecap="round" strokeLinejoin="round" points="3 11 22 2 13 21 11 13 3 11" />
+        </svg>
+      );
+
+    case 'messagesquare':
+    case 'message-square':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      );
+
+    case 'externallink':
+    case 'external-link':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+          <polyline strokeLinecap="round" strokeLinejoin="round" points="15 3 21 3 21 9" />
+          <line strokeLinecap="round" strokeLinejoin="round" x1="10" x2="21" y1="14" y2="3" />
+        </svg>
+      );
+
+    case 'linkedin':
+      return (
+        <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+          <rect width="4" height="12" x="2" y="9" />
+          <circle cx="4" cy="4" r="2" />
+        </svg>
+      );
+
     default:
       return (
         <svg className={className} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
