@@ -705,31 +705,37 @@ export const DomainsView: React.FC = () => {
           <source src="https://cdn.scena.ai/project/10169/e07c498cfd5e7e1a0a537b3f12eeaaf42cb878f5300f99d73c9b02a7aa05efce.mp4" type="video/mp4" />
         </video>
 
+        {/* Lớp phủ tương phản để đảm bảo chữ trên banner luôn hiển thị rõ nét */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/50 via-slate-950/20 to-slate-950/55 pointer-events-none" />
+
         {/* Lớp nội dung chữ trên banner đúng theo hình ảnh mẫu */}
         <div className="absolute inset-0 z-10 px-4 sm:px-6 py-3 sm:py-3.5 flex flex-col justify-between pointer-events-none">
-          {/* Hàng chữ phía trên/giữa: Khám phá & Tiêu đề bên trái, Câu nói hay bên phải */}
+          {/* Hàng chữ phía trên/giữa: Tiêu đề bên trái, Câu nói hay bên phải */}
           <div className="flex items-start justify-between gap-3 w-full">
             {/* Khối chữ bên trái: Tiêu đề + Subtitle + Thanh cam */}
             <div className="flex flex-col items-start pointer-events-auto max-w-[62%] sm:max-w-[48%]">
               {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, màu tiêu đề giống màu icon và màu menu icon ở trang */}
-              <h2 className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play text-amber-500 dark:text-amber-400 tracking-tight leading-tight drop-shadow-xs select-none flex items-center gap-2">
-                <span className="inline-flex animate-banner-icon shrink-0 text-amber-500 dark:text-amber-400">
+              <h2 className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play text-amber-400 dark:text-amber-300 tracking-tight leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)] select-none flex items-center gap-2">
+                <span className="inline-flex animate-banner-icon shrink-0 text-amber-400 dark:text-amber-300">
                   <WebIcon name="globe" className="w-5 h-5 sm:w-6 sm:h-6" />
                 </span>
                 <span>Lĩnh Vực Hoạt Động</span>
               </h2>
-              <p className="text-[11px] sm:text-xs md:text-sm font-semibold text-slate-700/95 tracking-normal mt-0.5 drop-shadow-2xs select-none">
+              <p className="text-[11px] sm:text-xs md:text-sm font-bold text-white tracking-normal mt-1 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)] select-none">
                 Học tập không giới hạn – Kiến tạo tương lai
               </p>
-              <div className="w-12 sm:w-16 h-1.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 shadow-xs mt-1.5" />
+              <div className="w-12 sm:w-16 h-1.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 shadow-md mt-1.5" />
             </div>
 
-            {/* Khối chữ bên phải: Câu trích dẫn viết tay tiếng Việt Fleur De Leah chỉ để font chữ màu vàng (xóa viền đen) */}
+            {/* Khối chữ bên phải: Câu trích dẫn viết tay tiếng Việt Fleur De Leah chữ vàng rõ nét */}
             <div className="hidden sm:flex flex-col items-end text-right pointer-events-auto max-w-[48%] lg:max-w-[44%] pt-0.5">
               <div className="p-1 sm:p-1.5 bg-transparent border-none shadow-none flex flex-col items-end">
-                <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none">
+                <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
                   “Thực chiến đa ngành kiến tạo giải pháp dịch vụ xuất sắc.”
                 </p>
+                <span className="text-[10px] sm:text-[11px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
+                  — Nguyễn Hùng Thái
+                </span>
                 <div className="w-24 sm:w-32 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent relative mt-1.5 flex items-center justify-center">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-xs" />
                 </div>
