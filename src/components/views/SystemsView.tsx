@@ -5,6 +5,7 @@ import { SYSTEMS_DATA } from '@/data/systems';
 import { SystemData } from '@/types';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface SystemItemConfig {
   id: string;
@@ -142,6 +143,8 @@ const SYSTEMS_CONFIG: SystemItemConfig[] = [
 
 export const SystemsView: React.FC = () => {
   const { showToast } = useToast();
+  const { lang } = useLanguage();
+  const isVi = lang === 'vi';
 
   const [activeCategory, setActiveCategory] = useState<'all' | 'core' | 'support' | 'other'>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -207,24 +210,24 @@ export const SystemsView: React.FC = () => {
   const getDropdownLabel = () => {
     switch (activeCategory) {
       case 'core':
-        return 'Cốt lõi (6)';
+        return isVi ? 'Cốt lõi (6)' : 'Core (6)';
       case 'support':
-        return 'Hỗ trợ (4)';
+        return isVi ? 'Hỗ trợ (4)' : 'Support (4)';
       case 'other':
-        return 'Khác (2)';
+        return isVi ? 'Khác (2)' : 'Other (2)';
       default:
-        return 'Tất cả danh mục';
+        return isVi ? 'Tất cả danh mục' : 'All Categories';
     }
   };
 
   return (
     <section
       id="systems"
-      className="relative w-full h-full max-h-full flex flex-col justify-start items-stretch font-sans text-slate-800 transition-colors duration-500 select-none bg-transparent overflow-hidden text-left"
+      className="relative w-full h-full max-h-full flex flex-col justify-center items-center font-sans text-slate-800 dark:text-slate-100 transition-colors duration-500 select-none bg-transparent overflow-hidden text-left"
     >
-      <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] items-stretch justify-start relative z-10 overflow-hidden">
+      <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] items-stretch justify-center max-w-7xl mx-auto relative z-10 overflow-hidden my-auto">
         {/* VÙNG BÊN TRÁI: THANH TÌM KIẾM/LỌC & LƯỚI 12 THẺ HỆ THỐNG */}
-        <div className="flex-1 min-w-0 flex flex-col gap-2.5 h-full overflow-hidden lg:order-1">
+        <div className="flex-1 min-w-0 flex flex-col justify-center gap-2.5 h-full overflow-hidden lg:order-1 my-auto">
           {/* Thanh tìm kiếm & Dropdown danh mục */}
           <div className="flex items-center justify-between gap-3 px-1 py-0.5 shrink-0">
             {/* Input tìm kiếm */}
@@ -241,7 +244,7 @@ export const SystemsView: React.FC = () => {
               </svg>
               <input
                 type="text"
-                placeholder="Tìm kiếm hệ thống, từ khóa, công nghệ..."
+                placeholder={isVi ? "Tìm kiếm hệ thống, từ khóa, công nghệ..." : "Search systems, keywords, tech..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 text-xs sm:text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-hidden focus:border-blue-500 shadow-2xs transition"
@@ -350,17 +353,19 @@ export const SystemsView: React.FC = () => {
           </div>
 
           {/* Lưới 12 thẻ hệ thống (3 Cột x 4 Hàng) */}
-          <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-1 py-0.5">
+          <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-1 py-0.5 flex flex-col justify-center">
             {filteredSystems.length === 0 ? (
-              <div className="text-center py-16 px-4 bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-slate-200/80 backdrop-blur-md flex flex-col items-center justify-center h-full">
+              <div className="text-center py-16 px-4 bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-slate-200/80 backdrop-blur-md flex flex-col items-center justify-center h-full my-auto">
                 <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mb-2">
                   <WebIcon name="search" className="w-6 h-6" />
                 </div>
                 <p className="text-base font-bold text-slate-700 dark:text-slate-200 font-play">
-                  Không tìm thấy hệ thống phù hợp
+                  {isVi ? 'Không tìm thấy hệ thống phù hợp' : 'No matching systems found'}
                 </p>
                 <p className="text-xs text-slate-400 mt-1">
-                  Hãy thử nhập từ khóa khác như "CRM", "ERP", "LMS" hoặc "CSKH"...
+                  {isVi
+                    ? 'Hãy thử nhập từ khóa khác như "CRM", "ERP", "LMS" hoặc "CSKH"...'
+                    : 'Try another keyword like "CRM", "ERP", "LMS" or "CS"...'}
                 </p>
                 <button
                   type="button"
@@ -370,11 +375,11 @@ export const SystemsView: React.FC = () => {
                   }}
                   className="mt-4 px-5 py-2 rounded-full text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition cursor-pointer"
                 >
-                  Xem lại tất cả 12 hệ thống
+                  {isVi ? 'Xem lại tất cả 12 hệ thống' : 'View all 12 systems'}
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 pb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 pb-2 my-auto">
                 {filteredSystems.map((item) => (
                   <article
                     key={item.id}
@@ -384,7 +389,7 @@ export const SystemsView: React.FC = () => {
                     title={`Nhấp để xem chi tiết ${item.abbr} - ${item.fullName}`}
                   >
                     {/* Top: Icon bên trái (hộp squircle bán trong suốt) + Phân loại, Tên viết tắt, Tên đầy đủ */}
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-center gap-3">
                       <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center shrink-0 shadow-inner group-hover:scale-106 transition-transform duration-300">
                         <WebIcon name={item.icon} className="w-6 h-6 text-white" />
                       </div>
@@ -402,7 +407,7 @@ export const SystemsView: React.FC = () => {
                     </div>
 
                     {/* Bottom: Mô tả 2 dòng + Nút tròn mũi tên chuyển trang */}
-                    <div className="flex items-end justify-between gap-2 mt-3 pt-1 border-t border-white/15">
+                    <div className="flex items-center justify-between gap-2 mt-3 pt-1 border-t border-white/15">
                       <p className="text-[10.5px] text-white/90 leading-snug line-clamp-2 flex-1 pr-1 font-medium">
                         {item.desc}
                       </p>
@@ -424,7 +429,7 @@ export const SystemsView: React.FC = () => {
         </div>
 
         {/* VÙNG BÊN PHẢI: BANNER KIẾN TRÚC HỆ THỐNG (CHUẨN 300px THEO HÌNH ĐÍNH KÈM) */}
-        <aside className="w-full lg:w-[300px] xl:w-[300px] shrink-0 h-full rounded-[22px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 p-3.5 sm:p-4 shadow-sm backdrop-blur-xl flex flex-col justify-between overflow-y-auto custom-scrollbar select-none text-left gap-2.5 lg:order-2">
+        <aside className="w-full lg:w-[300px] xl:w-[300px] shrink-0 h-full rounded-[22px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 p-3.5 sm:p-4 shadow-sm backdrop-blur-xl flex flex-col justify-between overflow-y-auto custom-scrollbar select-none text-left gap-2.5 lg:order-2 my-auto">
           {/* PHẦN 1: HEADER BANNER (Badge Kiến trúc & Badge Trực tuyến 24/7) */}
           <div className="flex items-center justify-between pb-1">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800 text-blue-600 dark:text-blue-400 text-[11px] font-bold">
