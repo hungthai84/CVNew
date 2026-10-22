@@ -155,12 +155,10 @@ export const MemoriesView: React.FC = () => {
 
       {/* 1. TOP HERO BANNER VỚI NÚT NHÓM, TÌM KIẾM, FILTER, VIEW NẰM DƯỚI BANNER BÊN TRONG BANNER */}
       <HeroBanner
-        badgeText="Kỷ niệm"
         title="Khoảnh Khắc Kỷ Niệm"
         subtitle="Lưu giữ những khoảnh khắc tự hào trên hành trình hơn 22 năm cống hiến"
         quote="“Khoảnh khắc tự hào lưu giữ hành trình cống hiến thực chiến.”"
         quoteAuthor="— Nguyễn Hùng Thái"
-        badgeColor="text-rose-600"
         videoSrc="https://cdn.scena.ai/project/10223/f4c3b1609dff55beba6724fc23e5bea0499462b4096d444e320c33727ec0f455.mp4"
         bottomControls={
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 w-full pt-1 px-1">

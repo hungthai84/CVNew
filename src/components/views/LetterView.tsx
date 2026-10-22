@@ -340,12 +340,10 @@ export const LetterView: React.FC = () => {
         <div key="slide-1" className={`w-full flex flex-col gap-[15px] ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
           {/* Top Hero Banner */}
           <HeroBanner
-            badgeText="Thư ngỏ"
             title="Thư Ngỏ Đối Tác"
             subtitle="Thông điệp hợp tác – Định hướng phát triển bền vững cùng doanh nghiệp"
             quote="“Trải nghiệm hôm nay kiến tạo giá trị bền vững ngày mai.”"
             quoteAuthor="— Nguyễn Hùng Thái"
-            badgeColor="text-rose-600 dark:text-rose-400"
             videoSrc="https://cdn.scena.ai/project/10223/613f6772f425f2e4b9526e40970b5a3295a59dba54cbbdddc912ba437fb02ca4.mp4"
           />
 

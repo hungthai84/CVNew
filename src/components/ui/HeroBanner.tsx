@@ -75,7 +75,7 @@ function resolvePageThemeColor(title: string, badge?: string, overrideColor?: st
 }
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({
-  badgeText = 'Khám phá',
+  badgeText,
   title,
   titleIcon,
   subtitle,
@@ -85,7 +85,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   posterSrc,
   imageSrc,
   hideTextOverlay = false,
-  badgeColor = 'text-sky-600',
+  badgeColor,
   themeColor,
   bottomControls,
   className = '',
@@ -98,7 +98,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
 
   return (
     <div
-      className={`hero-banner theme-hero-banner relative border-none shadow-sm shrink-0 bg-slate-900/40 overflow-hidden ${className}`}
+      className={`hero-banner theme-hero-banner relative border-none shadow-sm shrink-0 bg-sky-100/60 overflow-hidden ${className}`}
     >
       <style
         dangerouslySetInnerHTML={{
@@ -120,14 +120,15 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
         }}
       />
 
-      {/* Hình nền Video MP4 trực tiếp làm sáng rõ nét (brightness 1.05, contrast 1.05) */}
+      {/* Hình nền Video MP4 trực tiếp làm sáng rõ nét */}
       {hasVideo ? (
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none brightness-[1.05] contrast-[1.04]"
+          poster={posterSrc || '/images/domains/hero-banner.webp'}
+          className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
         >
           <source src={videoSrc} type="video/mp4" />
           <source
@@ -139,56 +140,58 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
         <img
           src={imageSrc}
           alt={title}
-          className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none brightness-[1.05] contrast-[1.04]"
+          className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
         />
       ) : null}
 
-      {/* Lớp phủ mỏng trong suốt để đảm bảo nhìn rõ nền video trong khi chữ vẫn dễ đọc */}
-      <div className="absolute inset-0 bg-gradient-to-r from-white/35 via-transparent to-black/25 pointer-events-none" />
+      {/* Lớp phủ tương phản để đảm bảo chữ trên banner luôn hiển thị rõ nét giống trang Lĩnh Vực */}
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-950/50 via-slate-950/20 to-slate-950/55 pointer-events-none" />
 
       {/* Lớp nội dung chữ trên banner */}
       <div className="absolute inset-0 z-10 px-4 sm:px-6 py-3 sm:py-3.5 flex flex-col justify-between pointer-events-none">
         {/* Hàng chữ phía trên/giữa: Tiêu đề bên trái, Câu nói hay bên phải */}
         {!hideTextOverlay ? (
           <div className="flex items-start justify-between gap-3 w-full">
-            {/* Khối chữ bên trái: Badge viết tay + Tiêu đề chính + Subtitle + Thanh cam */}
+            {/* Khối chữ bên trái: Tiêu đề chính + Subtitle + Thanh cam */}
             <div className="flex flex-col items-start pointer-events-auto max-w-[62%] sm:max-w-[50%]">
-              <span
-                className={`font-handwriting font-bold text-xl sm:text-2xl lg:text-3xl leading-tight drop-shadow-xs select-none ${badgeColor}`}
-              >
-                {badgeText}
-              </span>
+              {badgeText && (
+                <span
+                  className={`font-handwriting font-bold text-xl sm:text-2xl lg:text-3xl leading-tight drop-shadow-xs select-none ${badgeColor || 'text-sky-600'}`}
+                >
+                  {badgeText}
+                </span>
+              )}
 
               {/* Tiêu đề có icon chuyển động tại chỗ đứng trước, màu tiêu đề giống màu icon và màu menu icon ở trang */}
               <h2
-                className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play tracking-tight leading-tight mt-0.5 select-none flex items-center gap-2"
+                className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play tracking-tight leading-tight mt-0.5 select-none flex items-center gap-2 drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
                 style={{ color: pageThemeColor }}
               >
-                <span className="animate-banner-icon shrink-0" style={{ color: pageThemeColor }}>
+                <span className="inline-flex animate-banner-icon shrink-0" style={{ color: pageThemeColor }}>
                   <WebIcon name={iconName} className="w-5 h-5 sm:w-6 sm:h-6" />
                 </span>
                 <span>{displayTitle}</span>
               </h2>
 
-              <p className="text-[11px] sm:text-xs md:text-sm font-semibold text-slate-800 tracking-normal mt-0.5 drop-shadow-2xs select-none">
+              <p className="text-[11px] sm:text-xs md:text-sm font-bold text-white tracking-normal mt-1 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)] select-none">
                 {subtitle}
               </p>
-              <div className="w-12 sm:w-16 h-1.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 shadow-xs mt-1.5" />
+              <div className="w-12 sm:w-16 h-1.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400 shadow-md mt-1.5" />
             </div>
 
-            {/* Khối chữ bên phải: Câu trích dẫn với chữ màu vàng, chỉ để font chữ màu vàng (xóa viền line đen) */}
+            {/* Khối chữ bên phải: Câu trích dẫn với chữ màu vàng rõ nét giống trang Lĩnh Vực */}
             {quote && (
               <div className="hidden sm:flex flex-col items-end text-right pointer-events-auto max-w-[48%] lg:max-w-[44%] pt-0.5">
                 <div className="p-1 sm:p-1.5 bg-transparent border-none shadow-none flex flex-col items-end">
-                  <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none">
+                  <p className="font-banner-quote text-2xl sm:text-3xl lg:text-[34px] text-amber-300 font-normal leading-tight select-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
                     {quote}
                   </p>
                   {quoteAuthor && (
-                    <span className="text-[10.5px] sm:text-[11.5px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play">
+                    <span className="text-[10px] sm:text-[11px] font-bold text-amber-200/90 mt-0.5 block tracking-wider font-play drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
                       {quoteAuthor}
                     </span>
                   )}
-                  <div className="w-20 sm:w-28 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent relative mt-1 flex items-center justify-center">
+                  <div className="w-24 sm:w-32 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent relative mt-1.5 flex items-center justify-center">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-xs" />
                   </div>
                 </div>

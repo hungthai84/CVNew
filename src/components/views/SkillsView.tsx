@@ -229,12 +229,10 @@ export const SkillsView: React.FC = () => {
     <div className="w-full h-full flex-1 flex flex-col justify-between gap-3 sm:gap-4 max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden">
       {/* 1. TOP HERO BANNER */}
       <HeroBanner
-        badgeText="Kỹ năng chuyên môn"
         title="Kỹ Năng Quản Trị"
         subtitle="Làm chủ công nghệ – Nâng tầm năng lực quản trị dịch vụ khách hàng"
         quote="“Làm chủ công nghệ và rèn giũa kỹ năng quản trị.”"
         quoteAuthor="— Nguyễn Hùng Thái"
-        badgeColor="text-indigo-600 dark:text-indigo-400"
         videoSrc="https://cdn.scena.ai/project/10223/b5ecf50da08531a13ef8f06600ed5f2c414d15cf98e7fc1a1cfc09cba209ab3d.mp4"
         bottomControls={
           <div className="w-full flex items-center justify-end pointer-events-auto">

@@ -296,14 +296,11 @@ export const EducationView: React.FC = () => {
     <div className="w-full h-full flex-1 flex flex-col justify-between gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden text-left">
       {/* 1. TOP HERO BANNER */}
       <HeroBanner
-        badgeText={isVi ? 'Học tập' : 'Education'}
         title={isVi ? 'Học Vấn Chứng Chỉ' : 'Education & Credentials'}
         subtitle={isVi ? 'Nâng tầm kiến thức – Kiến tạo sự nghiệp' : 'Continuous Learning – Career Elevation'}
         quote={isVi ? '“Học hỏi không ngừng để nâng tầm tri thức và năng lực vận hành.”' : '“Lifelong learning elevates operational leadership and customer experience.”'}
         quoteAuthor="— Nguyễn Hùng Thái"
-        badgeColor="text-emerald-600"
-        imageSrc="/images/education/hero-banner.png"
-        hideTextOverlay={true}
+        videoSrc="/videos/domains-banner.mp4"
         bottomControls={
           <div className="w-full flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 pointer-events-auto">
             {/* Category Pills */}

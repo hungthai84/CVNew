@@ -277,12 +277,10 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
     <div className="w-full flex-grow flex flex-col gap-4 max-w-7xl mx-auto justify-start select-none relative text-slate-800 pb-10 text-left p-0">
       {/* 1. TOP HERO BANNER (ĐỒNG BỘ CHUẨN FORM TRANG LĨNH VỰC) */}
       <HeroBanner
-        badgeText="Hình nền"
         title="Tùy Biến Giao Diện"
         subtitle="Tùy biến phong cách đa dạng – Video động, Ảnh chất lượng cao & Gradient nghệ thuật"
         quote="“Nhấp 1 lần xem thử • Nhấp đúp lưu làm Mặc Định lâu dài.”"
         quoteAuthor="— Nguyễn Hùng Thái"
-        badgeColor="text-fuchsia-600"
         videoSrc="https://cdn.scena.ai/project/10223/85c60f965c31d8901995509ba70ec1c48bc618b045821510b3dee9f89646a8d1.mp4"
         bottomControls={
           <div className="w-full flex flex-wrap items-center justify-between gap-2.5 pt-1 px-1">
