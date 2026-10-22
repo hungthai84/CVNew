@@ -207,31 +207,29 @@ export const Header: React.FC<HeaderProps> = ({
                   ...(isSelected
                     ? {
                         background:
-                          currentTheme === 'light-glass-multicolor'
-                            ? 'linear-gradient(135deg, #3B82F6 0%, #22C1DC 100%)'
+                          currentTheme === 'dark-neon'
+                            ? page.theme
+                            : currentTheme === 'light-glass-multicolor'
+                            ? `linear-gradient(135deg, ${page.theme} 0%, ${page.theme}ee 100%)`
                             : page.theme,
                         borderColor: '#ffffff',
                         color: '#ffffff',
                         boxShadow: isOverflowing
-                          ? `-3px 0 10px rgba(0, 0, 0, 0.22), 0 2px 8px -1px ${page.theme}70, inset 0 1px 1.5px rgba(255, 255, 255, 0.75)`
-                          : `0 2px 8px -1px ${page.theme}70, inset 0 1px 1.5px rgba(255, 255, 255, 0.75)`,
+                          ? `-3px 0 10px rgba(0, 0, 0, 0.22), 0 3px 12px -1px ${page.theme}75, inset 0 1px 1.5px rgba(255, 255, 255, 0.85)`
+                          : `0 3px 12px -1px ${page.theme}75, inset 0 1px 1.5px rgba(255, 255, 255, 0.85)`,
                       }
                     : {
                         borderColor: isDark
                           ? `${page.theme}60`
                           : currentTheme === 'light-glass-multicolor'
-                          ? 'rgba(255, 255, 255, 0.9)'
+                          ? 'rgba(255, 255, 255, 0.92)'
                           : page.borderColor || `${page.theme}45`,
                         background: isDark
-                          ? 'rgba(15, 23, 42, 0.75)'
+                          ? 'rgba(15, 23, 42, 0.78)'
                           : currentTheme === 'light-glass-multicolor'
-                          ? 'rgba(255, 255, 255, 0.72)'
+                          ? 'rgba(255, 255, 255, 0.78)'
                           : page.bgNormal || page.bgLight || `${page.theme}15`,
-                        color: isDark
-                          ? '#f1f5f9'
-                          : currentTheme === 'light-glass-multicolor'
-                          ? '#1E3A6D'
-                          : page.theme,
+                        color: isDark ? '#f1f5f9' : page.theme,
                         boxShadow: isOverflowing
                           ? '-2px 0 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.45)'
                           : undefined,
@@ -246,12 +244,17 @@ export const Header: React.FC<HeaderProps> = ({
                     background: isSelected
                       ? 'rgba(255, 255, 255, 0.28)'
                       : isDark
-                      ? 'rgba(15, 23, 42, 0.85)'
+                      ? 'rgba(15, 23, 42, 0.9)'
                       : page.bgLight,
                     color: isSelected ? '#ffffff' : page.theme,
+                    border: isSelected
+                      ? '1px solid rgba(255, 255, 255, 0.4)'
+                      : isDark
+                      ? `1px solid ${page.theme}40`
+                      : '1px solid rgba(255, 255, 255, 0.7)',
                   }}
                 >
-                  <span className="w-4 h-4 flex items-center justify-center">
+                  <span className="w-[18px] h-[18px] flex items-center justify-center shrink-0">
                     {page.iconSvg}
                   </span>
                 </div>
