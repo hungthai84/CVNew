@@ -352,17 +352,17 @@ export const EducationView: React.FC = () => {
                   type="button"
                   onClick={() => {
                     setLayoutMode('grid');
-                    showToast(isVi ? 'Đã chuyển sang chế độ Lưới Đáp Ứng (Responsive Grid)' : 'Switched to Responsive Grid View');
+                    showToast(isVi ? 'Đã chuyển sang chế độ Lưới 4 Cột' : 'Switched to 4-Column Grid View');
                   }}
                   className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap ${
                     layoutMode === 'grid'
                       ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs'
                       : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                   }`}
-                  title={isVi ? 'Chế độ Lưới Đáp Ứng (Responsive Grid)' : 'Responsive Grid View'}
+                  title={isVi ? 'Chế độ Lưới 4 Cột (4-Column Grid View)' : '4-Column Grid View'}
                 >
                   <WebIcon name="grid" className="w-3.5 h-3.5" />
-                  <span>{isVi ? 'Lưới Grid' : 'Grid'}</span>
+                  <span>{isVi ? 'Lưới 4 Cột' : '4-Col Grid'}</span>
                 </button>
               </div>
 
@@ -619,7 +619,7 @@ export const EducationView: React.FC = () => {
             </div>
           </div>
         ) : (
-          /* ENHANCED RESPONSIVE GRID VIEW (LƯỚI ĐÁP ỨNG TOÀN DIỆN CHO MỌI THIẾT BỊ) */
+          /* 4-COLUMN RESPONSIVE GRID VIEW (LƯỚI 4 CỘT HIỂN THỊ RÕ RÀNG & CÂN ĐỐI) */
           <div className="w-full h-full flex-1 min-h-0 flex flex-col overflow-hidden">
             {/* Sub-header status bar */}
             <div className="flex items-center justify-between px-3 py-1.5 shrink-0 border-b border-slate-200/60 dark:border-white/10 mb-2">
@@ -632,13 +632,13 @@ export const EducationView: React.FC = () => {
                 </span>
               </div>
               <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold italic hidden sm:inline">
-                {isVi ? 'Chạm hoặc click thẻ để xem chi tiết bằng cấp →' : 'Click any card to view credential details →'}
+                {isVi ? '▦ Lưới 4 Cột • Chạm hoặc click thẻ để xem chi tiết bằng cấp →' : '▦ 4-Column Grid • Click any card to view credential details →'}
               </span>
             </div>
 
-            {/* Responsive Grid Container with Smooth Scrollbar */}
-            <div className="w-full flex-1 min-h-0 overflow-y-auto custom-scrollbar p-1 sm:p-1.5">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 sm:gap-3.5 items-stretch pb-4">
+            {/* 4-Column Grid Container with Smooth Scrollbar */}
+            <div className="w-full flex-1 min-h-0 overflow-y-auto custom-scrollbar p-1 sm:p-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 items-stretch pb-6">
                 {filteredBooks.map((book) => {
                   const meta = cardMetaMap[book.id] || {
                     displayTitle: book.title,
@@ -653,10 +653,10 @@ export const EducationView: React.FC = () => {
                     <div
                       key={book.id}
                       onClick={() => setSelectedBook(book)}
-                      className="group relative rounded-2xl bg-white/95 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/90 dark:border-white/10 shadow-[0_4px_16px_-2px_rgba(15,23,42,0.08),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:border-emerald-500/60 dark:hover:border-emerald-500/60 hover:shadow-[0_16px_32px_-6px_rgba(16,185,129,0.2)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer h-full min-h-[275px] sm:min-h-[285px] xl:min-h-[270px] text-left"
+                      className="group relative rounded-2xl bg-white/95 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/90 dark:border-white/10 shadow-[0_4px_18px_-2px_rgba(15,23,42,0.08),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:border-emerald-500/60 dark:hover:border-emerald-500/60 hover:shadow-[0_16px_36px_-6px_rgba(16,185,129,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer h-full min-h-[300px] text-left"
                     >
                       {/* Card Banner Thumbnail Image */}
-                      <div className="w-full h-24 sm:h-24 xl:h-20 relative overflow-hidden bg-slate-900 border-b border-slate-200/70 dark:border-white/10 shrink-0">
+                      <div className="w-full h-28 sm:h-32 lg:h-30 relative overflow-hidden bg-slate-900 border-b border-slate-200/70 dark:border-white/10 shrink-0">
                         <img
                           src={`/images/education/card-banner-${String(book.id).padStart(2, '0')}.png`}
                           alt={book.title}
@@ -666,32 +666,32 @@ export const EducationView: React.FC = () => {
                               book.bannerImg || book.courseImg || 'https://placehold.co/400x160/10b981/ffffff?text=Education';
                           }}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent pointer-events-none" />
 
                         {/* Top Badges overlay on banner */}
                         <span
-                          className={`absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-mono font-black text-white shadow-xs ${meta.themeColor}`}
+                          className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[9.5px] font-mono font-black text-white shadow-xs ${meta.themeColor}`}
                         >
                           {book.code}
                         </span>
-                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[8.5px] font-mono font-bold bg-white/95 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 shadow-2xs border border-white/60 dark:border-white/20">
+                        <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-white/95 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 shadow-2xs border border-white/60 dark:border-white/20">
                           {book.year}
                         </span>
 
                         {/* Floating Theme Icon on Banner Bottom */}
                         <div
-                          className={`absolute -bottom-2.5 left-3 w-6 h-6 rounded-lg ${meta.themeColor} text-white flex items-center justify-center shadow-md border-2 border-white dark:border-slate-800 z-10`}
+                          className={`absolute -bottom-3 left-3.5 w-7 h-7 rounded-xl ${meta.themeColor} text-white flex items-center justify-center shadow-md border-2 border-white dark:border-slate-800 z-10`}
                         >
-                          <WebIcon name={meta.icon} className="w-3.5 h-3.5" />
+                          <WebIcon name={meta.icon} className="w-4 h-4" />
                         </div>
                       </div>
 
                       {/* Card Body */}
-                      <div className="p-3 pt-3.5 flex flex-col justify-between flex-1 min-h-0 gap-1.5">
+                      <div className="p-3.5 pt-4 flex flex-col justify-between flex-1 min-h-0 gap-2">
                         <div className="space-y-1.5 min-h-0">
                           {/* Title */}
                           <h3
-                            className="font-bold text-xs sm:text-[12.5px] xl:text-[11px] text-slate-900 dark:text-white line-clamp-2 font-play leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors"
+                            className="font-bold text-[13px] sm:text-sm text-slate-900 dark:text-white line-clamp-1 font-play leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors"
                             title={meta.displayTitle}
                           >
                             {meta.displayTitle}
@@ -699,24 +699,24 @@ export const EducationView: React.FC = () => {
 
                           {/* Organization / Don vi */}
                           <span
-                            className="text-[9px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 px-1.5 py-0.5 rounded block truncate"
+                            className="text-[9.5px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 px-2 py-0.5 rounded-md inline-block max-w-full truncate"
                             title={book.org}
                           >
                             {book.org}
                           </span>
 
                           {/* Summary */}
-                          <p className="text-[9.5px] text-slate-600 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed">
+                          <p className="text-[10px] text-slate-600 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed">
                             {meta.summary}
                           </p>
 
                           {/* Skill Chips */}
                           {meta.chips && meta.chips.length > 0 && (
-                            <div className="flex flex-wrap gap-1 pt-1 border-t border-slate-100 dark:border-white/5">
+                            <div className="flex flex-wrap gap-1 pt-1.5 border-t border-slate-100 dark:border-white/5">
                               {meta.chips.slice(0, 2).map((chip, idx) => (
                                 <span
                                   key={idx}
-                                  className="text-[8px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/90 px-1.5 py-0.5 rounded truncate max-w-full block"
+                                  className="text-[8.5px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/90 px-2 py-0.5 rounded-md truncate max-w-full block"
                                   title={chip}
                                 >
                                   • {chip}
@@ -727,9 +727,9 @@ export const EducationView: React.FC = () => {
                         </div>
 
                         {/* Card Footer */}
-                        <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 mt-auto shrink-0">
-                          <div className="flex items-center gap-1 text-[9px] font-bold text-slate-500 dark:text-slate-400">
-                            <svg className="w-2.5 h-2.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800 mt-auto shrink-0">
+                          <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-500 dark:text-slate-400">
+                            <svg className="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                             </svg>
                             <span>{isVi ? 'Đã chứng nhận' : 'Certified'}</span>
@@ -741,9 +741,9 @@ export const EducationView: React.FC = () => {
                               e.stopPropagation();
                               setSelectedBook(book);
                             }}
-                            className={`px-2.5 py-1 rounded-full text-[9.5px] font-bold text-white shadow-xs transition-all flex items-center gap-1 cursor-pointer hover:shadow-sm active:scale-95 shrink-0 ${meta.buttonBg}`}
+                            className={`px-3 py-1 rounded-full text-[10px] font-extrabold text-white shadow-xs transition-all flex items-center gap-1 cursor-pointer hover:shadow-sm active:scale-95 shrink-0 ${meta.buttonBg}`}
                           >
-                            <span>{isVi ? 'Chi tiết' : 'Details'}</span>
+                            <span>{isVi ? 'Xem chi tiết' : 'Details'}</span>
                             <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                             </svg>
