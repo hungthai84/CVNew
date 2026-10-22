@@ -204,12 +204,12 @@ export const EducationView: React.FC = () => {
         {/* 1. card-img: Hình banner khóa học với gradient bóng bẩy chuẩn CodePen */}
         <div className="w-full h-[95px] relative overflow-hidden bg-slate-900 border-b border-slate-200/80 dark:border-white/10 shrink-0">
           <img
-            src={`/images/education/card-banner-${String(book.id).padStart(2, '0')}.png`}
+            src={book.bannerImg || `/images/education/card-banner-${String(book.id).padStart(2, '0')}.png`}
             alt={book.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
             onError={(e) => {
               (e.target as HTMLImageElement).src =
-                book.bannerImg || book.courseImg || 'https://placehold.co/400x160/10b981/ffffff?text=Education';
+                `/images/education/card-banner-${String(book.id).padStart(2, '0')}.png`;
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/20 to-transparent pointer-events-none" />
@@ -655,12 +655,12 @@ export const EducationView: React.FC = () => {
                       {/* Card Banner Thumbnail Image */}
                       <div className="w-full h-28 sm:h-32 lg:h-30 relative overflow-hidden bg-slate-900 border-b border-slate-200/70 dark:border-white/10 shrink-0">
                         <img
-                          src={`/images/education/card-banner-${String(book.id).padStart(2, '0')}.png`}
+                          src={book.bannerImg || `/images/education/card-banner-${String(book.id).padStart(2, '0')}.png`}
                           alt={book.title}
                           className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src =
-                              book.bannerImg || book.courseImg || 'https://placehold.co/400x160/10b981/ffffff?text=Education';
+                              `/images/education/card-banner-${String(book.id).padStart(2, '0')}.png`;
                           }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/30 to-transparent pointer-events-none" />
