@@ -518,7 +518,7 @@ export const HoroscopeView: React.FC = () => {
                             <WebIcon name="shield" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                           </div>
                           <div className="min-w-0">
-                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 truncate">
+                            <div className="text-[10px] sm:text-[10.5px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 truncate">
                               BẢN MỆNH NẠP ÂM
                             </div>
                             <div className="text-[10.5px] sm:text-[11px] font-black text-emerald-800 dark:text-emerald-300 truncate">
@@ -533,7 +533,7 @@ export const HoroscopeView: React.FC = () => {
                             <WebIcon name="globe" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                           </div>
                           <div className="min-w-0">
-                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 truncate">
+                            <div className="text-[10px] sm:text-[10.5px] font-extrabold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 truncate">
                               CUNG MỆNH BỐI KIM
                             </div>
                             <div className="text-[10.5px] sm:text-[11px] font-black text-cyan-800 dark:text-cyan-300 truncate">
@@ -548,7 +548,7 @@ export const HoroscopeView: React.FC = () => {
                             <WebIcon name="hash" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                           </div>
                           <div className="min-w-0">
-                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-rose-600 dark:text-rose-400 truncate">
+                            <div className="text-[10px] sm:text-[10.5px] font-extrabold uppercase tracking-wider text-rose-600 dark:text-rose-400 truncate">
                               KIM TỨ CỤC VẬN
                             </div>
                             <div className="text-[10.5px] sm:text-[11px] font-black text-rose-800 dark:text-rose-300 truncate">
@@ -565,7 +565,7 @@ export const HoroscopeView: React.FC = () => {
                             <WebIcon name="compass" className="w-3 h-3 text-purple-600 dark:text-purple-400" />
                             <span>Hướng Cát Bát Trạch</span>
                           </div>
-                          <span className="text-[9.5px] font-semibold px-2 py-0.2 rounded-full bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800/50">
+                          <span className="text-[10.5px] font-semibold px-2 py-0.2 rounded-full bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800/50">
                             Tây Tứ Trạch
                           </span>
                         </div>
@@ -577,8 +577,8 @@ export const HoroscopeView: React.FC = () => {
                               <span className="text-teal-600 font-bold">▲</span>
                               <span>Tây Bắc</span>
                             </div>
-                            <div className="text-[9px] font-bold text-teal-600 dark:text-teal-400">Thiên Y</div>
-                            <p className="text-[9px] sm:text-[9.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
+                            <div className="text-[10px] font-bold text-teal-600 dark:text-teal-400">Thiên Y</div>
+                            <p className="text-[10px] sm:text-[10.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
                               Thu hút tài lộc, danh tiếng & thăng tiến
                             </p>
                           </div>
@@ -589,8 +589,8 @@ export const HoroscopeView: React.FC = () => {
                               <span className="text-emerald-600 font-bold">🌱</span>
                               <span>Sinh Khí</span>
                             </div>
-                            <div className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400">Tây Nam</div>
-                            <p className="text-[9px] sm:text-[9.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
+                            <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">Tây Nam</div>
+                            <p className="text-[10px] sm:text-[10.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
                               Củng cố các mối quan hệ & đồng đội gắn kết
                             </p>
                           </div>
@@ -601,8 +601,8 @@ export const HoroscopeView: React.FC = () => {
                               <span className="text-sky-600 font-bold">🛡️</span>
                               <span>Diên Niên</span>
                             </div>
-                            <div className="text-[9px] font-bold text-sky-600 dark:text-sky-400">Đông Bắc</div>
-                            <p className="text-[9px] sm:text-[9.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
+                            <div className="text-[10px] font-bold text-sky-600 dark:text-sky-400">Đông Bắc</div>
+                            <p className="text-[10px] sm:text-[10.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
                               Cải thiện sức khỏe, trường thọ & bình an
                             </p>
                           </div>
@@ -613,8 +613,8 @@ export const HoroscopeView: React.FC = () => {
                               <span className="text-purple-600 font-bold">★</span>
                               <span>Phục Vị</span>
                             </div>
-                            <div className="text-[9px] font-bold text-purple-600 dark:text-purple-400">Chính Tây</div>
-                            <p className="text-[9px] sm:text-[9.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
+                            <div className="text-[10px] font-bold text-purple-600 dark:text-purple-400">Chính Tây</div>
+                            <p className="text-[10px] sm:text-[10.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
                               Củng cố sức mạnh tinh thần, may mắn thi cử
                             </p>
                           </div>
@@ -700,7 +700,7 @@ export const HoroscopeView: React.FC = () => {
                                   </h4>
                                 </div>
                                 <span
-                                  className={`text-[9.5px] font-black px-2 py-0.5 rounded-full ${colorPalette.bg} ${colorPalette.badgeText} border ${colorPalette.border} shrink-0`}
+                                  className={`text-[10px] font-black px-2 py-0.5 rounded-full ${colorPalette.bg} ${colorPalette.badgeText} border ${colorPalette.border} shrink-0`}
                                 >
                                   {trait.tag}
                                 </span>
@@ -813,7 +813,7 @@ export const HoroscopeView: React.FC = () => {
                                     {palace.name}
                                   </h5>
                                 </div>
-                                <span className={`text-[9.5px] font-black px-2 py-0.5 rounded-full ${palette.bg} ${palette.badgeText} border ${palette.border}`}>
+                                <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${palette.bg} ${palette.badgeText} border ${palette.border}`}>
                                   {palace.tag}
                                 </span>
                               </div>
@@ -828,7 +828,7 @@ export const HoroscopeView: React.FC = () => {
                                 {palace.stars.map((star, i) => (
                                   <span
                                     key={i}
-                                    className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-md ${
+                                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
                                       star.main
                                         ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30'
                                         : 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border border-slate-500/20'
@@ -864,7 +864,7 @@ export const HoroscopeView: React.FC = () => {
                             <div className="space-y-1">
                               <div className="flex items-center justify-between pb-1 border-b border-black/5 dark:border-white/5">
                                 <h5 className={`text-[11px] font-black ${el.titleColor}`}>{el.element}</h5>
-                                <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full ${el.iconBg}`}>
+                                <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${el.iconBg}`}>
                                   Hành Tố
                                 </span>
                               </div>
@@ -931,7 +931,7 @@ export const HoroscopeView: React.FC = () => {
                                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/80 dark:border-amber-700/50 flex items-center justify-center shrink-0">
                                   <WebIcon name={iconName} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 </div>
-                                <span className="text-[9.5px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-100/70 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/40">
+                                <span className="text-[10px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-100/70 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/40">
                                   0{idx + 1}
                                 </span>
                               </div>
@@ -945,7 +945,7 @@ export const HoroscopeView: React.FC = () => {
                               </p>
                             </div>
 
-                            <div className="pt-1.5 border-t border-amber-100 dark:border-amber-900/40 flex items-center gap-1.5 text-[9.5px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">
+                            <div className="pt-1.5 border-t border-amber-100 dark:border-amber-900/40 flex items-center gap-1.5 text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">
                               <WebIcon name="sparkles" className="w-2.5 h-2.5 shrink-0" />
                               <span>Giá trị cốt lõi</span>
                             </div>
@@ -994,7 +994,7 @@ export const HoroscopeView: React.FC = () => {
                   Tra Hợp Công Việc
                 </h3>
               </div>
-              <span className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800 flex items-center gap-1 shadow-2xs">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800 flex items-center gap-1 shadow-2xs">
                 <WebIcon name="layers" className="w-3 h-3 text-teal-600" />
                 <span>12 Con giáp</span>
               </span>
@@ -1057,7 +1057,7 @@ export const HoroscopeView: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-1.5 shrink-0">
-                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full text-white shadow-2xs ${item.badgeClass}`}>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white shadow-2xs ${item.badgeClass}`}>
                         {item.displayScore}
                       </span>
                       <span className="text-[11px] text-slate-400 font-bold">›</span>

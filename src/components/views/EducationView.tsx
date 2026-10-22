@@ -216,11 +216,11 @@ export const EducationView: React.FC = () => {
 
           {/* Top Badges */}
           <span
-            className={`absolute top-2 left-2 px-2 py-0.5 rounded-md text-[9px] font-mono font-black text-white shadow-xs ${meta.themeColor}`}
+            className={`absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-mono font-black text-white shadow-xs ${meta.themeColor}`}
           >
             {book.code}
           </span>
-          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-white/95 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 shadow-2xs border border-white/60 dark:border-white/20">
+          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/95 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 shadow-2xs border border-white/60 dark:border-white/20">
             {book.year}
           </span>
 
@@ -243,13 +243,13 @@ export const EducationView: React.FC = () => {
             </h3>
 
             <span
-              className="text-[9px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 px-1.5 py-0.5 rounded block truncate"
+              className="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 px-1.5 py-0.5 rounded block truncate"
               title={book.org}
             >
               {book.org}
             </span>
 
-            <p className="text-[9.5px] text-slate-600 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed mt-0.5">
+            <p className="text-[10.5px] text-slate-600 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed mt-0.5">
               {meta.summary}
             </p>
           </div>
@@ -259,7 +259,7 @@ export const EducationView: React.FC = () => {
             {meta.chips.slice(0, 2).map((chip, i) => (
               <span
                 key={i}
-                className="px-1.5 py-0.5 rounded text-[8px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 truncate max-w-full block"
+                className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 truncate max-w-full block"
               >
                 • {chip}
               </span>
@@ -430,11 +430,11 @@ export const EducationView: React.FC = () => {
                   <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight font-play">
                     Tổng Kết Khóa Học & Năng Lực
                   </span>
-                  <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
                     100% Hoàn thành
                   </span>
                 </div>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                <span className="text-[10.5px] text-slate-500 dark:text-slate-400 font-medium">
                   14 khóa học & chứng chỉ chuyên ngành phân bổ theo 4 trụ cột năng lực
                 </span>
               </div>
@@ -449,7 +449,7 @@ export const EducationView: React.FC = () => {
                 </div>
                 <div className="flex flex-col text-left leading-none">
                   <span className="text-xs font-black">3</span>
-                  <span className="text-[9px] text-cyan-700 dark:text-cyan-300 font-bold whitespace-nowrap">Bằng cấp</span>
+                  <span className="text-[10px] text-cyan-700 dark:text-cyan-300 font-bold whitespace-nowrap">Bằng cấp</span>
                 </div>
               </div>
 
@@ -460,7 +460,7 @@ export const EducationView: React.FC = () => {
                 </div>
                 <div className="flex flex-col text-left leading-none">
                   <span className="text-xs font-black">5</span>
-                  <span className="text-[9px] text-indigo-700 dark:text-indigo-300 font-bold whitespace-nowrap">Chứng chỉ</span>
+                  <span className="text-[10px] text-indigo-700 dark:text-indigo-300 font-bold whitespace-nowrap">Chứng chỉ</span>
                 </div>
               </div>
 
@@ -471,7 +471,7 @@ export const EducationView: React.FC = () => {
                 </div>
                 <div className="flex flex-col text-left leading-none">
                   <span className="text-xs font-black">14</span>
-                  <span className="text-[9px] text-emerald-700 dark:text-emerald-300 font-bold whitespace-nowrap">Khóa học</span>
+                  <span className="text-[10px] text-emerald-700 dark:text-emerald-300 font-bold whitespace-nowrap">Khóa học</span>
                 </div>
               </div>
             </div>
@@ -510,7 +510,7 @@ export const EducationView: React.FC = () => {
                       7 Thẻ
                     </span>
                   </div>
-                  <p className="text-[9px] text-blue-700 dark:text-blue-300 mt-0.5 truncate">Dự án, Rủi ro, Lãnh đạo, Dữ liệu</p>
+                  <p className="text-[10px] text-blue-700 dark:text-blue-300 mt-0.5 truncate">Dự án, Rủi ro, Lãnh đạo, Dữ liệu</p>
                 </button>
 
                 {/* Pillar 2: Nâng cao Năng lực */}
@@ -529,7 +529,7 @@ export const EducationView: React.FC = () => {
                       3 Thẻ
                     </span>
                   </div>
-                  <p className="text-[9px] text-purple-700 dark:text-purple-300 mt-0.5 truncate">Đàm phán, Dịch vụ, Kaizen</p>
+                  <p className="text-[10px] text-purple-700 dark:text-purple-300 mt-0.5 truncate">Đàm phán, Dịch vụ, Kaizen</p>
                 </button>
 
                 {/* Pillar 3: Tiêu chuẩn Vận hành */}
@@ -548,7 +548,7 @@ export const EducationView: React.FC = () => {
                       3 Thẻ
                     </span>
                   </div>
-                  <p className="text-[9px] text-emerald-700 dark:text-emerald-300 mt-0.5 truncate">ITIL, An toàn TT, Kế toán</p>
+                  <p className="text-[10px] text-emerald-700 dark:text-emerald-300 mt-0.5 truncate">ITIL, An toàn TT, Kế toán</p>
                 </button>
 
                 {/* Pillar 4: Tự học & Web/AI */}
@@ -567,7 +567,7 @@ export const EducationView: React.FC = () => {
                       1 Thẻ
                     </span>
                   </div>
-                  <p className="text-[9px] text-amber-700 dark:text-amber-300 mt-0.5 truncate">UI/UX, Fullstack, AI Agents</p>
+                  <p className="text-[10px] text-amber-700 dark:text-amber-300 mt-0.5 truncate">UI/UX, Fullstack, AI Agents</p>
                 </button>
               </div>
             </div>
@@ -667,11 +667,11 @@ export const EducationView: React.FC = () => {
 
                         {/* Top Badges overlay on banner */}
                         <span
-                          className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[9.5px] font-mono font-black text-white shadow-xs ${meta.themeColor}`}
+                          className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[10px] font-mono font-black text-white shadow-xs ${meta.themeColor}`}
                         >
                           {book.code}
                         </span>
-                        <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-white/95 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 shadow-2xs border border-white/60 dark:border-white/20">
+                        <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/95 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 shadow-2xs border border-white/60 dark:border-white/20">
                           {book.year}
                         </span>
 
@@ -696,14 +696,14 @@ export const EducationView: React.FC = () => {
 
                           {/* Organization / Don vi */}
                           <span
-                            className="text-[9.5px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 px-2 py-0.5 rounded-md inline-block max-w-full truncate"
+                            className="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 px-2 py-0.5 rounded-md inline-block max-w-full truncate"
                             title={book.org}
                           >
                             {book.org}
                           </span>
 
                           {/* Summary */}
-                          <p className="text-[10px] text-slate-600 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed">
+                          <p className="text-[10.5px] text-slate-600 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed">
                             {meta.summary}
                           </p>
 
@@ -713,7 +713,7 @@ export const EducationView: React.FC = () => {
                               {meta.chips.slice(0, 2).map((chip, idx) => (
                                 <span
                                   key={idx}
-                                  className="text-[8.5px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/90 px-2 py-0.5 rounded-md truncate max-w-full block"
+                                  className="text-[10px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/90 px-2 py-0.5 rounded-md truncate max-w-full block"
                                   title={chip}
                                 >
                                   • {chip}
@@ -725,7 +725,7 @@ export const EducationView: React.FC = () => {
 
                         {/* Card Footer */}
                         <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800 mt-auto shrink-0">
-                          <div className="flex items-center gap-1.5 text-[9.5px] font-bold text-slate-500 dark:text-slate-400">
+                          <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400">
                             <svg className="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
                             </svg>
@@ -868,15 +868,15 @@ export const EducationView: React.FC = () => {
               {/* Quick 3-Pillar Specs */}
               <div className="grid grid-cols-3 gap-2">
                 <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
-                  <span className="text-[9px] font-bold text-slate-400 font-mono block uppercase">HÌNH THỨC</span>
+                  <span className="text-[10px] font-bold text-slate-400 font-mono block uppercase">HÌNH THỨC</span>
                   <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 mt-0.5 block truncate">{selectedBook.format}</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
-                  <span className="text-[9px] font-bold text-slate-400 font-mono block uppercase">NĂM TỐT NGHIỆP</span>
+                  <span className="text-[10px] font-bold text-slate-400 font-mono block uppercase">NĂM TỐT NGHIỆP</span>
                   <span className="text-[11px] font-bold text-blue-600 dark:text-cyan-400 mt-0.5 block">Năm {selectedBook.year}</span>
                 </div>
                 <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
-                  <span className="text-[9px] font-bold text-slate-400 font-mono block uppercase">ĐƠN VỊ ĐÀO TẠO</span>
+                  <span className="text-[10px] font-bold text-slate-400 font-mono block uppercase">ĐƠN VỊ ĐÀO TẠO</span>
                   <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 mt-0.5 block truncate" title={selectedBook.org}>{selectedBook.org}</span>
                 </div>
               </div>

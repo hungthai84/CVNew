@@ -316,7 +316,7 @@ export const ProjectsView: React.FC = () => {
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-sm font-black text-slate-900 dark:text-white font-play">21+</span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">Dự án tiêu biểu</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">Dự án tiêu biểu</span>
               </div>
             </div>
 
@@ -326,7 +326,7 @@ export const ProjectsView: React.FC = () => {
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-sm font-black text-emerald-600 dark:text-emerald-400 font-play">98%</span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">SLA Hoàn thành</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">SLA Hoàn thành</span>
               </div>
             </div>
           </div>
@@ -482,7 +482,7 @@ export const ProjectsView: React.FC = () => {
                             (e.target as HTMLImageElement).src = parentGroup.illustrationSrc;
                           }}
                         />
-                        <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-blue-600 text-white font-mono text-[9.5px] font-black shadow-xs border border-white/20">
+                        <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-blue-600 text-white font-mono text-[10px] font-black shadow-xs border border-white/20">
                           {proj.code}
                         </span>
                       </div>
@@ -492,7 +492,7 @@ export const ProjectsView: React.FC = () => {
                         {/* Status pill */}
                         <div className="flex items-center">
                           <span
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] sm:text-[9.5px] font-semibold border ${prog.bg} max-w-full`}
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-[10.5px] font-semibold border ${prog.bg} max-w-full`}
                           >
                             <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${prog.dot}`} />
                             <span className="truncate">{prog.text}</span>

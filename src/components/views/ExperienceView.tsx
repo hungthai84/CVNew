@@ -424,10 +424,10 @@ export const ExperienceView: React.FC = () => {
 
                       {/* Role Label & Summary */}
                       <div className="space-y-0.5 w-full shrink-0">
-                        <span className="text-[8.5px] font-semibold text-slate-400 dark:text-slate-500 block leading-none">
+                        <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 block leading-none">
                           {isVi ? 'Vị trí' : 'Position'}
                         </span>
-                        <p className="text-[9.5px] font-bold text-slate-700 dark:text-slate-200 leading-tight line-clamp-2 px-0.5 min-h-[26px] flex items-center justify-center">
+                        <p className="text-[10.5px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-200 leading-tight line-clamp-2 px-0.5 min-h-[26px] flex items-center justify-center">
                           {item.roleSummary}
                         </p>
                       </div>
@@ -438,7 +438,7 @@ export const ExperienceView: React.FC = () => {
                           {item.bullets.map((bullet, bIdx) => (
                             <li
                               key={bIdx}
-                              className="text-[8.5px] sm:text-[9px] leading-snug text-slate-600 dark:text-slate-300 font-medium flex items-start gap-1"
+                              className="text-[10px] sm:text-[10.5px] leading-snug text-slate-600 dark:text-slate-300 font-medium flex items-start gap-1"
                             >
                               <span className="text-slate-400 dark:text-slate-400 font-bold leading-none shrink-0">•</span>
                               <span className="line-clamp-2">{bullet}</span>
@@ -450,7 +450,7 @@ export const ExperienceView: React.FC = () => {
                       {/* Headcount Pill at Bottom */}
                       <div className="w-full pt-1 shrink-0 mt-auto">
                         <div
-                          className={`w-full py-1 px-1 rounded-full border text-[9px] font-bold flex items-center justify-center gap-1 shadow-2xs ${item.pillBg}`}
+                          className={`w-full py-1 px-1 rounded-full border text-[10px] font-bold flex items-center justify-center gap-1 shadow-2xs ${item.pillBg}`}
                         >
                           <svg className="w-2.5 h-2.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
@@ -548,7 +548,7 @@ export const ExperienceView: React.FC = () => {
                 {/* Logo sản phẩm chung khung bên dưới logo */}
                 {activeMilestone.products && activeMilestone.products.length > 0 && (
                   <div className="flex flex-col items-center gap-1 pt-1.5 border-t border-slate-200/80 dark:border-white/10 w-full">
-                    <span className="text-[9px] font-mono font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    <span className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                       {isVi ? 'Sản phẩm' : 'Products'}
                     </span>
                     <div className="flex items-center justify-center gap-1.5 flex-wrap max-w-[160px]">
@@ -709,7 +709,7 @@ export const ExperienceView: React.FC = () => {
                             <span className="text-xs font-extrabold text-slate-900 dark:text-white block truncate">
                               {d.title}
                             </span>
-                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 font-bold font-mono border border-violet-200 dark:border-violet-800/60">
+                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 font-bold font-mono border border-violet-200 dark:border-violet-800/60">
                               {d.tag}
                             </span>
                           </div>
@@ -780,7 +780,7 @@ export const ExperienceView: React.FC = () => {
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex flex-col justify-end p-2.5">
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-pink-600 text-white font-bold inline-block mb-0.5 max-w-fit shadow-xs">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-pink-600 text-white font-bold inline-block mb-0.5 max-w-fit shadow-xs">
                       {isVi ? 'Kỷ niệm' : 'Memory'} {carouselSlideIdx + 1}/{activeMilestone.photos.length}
                     </span>
                     <h5 className="text-xs font-bold text-white tracking-wide truncate">

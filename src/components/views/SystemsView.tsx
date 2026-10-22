@@ -394,13 +394,13 @@ export const SystemsView: React.FC = () => {
                         <WebIcon name={item.icon} className="w-6 h-6 text-white" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <span className="text-[10px] text-white/85 font-medium block truncate">
+                        <span className="text-[10.5px] text-white/85 font-medium block truncate">
                           {item.categoryTag}
                         </span>
                         <h3 className="text-xl sm:text-[22px] font-black leading-tight tracking-tight text-white font-play mt-0.5">
                           {item.abbr}
                         </h3>
-                        <p className="text-[9.5px] sm:text-[10px] text-white/80 font-medium leading-tight truncate mt-0.5">
+                        <p className="text-[10.5px] sm:text-[11px] text-white/80 font-medium leading-tight truncate mt-0.5">
                           {item.fullName}
                         </p>
                       </div>
@@ -492,7 +492,7 @@ export const SystemsView: React.FC = () => {
               </div>
             </div>
             {/* Time badge */}
-            <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-black/70 text-white font-mono text-[9px] font-bold">
+            <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-black/70 text-white font-mono text-[10px] font-bold">
               03:45
             </span>
             {/* Bottom Title bar */}
@@ -514,7 +514,7 @@ export const SystemsView: React.FC = () => {
                 <span className="text-sm font-black font-play text-slate-800 dark:text-white block leading-tight">
                   12
                 </span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-400 block truncate">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
                   Phân hệ hệ thống
                 </span>
               </div>
@@ -529,7 +529,7 @@ export const SystemsView: React.FC = () => {
                 <span className="text-sm font-black font-play text-slate-800 dark:text-white block leading-tight">
                   100%
                 </span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-400 block truncate">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
                   Tích hợp dữ liệu
                 </span>
               </div>
@@ -544,7 +544,7 @@ export const SystemsView: React.FC = () => {
                 <span className="text-sm font-black font-play text-slate-800 dark:text-white block leading-tight">
                   5
                 </span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-400 block truncate">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
                   Nền tảng công nghệ
                 </span>
               </div>
@@ -559,7 +559,7 @@ export const SystemsView: React.FC = () => {
                 <span className="text-sm font-black font-play text-slate-800 dark:text-white block leading-tight">
                   24/7
                 </span>
-                <span className="text-[9px] text-slate-500 dark:text-slate-400 block truncate">
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
                   Vận hành liên tục
                 </span>
               </div>

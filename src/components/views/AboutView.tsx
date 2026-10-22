@@ -140,11 +140,11 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                 <h2 className="text-xs sm:text-sm font-black font-play tracking-tight truncate bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 dark:from-blue-400 dark:via-indigo-300 dark:to-cyan-300">
                   {isVi ? 'Hồ Sơ Chuyên Gia & Bản Đồ Vận Hành CSKH' : 'Executive Profile & CS Operations Map'}
                 </h2>
-                <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.2 rounded-full text-[9px] font-mono font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-cyan-300 border border-blue-200/80 dark:border-blue-800/60">
+                <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.2 rounded-full text-[10px] font-mono font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-cyan-300 border border-blue-200/80 dark:border-blue-800/60">
                   22+ Năm CX
                 </span>
               </div>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate hidden sm:block">
+              <span className="text-[10.5px] text-slate-500 dark:text-slate-400 font-medium truncate hidden sm:block">
                 {isVi ? 'Quản trị Vận hành Contact Center đa kênh • Tự động hóa CRM • AI Customer Experience' : 'Omnichannel Contact Center Operations • CRM Automation • AI Customer Experience'}
               </span>
             </div>
@@ -190,7 +190,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
 
             {/* Top Bar inside Video: Live Badge */}
             <div className="relative z-20 flex items-center justify-between p-2.5">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/50 border border-white/20 text-white text-[9.5px] font-bold tracking-wide backdrop-blur-md">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/50 border border-white/20 text-white text-[10.5px] font-bold tracking-wide backdrop-blur-md">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                 <span>{isPlayingIntro ? (isVi ? 'Đang phát Giới thiệu' : 'Playing Intro') : (isVi ? 'Video Chân Dung' : 'Portrait Feed')}</span>
               </div>
@@ -283,14 +283,14 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                       <WebIcon name={stat.iconName.toLowerCase()} className="w-3.5 h-3.5" />
                     </div>
                     <div className="flex flex-col min-w-0 text-left">
-                      <span className="text-[8px] font-bold text-slate-300 truncate leading-none uppercase tracking-wide">
+                      <span className="text-[9.5px] font-bold text-slate-300 truncate leading-none uppercase tracking-wide">
                         {isVi ? stat.labelVi : stat.labelEn}
                       </span>
                       <div className="flex items-baseline gap-0.5 mt-0.5">
                         <span className="text-xs sm:text-[13px] font-black tracking-tight leading-none" style={{ color: stat.color }}>
                           {stat.metric}
                         </span>
-                        <span className="text-[8px] font-bold" style={{ color: stat.color }}>
+                        <span className="text-[9.5px] font-bold" style={{ color: stat.color }}>
                           {isVi ? stat.unitVi : stat.unitEn}
                         </span>
                       </div>
@@ -315,7 +315,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                     {isVi ? 'Thông tin cá nhân & Nhân khẩu học' : 'Personal Profile & Demographics'}
                   </span>
                 </div>
-                <span className="text-[9.5px] font-mono text-slate-400 dark:text-slate-500">22/06/1984 • 40 Tuổi</span>
+                <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">22/06/1984 • 40 Tuổi</span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
@@ -325,7 +325,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                     <WebIcon name="user" className="w-3 h-3" />
                   </div>
                   <div className="min-w-0 text-left">
-                    <span className="text-[8px] font-bold text-slate-400 block leading-none">{isVi ? 'Giới tính' : 'Gender'}</span>
+                    <span className="text-[9.5px] font-bold text-slate-400 block leading-none">{isVi ? 'Giới tính' : 'Gender'}</span>
                     <span className="text-[10.5px] font-black text-slate-800 dark:text-white truncate block">{isVi ? 'Nam giới' : 'Male'}</span>
                   </div>
                 </div>
@@ -336,7 +336,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                     <WebIcon name="users" className="w-3 h-3" />
                   </div>
                   <div className="min-w-0 text-left">
-                    <span className="text-[8px] font-bold text-slate-400 block leading-none">{isVi ? 'Dân tộc' : 'Ethnicity'}</span>
+                    <span className="text-[9.5px] font-bold text-slate-400 block leading-none">{isVi ? 'Dân tộc' : 'Ethnicity'}</span>
                     <span className="text-[10.5px] font-black text-slate-800 dark:text-white truncate block">{isVi ? 'Kinh' : 'Vietnamese'}</span>
                   </div>
                 </div>
@@ -347,7 +347,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                     <WebIcon name="heart" className="w-3 h-3" />
                   </div>
                   <div className="min-w-0 text-left">
-                    <span className="text-[8px] font-bold text-slate-400 block leading-none">{isVi ? 'Tình trạng' : 'Marital'}</span>
+                    <span className="text-[9.5px] font-bold text-slate-400 block leading-none">{isVi ? 'Tình trạng' : 'Marital'}</span>
                     <span className="text-[10.5px] font-black text-rose-600 dark:text-rose-400 truncate block">{isVi ? 'Độc thân' : 'Single'}</span>
                   </div>
                 </div>
@@ -358,7 +358,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                     <WebIcon name="calendar" className="w-3 h-3" />
                   </div>
                   <div className="min-w-0 text-left">
-                    <span className="text-[8px] font-bold text-slate-400 block leading-none">{isVi ? 'Sinh nhật' : 'Birthday'}</span>
+                    <span className="text-[9.5px] font-bold text-slate-400 block leading-none">{isVi ? 'Sinh nhật' : 'Birthday'}</span>
                     <span className="text-[10.5px] font-black text-slate-800 dark:text-white truncate block">22/06/1984</span>
                   </div>
                 </div>
@@ -380,9 +380,9 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                       <WebIcon name="location" className="w-3 h-3" />
                     </div>
                     <div className="min-w-0 text-left">
-                      <span className="text-[8px] font-bold text-violet-600 dark:text-violet-400 block leading-none flex items-center gap-0.5">
+                      <span className="text-[9.5px] font-bold text-violet-600 dark:text-violet-400 block leading-none flex items-center gap-0.5">
                         <span>{isVi ? 'Tạm trú' : 'Current'}</span>
-                        <span className="text-[7.5px] text-violet-500 font-mono">📍</span>
+                        <span className="text-[8.5px] text-violet-500 font-mono">📍</span>
                       </span>
                       <span className="text-[10px] font-black text-slate-800 dark:text-white truncate block">Q7, TP.HCM</span>
                     </div>
@@ -407,9 +407,9 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                       <WebIcon name="home" className="w-3 h-3" />
                     </div>
                     <div className="min-w-0 text-left">
-                      <span className="text-[8px] font-bold text-emerald-600 dark:text-emerald-400 block leading-none flex items-center gap-0.5">
+                      <span className="text-[9.5px] font-bold text-emerald-600 dark:text-emerald-400 block leading-none flex items-center gap-0.5">
                         <span>{isVi ? 'Cư trú' : 'Permanent'}</span>
-                        <span className="text-[7.5px] text-emerald-500 font-mono">📍</span>
+                        <span className="text-[8.5px] text-emerald-500 font-mono">📍</span>
                       </span>
                       <span className="text-[10px] font-black text-slate-800 dark:text-white truncate block">Mỹ Tho, TG</span>
                     </div>
@@ -427,7 +427,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                       <WebIcon name="mail" className="w-3 h-3" />
                     </div>
                     <div className="min-w-0 text-left">
-                      <span className="text-[8px] font-bold text-sky-600 dark:text-sky-400 block leading-none">EMAIL DIRECT</span>
+                      <span className="text-[9.5px] font-bold text-sky-600 dark:text-sky-400 block leading-none">EMAIL DIRECT</span>
                       <span className="text-[10.5px] font-black text-sky-700 dark:text-cyan-300 truncate block">hungthai848@gmail.com</span>
                     </div>
                   </div>
@@ -452,19 +452,19 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                     <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
                       <WebIcon name="messagesquare" className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-white" />
                     </div>
-                    <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-blue-100">01</span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wide text-blue-100">01</span>
                   </div>
                   <div className="my-0.5">
                     <h5 className="text-[11px] sm:text-xs font-black uppercase tracking-wide font-play leading-tight">
                       {isVi ? 'HIỆU QUẢ' : 'EFFICIENCY'}
                     </h5>
-                    <span className="text-[8.5px] sm:text-[9px] font-bold text-blue-100 block">{isVi ? 'Tối ưu & Kết quả' : 'Optimal Results'}</span>
-                    <p className="text-[9px] sm:text-[9.5px] text-white/90 leading-snug mt-0.5 font-medium line-clamp-2">
+                    <span className="text-[10px] sm:text-[10.5px] font-bold text-blue-100 block">{isVi ? 'Tối ưu & Kết quả' : 'Optimal Results'}</span>
+                    <p className="text-[10px] sm:text-[10.5px] text-white/90 leading-snug mt-0.5 font-medium line-clamp-2">
                       {isVi ? 'Tối ưu hiệu suất, tạo kết quả đo lường được.' : 'Optimizing performance, delivering measurable outcomes.'}
                     </p>
                   </div>
                   <div className="flex items-center justify-between pt-0.5 mt-auto shrink-0">
-                    <span className="text-[7.5px] font-mono text-blue-100/70 uppercase">Pillar I</span>
+                    <span className="text-[9px] font-mono text-blue-100/70 uppercase">Pillar I</span>
                     <div className="w-4 h-4 rounded-md bg-white/15 flex items-center justify-center">
                       <WebIcon name="chart" className="w-2.5 h-2.5 text-white" />
                     </div>
@@ -477,19 +477,19 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                     <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
                       <WebIcon name="heart" className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-white" />
                     </div>
-                    <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-rose-100">02</span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wide text-rose-100">02</span>
                   </div>
                   <div className="my-0.5">
                     <h5 className="text-[11px] sm:text-xs font-black uppercase tracking-wide font-play leading-tight">
                       {isVi ? 'NHÂN VĂN' : 'HUMANITY'}
                     </h5>
-                    <span className="text-[8.5px] sm:text-[9px] font-bold text-pink-100 block">{isVi ? 'Đồng cảm & Thấu hiểu' : 'Empathy & Care'}</span>
-                    <p className="text-[9px] sm:text-[9.5px] text-white/90 leading-snug mt-0.5 font-medium line-clamp-2">
+                    <span className="text-[10px] sm:text-[10.5px] font-bold text-pink-100 block">{isVi ? 'Đồng cảm & Thấu hiểu' : 'Empathy & Care'}</span>
+                    <p className="text-[10px] sm:text-[10.5px] text-white/90 leading-snug mt-0.5 font-medium line-clamp-2">
                       {isVi ? 'Lắng nghe, thấu hiểu và đặt con người làm trung tâm.' : 'Listening, empathizing and placing humans at center.'}
                     </p>
                   </div>
                   <div className="flex items-center justify-between pt-0.5 mt-auto shrink-0">
-                    <span className="text-[7.5px] font-mono text-rose-100/70 uppercase">Pillar II</span>
+                    <span className="text-[9px] font-mono text-rose-100/70 uppercase">Pillar II</span>
                     <div className="w-4 h-4 rounded-md bg-white/15 flex items-center justify-center">
                       <WebIcon name="users" className="w-2.5 h-2.5 text-white" />
                     </div>
@@ -502,19 +502,19 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                     <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
                       <WebIcon name="trend-up" className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-white" />
                     </div>
-                    <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-emerald-100">03</span>
+                    <span className="text-[10px] font-extrabold uppercase tracking-wide text-emerald-100">03</span>
                   </div>
                   <div className="my-0.5">
                     <h5 className="text-[11px] sm:text-xs font-black uppercase tracking-wide font-play leading-tight">
                       {isVi ? 'BỀN VỮNG' : 'SUSTAINABLE'}
                     </h5>
-                    <span className="text-[8.5px] sm:text-[9px] font-bold text-emerald-100 block">{isVi ? 'Giá trị & Tin cậy' : 'Value & Trust'}</span>
-                    <p className="text-[9px] sm:text-[9.5px] text-white/90 leading-snug mt-0.5 font-medium line-clamp-2">
+                    <span className="text-[10px] sm:text-[10.5px] font-bold text-emerald-100 block">{isVi ? 'Giá trị & Tin cậy' : 'Value & Trust'}</span>
+                    <p className="text-[10px] sm:text-[10.5px] text-white/90 leading-snug mt-0.5 font-medium line-clamp-2">
                       {isVi ? 'Xây dựng niềm tin và giá trị bền vững.' : 'Building enduring trust and long-term lifetime value.'}
                     </p>
                   </div>
                   <div className="flex items-center justify-between pt-0.5 mt-auto shrink-0">
-                    <span className="text-[7.5px] font-mono text-emerald-100/70 uppercase">Pillar III</span>
+                    <span className="text-[9px] font-mono text-emerald-100/70 uppercase">Pillar III</span>
                     <div className="w-4 h-4 rounded-md bg-white/15 flex items-center justify-center">
                       <WebIcon name="globe" className="w-2.5 h-2.5 text-white" />
                     </div>
@@ -577,7 +577,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                   <h6 className="text-[10px] font-black italic text-blue-700 dark:text-cyan-300 leading-tight mb-0.5">
                     {isVi ? '“Tận Tâm & Đồng Hành Cùng Trải Nghiệm Khách Hàng”' : '“Dedication & Partnership in Every Experience”'}
                   </h6>
-                  <p className="text-[9.5px] text-slate-600 dark:text-slate-300 font-medium leading-snug line-clamp-2">
+                  <p className="text-[10px] sm:text-[10.5px] text-slate-600 dark:text-slate-300 font-medium leading-snug line-clamp-2">
                     {isVi 
                       ? 'Dịch vụ chất lượng cao, chi phí hợp lý để mỗi khách hàng cảm nhận được họ luôn được lắng nghe.'
                       : 'Delivering exceptional services so every customer feels genuinely heard and valued.'}
@@ -602,14 +602,14 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
             </div>
             <div className="min-w-0 text-left">
               <div className="flex items-center gap-1.5">
-                <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-blue-600 dark:text-cyan-400 bg-blue-100/70 dark:bg-blue-950/60 px-1.5 py-0.2 rounded font-mono">
+                <span className="text-[9.5px] font-extrabold uppercase tracking-wide text-blue-600 dark:text-cyan-400 bg-blue-100/70 dark:bg-blue-950/60 px-1.5 py-0.2 rounded font-mono">
                   {isVi ? 'Hợp tác' : 'Partnership'}
                 </span>
                 <h4 className="text-xs sm:text-[13px] font-black text-slate-900 dark:text-white truncate font-play">
                   {isVi ? 'Cùng tạo ra trải nghiệm khách hàng vượt trội & bền vững' : "Let's architect exceptional customer experiences"}
                 </h4>
               </div>
-              <p className="text-[9.5px] sm:text-[10px] text-slate-500 dark:text-slate-400 truncate hidden sm:block">
+              <p className="text-[10px] sm:text-[10.5px] text-slate-500 dark:text-slate-400 truncate hidden sm:block">
                 {isVi ? 'Sẵn sàng đồng hành cùng doanh nghiệp tối ưu hóa hệ thống CX, Contact Center và AI.' : 'Ready to partner with enterprises to optimize CX, Contact Center & AI systems.'}
               </p>
             </div>

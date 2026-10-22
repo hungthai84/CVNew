@@ -1047,14 +1047,14 @@ export const DomainsView: React.FC = () => {
                               <h4 className="text-[11.5px] font-black text-slate-900 dark:text-slate-100 font-play truncate">
                                 Vai trò & Trách nhiệm
                               </h4>
-                              <span className="inline-block mt-0.5 text-[8.5px] font-mono font-bold text-blue-600 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/80 px-2 py-0.2 rounded-full border border-blue-200 dark:border-blue-800">
+                              <span className="inline-block mt-0.5 text-[10px] font-mono font-bold text-blue-600 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/80 px-2 py-0.2 rounded-full border border-blue-200 dark:border-blue-800">
                                 {extras.roleBadge}
                               </span>
                             </div>
                           </div>
                           <ul className="space-y-1 text-left mt-0.5">
                             {extras.roleBullets.map((b, bIdx) => (
-                              <li key={bIdx} className="text-[9.5px] leading-snug text-slate-600 dark:text-slate-300 font-medium flex items-start gap-1">
+                              <li key={bIdx} className="text-[10.5px] leading-snug text-slate-600 dark:text-slate-300 font-medium flex items-start gap-1">
                                 <span className="text-slate-400 font-bold shrink-0">•</span>
                                 <span>{b}</span>
                               </li>
@@ -1074,14 +1074,14 @@ export const DomainsView: React.FC = () => {
                               <h4 className="text-[11.5px] font-black text-slate-900 dark:text-slate-100 font-play truncate">
                                 Quy mô đội ngũ
                               </h4>
-                              <span className="inline-block mt-0.5 text-[8.5px] font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.2 rounded-full border border-emerald-200 dark:border-emerald-800">
+                              <span className="inline-block mt-0.5 text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.2 rounded-full border border-emerald-200 dark:border-emerald-800">
                                 {extras.teamBadge}
                               </span>
                             </div>
                           </div>
                           <ul className="space-y-1 text-left mt-0.5">
                             {extras.teamBullets.map((b, bIdx) => (
-                              <li key={bIdx} className="text-[9.5px] leading-snug text-slate-600 dark:text-slate-300 font-medium flex items-start gap-1">
+                              <li key={bIdx} className="text-[10.5px] leading-snug text-slate-600 dark:text-slate-300 font-medium flex items-start gap-1">
                                 <span className="text-slate-400 font-bold shrink-0">•</span>
                                 <span>{b}</span>
                               </li>
@@ -1102,14 +1102,14 @@ export const DomainsView: React.FC = () => {
                               <h4 className="text-[11.5px] font-black text-slate-900 dark:text-slate-100 font-play truncate">
                                 Công nghệ & Hệ thống
                               </h4>
-                              <span className="inline-block mt-0.5 text-[8.5px] font-mono font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/80 px-2 py-0.2 rounded-full border border-purple-200 dark:border-purple-800">
+                              <span className="inline-block mt-0.5 text-[10px] font-mono font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/80 px-2 py-0.2 rounded-full border border-purple-200 dark:border-purple-800">
                                 {extras.techBadge}
                               </span>
                             </div>
                           </div>
                           <ul className="space-y-1 text-left mt-0.5">
                             {extras.techBullets.map((b, bIdx) => (
-                              <li key={bIdx} className="text-[9.5px] leading-snug text-slate-600 dark:text-slate-300 font-medium flex items-start gap-1">
+                              <li key={bIdx} className="text-[10.5px] leading-snug text-slate-600 dark:text-slate-300 font-medium flex items-start gap-1">
                                 <span className="text-slate-400 font-bold shrink-0">•</span>
                                 <span>{b}</span>
                               </li>
@@ -1164,13 +1164,13 @@ export const DomainsView: React.FC = () => {
                               {renderMetricIcon(m.type)}
                             </div>
                             <div className="mt-2 space-y-0.5">
-                              <span className="text-[9.5px] text-slate-500 dark:text-slate-400 font-medium block leading-tight">
+                              <span className="text-[10.5px] text-slate-500 dark:text-slate-400 font-medium block leading-tight">
                                 {m.label}
                               </span>
                               <span className={`text-lg sm:text-xl font-black font-mono tracking-tight block leading-tight ${m.valColor}`}>
                                 {m.value}
                               </span>
-                              <span className="text-[9px] text-slate-400 font-medium block leading-none">
+                              <span className="text-[10px] text-slate-400 font-medium block leading-none">
                                 {m.sub}
                               </span>
                             </div>
@@ -1211,7 +1211,7 @@ export const DomainsView: React.FC = () => {
                               <h5 className="text-[10.5px] font-black text-slate-800 dark:text-slate-100 leading-tight truncate">
                                 {p.name}
                               </h5>
-                              <p className="text-[8.5px] text-slate-400 leading-none truncate">
+                              <p className="text-[10px] text-slate-400 leading-none truncate">
                                 {p.sub}
                               </p>
                             </div>

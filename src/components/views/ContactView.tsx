@@ -98,7 +98,7 @@ export const ContactView: React.FC = () => {
                   <WebIcon name="mail" className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 block font-mono">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 block font-mono">
                     {lang === 'en' ? 'DIRECT EMAIL' : 'EMAIL DIRECT'}
                   </span>
                   <a
@@ -127,7 +127,7 @@ export const ContactView: React.FC = () => {
                   <WebIcon name="map-pin" className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 block font-mono">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 block font-mono">
                     {t.contact.headquarters}
                   </span>
                   <p className="text-xs sm:text-[13px] font-black text-slate-900 dark:text-slate-100 truncate">
@@ -136,7 +136,7 @@ export const ContactView: React.FC = () => {
                 </div>
               </div>
 
-              <span className="text-[9.5px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/80 dark:border-emerald-700/80 shrink-0 flex items-center gap-1 shadow-2xs">
+              <span className="text-[10.5px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-300/80 dark:border-emerald-700/80 shrink-0 flex items-center gap-1 shadow-2xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span>{t.contact.remoteBadge}</span>
               </span>
@@ -149,7 +149,7 @@ export const ContactView: React.FC = () => {
                   <WebIcon name="clock" className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 block font-mono">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 block font-mono">
                     {t.contact.workHours}
                   </span>
                   <p className="text-xs sm:text-[13px] font-black text-slate-900 dark:text-slate-100 truncate">

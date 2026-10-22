@@ -298,7 +298,7 @@ export const SkillsView: React.FC = () => {
                             <h3 className="text-sm sm:text-[15px] font-black font-play text-slate-900 dark:text-white leading-tight break-words [overflow-wrap:anywhere]">
                               {card.title}
                             </h3>
-                            <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-white/10 text-slate-500 dark:text-slate-400 shrink-0">
+                            <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-white/10 text-slate-500 dark:text-slate-400 shrink-0">
                               {card.code}
                             </span>
                           </div>
