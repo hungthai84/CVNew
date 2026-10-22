@@ -709,13 +709,10 @@ export const DomainsView: React.FC = () => {
         <div className="absolute inset-0 z-10 px-4 sm:px-6 py-3 sm:py-3.5 flex flex-col justify-between pointer-events-none">
           {/* Hàng chữ phía trên/giữa: Khám phá & Tiêu đề bên trái, Câu nói hay bên phải */}
           <div className="flex items-start justify-between gap-3 w-full">
-            {/* Khối chữ bên trái: Khám phá + Nhiều Lĩnh Vực – Nhiều Cơ Hội + Subtitle + Thanh cam */}
+            {/* Khối chữ bên trái: Tiêu đề + Subtitle + Thanh cam */}
             <div className="flex flex-col items-start pointer-events-auto max-w-[62%] sm:max-w-[48%]">
-              <span className="font-handwriting text-sky-600 font-bold text-xl sm:text-2xl lg:text-3xl leading-tight drop-shadow-xs select-none">
-                Khám phá
-              </span>
               {/* Tiêu đề có icon chuyển động tại chỗ trước tiêu đề, màu tiêu đề giống màu icon và màu menu icon ở trang */}
-              <h2 className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play text-amber-500 dark:text-amber-400 tracking-tight leading-tight mt-0.5 drop-shadow-xs select-none flex items-center gap-2">
+              <h2 className="text-base sm:text-xl md:text-2xl lg:text-[26px] font-black font-play text-amber-500 dark:text-amber-400 tracking-tight leading-tight drop-shadow-xs select-none flex items-center gap-2">
                 <span className="inline-flex animate-banner-icon shrink-0 text-amber-500 dark:text-amber-400">
                   <WebIcon name="globe" className="w-5 h-5 sm:w-6 sm:h-6" />
                 </span>
