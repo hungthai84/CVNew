@@ -68,160 +68,175 @@ export const ExperienceView: React.FC = () => {
     );
   };
 
-  // 8 Timeline Cards matching the exact historical career journey (2003 -> 2026+)
+  // 8 Timeline Milestones matching exact design in media_1792691307558_e31ceccc.png (2003 -> 2026+)
   const roadmapCards = [
     {
       key: '2003',
       yearBadge: isVi ? 'Năm 2003' : 'Year 2003',
+      company: 'MobiFone',
       shortName: 'MOBIFONE',
       roleSummary: isVi ? 'Nhân viên CSKH' : 'Customer Support Specialist',
       headcountLabel: isVi ? '12 Nhân sự' : '12 Members',
-      logo: 'https://i.ibb.co/hxHm9TsZ/Mobifone.png',
-      bullets: isVi
-        ? ['Tiếp nhận & xử lý yêu cầu khách hàng', 'Hỗ trợ dịch vụ di động và internet']
-        : ['Inbound call handling & support', 'Mobile & telecom service assistance'],
-      badgeBg: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-      badgeColor: '#2563eb',
-      cardBg: 'linear-gradient(180deg, #f0f7ff 0%, #ffffff 50%, #e6f2ff 100%)',
-      borderColor: 'border-blue-200/90 hover:border-blue-400',
-      activeRing: 'ring-blue-400',
-      titleColor: 'text-[#1E3A6D] dark:text-cyan-300',
-      pillBg: 'bg-blue-50/90 text-blue-700 border-blue-200/90 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800',
-      arrowBg: '#3b82f6',
+      badgeColor: '#0284c7',
+      circleLogo: '/images/experience/milestones/logo-2003.png',
+      fallbackLogo: 'https://i.ibb.co/hxHm9TsZ/Mobifone.png',
+      phaseTitle: isVi ? 'Khởi động\nkế hoạch' : 'Plan\nInitiation',
+      cardBg: 'linear-gradient(180deg, #f0f7ff 0%, #e1effe 100%)',
+      cardBorder: 'rgba(191, 219, 254, 0.95)',
+      cardIcon: (
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#0284c7]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 2a2 2 0 100 4 2 2 0 000-4z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 5.5L7 21h10l-3.5-15.5" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.5 13h7" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 8a5 5 0 010 7M8 8a5 5 0 000 7" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 5a9 9 0 010 13M5 5a9 9 0 000 13" />
+        </svg>
+      ),
     },
     {
       key: '2007',
       yearBadge: isVi ? 'Năm 2007' : 'Year 2007',
+      company: 'CallV247.com',
       shortName: 'VIỄN LIÊN V247',
       roleSummary: isVi ? 'Giám sát Supervisor' : 'CS Supervisor / Team Lead',
       headcountLabel: isVi ? '12 Nhân sự' : '12 Members',
-      logo: 'https://i.ibb.co/QvtbdnfP/V247.png',
-      bullets: isVi
-        ? ['Quản lý ca trực Call Center quốc tế', 'Nâng cao chất lượng dịch vụ & KPI']
-        : ['International Call Center shifts', 'Quality assurance & KPI mastery'],
-      badgeBg: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
       badgeColor: '#7c3aed',
-      cardBg: 'linear-gradient(180deg, #faf5ff 0%, #ffffff 50%, #f3e8ff 100%)',
-      borderColor: 'border-purple-200/90 hover:border-purple-400',
-      activeRing: 'ring-purple-400',
-      titleColor: 'text-purple-800 dark:text-purple-300',
-      pillBg: 'bg-purple-50/90 text-purple-700 border-purple-200/90 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800',
-      arrowBg: '#8b5cf6',
+      circleLogo: '/images/experience/milestones/logo-2007.png',
+      fallbackLogo: 'https://i.ibb.co/QvtbdnfP/V247.png',
+      phaseTitle: isVi ? 'Tuyển dụng\nnhân sự' : 'Talent\nRecruitment',
+      cardBg: 'linear-gradient(180deg, #faf5ff 0%, #f3e8ff 100%)',
+      cardBorder: 'rgba(233, 213, 255, 0.95)',
+      cardIcon: (
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#7c3aed]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 20v-1a4 4 0 00-4-4H9a4 4 0 00-4 4v1" />
+          <circle cx="11" cy="7" r="3" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21 20v-1a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
+        </svg>
+      ),
     },
     {
       key: '2011',
       yearBadge: isVi ? 'Năm 2011' : 'Year 2011',
+      company: 'LBC',
       shortName: 'LBC - HTVC',
       roleSummary: isVi ? 'Trưởng Phòng CSKH' : 'Customer Care Manager',
       headcountLabel: isVi ? '12 Nhân sự' : '12 Members',
-      logo: 'https://i.ibb.co/R4YXWyzF/LBC.png',
-      extraLogo: 'https://i.ibb.co/1fNw0hBq/HTVC.png',
-      bullets: isVi
-        ? ['Chuẩn hóa quy trình chăm sóc KH', 'Đào tạo & phát triển đội ngũ']
-        : ['Standardized CS SOPs & guidelines', 'Team training & service coaching'],
-      badgeBg: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
       badgeColor: '#059669',
-      cardBg: 'linear-gradient(180deg, #ecfdf5 0%, #ffffff 50%, #d1fae5 100%)',
-      borderColor: 'border-emerald-200/90 hover:border-emerald-400',
-      activeRing: 'ring-emerald-400',
-      titleColor: 'text-emerald-800 dark:text-emerald-300',
-      pillBg: 'bg-emerald-50/90 text-emerald-700 border-emerald-200/90 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800',
-      arrowBg: '#10b981',
+      circleLogo: '/images/experience/milestones/logo-2011.png',
+      fallbackLogo: 'https://i.ibb.co/R4YXWyzF/LBC.png',
+      phaseTitle: isVi ? 'Phát triển\nthương hiệu LB' : 'LB Brand\nBuilding',
+      cardBg: 'linear-gradient(180deg, #ecfdf5 0%, #d1fae5 100%)',
+      cardBorder: 'rgba(167, 243, 208, 0.95)',
+      cardIcon: (
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#059669]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 3v18h18" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7 15l4-4 4 3 6-7" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 7h4v4" />
+        </svg>
+      ),
     },
     {
       key: '2013',
       yearBadge: isVi ? 'Năm 2013' : 'Year 2013',
+      company: 'VIETNAM ESPORTS',
       shortName: 'VED / GARENA',
       roleSummary: isVi ? 'Trưởng Phòng CSKH' : 'Customer Support Manager',
       headcountLabel: isVi ? '130 Nhân sự' : '130 Members',
-      logo: 'https://i.ibb.co/BSVS4xf/Shopee.png',
-      bullets: isVi
-        ? ['Quản lý vận hành CSKH 130 NS', 'Tối ưu trải nghiệm đa sản phẩm']
-        : ['130-agent CS operational leadership', 'Multi-product CX optimization'],
-      badgeBg: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-      badgeColor: '#ea580c',
-      cardBg: 'linear-gradient(180deg, #fff7ed 0%, #ffffff 50%, #ffedd5 100%)',
-      borderColor: 'border-orange-200/90 hover:border-orange-400',
-      activeRing: 'ring-orange-400',
-      titleColor: 'text-orange-800 dark:text-orange-300',
-      pillBg: 'bg-orange-50/90 text-orange-700 border-orange-200/90 dark:bg-orange-950/60 dark:text-orange-300 dark:border-orange-800',
-      arrowBg: '#f97316',
+      badgeColor: '#06b6d4',
+      circleLogo: '/images/experience/milestones/logo-2013.png',
+      fallbackLogo: 'https://i.ibb.co/fYPJLfbw/VED.png',
+      phaseTitle: isVi ? 'Thiết kế\nsản phẩm' : 'Product\nDesign',
+      cardBg: 'linear-gradient(180deg, #f0fdfa 0%, #cffafe 100%)',
+      cardBorder: 'rgba(165, 243, 252, 0.95)',
+      cardIcon: (
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#06b6d4]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <rect x="2" y="3" width="20" height="14" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="8" y1="21" x2="16" y2="21" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="12" y1="17" x2="12" y2="21" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      ),
     },
     {
       key: '2016',
       yearBadge: isVi ? 'Năm 2016' : 'Year 2016',
+      company: 'PRUDENTIAL',
       shortName: 'PRUDENTIAL',
       roleSummary: isVi ? 'Trưởng Phòng Call Center' : 'Call Center Manager',
       headcountLabel: isVi ? '52 Nhân sự' : '52 Members',
-      logo: 'https://i.ibb.co/XfpQphWF/Prudential.png',
-      bullets: isVi
-        ? ['Vận hành Call Center bảo hiểm 5 sao', 'Tăng tỷ lệ FCR & chất lượng dịch vụ']
-        : ['5-star Insurance Contact Center', 'Elevating FCR & CX service quality'],
-      badgeBg: 'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)',
-      badgeColor: '#e11d48',
-      cardBg: 'linear-gradient(180deg, #fff1f2 0%, #ffffff 50%, #ffe4e6 100%)',
-      borderColor: 'border-rose-200/90 hover:border-rose-400',
-      activeRing: 'ring-rose-400',
-      titleColor: 'text-rose-800 dark:text-rose-300',
-      pillBg: 'bg-rose-50/90 text-rose-700 border-rose-200/90 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800',
-      arrowBg: '#fb7185',
+      badgeColor: '#ea580c',
+      circleLogo: '/images/experience/milestones/logo-2016.png',
+      fallbackLogo: 'https://i.ibb.co/XfpQphWF/Prudential.png',
+      phaseTitle: isVi ? 'Sản xuất\nsản phẩm' : 'Product\nOperations',
+      cardBg: 'linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%)',
+      cardBorder: 'rgba(254, 215, 170, 0.95)',
+      cardIcon: (
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#ea580c]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2 20h20M3 20V9l5 4V9l5 4V5h7v15" />
+          <line x1="17" y1="9" x2="17.01" y2="9" strokeWidth="2.5" strokeLinecap="round" />
+          <line x1="17" y1="13" x2="17.01" y2="13" strokeWidth="2.5" strokeLinecap="round" />
+        </svg>
+      ),
     },
     {
       key: '2018',
       yearBadge: isVi ? 'Năm 2018' : 'Year 2018',
+      company: 'MoMo',
       shortName: 'MOMO',
       roleSummary: isVi ? 'Trưởng Phòng CSKH' : 'Customer Support Manager',
       headcountLabel: isVi ? '60 Nhân sự' : '60 Members',
-      logo: 'https://i.ibb.co/k2QtrgTw/Momo.png',
-      bullets: isVi
-        ? ['Chiến lược CSKH Ví MoMo 30M+ users', 'Tự động hóa chatbot & CRM đa kênh']
-        : ['MoMo CX strategy for 30M+ users', 'Chatbot & Omnichannel CRM automation'],
-      badgeBg: 'linear-gradient(135deg, #f472b6 0%, #db2777 100%)',
       badgeColor: '#db2777',
-      cardBg: 'linear-gradient(180deg, #fdf2f8 0%, #ffffff 50%, #fce7f3 100%)',
-      borderColor: 'border-pink-200/90 hover:border-pink-400',
-      activeRing: 'ring-pink-400',
-      titleColor: 'text-pink-800 dark:text-pink-300',
-      pillBg: 'bg-pink-50/90 text-pink-700 border-pink-200/90 dark:bg-pink-950/60 dark:text-pink-300 dark:border-pink-800',
-      arrowBg: '#f472b6',
+      circleLogo: '/images/experience/milestones/logo-2018.png',
+      fallbackLogo: 'https://i.ibb.co/k2QtrgTw/Momo.png',
+      phaseTitle: isVi ? 'Ra mắt\ntrên MoMo' : 'MoMo\nLaunch',
+      cardBg: 'linear-gradient(180deg, #fdf2f8 0%, #fce7f3 100%)',
+      cardBorder: 'rgba(251, 207, 232, 0.95)',
+      cardIcon: (
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#db2777]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <rect x="5" y="2" width="14" height="20" rx="3" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="10" y1="4" x2="14" y2="4" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="18" r="1" fill="currentColor" />
+        </svg>
+      ),
     },
     {
       key: '2023',
       yearBadge: isVi ? 'Năm 2023' : 'Year 2023',
+      company: 'Finviet',
       shortName: 'FINVIET',
       roleSummary: isVi ? 'Trưởng Phòng CSKH' : 'Customer Support Manager',
       headcountLabel: isVi ? '17 Nhân sự' : '17 Members',
-      logo: 'https://i.ibb.co/7NtSSz4d/Finviet.png',
-      bullets: isVi
-        ? ['Tái cấu trúc quy trình & Ví ECO', 'Ứng dụng AI Agent & Big Data CSKH']
-        : ['Process restructuring & ECO Wallet', 'Integrating AI Agents & CX Big Data'],
-      badgeBg: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-      badgeColor: '#f59e0b',
-      cardBg: 'linear-gradient(180deg, #fffbeb 0%, #ffffff 50%, #fef3c7 100%)',
-      borderColor: 'border-amber-200/90 hover:border-amber-400',
-      activeRing: 'ring-amber-400',
-      titleColor: 'text-amber-800 dark:text-amber-300',
-      pillBg: 'bg-amber-50/90 text-amber-800 border-amber-200/90 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800',
-      arrowBg: '#fbbf24',
+      badgeColor: '#d97706',
+      circleLogo: '/images/experience/milestones/logo-2023.png',
+      fallbackLogo: 'https://i.ibb.co/7NtSSz4d/Finviet.png',
+      phaseTitle: isVi ? 'Truyền thông\n& Marketing' : 'Marketing\n& Comms',
+      cardBg: 'linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%)',
+      cardBorder: 'rgba(253, 230, 138, 0.95)',
+      cardIcon: (
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#d97706]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 11l18-5v12L3 14v-3z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21 9a3 3 0 010 6" />
+        </svg>
+      ),
     },
     {
       key: '2026',
       yearBadge: isVi ? 'Năm 2026+' : 'Year 2026+',
+      company: 'CS Strategy AI',
       shortName: 'CS STRATEGY',
       roleSummary: isVi ? 'Head of CS / CS Director' : 'Head of CS / CS Director',
       headcountLabel: isVi ? '100+ Nhân sự' : '100+ Members',
-      logo: 'https://i.ibb.co/G4QnNzWb/Power-Service.png',
-      bullets: isVi
-        ? ['Hoạch định chiến lược CX Strategy 2026+', 'Tích hợp GenAI Copilot & SOP COPC']
-        : ['CX Strategy 2026+ leadership', 'GenAI Copilots & COPC SOP framework'],
-      badgeBg: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
       badgeColor: '#0284c7',
-      cardBg: 'linear-gradient(180deg, #f0f9ff 0%, #ffffff 50%, #e0f2fe 100%)',
-      borderColor: 'border-sky-200/90 hover:border-sky-400',
-      activeRing: 'ring-sky-400',
-      titleColor: 'text-sky-800 dark:text-sky-300',
-      pillBg: 'bg-sky-50/90 text-sky-700 border-sky-200/90 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-800',
-      arrowBg: '#0ea5e9',
+      circleLogo: '/images/experience/milestones/logo-2026.png',
+      fallbackLogo: 'https://i.ibb.co/G4QnNzWb/Power-Service.png',
+      phaseTitle: isVi ? 'Đánh giá\n& Mở rộng' : 'Evaluation\n& Scale',
+      cardBg: 'linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%)',
+      cardBorder: 'rgba(186, 230, 253, 0.95)',
+      cardIcon: (
+        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#0284c7]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+        </svg>
+      ),
     },
   ];
 
@@ -233,6 +248,8 @@ export const ExperienceView: React.FC = () => {
     return (
       c.shortName.toLowerCase().includes(q) ||
       c.yearBadge.toLowerCase().includes(q) ||
+      c.company.toLowerCase().includes(q) ||
+      c.phaseTitle.toLowerCase().includes(q) ||
       c.roleSummary.toLowerCase().includes(q) ||
       (ms && ms.company.toLowerCase().includes(q)) ||
       (ms && ms.industry?.toLowerCase().includes(q))
@@ -343,137 +360,140 @@ export const ExperienceView: React.FC = () => {
             </div>
           </div>
 
-          {/* 2. 8-CARD HORIZONTAL TIMELINE (Năm 2003 -> Năm 2026+) */}
-          <div className="w-full flex-1 min-h-0 rounded-[22px] p-3 sm:p-4 bg-white/80 dark:bg-[#121218]/85 border border-white/80 dark:border-white/10 backdrop-blur-[18px] shadow-[0_8px_30px_rgba(62,115,180,0.08)] overflow-x-auto no-scrollbar relative flex flex-col justify-center">
-            <div className="w-full h-full min-w-[980px] grid grid-cols-8 gap-2.5 items-stretch">
+          {/* 2. TIMELINE KINH NGHIỆM THỰC CHIẾN (CHÍNH XÁC THEO THIẾT KẾ ĐÍNH KÈM) */}
+          <div className="w-full flex-1 min-h-0 rounded-[22px] px-3 sm:px-5 py-4 bg-white/85 dark:bg-[#121218]/85 border border-white/90 dark:border-white/10 backdrop-blur-[20px] shadow-[0_10px_35px_rgba(62,115,180,0.09)] overflow-x-auto no-scrollbar relative flex flex-col justify-center items-center">
+            <div className="w-full min-w-[960px] flex items-center justify-between gap-1 sm:gap-2 px-1 relative my-auto">
+              {/* Horizontal Connecting Track between the circular logo badges */}
+              <div className="absolute top-[82px] sm:top-[92px] left-[5%] right-[5%] h-[2.5px] bg-slate-200 dark:bg-slate-700/80 -z-0 rounded-full" />
+
               {filteredRoadmapCards.map((item, idx) => {
                 const isSelected = activeKey === item.key;
                 const isLast = idx === filteredRoadmapCards.length - 1;
 
                 return (
-                  <div key={item.key} className="relative flex flex-col items-center h-full min-h-0">
-                    {/* Top Year Pill Badge with Downward Pointer */}
-                    <div className="flex flex-col items-center -mb-2 z-20">
-                      <div
-                        className={`px-3 py-0.5 rounded-full text-white font-extrabold text-[10px] tracking-tight shadow-xs flex items-center justify-center transition-all duration-300 whitespace-nowrap ${
-                          isSelected ? 'scale-105 ring-2 ring-white shadow-sm' : ''
+                  <div key={item.key} className="flex-1 flex flex-col items-center justify-between h-full py-1 relative z-10 group">
+                    {/* 1. TOP YEAR PILL BADGE & VERTICAL CONNECTOR */}
+                    <div className="flex flex-col items-center shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectMilestone(item.key)}
+                        className={`px-3.5 py-1 rounded-full text-white font-black text-[11px] sm:text-xs tracking-tight whitespace-nowrap cursor-pointer transition-all duration-300 shadow-sm ${
+                          isSelected
+                            ? 'scale-110 ring-2 ring-white shadow-md'
+                            : 'hover:scale-105 opacity-95 hover:opacity-100'
                         }`}
-                        style={{ background: item.badgeBg }}
+                        style={{ background: item.badgeColor }}
                       >
-                        <span>{item.yearBadge}</span>
-                      </div>
+                        {item.yearBadge}
+                      </button>
+
+                      {/* Vertical line with dot */}
                       <div
-                        className="w-0 h-0 border-x-[4px] border-x-transparent border-t-[4px]"
-                        style={{ borderTopColor: item.badgeColor }}
+                        className="w-[2px] h-3.5 sm:h-5 relative flex items-center justify-center my-0.5"
+                        style={{ background: item.badgeColor }}
+                      >
+                        <span
+                          className="w-2 h-2 rounded-full border-2 border-white dark:border-slate-800 shadow-xs"
+                          style={{ background: item.badgeColor }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* 2. CENTER CIRCULAR LOGO BADGE & CONNECTING CHEVRON » */}
+                    <div className="relative flex items-center justify-center shrink-0 my-1">
+                      {/* Circular Logo Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleOpenJobCard(item.key)}
+                        title={isVi ? `Bấm xem chi tiết: ${item.company}` : `Click to view details: ${item.company}`}
+                        className={`w-[76px] h-[76px] sm:w-[88px] sm:h-[88px] rounded-full bg-white p-1.5 sm:p-2 flex items-center justify-center cursor-pointer transition-all duration-300 relative z-10 ${
+                          isSelected
+                            ? 'scale-110 shadow-xl'
+                            : 'hover:scale-105 shadow-md hover:shadow-lg'
+                        }`}
+                        style={{
+                          border: `3px solid ${item.badgeColor}`,
+                          boxShadow: isSelected
+                            ? `0 0 24px ${item.badgeColor}85, 0 4px 14px rgba(0,0,0,0.15)`
+                            : `0 0 16px ${item.badgeColor}35, 0 2px 8px rgba(0,0,0,0.06)`,
+                        }}
+                      >
+                        <img
+                          src={item.circleLogo}
+                          alt={item.company}
+                          className="w-full h-full object-contain rounded-full transition-transform duration-200 group-hover:scale-105 select-none"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = item.fallbackLogo;
+                          }}
+                        />
+                      </button>
+
+                      {/* Connecting Chevron Arrow Pill ( » ) to next circle */}
+                      {!isLast && (
+                        <div className="absolute -right-[15px] sm:-right-[18px] z-20 pointer-events-none">
+                          <div
+                            className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-white shadow-sm border-2 border-white dark:border-slate-800"
+                            style={{ background: item.badgeColor }}
+                          >
+                            <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[2.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7M15 5l7 7-7 7" />
+                            </svg>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 3. VERTICAL CONNECTOR TO BOTTOM CARD */}
+                    <div
+                      className="w-[2px] h-3.5 sm:h-5 relative flex items-center justify-center my-0.5 shrink-0"
+                      style={{ background: item.badgeColor }}
+                    >
+                      <span
+                        className="w-2 h-2 rounded-full border-2 border-white dark:border-slate-800 shadow-xs"
+                        style={{ background: item.badgeColor }}
                       />
                     </div>
 
-                    {/* Card Body */}
+                    {/* 4. BOTTOM PASTEL INFORMATION CARD */}
                     <div
-                      onClick={() => handleSelectMilestone(item.key)}
-                      style={{ background: item.cardBg }}
-                      className={`theme-pastel-card w-full flex-1 min-h-0 rounded-[18px] pt-3.5 pb-2.5 px-2 border transition-all duration-300 cursor-pointer flex flex-col items-center text-center justify-between gap-1.5 relative group ${
-                        item.borderColor
-                      } ${
+                      onClick={() => handleOpenJobCard(item.key)}
+                      className={`w-full rounded-[16px] sm:rounded-[20px] py-2.5 sm:py-3 px-1.5 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 border shrink-0 min-h-[96px] sm:min-h-[104px] ${
                         isSelected
-                          ? `ring-2 ${item.activeRing} shadow-md -translate-y-0.5`
-                          : 'shadow-2xs hover:shadow-xs hover:-translate-y-0.5'
+                          ? 'scale-105 ring-2 ring-white shadow-md'
+                          : 'hover:scale-[1.02] shadow-2xs hover:shadow-xs'
                       }`}
+                      style={{
+                        background: item.cardBg,
+                        borderColor: item.cardBorder,
+                      }}
+                      title={isVi ? `Bấm xem chi tiết: ${item.company}` : `Click to view details: ${item.company}`}
                     >
-                      {/* Logo Area: White Rounded Box */}
+                      {/* Circular Vector Icon Container */}
                       <div
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenJobCard(item.key);
-                        }}
-                        title={
-                          isVi
-                            ? `Bấm để mở chi tiết công tác: ${item.shortName}`
-                            : `Click to view details: ${item.shortName}`
-                        }
-                        className="w-full h-13 rounded-xl bg-white shadow-2xs border border-slate-100 flex items-center justify-center p-1.5 group/logo cursor-pointer shrink-0 transition-transform group-hover/logo:scale-105"
+                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 dark:bg-slate-800/95 shadow-2xs flex items-center justify-center mb-1.5 transition-transform group-hover:scale-110 shrink-0"
+                        style={{ color: item.badgeColor }}
                       >
-                        {item.extraLogo ? (
-                          <div className="flex items-center justify-center gap-1.5 w-full h-full">
-                            <img
-                              src={item.logo}
-                              alt={item.shortName}
-                              className="h-7 max-w-[45%] object-contain"
-                            />
-                            <img
-                              src={item.extraLogo}
-                              alt="HTVC"
-                              className="h-7 max-w-[45%] object-contain"
-                            />
-                          </div>
-                        ) : (
-                          <img
-                            src={item.logo}
-                            alt={item.shortName}
-                            className="h-8 max-h-full max-w-[85%] object-contain"
-                          />
-                        )}
+                        {item.cardIcon}
                       </div>
 
-                      {/* Company Short Name */}
-                      <h4
-                        className={`text-[10.5px] font-black font-play tracking-wide uppercase line-clamp-1 w-full px-0.5 shrink-0 ${item.titleColor}`}
-                      >
-                        {item.shortName}
+                      {/* Phase Title (Exact matching image) */}
+                      <h4 className="text-[11px] sm:text-[11.5px] font-bold text-slate-800 dark:text-slate-100 font-play leading-tight px-0.5 whitespace-pre-line">
+                        {item.phaseTitle}
                       </h4>
-
-                      {/* Role Label & Summary */}
-                      <div className="space-y-0.5 w-full shrink-0">
-                        <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 block leading-none">
-                          {isVi ? 'Vị trí' : 'Position'}
-                        </span>
-                        <p className="text-[10.5px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-200 leading-tight line-clamp-2 px-0.5 min-h-[26px] flex items-center justify-center">
-                          {item.roleSummary}
-                        </p>
-                      </div>
-
-                      {/* Bullet points */}
-                      <div className="w-full flex-1 flex flex-col justify-center px-0.5 my-0.5">
-                        <ul className="space-y-1 text-left w-full">
-                          {item.bullets.map((bullet, bIdx) => (
-                            <li
-                              key={bIdx}
-                              className="text-[10px] sm:text-[10.5px] leading-snug text-slate-600 dark:text-slate-300 font-medium flex items-start gap-1"
-                            >
-                              <span className="text-slate-400 dark:text-slate-400 font-bold leading-none shrink-0">•</span>
-                              <span className="line-clamp-2">{bullet}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Headcount Pill at Bottom */}
-                      <div className="w-full pt-1 shrink-0 mt-auto">
-                        <div
-                          className={`w-full py-1 px-1 rounded-full border text-[10px] font-bold flex items-center justify-center gap-1 shadow-2xs ${item.pillBg}`}
-                        >
-                          <svg className="w-2.5 h-2.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                          </svg>
-                          <span className="truncate">{item.headcountLabel}</span>
-                        </div>
-                      </div>
                     </div>
-
-                    {/* Connector Chevron ( > ) between cards */}
-                    {!isLast && (
-                      <div
-                        className="absolute top-[48%] -right-[6px] z-30 w-3.5 h-3.5 rounded-full text-white flex items-center justify-center shadow-xs pointer-events-none"
-                        style={{ backgroundColor: item.arrowBg }}
-                      >
-                        <svg className="w-2 h-2 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    )}
                   </div>
                 );
               })}
+            </div>
+
+            {/* Subtle Footer hint */}
+            <div className="mt-2 text-[10.5px] font-medium text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1.5 pointer-events-none select-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+              <span>
+                {isVi
+                  ? 'Bấm vào logo hoặc thẻ để xem hồ sơ công tác, thành tựu & sản phẩm chi tiết'
+                  : 'Click on logo or card to view detailed milestone portfolio & achievements'}
+              </span>
             </div>
           </div>
         </>
