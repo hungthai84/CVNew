@@ -453,12 +453,11 @@ export const ProjectsView: React.FC = () => {
         <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
         {!selectedGroup && !selectedArticle ? (
           <div className="relative w-full h-full flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-1 py-0.5">
-            {/* 21 THẺ DỰ ÁN 3 CỘT THEO BỐ CỤC CHUẨN TRONG HÌNH */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5 sm:gap-3 pb-4">
+            {/* 21 THẺ DỰ ÁN 3 CỘT - HÌNH BANNER LẮP ĐẦY THẺ DỰ ÁN 100% */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-3.5 auto-rows-[200px] sm:auto-rows-[215px] pb-4">
               {filteredProjects.map((proj) => {
+                const cfg = getVisualConfigForProject(proj);
                 const parentGroup = getParentGroupForProject(proj);
-                const catMeta = getCategoryMeta(proj.groupKey);
-                const prog = getProgressBadge(proj);
                 const displayTitle = proj.title.includes('·')
                   ? proj.title.split('·')[1].trim()
                   : proj.title;
@@ -467,76 +466,105 @@ export const ProjectsView: React.FC = () => {
                   <div
                     key={proj.id}
                     onClick={() => handleOpenGroup(parentGroup, proj)}
-                    className="group/card relative rounded-[18px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-white/10 p-3 sm:p-3.5 shadow-2xs hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 cursor-pointer flex flex-col justify-between text-left h-full"
+                    className="group/card relative rounded-[18px] overflow-hidden border border-white/80 dark:border-white/20 shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-300 hover:-translate-y-1 h-full min-h-0 text-left bg-slate-900"
                     title={`Bấm để xem Case Study STAR: ${proj.title}`}
                   >
-                    {/* Phần trên: Thumbnail (trái) + Thông tin & Tiêu đề (phải) */}
-                    <div className="flex gap-3 items-start">
-                      {/* Thumbnail hình ảnh kèm Badge mã số dự án ở góc trên bên trái */}
-                      <div className="w-[88px] h-[72px] sm:w-[94px] sm:h-[76px] rounded-xl overflow-hidden relative shrink-0 border border-slate-200/60 dark:border-white/10 bg-slate-100 dark:bg-slate-800 shadow-2xs">
-                        <img
-                          src={proj.image}
-                          alt={proj.title}
-                          className="w-full h-full object-cover group-hover/card:scale-106 transition-transform duration-500 select-none"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = parentGroup.illustrationSrc;
-                          }}
-                        />
-                        <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded-md bg-blue-600 text-white font-mono text-[10px] font-black shadow-xs border border-white/20">
-                          {proj.code}
+                    {/* HÌNH BANNER LẮP ĐẦY TOÀN BỘ THẺ DỰ ÁN (Rõ ràng, sắc nét) */}
+                    <img
+                      src={proj.image}
+                      alt={proj.title}
+                      className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.05] contrast-[1.05] group-hover/card:scale-108 transition-transform duration-700 select-none pointer-events-none"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = parentGroup.illustrationSrc;
+                      }}
+                    />
+
+                    {/* Gradient Scrim nhẹ mỏng làm nổi bật hình ảnh và chữ */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent pointer-events-none" />
+
+                    {/* Default Top Badges: Mã số dự án & Tiến độ */}
+                    <div className="absolute top-2.5 inset-x-2.5 flex items-center justify-between z-10">
+                      <span
+                        style={{ background: cfg.accentColor }}
+                        className="px-2 py-0.5 rounded-md text-white font-mono text-[10px] font-black shadow-md border border-white/30"
+                      >
+                        {proj.code}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-emerald-300 font-mono text-[10px] font-bold shadow-xs border border-white/20 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>{proj.progressText || '100% Hoàn thành'}</span>
+                      </span>
+                    </div>
+
+                    {/* KHỐI DƯỚI NẰM TRỰC TIẾP TRÊN HÌNH BANNER: TÊN DỰ ÁN & MŨI TÊN */}
+                    <div className="absolute bottom-0 inset-x-0 p-3 z-10 flex items-end justify-between gap-2 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent pt-6">
+                      <div className="min-w-0 flex-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-300 font-mono block truncate">
+                          {parentGroup.fourWordTitle}
                         </span>
-                      </div>
-
-                      {/* Thông tin bên phải: Status Pill + Nhóm danh mục + Tên dự án */}
-                      <div className="flex-1 min-w-0 flex flex-col gap-1">
-                        {/* Status pill */}
-                        <div className="flex items-center">
-                          <span
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-[10.5px] font-semibold border ${prog.bg} max-w-full`}
-                          >
-                            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${prog.dot}`} />
-                            <span className="truncate">{prog.text}</span>
-                          </span>
-                        </div>
-
-                        {/* Category pill with colored dot */}
-                        <div className="flex items-center gap-1.5 text-[10.5px] font-semibold text-slate-500 dark:text-slate-400">
-                          <span
-                            className="w-1.5 h-1.5 rounded-full shrink-0"
-                            style={{ backgroundColor: catMeta.dotColor }}
-                          />
-                          <span className="truncate">{catMeta.name}</span>
-                        </div>
-
-                        {/* Tên dự án (in đậm, rõ nét) */}
                         <h4
-                          className="text-[12px] sm:text-[12.5px] font-bold font-play leading-snug text-slate-800 dark:text-slate-100 group-hover/card:text-blue-600 dark:group-hover/card:text-blue-400 transition-colors line-clamp-2"
+                          className="text-[12.5px] sm:text-[13px] font-black font-play leading-snug text-white drop-shadow-md truncate mt-0.5"
                           title={proj.title}
                         >
                           {displayTitle}
                         </h4>
                       </div>
-                    </div>
 
-                    {/* Phần dưới: Mô tả dự án tóm tắt & Nút tròn mũi tên chuyển trang */}
-                    <div className="flex items-end justify-between gap-2 pt-2.5 mt-2 border-t border-slate-100 dark:border-white/5">
-                      <p className="text-[10.5px] sm:text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2 flex-1 min-w-0 pr-1">
-                        {proj.description}
-                      </p>
-
+                      {/* Right: Nút mũi tên xem chi tiết */}
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleOpenGroup(parentGroup, proj);
                         }}
-                        aria-label="Xem chi tiết dự án"
-                        className="w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full bg-slate-100 hover:bg-blue-600 dark:bg-slate-800 dark:hover:bg-blue-600 text-slate-600 hover:text-white dark:text-slate-300 dark:hover:text-white transition-all flex items-center justify-center shrink-0 shadow-2xs group-hover/card:translate-x-0.5 cursor-pointer"
+                        style={{ background: cfg.arrowBg, boxShadow: cfg.arrowShadow }}
+                        className="w-6.5 h-6.5 rounded-full text-white flex items-center justify-center shrink-0 transition-transform duration-300 group-hover/card:translate-x-0.5 hover:scale-110 cursor-pointer shadow-md"
+                        title="Xem STAR Case Study"
                       >
-                        <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3 h-3 stroke-[2.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
+                    </div>
+
+                    {/* LỚP PHỦ CHI TIẾT KHI HOVER CHUỘT (Translucent Glass Overlay) */}
+                    <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[5px] opacity-0 group-hover/card:opacity-100 transition-all duration-300 p-3.5 flex flex-col justify-between text-white z-20 pointer-events-none">
+                      {/* Top: Nhóm & Giai đoạn */}
+                      <div className="flex items-center justify-between gap-1.5 flex-wrap">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-[10px] font-bold text-white border border-white/30 truncate max-w-[190px]">
+                          <WebIcon name={parentGroup.iconName} className="w-3.5 h-3.5 shrink-0 text-cyan-300" />
+                          <span className="truncate">{parentGroup.code}: {parentGroup.fourWordTitle}</span>
+                        </span>
+
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-mono text-[10px] font-black shadow-xs">
+                          {proj.progressText || '100% Hoàn thành'}
+                        </span>
+                      </div>
+
+                      {/* Middle: Mô tả chi tiết dự án */}
+                      <div className="my-auto py-1">
+                        <span className="text-[10px] uppercase tracking-wider font-mono text-cyan-300 font-bold block mb-1">
+                          Mô tả dự án:
+                        </span>
+                        <p className="text-[11px] sm:text-[11.5px] text-slate-100 leading-snug line-clamp-3 font-medium">
+                          {proj.description}
+                        </p>
+                      </div>
+
+                      {/* Bottom: Hashtags & Gợi ý click */}
+                      <div className="flex items-center justify-between pt-1 border-t border-white/20 gap-1 text-[10px]">
+                        <div className="flex items-center gap-1 flex-wrap overflow-hidden">
+                          {proj.hashtags?.slice(0, 2).map((t) => (
+                            <span key={t} className="px-1.5 py-0.2 rounded bg-white/15 text-slate-200 font-mono text-[10px] font-medium truncate">
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                        <span className="text-[10px] text-amber-300 font-bold flex items-center gap-0.5 shrink-0">
+                          <span>Xem STAR Case Study</span>
+                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );
