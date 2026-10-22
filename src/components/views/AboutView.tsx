@@ -406,8 +406,8 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
               </div>
             </div>
 
-            {/* TILE 2.2: BA TRỤ CỘT VẬN HÀNH CHIẾN LƯỢC (3 BENTO PILLARS) */}
-            <div className="flex-1 min-h-0 flex flex-col justify-between gap-1">
+            {/* TILE 2.2: BA TRỤ CỘT VẬN HÀNH CHIẾN LƯỢC (3 BENTO PILLARS - THU NHỎ CHIỀU CAO VỪA KHÍT NỘI DUNG) */}
+            <div className="shrink-0 h-auto flex flex-col gap-1 sm:gap-1.5">
               <div className="flex items-center gap-1.5 px-1 shrink-0">
                 <WebIcon name="target" className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
                 <h4 className="text-[10.5px] sm:text-[11px] font-black uppercase tracking-wider text-slate-800 dark:text-white">
@@ -415,77 +415,86 @@ export const AboutView: React.FC<AboutViewProps> = ({ onNavigateContact, onOpenA
                 </h4>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-1 min-h-0">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 h-auto">
                 {/* Trụ Cột 1: Hiệu Quả */}
-                <div className="rounded-xl p-2.5 bg-gradient-to-b from-[#1E82FF] to-[#125CE6] text-white shadow-xs flex flex-col justify-between text-left group hover:scale-[1.02] transition-transform">
-                  <div className="flex items-center justify-between">
-                    <div className="w-6 h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
-                      <WebIcon name="messagesquare" className="w-3.5 h-3.5 text-white" />
+                <div className="rounded-xl p-2 sm:p-2.5 bg-gradient-to-b from-[#1E82FF] to-[#125CE6] text-white shadow-xs flex flex-col gap-1 text-left group hover:scale-[1.02] transition-transform h-auto">
+                  <div className="flex items-center justify-between shrink-0">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
+                      <WebIcon name="messagesquare" className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-white" />
                     </div>
                     <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-blue-100">01</span>
                   </div>
-                  <div className="my-1">
+                  <div className="my-0.5">
                     <h5 className="text-[11px] sm:text-xs font-black uppercase tracking-wide font-play leading-tight">
                       {isVi ? 'HIỆU QUẢ' : 'EFFICIENCY'}
                     </h5>
-                    <span className="text-[9px] font-bold text-blue-100 block">{isVi ? 'Tối ưu & Kết quả' : 'Optimal Results'}</span>
-                    <p className="text-[9.5px] sm:text-[10px] text-white/90 leading-snug mt-1 font-medium line-clamp-2">
+                    <span className="text-[8.5px] sm:text-[9px] font-bold text-blue-100 block">{isVi ? 'Tối ưu & Kết quả' : 'Optimal Results'}</span>
+                    <p className="text-[9px] sm:text-[9.5px] text-white/90 leading-snug mt-0.5 font-medium line-clamp-2">
                       {isVi ? 'Tối ưu hiệu suất, tạo kết quả đo lường được.' : 'Optimizing performance, delivering measurable outcomes.'}
                     </p>
                   </div>
-                  <div className="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center self-end">
-                    <WebIcon name="chart" className="w-3 h-3 text-white" />
+                  <div className="flex items-center justify-between pt-0.5 mt-auto shrink-0">
+                    <span className="text-[7.5px] font-mono text-blue-100/70 uppercase">Pillar I</span>
+                    <div className="w-4 h-4 rounded-md bg-white/15 flex items-center justify-center">
+                      <WebIcon name="chart" className="w-2.5 h-2.5 text-white" />
+                    </div>
                   </div>
                 </div>
 
                 {/* Trụ Cột 2: Nhân Văn */}
-                <div className="rounded-xl p-2.5 bg-gradient-to-b from-[#FF568A] to-[#A838F5] text-white shadow-xs flex flex-col justify-between text-left group hover:scale-[1.02] transition-transform">
-                  <div className="flex items-center justify-between">
-                    <div className="w-6 h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
-                      <WebIcon name="heart" className="w-3.5 h-3.5 text-white" />
+                <div className="rounded-xl p-2 sm:p-2.5 bg-gradient-to-b from-[#FF568A] to-[#A838F5] text-white shadow-xs flex flex-col gap-1 text-left group hover:scale-[1.02] transition-transform h-auto">
+                  <div className="flex items-center justify-between shrink-0">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
+                      <WebIcon name="heart" className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-white" />
                     </div>
                     <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-rose-100">02</span>
                   </div>
-                  <div className="my-1">
+                  <div className="my-0.5">
                     <h5 className="text-[11px] sm:text-xs font-black uppercase tracking-wide font-play leading-tight">
                       {isVi ? 'NHÂN VĂN' : 'HUMANITY'}
                     </h5>
-                    <span className="text-[9px] font-bold text-pink-100 block">{isVi ? 'Đồng cảm & Thấu hiểu' : 'Empathy & Care'}</span>
-                    <p className="text-[9.5px] sm:text-[10px] text-white/90 leading-snug mt-1 font-medium line-clamp-2">
+                    <span className="text-[8.5px] sm:text-[9px] font-bold text-pink-100 block">{isVi ? 'Đồng cảm & Thấu hiểu' : 'Empathy & Care'}</span>
+                    <p className="text-[9px] sm:text-[9.5px] text-white/90 leading-snug mt-0.5 font-medium line-clamp-2">
                       {isVi ? 'Lắng nghe, thấu hiểu và đặt con người làm trung tâm.' : 'Listening, empathizing and placing humans at center.'}
                     </p>
                   </div>
-                  <div className="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center self-end">
-                    <WebIcon name="users" className="w-3 h-3 text-white" />
+                  <div className="flex items-center justify-between pt-0.5 mt-auto shrink-0">
+                    <span className="text-[7.5px] font-mono text-rose-100/70 uppercase">Pillar II</span>
+                    <div className="w-4 h-4 rounded-md bg-white/15 flex items-center justify-center">
+                      <WebIcon name="users" className="w-2.5 h-2.5 text-white" />
+                    </div>
                   </div>
                 </div>
 
                 {/* Trụ Cột 3: Bền Vững */}
-                <div className="rounded-xl p-2.5 bg-gradient-to-b from-[#0FC271] to-[#109B53] text-white shadow-xs flex flex-col justify-between text-left group hover:scale-[1.02] transition-transform">
-                  <div className="flex items-center justify-between">
-                    <div className="w-6 h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
-                      <WebIcon name="trend-up" className="w-3.5 h-3.5 text-white" />
+                <div className="rounded-xl p-2 sm:p-2.5 bg-gradient-to-b from-[#0FC271] to-[#109B53] text-white shadow-xs flex flex-col gap-1 text-left group hover:scale-[1.02] transition-transform h-auto">
+                  <div className="flex items-center justify-between shrink-0">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-white/15 backdrop-blur-md flex items-center justify-center shadow-2xs">
+                      <WebIcon name="trend-up" className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-white" />
                     </div>
                     <span className="text-[8.5px] font-extrabold uppercase tracking-wide text-emerald-100">03</span>
                   </div>
-                  <div className="my-1">
+                  <div className="my-0.5">
                     <h5 className="text-[11px] sm:text-xs font-black uppercase tracking-wide font-play leading-tight">
                       {isVi ? 'BỀN VỮNG' : 'SUSTAINABLE'}
                     </h5>
-                    <span className="text-[9px] font-bold text-emerald-100 block">{isVi ? 'Giá trị & Tin cậy' : 'Value & Trust'}</span>
-                    <p className="text-[9.5px] sm:text-[10px] text-white/90 leading-snug mt-1 font-medium line-clamp-2">
+                    <span className="text-[8.5px] sm:text-[9px] font-bold text-emerald-100 block">{isVi ? 'Giá trị & Tin cậy' : 'Value & Trust'}</span>
+                    <p className="text-[9px] sm:text-[9.5px] text-white/90 leading-snug mt-0.5 font-medium line-clamp-2">
                       {isVi ? 'Xây dựng niềm tin và giá trị bền vững.' : 'Building enduring trust and long-term lifetime value.'}
                     </p>
                   </div>
-                  <div className="w-5 h-5 rounded-md bg-white/15 flex items-center justify-center self-end">
-                    <WebIcon name="globe" className="w-3 h-3 text-white" />
+                  <div className="flex items-center justify-between pt-0.5 mt-auto shrink-0">
+                    <span className="text-[7.5px] font-mono text-emerald-100/70 uppercase">Pillar III</span>
+                    <div className="w-4 h-4 rounded-md bg-white/15 flex items-center justify-center">
+                      <WebIcon name="globe" className="w-2.5 h-2.5 text-white" />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* TILE 2.3: GIÁ TRỊ CỐT LÕI & TRIẾT LÝ VẬN HÀNH (2 CARDS 50/50) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 items-stretch shrink-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 items-stretch flex-1 min-h-0">
               {/* Card 1: Giá trị cốt lõi */}
               <div className="p-2 sm:p-2.5 rounded-xl bg-[#FFF9F2] dark:bg-[#201712] border border-orange-200/80 dark:border-orange-950/40 flex flex-col justify-between text-left shadow-2xs">
                 <div>
