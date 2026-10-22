@@ -7,8 +7,11 @@ import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { HeroBanner } from '@/components/ui/HeroBanner';
+import { useLanguage } from '@/context/LanguageContext';
 
 export const EducationView: React.FC = () => {
+  const { lang } = useLanguage();
+  const isVi = lang === 'vi';
   const { showToast } = useToast();
   const [selectedBook, setSelectedBook] = useState<EducationBook | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -174,11 +177,11 @@ export const EducationView: React.FC = () => {
   };
 
   const categories = [
-    { id: 'all', label: 'Tất cả (14)', icon: 'globe' },
-    { id: 'corp', label: 'Doanh nghiệp (7)', icon: 'briefcase' },
-    { id: 'upgrade', label: 'Nâng cao năng lực (3)', icon: 'trending' },
-    { id: 'standard', label: 'Chuẩn quốc tế (3)', icon: 'globe' },
-    { id: 'self', label: 'Tự học & Nghiên cứu (1)', icon: 'book' },
+    { id: 'all', label: isVi ? 'Tất cả (14)' : 'All (14)', icon: 'globe' },
+    { id: 'corp', label: isVi ? 'Doanh nghiệp (7)' : 'Corporate (7)', icon: 'briefcase' },
+    { id: 'upgrade', label: isVi ? 'Nâng cao năng lực (3)' : 'Advanced (3)', icon: 'trending' },
+    { id: 'standard', label: isVi ? 'Chuẩn quốc tế (3)' : 'International (3)', icon: 'globe' },
+    { id: 'self', label: isVi ? 'Tự học & Nghiên cứu (1)' : 'Self-study (1)', icon: 'book' },
   ];
 
   // Render individual CodePen style card
@@ -293,10 +296,10 @@ export const EducationView: React.FC = () => {
     <div className="w-full h-full flex-1 flex flex-col justify-between gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden text-left">
       {/* 1. TOP HERO BANNER */}
       <HeroBanner
-        badgeText="Học tập"
-        title="Học Vấn Chứng Chỉ"
-        subtitle="Nâng tầm kiến thức – Kiến tạo sự nghiệp"
-        quote="“Học hỏi không ngừng để nâng tầm tri thức và năng lực vận hành.”"
+        badgeText={isVi ? 'Học tập' : 'Education'}
+        title={isVi ? 'Học Vấn Chứng Chỉ' : 'Education & Credentials'}
+        subtitle={isVi ? 'Nâng tầm kiến thức – Kiến tạo sự nghiệp' : 'Continuous Learning – Career Elevation'}
+        quote={isVi ? '“Học hỏi không ngừng để nâng tầm tri thức và năng lực vận hành.”' : '“Lifelong learning elevates operational leadership and customer experience.”'}
         quoteAuthor="— Nguyễn Hùng Thái"
         badgeColor="text-emerald-600"
         imageSrc="/images/education/hero-banner.png"
@@ -327,24 +330,41 @@ export const EducationView: React.FC = () => {
 
             {/* Right Controls: Mode Toggle + Search Box */}
             <div className="flex items-center gap-2 w-full md:w-auto">
-              {/* Layout Mode Toggle (Card Deck vs Grid) */}
-              <button
-                type="button"
-                onClick={() => {
-                  const nextMode = layoutMode === 'deck' ? 'grid' : 'deck';
-                  setLayoutMode(nextMode);
-                  showToast(nextMode === 'deck' ? 'Đã kích hoạt chế độ Xếp Lớp (Card Deck)' : 'Đã chuyển sang chế độ Lưới (Grid)');
-                }}
-                className={`px-3 py-1 rounded-full text-[11px] font-bold border transition-all flex items-center gap-1.5 shadow-2xs cursor-pointer whitespace-nowrap ${
-                  layoutMode === 'deck'
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs'
-                    : 'bg-white/95 dark:bg-slate-900/90 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-slate-700 hover:bg-white'
-                }`}
-                title="Chuyển chế độ xem Xếp Lớp (Card Deck) / Lưới (Grid)"
-              >
-                <WebIcon name={layoutMode === 'deck' ? 'layers' : 'grid'} className="w-3.5 h-3.5" />
-                <span>{layoutMode === 'deck' ? 'Xếp Lớp (Card Deck)' : 'Lưới (Grid)'}</span>
-              </button>
+              {/* Segmented Layout Mode Switcher (Card Deck vs Responsive Grid) */}
+              <div className="flex items-center p-0.5 rounded-full bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLayoutMode('deck');
+                    showToast(isVi ? 'Đã kích hoạt chế độ Xếp Lớp (Card Deck)' : 'Switched to Card Deck View');
+                  }}
+                  className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap ${
+                    layoutMode === 'deck'
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title={isVi ? 'Chế độ Xếp Lớp (Card Deck)' : 'Card Deck View'}
+                >
+                  <WebIcon name="layers" className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{isVi ? 'Xếp Lớp' : 'Deck'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLayoutMode('grid');
+                    showToast(isVi ? 'Đã chuyển sang chế độ Lưới Đáp Ứng (Responsive Grid)' : 'Switched to Responsive Grid View');
+                  }}
+                  className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap ${
+                    layoutMode === 'grid'
+                      ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-xs'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title={isVi ? 'Chế độ Lưới Đáp Ứng (Responsive Grid)' : 'Responsive Grid View'}
+                >
+                  <WebIcon name="grid" className="w-3.5 h-3.5" />
+                  <span>{isVi ? 'Lưới Grid' : 'Grid'}</span>
+                </button>
+              </div>
 
               {/* Search Input Box & Reset button */}
               <div className="flex items-center gap-1.5 flex-1 md:w-64">
@@ -362,7 +382,7 @@ export const EducationView: React.FC = () => {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Tìm môn học, đơn vị, năm..."
+                    placeholder={isVi ? 'Tìm môn học, đơn vị, năm...' : 'Search course, org, year...'}
                     className="w-full pl-8 pr-7 py-1 rounded-full text-xs bg-white/95 dark:bg-slate-900/90 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 border border-slate-200/90 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 shadow-2xs font-semibold"
                   />
                   {searchQuery && (
@@ -381,9 +401,9 @@ export const EducationView: React.FC = () => {
                   onClick={() => {
                     setActiveCategory('all');
                     setSearchQuery('');
-                    showToast('Đã đặt lại bộ lọc');
+                    showToast(isVi ? 'Đã đặt lại bộ lọc' : 'Filters reset');
                   }}
-                  title="Đặt lại bộ lọc"
+                  title={isVi ? 'Đặt lại bộ lọc' : 'Reset filters'}
                   className="w-7 h-7 rounded-full bg-white/95 dark:bg-slate-900/90 text-slate-600 dark:text-slate-300 hover:text-emerald-700 border border-slate-200/90 dark:border-slate-700 shadow-2xs flex items-center justify-center cursor-pointer shrink-0"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
@@ -559,13 +579,15 @@ export const EducationView: React.FC = () => {
       </div>
 
       {/* 3. MAIN EDUCATION CARDS AREA */}
-      <div className="w-full flex-1 min-h-0 relative flex flex-col justify-center">
+      <div className={`w-full flex-1 min-h-0 relative flex flex-col ${layoutMode === 'grid' ? 'justify-start' : 'justify-center'}`}>
         {filteredBooks.length === 0 ? (
           <div className="w-full h-full flex-1 min-h-0 py-8 px-6 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-dashed border-slate-300 dark:border-slate-700 text-center flex flex-col items-center justify-center gap-2">
             <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
               <WebIcon name="graduation" className="w-5 h-5" />
             </div>
-            <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Không tìm thấy khóa học phù hợp với từ khóa.</p>
+            <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
+              {isVi ? 'Không tìm thấy khóa học phù hợp với từ khóa.' : 'No courses match your search criteria.'}
+            </p>
             <button
               type="button"
               onClick={() => {
@@ -574,7 +596,7 @@ export const EducationView: React.FC = () => {
               }}
               className="px-3.5 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-xs shadow-xs hover:bg-emerald-700 transition cursor-pointer"
             >
-              <span>Xem lại tất cả 14 khóa học</span>
+              <span>{isVi ? 'Xem lại tất cả 14 khóa học' : 'Reset & View all 14 courses'}</span>
             </button>
           </div>
         ) : layoutMode === 'deck' ? (
@@ -584,11 +606,11 @@ export const EducationView: React.FC = () => {
               <div className="flex items-center justify-between px-3 pb-1">
                 <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 font-play">
                   {filteredBooks.length === 14
-                    ? 'Toàn bộ 14 Chứng chỉ & Khóa học Chuyên ngành (5.1 - 5.14)'
-                    : `Danh sách ${filteredBooks.length} khóa học được lọc`}
+                    ? (isVi ? 'Toàn bộ 14 Chứng chỉ & Khóa học Chuyên ngành (5.1 - 5.14)' : 'All 14 Professional Certificates & Courses (5.1 - 5.14)')
+                    : (isVi ? `Danh sách ${filteredBooks.length} khóa học được lọc` : `Showing ${filteredBooks.length} filtered courses`)}
                 </span>
                 <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold italic">
-                  Di chuột vào thẻ để xòe mở chi tiết →
+                  {isVi ? 'Di chuột vào thẻ để xòe mở chi tiết →' : 'Hover card to reveal details →'}
                 </span>
               </div>
               <div className="edu-deck-row no-scrollbar">
@@ -597,112 +619,142 @@ export const EducationView: React.FC = () => {
             </div>
           </div>
         ) : (
-          /* TRADITIONAL 2-ROW GRID VIEW */
-          <div className="w-full h-full flex-1 min-h-0 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 grid-rows-2 lg:grid-rows-2 gap-[15px] items-stretch p-1">
-            {filteredBooks.map((book) => {
-              const meta = cardMetaMap[book.id] || {
-                displayTitle: book.title,
-                icon: 'graduation',
-                themeColor: 'bg-blue-600',
-                buttonBg: 'bg-blue-600 hover:bg-blue-700',
-                chips: [book.modules[0] || '', book.modules[1] || ''],
-                summary: book.focus || book.desc,
-              };
+          /* ENHANCED RESPONSIVE GRID VIEW (LƯỚI ĐÁP ỨNG TOÀN DIỆN CHO MỌI THIẾT BỊ) */
+          <div className="w-full h-full flex-1 min-h-0 flex flex-col overflow-hidden">
+            {/* Sub-header status bar */}
+            <div className="flex items-center justify-between px-3 py-1.5 shrink-0 border-b border-slate-200/60 dark:border-white/10 mb-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 font-play">
+                  {filteredBooks.length === 14
+                    ? (isVi ? 'Toàn bộ 14 Chứng chỉ & Khóa học Chuyên ngành (5.1 - 5.14)' : 'All 14 Professional Certificates & Courses (5.1 - 5.14)')
+                    : (isVi ? `Hiển thị ${filteredBooks.length} khóa học được lọc` : `Showing ${filteredBooks.length} filtered courses`)}
+                </span>
+              </div>
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold italic hidden sm:inline">
+                {isVi ? 'Chạm hoặc click thẻ để xem chi tiết bằng cấp →' : 'Click any card to view credential details →'}
+              </span>
+            </div>
 
-              return (
-                <div
-                  key={book.id}
-                  onClick={() => setSelectedBook(book)}
-                  className="rounded-[18px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 shadow-[0_4px_16px_-2px_rgba(15,23,42,0.08),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:shadow-[0_16px_32px_-6px_rgba(15,23,42,0.18)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden group cursor-pointer h-full min-h-0 text-left"
-                >
-                  {/* Card Banner Thumbnail Image */}
-                  <div className="w-full h-[62px] sm:h-[66px] relative overflow-hidden bg-slate-100/90 dark:bg-slate-800 border-b border-slate-200/70 dark:border-slate-700 shrink-0">
-                    <img
-                      src={`/images/education/card-banner-${String(book.id).padStart(2, '0')}.png`}
-                      alt={book.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          book.bannerImg || book.courseImg || 'https://placehold.co/400x160/10b981/ffffff?text=Education';
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/35 via-transparent to-transparent pointer-events-none" />
+            {/* Responsive Grid Container with Smooth Scrollbar */}
+            <div className="w-full flex-1 min-h-0 overflow-y-auto custom-scrollbar p-1 sm:p-1.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 sm:gap-3.5 items-stretch pb-4">
+                {filteredBooks.map((book) => {
+                  const meta = cardMetaMap[book.id] || {
+                    displayTitle: book.title,
+                    icon: 'graduation',
+                    themeColor: 'bg-blue-600',
+                    buttonBg: 'bg-blue-600 hover:bg-blue-700',
+                    chips: [book.modules[0] || '', book.modules[1] || ''],
+                    summary: book.focus || book.desc,
+                  };
 
-                    {/* Top Badges overlay on banner */}
-                    <span
-                      className={`absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded text-[8.5px] font-mono font-black text-white shadow-xs ${meta.themeColor}`}
+                  return (
+                    <div
+                      key={book.id}
+                      onClick={() => setSelectedBook(book)}
+                      className="group relative rounded-2xl bg-white/95 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/90 dark:border-white/10 shadow-[0_4px_16px_-2px_rgba(15,23,42,0.08),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:border-emerald-500/60 dark:hover:border-emerald-500/60 hover:shadow-[0_16px_32px_-6px_rgba(16,185,129,0.2)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer h-full min-h-[275px] sm:min-h-[285px] xl:min-h-[270px] text-left"
                     >
-                      {book.code}
-                    </span>
-                    <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-full text-[8px] font-mono font-bold bg-white/95 dark:bg-slate-900 text-slate-700 dark:text-slate-200 shadow-2xs border border-white/60 dark:border-slate-700">
-                      {book.year}
-                    </span>
-                  </div>
+                      {/* Card Banner Thumbnail Image */}
+                      <div className="w-full h-24 sm:h-24 xl:h-20 relative overflow-hidden bg-slate-900 border-b border-slate-200/70 dark:border-white/10 shrink-0">
+                        <img
+                          src={`/images/education/card-banner-${String(book.id).padStart(2, '0')}.png`}
+                          alt={book.title}
+                          className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              book.bannerImg || book.courseImg || 'https://placehold.co/400x160/10b981/ffffff?text=Education';
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent pointer-events-none" />
 
-                  {/* Card Body */}
-                  <div className="p-2 sm:p-2.5 flex flex-col justify-between flex-1 min-h-0 gap-1">
-                    <div className="space-y-1 min-h-0">
-                      {/* Title & Unframed Icon */}
-                      <div className="flex items-center gap-1.5 min-w-0">
+                        {/* Top Badges overlay on banner */}
+                        <span
+                          className={`absolute top-2 left-2 px-2 py-0.5 rounded text-[9px] font-mono font-black text-white shadow-xs ${meta.themeColor}`}
+                        >
+                          {book.code}
+                        </span>
+                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[8.5px] font-mono font-bold bg-white/95 dark:bg-slate-900/90 text-slate-800 dark:text-slate-200 shadow-2xs border border-white/60 dark:border-white/20">
+                          {book.year}
+                        </span>
+
+                        {/* Floating Theme Icon on Banner Bottom */}
                         <div
-                          className={`w-4 h-4 rounded flex items-center justify-center shrink-0 ${meta.themeColor} text-white shadow-2xs`}
+                          className={`absolute -bottom-2.5 left-3 w-6 h-6 rounded-lg ${meta.themeColor} text-white flex items-center justify-center shadow-md border-2 border-white dark:border-slate-800 z-10`}
                         >
-                          <WebIcon name={meta.icon} className="w-2.5 h-2.5" />
+                          <WebIcon name={meta.icon} className="w-3.5 h-3.5" />
                         </div>
-                        <h3
-                          className="font-bold text-[11px] text-slate-900 dark:text-white truncate font-play leading-tight"
-                          title={meta.displayTitle}
-                        >
-                          {meta.displayTitle}
-                        </h3>
                       </div>
 
-                      {/* Organization / Don vi */}
-                      <span
-                        className="text-[9px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50/80 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800 px-1.5 py-0.5 rounded block truncate"
-                        title={book.org}
-                      >
-                        {book.org}
-                      </span>
+                      {/* Card Body */}
+                      <div className="p-3 pt-3.5 flex flex-col justify-between flex-1 min-h-0 gap-1.5">
+                        <div className="space-y-1.5 min-h-0">
+                          {/* Title */}
+                          <h3
+                            className="font-bold text-xs sm:text-[12.5px] xl:text-[11px] text-slate-900 dark:text-white line-clamp-2 font-play leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors"
+                            title={meta.displayTitle}
+                          >
+                            {meta.displayTitle}
+                          </h3>
 
-                      {/* Summary */}
-                      <p className="text-[9.5px] text-slate-600 dark:text-slate-300 font-medium line-clamp-2 leading-tight">
-                        {meta.summary}
-                      </p>
-                    </div>
+                          {/* Organization / Don vi */}
+                          <span
+                            className="text-[9px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50/90 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 px-1.5 py-0.5 rounded block truncate"
+                            title={book.org}
+                          >
+                            {book.org}
+                          </span>
 
-                    {/* Card Footer */}
-                    <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800 mt-auto shrink-0">
-                      <div className="flex items-center gap-1 text-[9px] font-bold text-slate-500">
-                        <svg className="w-2.5 h-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                          />
-                        </svg>
-                        <span>{book.year}</span>
+                          {/* Summary */}
+                          <p className="text-[9.5px] text-slate-600 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed">
+                            {meta.summary}
+                          </p>
+
+                          {/* Skill Chips */}
+                          {meta.chips && meta.chips.length > 0 && (
+                            <div className="flex flex-wrap gap-1 pt-1 border-t border-slate-100 dark:border-white/5">
+                              {meta.chips.slice(0, 2).map((chip, idx) => (
+                                <span
+                                  key={idx}
+                                  className="text-[8px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/90 px-1.5 py-0.5 rounded truncate max-w-full block"
+                                  title={chip}
+                                >
+                                  • {chip}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Card Footer */}
+                        <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 mt-auto shrink-0">
+                          <div className="flex items-center gap-1 text-[9px] font-bold text-slate-500 dark:text-slate-400">
+                            <svg className="w-2.5 h-2.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>{isVi ? 'Đã chứng nhận' : 'Certified'}</span>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedBook(book);
+                            }}
+                            className={`px-2.5 py-1 rounded-full text-[9.5px] font-bold text-white shadow-xs transition-all flex items-center gap-1 cursor-pointer hover:shadow-sm active:scale-95 shrink-0 ${meta.buttonBg}`}
+                          >
+                            <span>{isVi ? 'Chi tiết' : 'Details'}</span>
+                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
-
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedBook(book);
-                        }}
-                        className={`px-2 py-0.5 rounded-full text-[9px] font-bold text-white shadow-2xs transition-all flex items-center gap-0.5 cursor-pointer hover:shadow-xs active:scale-95 shrink-0 ${meta.buttonBg}`}
-                      >
-                        <span>Chi tiết</span>
-                        <svg className="w-2 h-2" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-7-7 7 7-7 7" />
-                        </svg>
-                      </button>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            </div>
           </div>
         )}
       </div>
