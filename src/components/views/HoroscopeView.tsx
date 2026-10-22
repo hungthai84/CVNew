@@ -14,6 +14,65 @@ import { WebIcon } from '@/components/ui/WebIcon';
 import { HeroBanner } from '@/components/ui/HeroBanner';
 import { useToast } from '@/components/ui/Toast';
 
+export interface TuViSlideItem {
+  id: number;
+  shortName: string;
+  fullName: string;
+  icon: string;
+  tag: string;
+  accentColor: string;
+  btnGradient: string;
+  borderColor: string;
+  themeBg: string;
+}
+
+export const TU_VI_SLIDES: TuViSlideItem[] = [
+  {
+    id: 0,
+    shortName: 'Cung Mệnh Bát Trạch',
+    fullName: 'Cung Mệnh Bát Trạch',
+    icon: 'compass',
+    tag: 'Đoài Kim Tây Tứ',
+    accentColor: 'from-purple-700 via-indigo-600 to-amber-600 dark:from-purple-300 dark:via-indigo-300 dark:to-amber-300',
+    btnGradient: 'from-purple-600 to-indigo-600',
+    borderColor: 'border-purple-200/80 dark:border-purple-800/60',
+    themeBg: 'bg-white/95 dark:bg-slate-900/95',
+  },
+  {
+    id: 1,
+    shortName: 'Phong Cách Quản Trị',
+    fullName: 'Phong Cách Quản Trị',
+    icon: 'briefcase',
+    tag: '4 Trụ Cột Quản Trị',
+    accentColor: 'from-blue-600 via-cyan-500 to-indigo-500',
+    btnGradient: 'from-blue-600 to-cyan-600',
+    borderColor: 'border-blue-200/80 dark:border-blue-800/60',
+    themeBg: 'bg-white/95 dark:bg-slate-900/95',
+  },
+  {
+    id: 2,
+    shortName: 'Lục Cung Ngũ Hành',
+    fullName: 'Lục Cung Ngũ Hành',
+    icon: 'target',
+    tag: '6 Cung & 5 Hành Tố',
+    accentColor: 'from-emerald-600 via-teal-500 to-cyan-500',
+    btnGradient: 'from-emerald-600 to-teal-600',
+    borderColor: 'border-emerald-200/80 dark:border-emerald-800/60',
+    themeBg: 'bg-white/95 dark:bg-slate-900/95',
+  },
+  {
+    id: 3,
+    shortName: 'Triết Lý Lãnh Đạo',
+    fullName: 'Triết Lý Lãnh Đạo',
+    icon: 'award',
+    tag: '6 Giá Trị Cốt Lõi',
+    accentColor: 'from-amber-600 via-orange-500 to-yellow-500',
+    btnGradient: 'from-amber-600 to-orange-600',
+    borderColor: 'border-amber-200/80 dark:border-amber-800/60',
+    themeBg: 'bg-white/95 dark:bg-slate-900/95',
+  },
+];
+
 export const HoroscopeView: React.FC = () => {
   const { showToast } = useToast();
 
@@ -30,6 +89,12 @@ export const HoroscopeView: React.FC = () => {
     setSlideDirection('next');
     setCurrentSlide((prev) => (prev < 3 ? prev + 1 : 0));
   }, []);
+
+  const handleGoToSlide = useCallback((index: number) => {
+    if (index === currentSlide) return;
+    setSlideDirection(index > currentSlide ? 'next' : 'prev');
+    setCurrentSlide(index);
+  }, [currentSlide]);
 
   // Keyboard navigation for slides
   useEffect(() => {
@@ -310,31 +375,125 @@ export const HoroscopeView: React.FC = () => {
     >
       {/* Main Container */}
       <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-2.5 sm:gap-3 max-w-7xl mx-auto justify-start select-none overflow-hidden">
-        {/* HERO BANNER TỬ VI TƯƠNG HỢP (Chuẩn theo thiết kế tham chiếu) */}
-        <div className="relative w-full h-[132px] sm:h-[145px] lg:h-[150px] shrink-0 rounded-2xl md:rounded-3xl overflow-hidden shadow-sm border border-amber-200/50 bg-gradient-to-r from-amber-50 via-white to-amber-50">
-          <img
-            src="/images/tuvi/hero-banner.png"
-            alt="Phong Thủy & Cung Mệnh - Tử Vi Tương Hợp"
-            className="w-full h-full object-cover select-none pointer-events-none"
-          />
-          {/* Nút bấm tương tác phát/tắt Âm Hưởng Thiền 432Hz */}
-          <button
-            type="button"
-            onClick={toggleAudio}
-            className="absolute left-[3.5%] bottom-[12%] w-[16%] h-[25%] min-w-[125px] rounded-full cursor-pointer focus:outline-none transition-all flex items-center justify-center group"
-            title={isAudioPlaying ? 'Tắt âm thanh thiền định tĩnh tâm' : 'Phát âm hưởng thiền định 432Hz'}
-            aria-label="Phát âm hưởng thiền định 432Hz"
-          >
-            {isAudioPlaying && (
-              <span className="absolute inset-0 rounded-full bg-amber-400/40 animate-ping pointer-events-none" />
-            )}
-          </button>
-        </div>
+        {/* HERO BANNER TỬ VI TƯƠNG HỢP VỚI CÁC TAB ĐIỀU HƯỚNG SLIDE */}
+        <HeroBanner
+          title="Bản Đồ Tử Vi"
+          subtitle="Hải Trung Kim · Đoài Kim Tây Tứ Mệnh · Phong Thủy & Cung Mệnh Quản Trị"
+          quote="“Lãnh đạo bằng bản lĩnh Kim kiên định – Đồng hành cùng nhân sự bằng sự thấu cảm.”"
+          quoteAuthor="— Nguyễn Hùng Thái"
+          videoSrc="/videos/domains-banner.mp4"
+          posterSrc="/images/tuvi/hero-banner.png"
+          bottomControls={
+            <div className="w-full flex items-center justify-between gap-2 pointer-events-auto flex-wrap sm:flex-nowrap">
+              {/* 4 Slide Tabs */}
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                {TU_VI_SLIDES.map((slide, idx) => {
+                  const isActive = currentSlide === idx;
+                  return (
+                    <button
+                      key={slide.id}
+                      type="button"
+                      onClick={() => handleGoToSlide(idx)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap shadow-2xs ${
+                        isActive
+                          ? `bg-gradient-to-r ${slide.btnGradient} text-white border-white/50 shadow-md scale-[1.02]`
+                          : 'bg-white/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-white/20 hover:bg-white dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <WebIcon name={slide.icon} className="w-3.5 h-3.5 shrink-0" />
+                      <span>{slide.shortName}</span>
+                      <span className={`text-[9.5px] px-1.5 py-0.2 rounded-full font-mono ${isActive ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'}`}>
+                        0{idx + 1}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Right: Audio Zen Meditation + Slide Navigation Counter (< 1/4 >) */}
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Nút Âm thanh Thiền định 432Hz */}
+                <button
+                  type="button"
+                  onClick={toggleAudio}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-bold transition-all border shadow-2xs cursor-pointer ${
+                    isAudioPlaying
+                      ? 'bg-amber-500 text-white border-amber-400 animate-pulse'
+                      : 'bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-amber-50'
+                  }`}
+                  title={isAudioPlaying ? 'Tắt âm thanh thiền định 432Hz' : 'Phát âm thanh thiền định 432Hz'}
+                >
+                  <span>{isAudioPlaying ? '🔊' : '🎵'}</span>
+                  <span className="hidden md:inline">Thiền 432Hz</span>
+                </button>
+
+                {/* Slide Counter < 1/4 > */}
+                <div className="flex items-center p-0.5 rounded-full bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
+                  <button
+                    type="button"
+                    onClick={handlePrevSlide}
+                    className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer transition-all active:scale-95"
+                    title="Slide trước (Phím ←)"
+                    aria-label="Slide trước"
+                  >
+                    <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+
+                  <div className="px-2 text-[11px] font-mono font-black text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                    <span>{currentSlide + 1}</span>
+                    <span className="text-slate-400 mx-1">/</span>
+                    <span className="text-slate-500">4</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleNextSlide}
+                    className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer transition-all active:scale-95"
+                    title="Slide kế tiếp (Phím →)"
+                    aria-label="Slide kế tiếp"
+                  >
+                    <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        />
 
         {/* BỐ CỤC 2 CỘT CÂN BẰNG CHIỀU CAO: TRÁI 74% (SLIDE TỬ VI), PHẢI 26% (TRA HỢP CÔNG VIỆC) */}
         <div id="info-card-tuvi" className="w-full flex-1 min-h-0 flex flex-col lg:flex-row gap-2.5 sm:gap-3.5 items-stretch relative z-10 overflow-hidden">
           {/* ================= CỘT TRÁI (74%): CUNG MỆNH BÁT TRẠCH & CÁC SLIDE ================= */}
-          <div className="w-full lg:w-[74%] xl:w-[74%] flex flex-col min-w-0 relative h-full min-h-0 overflow-hidden">
+          <div className="w-full lg:w-[74%] xl:w-[74%] flex flex-col min-w-0 relative h-full min-h-0 overflow-hidden group/slidearea">
+            {/* Floating Prev Button */}
+            <button
+              type="button"
+              onClick={handlePrevSlide}
+              className="absolute left-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-md flex items-center justify-center cursor-pointer transition-all hover:scale-110 z-30 opacity-40 group-hover/slidearea:opacity-100"
+              title="Slide trước (←)"
+              aria-label="Slide trước"
+            >
+              <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            {/* Floating Next Button */}
+            <button
+              type="button"
+              onClick={handleNextSlide}
+              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-md flex items-center justify-center cursor-pointer transition-all hover:scale-110 z-30 opacity-40 group-hover/slidearea:opacity-100"
+              title="Slide tiếp (→)"
+              aria-label="Slide tiếp"
+            >
+              <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+
             {/* SLIDE 0: Cung Mệnh, La Bàn Âm Dương & Hồ Sơ Nhân Thân (Chuẩn theo hình đính kèm) */}
             {currentSlide === 0 && (
               <div key="slide-1" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
@@ -343,7 +502,7 @@ export const HoroscopeView: React.FC = () => {
                   className="w-full h-full bg-white/95 dark:bg-slate-900/95 border border-purple-200/80 dark:border-purple-800/60 rounded-2xl md:rounded-3xl p-3 sm:p-3.5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden"
                 >
                   {/* Header thẻ Cung Mệnh Bát Trạch */}
-                  <div className="relative z-10 flex items-center justify-between pb-2 border-b border-purple-100 dark:border-purple-900/40 shrink-0">
+                  <div className="relative z-10 flex items-center justify-between pb-2 border-b border-purple-100 dark:border-purple-900/40 shrink-0 flex-wrap gap-2">
                     <div className="flex items-center gap-2 text-left">
                       <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-purple-600 via-indigo-600 to-amber-500 text-white flex items-center justify-center font-bold shadow-sm shadow-purple-500/25 shrink-0">
                         <WebIcon name="compass" className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
@@ -353,10 +512,54 @@ export const HoroscopeView: React.FC = () => {
                       </h3>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
+                      {/* 4 Interactive Slide Dots */}
+                      <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-full bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/60 dark:border-purple-800/40">
+                        {TU_VI_SLIDES.map((s, idx) => (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => handleGoToSlide(idx)}
+                            className={`transition-all duration-300 rounded-full cursor-pointer ${
+                              currentSlide === idx
+                                ? 'w-5 h-2 bg-gradient-to-r from-purple-600 to-indigo-600 shadow-xs'
+                                : 'w-2 h-2 bg-purple-200 dark:bg-purple-800 hover:bg-purple-300'
+                            }`}
+                            title={`Chuyển đến Slide ${idx + 1}: ${s.shortName}`}
+                          />
+                        ))}
+                      </div>
+
                       <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/40 text-purple-800 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/60 shadow-2xs flex items-center gap-1.5">
                         <span className="text-xs">☯</span>
                         <span>Đoài Kim Tây Tứ</span>
                       </span>
+
+                      {/* Compact Slide Switcher */}
+                      <div className="flex items-center p-0.5 rounded-full bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800">
+                        <button
+                          type="button"
+                          onClick={handlePrevSlide}
+                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-purple-200 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-200 cursor-pointer transition-all active:scale-95"
+                          title="Slide trước (←)"
+                        >
+                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                        <span className="px-1.5 text-[9.5px] font-mono font-black text-purple-800 dark:text-purple-200">
+                          1/4
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleNextSlide}
+                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-purple-200 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-200 cursor-pointer transition-all active:scale-95"
+                          title="Slide tiếp (→)"
+                        >
+                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -622,6 +825,31 @@ export const HoroscopeView: React.FC = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Slide 0 Footer */}
+                  <div className="relative z-10 pt-2 border-t border-purple-100 dark:border-purple-900/40 shrink-0 flex items-center justify-between flex-wrap gap-2 text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 sm:w-32 h-1.5 rounded-full bg-purple-100 dark:bg-purple-950 overflow-hidden">
+                        <div className="h-full w-1/4 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600" />
+                      </div>
+                      <span className="text-[10px] text-purple-600 dark:text-purple-300 font-mono hidden md:inline">
+                        Slide 1 / 4 (25%)
+                      </span>
+                    </div>
+
+                    <span className="text-[10px] text-slate-400 hidden lg:inline font-medium">
+                      ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 font-mono text-[9px]">→</kbd> để chuyển slide
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={handleNextSlide}
+                      className="px-3 py-1 rounded-full text-[10.5px] font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-110 shadow-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                    >
+                      <span>Tiếp: Phong Cách Quản Trị</span>
+                      <span>→</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -631,19 +859,68 @@ export const HoroscopeView: React.FC = () => {
               <div key="slide-2" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-2"
-                  className="w-full h-full bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-blue-400/30 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden"
+                  className="w-full h-full bg-white/95 dark:bg-slate-900/95 border border-blue-200/80 dark:border-blue-800/60 rounded-2xl md:rounded-3xl p-3 sm:p-4 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden"
                 >
-                  {/* Header thẻ: 4 chữ viết hoa chữ đầu, không tạo sub tiêu đề */}
-                  <div className="flex items-center justify-between pb-2.5 border-b border-blue-200/50 dark:border-blue-800/50 shrink-0">
+                  {/* Header thẻ Slide 1: Phong Cách Quản Trị */}
+                  <div className="relative z-10 flex items-center justify-between pb-2 border-b border-blue-100 dark:border-blue-900/40 shrink-0 flex-wrap gap-2">
                     <div className="flex items-center gap-2 text-left">
-                      <WebIcon name="briefcase" className="w-4.5 h-4.5 text-blue-500 dark:text-cyan-400 shrink-0 drop-shadow-sm" />
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-blue-600 via-cyan-500 to-indigo-600 text-white flex items-center justify-center font-bold shadow-sm shadow-blue-500/25 shrink-0">
+                        <WebIcon name="briefcase" className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                      </div>
                       <h3 className="text-base sm:text-lg font-black tracking-wide font-play bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-500 bg-clip-text text-transparent">
                         Phong Cách Quản Trị
                       </h3>
                     </div>
-                    <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
-                      4 Trụ Cột Quản Trị
-                    </span>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {/* 4 Interactive Slide Dots */}
+                      <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-full bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-800/40">
+                        {TU_VI_SLIDES.map((s, idx) => (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => handleGoToSlide(idx)}
+                            className={`transition-all duration-300 rounded-full cursor-pointer ${
+                              currentSlide === idx
+                                ? 'w-5 h-2 bg-gradient-to-r from-blue-600 to-cyan-600 shadow-xs'
+                                : 'w-2 h-2 bg-blue-200 dark:bg-blue-800 hover:bg-blue-300'
+                            }`}
+                            title={`Chuyển đến Slide ${idx + 1}: ${s.shortName}`}
+                          />
+                        ))}
+                      </div>
+
+                      <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 shadow-2xs">
+                        4 Trụ Cột Quản Trị
+                      </span>
+
+                      {/* Compact Slide Switcher */}
+                      <div className="flex items-center p-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800">
+                        <button
+                          type="button"
+                          onClick={handlePrevSlide}
+                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-200 cursor-pointer transition-all active:scale-95"
+                          title="Slide trước (←)"
+                        >
+                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                        <span className="px-1.5 text-[9.5px] font-mono font-black text-blue-800 dark:text-blue-200">
+                          2/4
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleNextSlide}
+                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-200 cursor-pointer transition-all active:scale-95"
+                          title="Slide tiếp (→)"
+                        >
+                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-3 pr-1">
@@ -726,6 +1003,31 @@ export const HoroscopeView: React.FC = () => {
                       })}
                     </div>
                   </div>
+
+                  {/* Slide 1 Footer */}
+                  <div className="relative z-10 pt-2 border-t border-blue-100 dark:border-blue-900/40 shrink-0 flex items-center justify-between flex-wrap gap-2 text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 sm:w-32 h-1.5 rounded-full bg-blue-100 dark:bg-blue-950 overflow-hidden">
+                        <div className="h-full w-2/4 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600" />
+                      </div>
+                      <span className="text-[10px] text-blue-600 dark:text-cyan-300 font-mono hidden md:inline">
+                        Slide 2 / 4 (50%)
+                      </span>
+                    </div>
+
+                    <span className="text-[10px] text-slate-400 hidden lg:inline font-medium">
+                      ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 font-mono text-[9px]">→</kbd> để chuyển slide
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={handleNextSlide}
+                      className="px-3 py-1 rounded-full text-[10.5px] font-bold text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:brightness-110 shadow-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                    >
+                      <span>Tiếp: Lục Cung Ngũ Hành</span>
+                      <span>→</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -735,19 +1037,68 @@ export const HoroscopeView: React.FC = () => {
               <div key="slide-3" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-3"
-                  className="w-full h-full bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-emerald-400/30 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
+                  className="w-full h-full bg-white/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-800/60 rounded-2xl md:rounded-3xl p-3 sm:p-4 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
                 >
-                  {/* Header thẻ: 4 chữ viết hoa chữ đầu, không tạo sub tiêu đề */}
-                  <div className="flex items-center justify-between pb-2.5 border-b border-emerald-200/50 dark:border-emerald-800/50 shrink-0">
+                  {/* Header thẻ Slide 2: Lục Cung Ngũ Hành */}
+                  <div className="relative z-10 flex items-center justify-between pb-2 border-b border-emerald-100 dark:border-emerald-900/40 shrink-0 flex-wrap gap-2">
                     <div className="flex items-center gap-2">
-                      <WebIcon name="target" className="w-4.5 h-4.5 text-emerald-500 dark:text-emerald-400 shrink-0 drop-shadow-sm" />
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-600 text-white flex items-center justify-center font-bold shadow-sm shadow-emerald-500/25 shrink-0">
+                        <WebIcon name="target" className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                      </div>
                       <h3 className="text-base sm:text-lg font-black tracking-wide font-play bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
                         Lục Cung Ngũ Hành
                       </h3>
                     </div>
-                    <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                      Lục Cung & Ngũ Hành
-                    </span>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {/* 4 Interactive Slide Dots */}
+                      <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40">
+                        {TU_VI_SLIDES.map((s, idx) => (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => handleGoToSlide(idx)}
+                            className={`transition-all duration-300 rounded-full cursor-pointer ${
+                              currentSlide === idx
+                                ? 'w-5 h-2 bg-gradient-to-r from-emerald-600 to-teal-600 shadow-xs'
+                                : 'w-2 h-2 bg-emerald-200 dark:bg-emerald-800 hover:bg-emerald-300'
+                            }`}
+                            title={`Chuyển đến Slide ${idx + 1}: ${s.shortName}`}
+                          />
+                        ))}
+                      </div>
+
+                      <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs">
+                        6 Cung & 5 Hành Tố
+                      </span>
+
+                      {/* Compact Slide Switcher */}
+                      <div className="flex items-center p-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800">
+                        <button
+                          type="button"
+                          onClick={handlePrevSlide}
+                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-emerald-200 dark:hover:bg-emerald-800 text-emerald-700 dark:text-emerald-200 cursor-pointer transition-all active:scale-95"
+                          title="Slide trước (←)"
+                        >
+                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                        <span className="px-1.5 text-[9.5px] font-mono font-black text-emerald-800 dark:text-emerald-200">
+                          3/4
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleNextSlide}
+                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-emerald-200 dark:hover:bg-emerald-800 text-emerald-700 dark:text-emerald-200 cursor-pointer transition-all active:scale-95"
+                          title="Slide tiếp (→)"
+                        >
+                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   {/* 6 Cung cốt lõi & 5 Hành tố */}
@@ -875,6 +1226,31 @@ export const HoroscopeView: React.FC = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Slide 2 Footer */}
+                  <div className="relative z-10 pt-2 border-t border-emerald-100 dark:border-emerald-900/40 shrink-0 flex items-center justify-between flex-wrap gap-2 text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 sm:w-32 h-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950 overflow-hidden">
+                        <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600" />
+                      </div>
+                      <span className="text-[10px] text-emerald-600 dark:text-teal-300 font-mono hidden md:inline">
+                        Slide 3 / 4 (75%)
+                      </span>
+                    </div>
+
+                    <span className="text-[10px] text-slate-400 hidden lg:inline font-medium">
+                      ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 font-mono text-[9px]">→</kbd> để chuyển slide
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={handleNextSlide}
+                      className="px-3 py-1 rounded-full text-[10.5px] font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 shadow-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                    >
+                      <span>Tiếp: Triết Lý Lãnh Đạo</span>
+                      <span>→</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -884,19 +1260,68 @@ export const HoroscopeView: React.FC = () => {
               <div key="slide-4" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-5"
-                  className="w-full h-full bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-amber-400/30 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
+                  className="w-full h-full bg-white/95 dark:bg-slate-900/95 border border-amber-200/80 dark:border-amber-800/60 rounded-2xl md:rounded-3xl p-3 sm:p-4 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
                 >
-                  {/* Header thẻ: 4 chữ viết hoa chữ đầu, không tạo sub tiêu đề */}
-                  <div className="flex items-center justify-between pb-2.5 border-b border-amber-200/50 dark:border-amber-800/50 shrink-0">
+                  {/* Header thẻ Slide 3: Triết Lý Lãnh Đạo */}
+                  <div className="relative z-10 flex items-center justify-between pb-2 border-b border-amber-100 dark:border-amber-900/40 shrink-0 flex-wrap gap-2">
                     <div className="flex items-center gap-2">
-                      <WebIcon name="award" className="w-4.5 h-4.5 text-amber-500 dark:text-amber-400 shrink-0 drop-shadow-sm" />
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-amber-600 via-orange-500 to-yellow-500 text-white flex items-center justify-center font-bold shadow-sm shadow-amber-500/25 shrink-0">
+                        <WebIcon name="award" className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+                      </div>
                       <h3 className="text-base sm:text-lg font-black tracking-wide font-play bg-gradient-to-r from-amber-600 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
                         Triết Lý Lãnh Đạo
                       </h3>
                     </div>
-                    <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
-                      6 Giá Trị Cốt Lõi
-                    </span>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      {/* 4 Interactive Slide Dots */}
+                      <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-full bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40">
+                        {TU_VI_SLIDES.map((s, idx) => (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => handleGoToSlide(idx)}
+                            className={`transition-all duration-300 rounded-full cursor-pointer ${
+                              currentSlide === idx
+                                ? 'w-5 h-2 bg-gradient-to-r from-amber-600 to-orange-600 shadow-xs'
+                                : 'w-2 h-2 bg-amber-200 dark:bg-amber-800 hover:bg-amber-300'
+                            }`}
+                            title={`Chuyển đến Slide ${idx + 1}: ${s.shortName}`}
+                          />
+                        ))}
+                      </div>
+
+                      <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 shadow-2xs">
+                        6 Giá Trị Cốt Lõi
+                      </span>
+
+                      {/* Compact Slide Switcher */}
+                      <div className="flex items-center p-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800">
+                        <button
+                          type="button"
+                          onClick={handlePrevSlide}
+                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-amber-200 dark:hover:bg-amber-800 text-amber-700 dark:text-amber-200 cursor-pointer transition-all active:scale-95"
+                          title="Slide trước (←)"
+                        >
+                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                        <span className="px-1.5 text-[9.5px] font-mono font-black text-amber-800 dark:text-amber-200">
+                          4/4
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleNextSlide}
+                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-amber-200 dark:hover:bg-amber-800 text-amber-700 dark:text-amber-200 cursor-pointer transition-all active:scale-95"
+                          title="Slide tiếp (→)"
+                        >
+                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-3 pr-1 space-y-3.5">
@@ -976,6 +1401,31 @@ export const HoroscopeView: React.FC = () => {
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Slide 3 Footer */}
+                  <div className="relative z-10 pt-2 border-t border-amber-100 dark:border-amber-900/40 shrink-0 flex items-center justify-between flex-wrap gap-2 text-left">
+                    <div className="flex items-center gap-2">
+                      <div className="w-24 sm:w-32 h-1.5 rounded-full bg-amber-100 dark:bg-amber-950 overflow-hidden">
+                        <div className="h-full w-full rounded-full bg-gradient-to-r from-amber-600 to-orange-600" />
+                      </div>
+                      <span className="text-[10px] text-amber-600 dark:text-amber-300 font-mono hidden md:inline">
+                        Slide 4 / 4 (100%)
+                      </span>
+                    </div>
+
+                    <span className="text-[10px] text-slate-400 hidden lg:inline font-medium">
+                      ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 font-mono text-[9px]">→</kbd> để chuyển slide
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={handleNextSlide}
+                      className="px-3 py-1 rounded-full text-[10.5px] font-bold text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:brightness-110 shadow-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                    >
+                      <span>Xem lại từ đầu</span>
+                      <span>↺</span>
+                    </button>
                   </div>
                 </div>
               </div>
