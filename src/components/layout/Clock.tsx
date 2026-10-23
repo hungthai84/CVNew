@@ -1,78 +1,12 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SiteTheme } from '@/types';
 
 export interface ClockProps {
   isLight?: boolean;
   currentTheme?: SiteTheme;
 }
-
-interface FlipDigitProps {
-  digitClass: string;
-  value: string;
-}
-
-/**
- * 3D Split-Flap Mechanical Flip Digit Component
- * Implements flipTo / jumpTo logic with .base and .flap (over front, over back, under)
- */
-const FlipDigit: React.FC<FlipDigitProps> = ({ digitClass, value }) => {
-  const [baseVal, setBaseVal] = useState<string>(value);
-  const [frontVal, setFrontVal] = useState<string>(value);
-  const [backVal, setBackVal] = useState<string>(value);
-  const [flipping, setFlipping] = useState<boolean>(false);
-  const currentValRef = useRef<string>(value);
-  const isInitial = useRef<boolean>(true);
-
-  useEffect(() => {
-    // Initial mount: jumpTo without animation
-    if (isInitial.current) {
-      isInitial.current = false;
-      currentValRef.current = value;
-      setBaseVal(value);
-      return;
-    }
-
-    // When value changes: trigger 300ms flip animation, settle base at 350ms
-    if (value !== currentValRef.current) {
-      const oldVal = currentValRef.current;
-      currentValRef.current = value;
-
-      setFrontVal(oldVal);
-      setBackVal(value);
-      setFlipping(true);
-
-      const timer = setTimeout(() => {
-        setBaseVal(value);
-        setFlipping(false);
-      }, 350);
-
-      return () => clearTimeout(timer);
-    }
-  }, [value]);
-
-  return (
-    <div className={`digit ${digitClass}`} data-num={value}>
-      <span className="base">{baseVal}</span>
-      <div
-        className="flap over front"
-        data-content={frontVal}
-        style={{ display: flipping ? 'block' : 'none' }}
-      />
-      <div
-        className="flap over back"
-        data-content={backVal}
-        style={{ display: flipping ? 'block' : 'none' }}
-      />
-      <div
-        className="flap under"
-        data-content={backVal}
-        style={{ display: flipping ? 'block' : 'none' }}
-      />
-    </div>
-  );
-};
 
 export const Clock: React.FC<ClockProps> = ({ isLight = true, currentTheme = 'light-glass' }) => {
   const [time, setTime] = useState<Date | null>(null);
@@ -87,26 +21,18 @@ export const Clock: React.FC<ClockProps> = ({ isLight = true, currentTheme = 'li
 
   if (!time) {
     return (
-      <div className="relative z-10 flex items-center gap-1.5 sm:gap-2 bg-transparent select-none shrink-0">
-        <div className="clock">
-          <div className="digit tenhour"><span className="base">0</span></div>
-          <div className="digit hour"><span className="base">0</span></div>
-          <div className="digit tenmin"><span className="base">0</span></div>
-          <div className="digit min"><span className="base">0</span></div>
-          <div className="digit tensec"><span className="base">0</span></div>
-          <div className="digit sec"><span className="base">0</span></div>
-        </div>
+      <div className="flex items-center text-xs font-mono text-slate-400">
+        --:--
       </div>
     );
   }
 
-  const hours = time.getHours();
-  const minutes = time.getMinutes();
-  const seconds = time.getSeconds();
-
-  const hStr = hours < 10 ? '0' + hours : '' + hours;
-  const mStr = minutes < 10 ? '0' + minutes : '' + minutes;
-  const sStr = seconds < 10 ? '0' + seconds : '' + seconds;
+  const hour24 = time.getHours();
+  const minute = time.getMinutes();
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  const hourStr = hour12 < 10 ? '0' + hour12 : '' + hour12;
+  const minStr = minute < 10 ? '0' + minute : '' + minute;
+  const meridiem = hour24 >= 12 ? 'pm' : 'am';
 
   // Day of week in Vietnamese
   const days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
@@ -115,62 +41,121 @@ export const Clock: React.FC<ClockProps> = ({ isLight = true, currentTheme = 'li
     time.getMonth() + 1 < 10 ? '0' + (time.getMonth() + 1) : time.getMonth() + 1
   }`;
 
-  // Theme-aware styles for dividers & date text
-  const getThemeClockClasses = () => {
-    switch (currentTheme) {
-      case 'light-glass-multicolor':
-        return {
-          divider: 'border-slate-300/80 dark:border-white/20',
-          dayText: 'text-[#2563EB] dark:text-cyan-300',
-          dateText: 'text-[#58749A] dark:text-slate-400',
-        };
-      case 'dark-neon':
-        return {
-          divider: 'border-cyan-500/30',
-          dayText: 'text-cyan-300',
-          dateText: 'text-slate-300',
-        };
-      case 'flat-rainbow':
-        return {
-          divider: 'border-pink-200',
-          dayText: 'text-pink-600',
-          dateText: 'text-slate-600',
-        };
-      case 'light-glass':
-      default:
-        return {
-          divider: isLight ? 'border-slate-800/25' : 'border-white/25',
-          dayText: isLight ? 'text-sky-700' : 'text-amber-200',
-          dateText: isLight ? 'text-slate-700 font-semibold' : 'text-white/85',
-        };
-    }
-  };
-
-  const style = getThemeClockClasses();
-
   return (
-    <div
-      className="relative z-10 flex items-center gap-1.5 sm:gap-2 bg-transparent select-none shrink-0"
-      title={`Thời gian thực: ${hStr}:${mStr}:${sStr} (${dayOfWeek} ${dateStr})`}
-    >
-      {/* 3D Split-Flap Flip Clock theo đúng cấu trúc code người dùng */}
-      <div className="clock">
-        <FlipDigit digitClass="tenhour" value={hStr[0]} />
-        <FlipDigit digitClass="hour" value={hStr[1]} />
-        <FlipDigit digitClass="tenmin" value={mStr[0]} />
-        <FlipDigit digitClass="min" value={mStr[1]} />
-        <FlipDigit digitClass="tensec" value={sStr[0]} />
-        <FlipDigit digitClass="sec" value={sStr[1]} />
+    <div className="relative z-10 flex items-center gap-2 select-none shrink-0 scale-[0.40] sm:scale-[0.48] origin-left -my-10">
+      <style jsx>{`
+        .clock-wrap {
+          width: 210px;
+          margin: 0 auto;
+          padding: 4px;
+          background-color: rgba(0, 0, 0, 0.4);
+          border-radius: 8px;
+          box-shadow: inset 0px 1px 8px rgba(0, 0, 0, 0.6);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+        }
+        .min-wrap,
+        .hour-wrap {
+          width: 95px;
+          height: 95px;
+          display: inline-block;
+          position: relative;
+        }
+        .digit-top,
+        .digit-bottom {
+          width: 95px;
+          height: 46px;
+          position: absolute;
+        }
+        .clock-wrap .front,
+        .clock-wrap .back {
+          width: 95px;
+          height: 46px;
+          position: absolute;
+          overflow: hidden;
+          color: #fff;
+          text-align: center;
+          font-size: 72px;
+          font-weight: 700;
+          line-height: 92px;
+          text-shadow: 1px 1px 1px #000;
+          box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.6);
+          transition: transform 600ms ease;
+          background-image: linear-gradient(to top, #111111 0%, #222222 100%);
+        }
+        .clock-wrap .front {
+          z-index: 30;
+          border-radius: 4px 4px 0px 0px;
+          transform-origin: 0px 46px;
+        }
+        .clock-wrap .back {
+          z-index: 20;
+          top: 47px;
+          border-radius: 0px 0px 4px 4px;
+          transform-origin: 0px 0px;
+          transform: rotateX(180deg);
+        }
+        .digit-top {
+          border-radius: 4px 4px 1px 1px;
+          top: 2px;
+          z-index: 10;
+        }
+        .digit-bottom {
+          top: 49px;
+          background-color: #222;
+          border-radius: 1px 1px 4px 4px;
+          z-index: 5;
+        }
+        .digit-bottom .front {
+          border-radius: 0px 0px 4px 4px;
+          line-height: 0px;
+        }
+        .meridiem {
+          font-size: 14px;
+          position: absolute;
+          left: 8px;
+          top: 12px;
+          line-height: 1;
+        }
+      `}</style>
+
+      <div className="clock-wrap">
+        {/* Hour Wrap */}
+        <div className="hour-wrap">
+          <div className="digit-top">
+            <div className="front">{hourStr}</div>
+          </div>
+          <div className="digit-bottom">
+            <div className="front">
+              {hourStr}
+              <div className="meridiem">{meridiem}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Min Wrap */}
+        <div className="min-wrap">
+          <div className="digit-top">
+            <div className="front">{minStr}</div>
+          </div>
+          <div className="digit-bottom">
+            <div className="front">{minStr}</div>
+          </div>
+        </div>
       </div>
 
-      {/* Thông tin Thứ & Ngày Tháng nằm gọn trong thẻ */}
-      <div className={`hidden sm:flex flex-col items-start leading-none pl-1.5 border-l ${style.divider}`}>
-        <span className={`text-[10px] font-extrabold leading-tight ${style.dayText}`}>
-          {dayOfWeek}
-        </span>
-        <span className={`text-[9px] font-medium leading-tight ${style.dateText}`}>
-          {dateStr}
-        </span>
+      {/* Day & Date info */}
+      <div className={`hidden lg:flex flex-col items-start leading-tight pl-2 border-l ${
+        currentTheme === 'dark-neon'
+          ? 'border-cyan-500/40 text-cyan-300'
+          : isLight
+          ? 'border-slate-300 text-slate-900'
+          : 'border-white/30 text-white'
+      }`}>
+        <span className="text-[11px] font-black">{dayOfWeek}</span>
+        <span className="text-[10px] font-extrabold opacity-85">{dateStr}</span>
       </div>
     </div>
   );

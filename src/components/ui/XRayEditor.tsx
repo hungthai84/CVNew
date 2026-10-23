@@ -5,6 +5,7 @@ import { XRaySelectedElementInfo, XRayPromptTemplate } from '@/types/xray';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { useToast } from '@/components/ui/Toast';
 import {
+  DEFAULT_TEMPLATES,
   loadSavedTemplates,
   addTemplate,
   deleteTemplate,
@@ -56,8 +57,12 @@ export const XRayEditor: React.FC<XRayEditorProps> = ({
   // Generated prompt
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
 
-  // Stored templates
-  const [templates, setTemplates] = useState<XRayPromptTemplate[]>(() => loadSavedTemplates());
+  // Stored templates (load from localStorage after mount for SSR hydration consistency)
+  const [templates, setTemplates] = useState<XRayPromptTemplate[]>(DEFAULT_TEMPLATES);
+
+  useEffect(() => {
+    setTemplates(loadSavedTemplates());
+  }, []);
 
   // Keep target page updated when current page changes
   useEffect(() => {
@@ -271,7 +276,24 @@ export const XRayEditor: React.FC<XRayEditorProps> = ({
     const tagInfo = selectedElement?.tag ? ` (<${selectedElement.tag}>)` : '';
     const note = actionCustomNote.trim() ? ` - ${actionCustomNote.trim()}` : '';
 
-    const singleLinePrompt = `Tại ${targetPage}, với ${objName}${tagInfo}: ${actionText}${note} (Phạm vi: ${pageScopeText}).`;
+    const fileSourceMap: Record<number, string> = {
+      0: 'src/components/views/HomeView.tsx',
+      1: 'src/components/views/LetterView.tsx',
+      2: 'src/components/views/AboutView.tsx',
+      3: 'src/components/views/EducationView.tsx',
+      4: 'src/components/views/DomainsView.tsx',
+      5: 'src/components/views/ExperienceView.tsx',
+      6: 'src/components/views/SkillsView.tsx',
+      7: 'src/components/views/ProjectsView.tsx',
+      8: 'src/components/views/SystemsView.tsx',
+      9: 'src/components/views/InterviewView.tsx',
+      10: 'src/components/views/HoroscopeView.tsx',
+      11: 'src/components/views/MemoriesView.tsx',
+      12: 'src/components/views/ContactView.tsx',
+      13: 'src/components/views/WallpaperView.tsx',
+    };
+    const currentFilePath = fileSourceMap[currentPageId] || 'src/app/page.tsx';
+    const singleLinePrompt = `[Trang: ${targetPage} | File: ${currentFilePath}] Tại ${targetPage}, với ${objName}${tagInfo}: ${actionText}${note} (Phạm vi: ${pageScopeText}).`;
 
     setGeneratedPrompt(singleLinePrompt);
     showToast('Đã sinh prompt tiếng Việt 1 dòng thành công!');

@@ -1,17 +1,26 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { PAGES } from '@/data/pages';
 import { WEATHER_PRESETS } from '@/data/weather';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { BackgroundLayer } from '@/components/layout/BackgroundLayer';
 import { GlassPanel } from '@/components/ui/GlassPanel';
+import { WebIcon } from '@/components/ui/WebIcon';
+import { SoundEngine } from '@/components/ui/SoundEngine';
 import { WallpaperOption, SiteTheme } from '@/types';
+import { WALLPAPER_OPTIONS } from '@/data/wallpapers';
 import {
   loadCustomWallpapers,
   getDefaultWallpaperId,
   findWallpaperById,
+  parseCssToReactStyle,
+  loadWallpaperSettings,
+  saveWallpaperSettings,
+  loadDeletedWallpaperIds,
+  DEFAULT_WALLPAPER_SETTINGS,
+  WallpaperAdvancedSettings,
 } from '@/utils/wallpaperStorage';
 import { AiChatModal } from '@/components/ui/AiChatModal';
 import { ThemeSelectorModal } from '@/components/ui/ThemeSelectorModal';
@@ -44,7 +53,18 @@ export default function HomePage() {
   const [wallpaperVideo, setWallpaperVideo] = useState<string>('');
   const [activeWallpaperId, setActiveWallpaperId] = useState<string>('prism');
   const [defaultWallpaperId, setDefaultWallpaperId] = useState<string>('prism');
+  const [wallpaperSettings, setWallpaperSettings] = useState<WallpaperAdvancedSettings>(
+    DEFAULT_WALLPAPER_SETTINGS
+  );
   const [weatherIdx, setWeatherIdx] = useState<number>(0);
+  const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+  const contentDisplayRef = useRef<HTMLDivElement | null>(null);
+  const activeScrollTargetRef = useRef<HTMLElement | null>(null);
+  const activeWallpaperIdRef = useRef<string>(activeWallpaperId);
+  useEffect(() => {
+    activeWallpaperIdRef.current = activeWallpaperId;
+  }, [activeWallpaperId]);
+
   const [cardMousePos, setCardMousePos] = useState<{ x: number; y: number; active: boolean }>({
     x: 0,
     y: 0,
@@ -53,15 +73,55 @@ export default function HomePage() {
 
   const currentWeather = WEATHER_PRESETS[weatherIdx] || WEATHER_PRESETS[0];
 
+  // Reset Back to Top visibility when changing pages
+  useEffect(() => {
+    setShowBackToTop(false);
+    activeScrollTargetRef.current = null;
+  }, [currentPage]);
+
+  // Track scroll position (> 300px) in #content-display or any nested scrollable container
+  const handleContentScrollCapture = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (!target || typeof target.scrollTop !== 'number') return;
+
+    // Ignore horizontal-only scroll bars where vertical scroll isn't applicable
+    if (target.scrollHeight <= target.clientHeight) return;
+
+    activeScrollTargetRef.current = target;
+    const containerScrollTop = contentDisplayRef.current?.scrollTop || 0;
+    const effectiveScrollTop = Math.max(target.scrollTop, containerScrollTop);
+    setShowBackToTop(effectiveScrollTop > 300);
+  }, []);
+
+  // Smoothly scroll the content area back to the top
+  const handleScrollToTop = useCallback(() => {
+    SoundEngine.playTap();
+    if (activeScrollTargetRef.current) {
+      activeScrollTargetRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    if (contentDisplayRef.current) {
+      contentDisplayRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      const nestedScrollables = contentDisplayRef.current.querySelectorAll<HTMLElement>('.overflow-y-auto');
+      nestedScrollables.forEach((el) => {
+        if (el.scrollTop > 0) {
+          el.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    }
+  }, []);
+
   const handlePrevPage = () => {
+    SoundEngine.playTap();
     setCurrentPage((prev) => (prev > 0 ? prev - 1 : PAGES.length - 1));
   };
 
   const handleNextPage = () => {
+    SoundEngine.playTap();
     setCurrentPage((prev) => (prev < PAGES.length - 1 ? prev + 1 : 0));
   };
 
   const handleCycleWeather = () => {
+    SoundEngine.playTap();
     setWeatherIdx((prev) => (prev + 1) % WEATHER_PRESETS.length);
   };
 
@@ -89,15 +149,94 @@ export default function HomePage() {
     } else if (wp.type === 'color') {
       setWallpaperVideo('');
       setWallpaperClass('');
-      setWallpaperStyle({ backgroundColor: wp.value });
+      setWallpaperStyle(parseCssToReactStyle(wp.value, wp.previewStyle));
     } else if (wp.type === 'gradient' || wp.type === 'css') {
       setWallpaperVideo('');
       setWallpaperClass('');
-      setWallpaperStyle({ background: wp.value });
+      setWallpaperStyle(parseCssToReactStyle(wp.value, wp.previewStyle));
     }
   }, []);
 
-  // On mount: Load theme & default wallpaper from persistent storage
+  // Update and persist advanced wallpaper settings
+  const handleUpdateWallpaperSettings = useCallback(
+    async (partial: Partial<WallpaperAdvancedSettings>) => {
+      setWallpaperSettings((prev) => {
+        const updated: WallpaperAdvancedSettings = { ...prev, ...partial };
+        saveWallpaperSettings(updated);
+        return updated;
+      });
+    },
+    []
+  );
+
+  // Advance to the next wallpaper in the pool (for Slideshow mode or manual Next button)
+  const handleNextSlideshowWallpaper = useCallback(async () => {
+    try {
+      const customWallpapers = await loadCustomWallpapers();
+      const deletedIds = await loadDeletedWallpaperIds();
+      const raw = [...customWallpapers, ...WALLPAPER_OPTIONS];
+      const seenIds = new Set<string>();
+      const pool: WallpaperOption[] = [];
+
+      for (const wp of raw) {
+        if (deletedIds.includes(wp.id) || seenIds.has(wp.id)) continue;
+        seenIds.add(wp.id);
+        pool.push(wp);
+      }
+
+      if (pool.length === 0) return;
+      const currentIdx = pool.findIndex((w) => w.id === activeWallpaperIdRef.current);
+      const nextIdx = (currentIdx + 1) % pool.length;
+      applyWallpaperOption(pool[nextIdx]);
+    } catch (e) {
+      console.warn('Slideshow step error:', e);
+    }
+  }, [applyWallpaperOption]);
+
+  // Day/Night Dynamic Wallpaper auto-switcher (06:00-17:59 = Day, 18:00-05:59 = Night)
+  useEffect(() => {
+    if (!wallpaperSettings.dayNightEnabled) return;
+
+    const applyByCurrentHour = async () => {
+      const hour = new Date().getHours();
+      const isDaytime = hour >= 6 && hour < 18;
+      const targetId = isDaytime
+        ? wallpaperSettings.dayWallpaperId || 'aurora'
+        : wallpaperSettings.nightWallpaperId || 'css-aurora-borealis';
+
+      const customWallpapers = await loadCustomWallpapers();
+      const targetWp = findWallpaperById(targetId, customWallpapers);
+      if (targetWp && activeWallpaperIdRef.current !== targetWp.id) {
+        applyWallpaperOption(targetWp);
+      }
+    };
+
+    applyByCurrentHour();
+    const timer = window.setInterval(applyByCurrentHour, 60_000);
+    return () => window.clearInterval(timer);
+  }, [
+    wallpaperSettings.dayNightEnabled,
+    wallpaperSettings.dayWallpaperId,
+    wallpaperSettings.nightWallpaperId,
+    applyWallpaperOption,
+  ]);
+
+  // Wallpaper Slideshow Mode timer
+  useEffect(() => {
+    if (!wallpaperSettings.slideshowEnabled) return;
+    const intervalMs = Math.max(15_000, wallpaperSettings.slideshowIntervalMinutes * 60_000);
+    const timer = window.setInterval(() => {
+      handleNextSlideshowWallpaper();
+    }, intervalMs);
+
+    return () => window.clearInterval(timer);
+  }, [
+    wallpaperSettings.slideshowEnabled,
+    wallpaperSettings.slideshowIntervalMinutes,
+    handleNextSlideshowWallpaper,
+  ]);
+
+  // On mount: Load theme, advanced wallpaper settings & default wallpaper from persistent storage
   useEffect(() => {
     (async () => {
       try {
@@ -113,8 +252,27 @@ export default function HomePage() {
         document.documentElement.setAttribute('data-theme', storedTheme);
         document.documentElement.classList.toggle('dark', storedTheme === 'dark-neon');
 
-        // 2. Load custom wallpapers & default wallpaper
+        // 2. Load advanced wallpaper settings
+        const loadedSettings = await loadWallpaperSettings();
+        setWallpaperSettings(loadedSettings);
+
+        // 3. Load custom wallpapers & default wallpaper
         const customWallpapers = await loadCustomWallpapers();
+
+        // If Day/Night Dynamic Mode is active, apply the time-appropriate wallpaper
+        if (loadedSettings.dayNightEnabled) {
+          const hour = new Date().getHours();
+          const isDaytime = hour >= 6 && hour < 18;
+          const targetId = isDaytime
+            ? loadedSettings.dayWallpaperId || 'aurora'
+            : loadedSettings.nightWallpaperId || 'css-aurora-borealis';
+          const targetWp = findWallpaperById(targetId, customWallpapers);
+          if (targetWp) {
+            applyWallpaperOption(targetWp);
+            return;
+          }
+        }
+
         const defId = await getDefaultWallpaperId();
         if (defId) {
           setDefaultWallpaperId(defId);
@@ -131,9 +289,6 @@ export default function HomePage() {
         } else if (storedTheme === 'flat-rainbow') {
           setWallpaperClass('');
           setWallpaperStyle({ backgroundColor: '#f8fafc' });
-        } else if (storedTheme === 'light-glass-multicolor') {
-          setWallpaperClass('light-glass-multicolor-bg');
-          setWallpaperStyle({});
         } else {
           setWallpaperClass('prism-light-bg');
         }
@@ -150,8 +305,6 @@ export default function HomePage() {
         ? 'dark-neon'
         : newTheme === 'flat-rainbow'
         ? 'flat-rainbow'
-        : newTheme === 'light-glass-multicolor'
-        ? 'light-glass-multicolor'
         : 'light-glass';
     
     // Trigger vivid dynamic transition wave
@@ -182,9 +335,6 @@ export default function HomePage() {
       } else if (validTheme === 'flat-rainbow') {
         setWallpaperClass('');
         setWallpaperStyle({ backgroundColor: '#f8fafc' });
-      } else if (validTheme === 'light-glass-multicolor') {
-        setWallpaperClass('light-glass-multicolor-bg');
-        setWallpaperStyle({});
       } else {
         setWallpaperClass('prism-light-bg');
         setWallpaperStyle({});
@@ -213,6 +363,9 @@ export default function HomePage() {
         wallpaperVideo={wallpaperVideo}
         theme={currentTheme}
         currentPage={currentPage}
+        dimmerOpacity={wallpaperSettings.dimmerOpacity}
+        blurAmount={wallpaperSettings.blurAmount}
+        parallaxEnabled={wallpaperSettings.parallaxEnabled}
       />
 
       {/* Main UI Root Layout (Header, Center Card, Footer) */}
@@ -270,16 +423,18 @@ export default function HomePage() {
           <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-white/80 dark:via-white/30 to-transparent pointer-events-none z-10" />
 
           <div
+            ref={contentDisplayRef}
+            onScrollCapture={handleContentScrollCapture}
             key={`content-${currentPage}`}
             id="content-display"
             className={`animate-page-enter ${
               currentPage === 0
                 ? 'flex-1 p-0 overflow-hidden relative flex flex-col h-full w-full'
-                : currentPage === 1 || currentPage === 2
-                ? 'flex-1 p-[15px] overflow-hidden relative flex flex-col h-full w-full'
-                : (currentPage >= 1 && currentPage <= 10) || currentPage === 12
-                ? 'flex-1 p-[15px] overflow-y-auto lg:overflow-hidden relative flex flex-col gap-[15px] h-full w-full'
-                : 'flex-1 p-[15px] overflow-y-auto custom-scrollbar flex flex-col gap-[15px]'
+                : (currentPage >= 1 && currentPage <= 7) || currentPage === 12
+                ? currentPage === 7
+                ? 'flex-1 p-[15px] overflow-y-auto snap-y snap-proximity scroll-pt-[15px] scroll-smooth glass-scrollbar relative flex flex-col gap-[15px] h-full w-full'
+                : 'flex-1 p-[15px] overflow-y-auto lg:overflow-hidden snap-y snap-proximity scroll-pt-[15px] scroll-smooth glass-scrollbar relative flex flex-col gap-[15px] h-full w-full'
+                : 'flex-1 p-[15px] overflow-y-auto snap-y snap-proximity scroll-pt-[15px] scroll-smooth glass-scrollbar flex flex-col gap-[15px]'
             }`}
           >
             {currentPage === 0 && (
@@ -289,12 +444,7 @@ export default function HomePage() {
               />
             )}
             {currentPage === 1 && <LetterView />}
-            {currentPage === 2 && (
-              <AboutView
-                onNavigateContact={() => setCurrentPage(12)}
-                onOpenAiChat={() => setIsAiChatOpen(true)}
-              />
-            )}
+            {currentPage === 2 && <AboutView />}
             {currentPage === 3 && <EducationView />}
             {currentPage === 4 && <DomainsView />}
             {currentPage === 5 && <ExperienceView />}
@@ -314,9 +464,33 @@ export default function HomePage() {
                   setDefaultWallpaperId(wp.id);
                   applyWallpaperOption(wp);
                 }}
+                wallpaperSettings={wallpaperSettings}
+                onUpdateWallpaperSettings={handleUpdateWallpaperSettings}
+                onNextSlideshow={handleNextSlideshowWallpaper}
               />
             )}
           </div>
+
+          {/* Floating Back to Top Button (Appears when scrolled > 300px in content area) */}
+          <button
+            type="button"
+            onClick={handleScrollToTop}
+            aria-label="Cuộn lên đầu trang"
+            title="Lên đầu trang"
+            className={`absolute bottom-4 right-4 z-40 w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-xl border transition-all duration-300 ease-out shadow-[0_8px_20px_-4px_rgba(37,99,235,0.28)] ${
+              currentTheme === 'dark-neon'
+                ? 'bg-slate-900/80 border-cyan-400/50 text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-300 hover:text-white hover:shadow-[0_0_18px_rgba(34,211,238,0.45)]'
+                : currentTheme === 'flat-rainbow'
+                ? 'bg-white/95 border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:border-indigo-600 hover:text-white'
+                : 'bg-white/80 border-white/90 text-blue-600 hover:bg-gradient-to-tr hover:from-blue-600 hover:to-cyan-500 hover:text-white hover:border-transparent'
+            } ${
+              showBackToTop
+                ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto hover:-translate-y-1 active:scale-95'
+                : 'opacity-0 translate-y-3 scale-90 pointer-events-none'
+            }`}
+          >
+            <WebIcon name="arrow-up" className="w-4 h-4" />
+          </button>
         </main>
 
         {/* 

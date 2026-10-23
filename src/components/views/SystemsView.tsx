@@ -1,203 +1,78 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { SYSTEMS_DATA } from '@/data/systems';
 import { SystemData } from '@/types';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
-import { useLanguage } from '@/context/LanguageContext';
-
-interface SystemItemConfig {
-  id: string;
-  categoryTag: string;
-  categoryGroup: 'core' | 'support' | 'other';
-  abbr: string;
-  fullName: string;
-  desc: string;
-  icon: string;
-  gradient: string;
-}
-
-const SYSTEMS_CONFIG: SystemItemConfig[] = [
-  {
-    id: 'sdp',
-    categoryTag: 'Công nghệ & Dịch vụ',
-    categoryGroup: 'core',
-    abbr: 'SDP',
-    fullName: 'Service Delivery Platform',
-    desc: 'Nền tảng cung cấp dịch vụ, quản lý và vận hành dịch vụ trên kênh số.',
-    icon: 'cloud',
-    gradient: 'linear-gradient(135deg, #4f8ef7, #3b82f6)',
-  },
-  {
-    id: 'erp',
-    categoryTag: 'Tài chính & Kế toán',
-    categoryGroup: 'core',
-    abbr: 'ERP',
-    fullName: 'Enterprise Resource Planning',
-    desc: 'Quản trị nguồn lực doanh nghiệp, tài chính, kế toán và vận hành tổng thể.',
-    icon: 'chart',
-    gradient: 'linear-gradient(135deg, #2dd4bf, #0d9488)',
-  },
-  {
-    id: 'crm',
-    categoryTag: 'Quản lý Quan hệ Khách hàng',
-    categoryGroup: 'core',
-    abbr: 'CRM',
-    fullName: 'Customer Relationship Management',
-    desc: 'Quản lý thông tin khách hàng, tăng trải nghiệm và giữ chân khách hàng.',
-    icon: 'headphones',
-    gradient: 'linear-gradient(135deg, #fb923c, #ea580c)',
-  },
-  {
-    id: 'hrm',
-    categoryTag: 'Quản lý Nguồn nhân lực',
-    categoryGroup: 'core',
-    abbr: 'HRM',
-    fullName: 'Human Resource Management',
-    desc: 'Quản lý nhân sự, tuyển dụng, đào tạo, đánh giá và phát triển nguồn lực.',
-    icon: 'users',
-    gradient: 'linear-gradient(135deg, #c084fc, #9333ea)',
-  },
-  {
-    id: 'bpm',
-    categoryTag: 'Quản lý Quy trình nghiệp vụ',
-    categoryGroup: 'core',
-    abbr: 'BPM',
-    fullName: 'Business Process Management',
-    desc: 'Tối ưu hóa và tự động hóa các quy trình nghiệp vụ.',
-    icon: 'workflow',
-    gradient: 'linear-gradient(135deg, #818cf8, #4f46e5)',
-  },
-  {
-    id: 'okr',
-    categoryTag: 'Quản lý Mục tiêu & Kết quả',
-    categoryGroup: 'support',
-    abbr: 'OKR',
-    fullName: 'Objective & Key Results',
-    desc: 'Đặt mục tiêu, theo dõi và đo lường hiệu quả công việc.',
-    icon: 'target',
-    gradient: 'linear-gradient(135deg, #fb7185, #e11d48)',
-  },
-  {
-    id: 'clp',
-    categoryTag: 'Khách hàng Thân thiết',
-    categoryGroup: 'support',
-    abbr: 'CLP',
-    fullName: 'Customer Loyalty Program',
-    desc: 'Chương trình khách hàng thân thiết, chăm sóc và gia tăng giá trị.',
-    icon: 'shield',
-    gradient: 'linear-gradient(135deg, #38bdf8, #0891b2)',
-  },
-  {
-    id: 'lms',
-    categoryTag: 'Quản lý Đào tạo',
-    categoryGroup: 'support',
-    abbr: 'LMS',
-    fullName: 'Learning Management System',
-    desc: 'Đào tạo trực tuyến, quản lý khóa học và phát triển năng lực.',
-    icon: 'graduation',
-    gradient: 'linear-gradient(135deg, #34d399, #059669)',
-  },
-  {
-    id: 'csc',
-    categoryTag: 'Trung tâm Chăm sóc Khách hàng',
-    categoryGroup: 'core',
-    abbr: 'CSC',
-    fullName: 'Customer Service Center',
-    desc: 'Hỗ trợ và chăm sóc khách hàng đa kênh (voice, chat, email, social).',
-    icon: 'phone',
-    gradient: 'linear-gradient(135deg, #60a5fa, #0284c7)',
-  },
-  {
-    id: 'bi',
-    categoryTag: 'Phân tích Dữ liệu',
-    categoryGroup: 'other',
-    abbr: 'BI Dashboard',
-    fullName: 'Business Intelligence Dashboard',
-    desc: 'Trực quan hóa dữ liệu, hỗ trợ ra quyết định chiến lược.',
-    icon: 'trending',
-    gradient: 'linear-gradient(135deg, #6366f1, #3730a3)',
-  },
-  {
-    id: 'ai',
-    categoryTag: 'Trợ lý Trí tuệ Nhân tạo',
-    categoryGroup: 'other',
-    abbr: 'AI Assistant',
-    fullName: 'Artificial Intelligence Assistant',
-    desc: 'Hỗ trợ thông minh, tự động hóa và nâng cao hiệu suất làm việc.',
-    icon: 'cpu',
-    gradient: 'linear-gradient(135deg, #d946ef, #9333ea)',
-  },
-  {
-    id: 'pos',
-    categoryTag: 'Quản lý Bán hàng tại Quầy',
-    categoryGroup: 'support',
-    abbr: 'POS',
-    fullName: 'Point of Sale',
-    desc: 'Quản lý bán hàng, thanh toán và kho tại điểm bán.',
-    icon: 'card',
-    gradient: 'linear-gradient(135deg, #22d3ee, #0284c7)',
-  },
-];
+import { HeroBanner } from '@/components/ui/HeroBanner';
 
 export const SystemsView: React.FC = () => {
   const { showToast } = useToast();
-  const { lang } = useLanguage();
-  const isVi = lang === 'vi';
 
-  const [activeCategory, setActiveCategory] = useState<'all' | 'core' | 'support' | 'other'>('all');
+  const [activeCategory, setActiveCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState<boolean>(false);
   const [selectedSystem, setSelectedSystem] = useState<SystemData | null>(null);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState<boolean>(false);
+  const [isAuthorModalOpen, setIsAuthorModalOpen] = useState<boolean>(false);
+  const [isPinned, setIsPinned] = useState<boolean>(false);
+  const [currentTime, setCurrentTime] = useState<Date>(() => new Date());
   const [isFloatingVideo2Open, setIsFloatingVideo2Open] = useState<boolean>(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
 
   const VIDEO_1_URL =
     'https://cdn.scena.ai/project/8606/e48a67884f3a52e8a68cf06b97979f3b22835ec92bf466a058c0d78da97c83b0.mp4';
   const VIDEO_2_URL =
     'https://cdn.scena.ai/project/8606/5f84521bf5c51ff234fb0f4029fb9fba29e7e386f13912a56bc7ee25aebcbc10.mp4';
 
-  // Handle outside click to close dropdown
+  const MP4_VIDEO_URL =
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4';
+
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setIsCategoryDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
   }, []);
 
+  const categories = [
+    { id: 'all', label: 'Tất cả (12)', icon: 'globe' },
+    { id: 'cskh', label: 'CSKH & Tiếp cận (3)', icon: 'headphones' },
+    { id: 'erp', label: 'Quản trị & Nguồn lực (3)', icon: 'chart' },
+    { id: 'data_ai', label: 'Dữ liệu & AI (3)', icon: 'robot' },
+    { id: 'ops', label: 'Quy trình & An toàn (3)', icon: 'shield' },
+  ];
+
+  // Helper mapping for category
+  const getSystemCategory = (id: string): string => {
+    if (['sdp', 'crm', 'csc'].includes(id)) return 'cskh';
+    if (['erp', 'hrm', 'okr', 'pos'].includes(id)) return 'erp';
+    if (['ai', 'bi', 'clp'].includes(id)) return 'data_ai';
+    return 'ops';
+  };
+
   const filteredSystems = useMemo(() => {
-    let list = SYSTEMS_CONFIG;
+    let list = SYSTEMS_DATA;
     if (activeCategory !== 'all') {
-      list = list.filter((item) => item.categoryGroup === activeCategory);
+      list = list.filter((item) => getSystemCategory(item.id) === activeCategory);
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim();
       list = list.filter((item) => {
-        return (
-          item.abbr.toLowerCase().includes(q) ||
-          item.fullName.toLowerCase().includes(q) ||
-          item.categoryTag.toLowerCase().includes(q) ||
-          item.desc.toLowerCase().includes(q)
-        );
+        const matchVi = item.nameVi.toLowerCase().includes(q) || item.descVi.toLowerCase().includes(q);
+        const matchEn = item.nameEn.toLowerCase().includes(q) || item.descEn.toLowerCase().includes(q);
+        const matchCode = item.abbr.toLowerCase().includes(q) || item.fullName.toLowerCase().includes(q);
+        return matchVi || matchEn || matchCode;
       });
     }
     return list;
   }, [activeCategory, searchQuery]);
 
-  const handleCardClick = (item: SystemItemConfig) => {
-    const sysData = SYSTEMS_DATA.find((s) => s.id === item.id);
-    if (!sysData) return;
-
-    if (item.id === 'bi' || !sysData.url) {
+  const handleCardClick = (item: SystemData) => {
+    if (item.id === 'bi' || !item.url) {
       showToast('Hệ thống BI Dashboard đang được hoàn thiện tích hợp kết nối API thời gian thực!');
-      setSelectedSystem(sysData);
+      setSelectedSystem(item);
       return;
     }
-    setSelectedSystem(sysData);
+    setSelectedSystem(item);
   };
 
   const handleOpenUrl = (e: React.MouseEvent, url: string) => {
@@ -207,441 +82,483 @@ export const SystemsView: React.FC = () => {
     }
   };
 
-  const getDropdownLabel = () => {
-    switch (activeCategory) {
-      case 'core':
-        return isVi ? 'Cốt lõi (6)' : 'Core (6)';
-      case 'support':
-        return isVi ? 'Hỗ trợ (4)' : 'Support (4)';
-      case 'other':
-        return isVi ? 'Khác (2)' : 'Other (2)';
-      default:
-        return isVi ? 'Tất cả danh mục' : 'All Categories';
+  const handleShare = () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      showToast('Đã sao chép liên kết Cổng Hệ Thống vào clipboard!');
+    } else {
+      showToast('Chia sẻ liên kết thành công!');
     }
+  };
+
+  // Format date string for live clock
+  const formattedTime = currentTime.toTimeString().split(' ')[0];
+  const dayNames = ['CHỦ NHẬT', 'THỨ 2', 'THỨ 3', 'THỨ 4', 'THỨ 5', 'THỨ 6', 'THỨ 7'];
+  const formattedDate = `${dayNames[currentTime.getDay()]}, ${currentTime.getDate()} THG ${
+    currentTime.getMonth() + 1
+  }`;
+
+  // Icon mapping for each system
+  const systemIconMap: Record<string, string> = {
+    sdp: 'headphones',
+    erp: 'chart',
+    crm: 'users',
+    hrm: 'briefcase',
+    bpm: 'bolt',
+    okr: 'target',
+    clp: 'gift',
+    lms: 'graduation',
+    csc: 'phone',
+    bi: 'trending',
+    ai: 'robot',
+    pos: 'card',
+  };
+
+  const systemStatusBadge: Record<string, { text: string; dotColor: string }> = {
+    sdp: { text: 'Trực tuyến', dotColor: 'bg-emerald-400' },
+    erp: { text: 'Hoạt động', dotColor: 'bg-emerald-400' },
+    crm: { text: 'Hoạt động', dotColor: 'bg-emerald-400' },
+    hrm: { text: 'Hoạt động', dotColor: 'bg-emerald-400' },
+    bpm: { text: 'Hoạt động', dotColor: 'bg-emerald-400' },
+    okr: { text: 'Hoạt động', dotColor: 'bg-emerald-400' },
+    clp: { text: 'Hoạt động', dotColor: 'bg-emerald-400' },
+    lms: { text: 'Hoạt động', dotColor: 'bg-emerald-400' },
+    csc: { text: 'Hoạt động', dotColor: 'bg-emerald-400' },
+    bi: { text: 'Đang tích hợp API', dotColor: 'bg-amber-400' },
+    ai: { text: 'AI Trực Tuyến', dotColor: 'bg-fuchsia-400' },
+    pos: { text: 'Hoạt động', dotColor: 'bg-emerald-400' },
   };
 
   return (
     <section
       id="systems"
-      className="relative w-full h-full max-h-full flex flex-col justify-center items-center font-sans text-slate-800 dark:text-slate-100 transition-colors duration-500 select-none bg-transparent overflow-hidden text-left"
+      className="relative w-full h-full max-h-full flex flex-col justify-start items-stretch font-sans text-slate-800 transition-colors duration-500 select-none bg-transparent overflow-hidden text-left"
     >
-      <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] items-stretch justify-center max-w-7xl mx-auto relative z-10 overflow-hidden my-auto">
-        {/* VÙNG BÊN TRÁI: THANH TÌM KIẾM/LỌC & LƯỚI 12 THẺ HỆ THỐNG */}
-        <div className="flex-1 min-w-0 flex flex-col justify-center gap-2.5 h-full overflow-hidden lg:order-1 my-auto">
-          {/* Thanh tìm kiếm & Dropdown danh mục */}
-          <div className="flex items-center justify-between gap-3 px-1 py-0.5 shrink-0">
-            {/* Input tìm kiếm */}
-            <div className="flex-1 relative flex items-center">
+      {/* 100% Matching Animation CSS Rules */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+        @keyframes watermark-drift {
+          0%, 100% {
+            transform: rotate(-12deg) translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: rotate(-6deg) translate(-8px, -10px) scale(1.05);
+          }
+          66% {
+            transform: rotate(-16deg) translate(6px, -5px) scale(0.97);
+          }
+        }
+
+        .card-watermark {
+          position: absolute;
+          right: -8px;
+          bottom: -14px;
+          opacity: 0.15;
+          pointer-events: none;
+          transform-origin: center center;
+          animation: watermark-drift 8.5s ease-in-out infinite;
+          transition: opacity 0.45s ease;
+          font-size: 5rem;
+          line-height: 1;
+        }
+
+        .system-item:hover .card-watermark {
+          opacity: 0.28;
+          animation-duration: 4s;
+        }
+
+        @keyframes icon-floating {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg) scale(1);
+          }
+          50% {
+            transform: translateY(-5px) rotate(2deg) scale(1.07);
+          }
+        }
+
+        .animated-service-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          animation: icon-floating 3.2s ease-in-out infinite;
+          filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.28));
+          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .system-item:hover .animated-service-icon {
+          transform: scale(1.15) translateY(-3px);
+          filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.4));
+        }
+
+        .system-item {
+          border-radius: 18px !important;
+          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08) !important;
+          backdrop-filter: blur(10px) !important;
+          -webkit-backdrop-filter: blur(10px) !important;
+          border: 1px solid rgba(255, 255, 255, 0.5) !important;
+          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .system-item:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 16px 36px rgba(0, 0, 0, 0.2) !important;
+          border-color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        @keyframes ring-pulse {
+          0% {
+            box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+          }
+          70% {
+            box-shadow: 0 0 0 12px rgba(99, 102, 241, 0);
+          }
+          100% {
+            box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+          }
+        }
+
+        .video-circle-halo {
+          animation: ring-pulse 2.2s infinite;
+        }
+      `,
+        }}
+      />
+
+      <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] items-stretch justify-start relative z-10 overflow-hidden">
+        {/* VÙNG BÊN TRÁI: THANH LỌC & LƯỚI 12 HỆ THỐNG C-LEVEL */}
+        <div className="flex-1 min-h-0 flex flex-col gap-[12px] h-full overflow-hidden">
+          {/* Thanh điều khiển: Nút lọc danh mục & Hộp tìm kiếm */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 w-full shrink-0">
+            {/* Thống kê phân hệ & Trạng thái */}
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 font-play">
+                <WebIcon name="layers" className="w-4 h-4 text-indigo-600 dark:text-indigo-400 animate-pulse shrink-0 inline-block" />
+                <span>12 phân hệ vận hành C-level</span>
+              </h2>
+              <span className="text-[11.5px] text-slate-500 dark:text-slate-400 font-medium hidden sm:inline">
+                Hiển thị: <strong className="text-indigo-600 dark:text-indigo-400 font-bold">{filteredSystems.length}</strong> / 12 phân hệ
+              </span>
+            </div>
+
+            {/* Real-time Search Box */}
+            <div className="relative w-full sm:w-64 md:w-72">
               <svg
-                className="w-4 h-4 absolute left-3.5 text-slate-400 pointer-events-none"
+                className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="2"
+                strokeWidth="2.2"
                 viewBox="0 0 24 24"
               >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
                 type="text"
-                placeholder={isVi ? "Tìm kiếm hệ thống, từ khóa, công nghệ..." : "Search systems, keywords, tech..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 text-xs sm:text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-hidden focus:border-blue-500 shadow-2xs transition"
+                placeholder="Tìm kiếm mã hoặc tên hệ thống..."
+                className="w-full pl-8 pr-7 py-1.5 rounded-xl bg-white/90 border border-slate-200 text-xs text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-all shadow-2xs"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  aria-label="Xóa tìm kiếm"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 text-xs"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 text-xs"
                 >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" />
-                  </svg>
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" /></svg>
                 </button>
               )}
             </div>
-
-            {/* Dropdown Tất cả danh mục */}
-            <div className="relative shrink-0" ref={dropdownRef}>
-              <button
-                type="button"
-                onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-blue-400 shadow-2xs transition cursor-pointer"
-              >
-                <WebIcon name="layout-dashboard" className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                <span>{getDropdownLabel()}</span>
-                <svg
-                  className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-                    isCategoryDropdownOpen ? 'rotate-180' : ''
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m19 9-7 7-7-7" />
-                </svg>
-              </button>
-
-              {isCategoryDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-48 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-white/10 shadow-xl p-1.5 z-50 flex flex-col gap-1 backdrop-blur-xl animate-fadeIn">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveCategory('all');
-                      setIsCategoryDropdownOpen(false);
-                    }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold text-left transition flex items-center justify-between cursor-pointer ${
-                      activeCategory === 'all'
-                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 font-bold'
-                        : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    <span>Tất cả danh mục (12)</span>
-                    {activeCategory === 'all' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveCategory('core');
-                      setIsCategoryDropdownOpen(false);
-                    }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold text-left transition flex items-center justify-between cursor-pointer ${
-                      activeCategory === 'core'
-                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 font-bold'
-                        : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    <span>Cốt lõi (6)</span>
-                    {activeCategory === 'core' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveCategory('support');
-                      setIsCategoryDropdownOpen(false);
-                    }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold text-left transition flex items-center justify-between cursor-pointer ${
-                      activeCategory === 'support'
-                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 font-bold'
-                        : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    <span>Hỗ trợ (4)</span>
-                    {activeCategory === 'support' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setActiveCategory('other');
-                      setIsCategoryDropdownOpen(false);
-                    }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold text-left transition flex items-center justify-between cursor-pointer ${
-                      activeCategory === 'other'
-                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 font-bold'
-                        : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    <span>Khác (2)</span>
-                    {activeCategory === 'other' && <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />}
-                  </button>
-                </div>
-              )}
-            </div>
           </div>
 
-          {/* Lưới 12 thẻ hệ thống (3 Cột x 4 Hàng) */}
-          <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-1 py-0.5 flex flex-col justify-center">
-            {filteredSystems.length === 0 ? (
-              <div className="text-center py-16 px-4 bg-white/60 dark:bg-slate-900/60 rounded-3xl border border-slate-200/80 backdrop-blur-md flex flex-col items-center justify-center h-full my-auto">
-                <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mb-2">
-                  <WebIcon name="search" className="w-6 h-6" />
-                </div>
-                <p className="text-base font-bold text-slate-700 dark:text-slate-200 font-play">
-                  {isVi ? 'Không tìm thấy hệ thống phù hợp' : 'No matching systems found'}
-                </p>
-                <p className="text-xs text-slate-400 mt-1">
-                  {isVi
-                    ? 'Hãy thử nhập từ khóa khác như "CRM", "ERP", "LMS" hoặc "CSKH"...'
-                    : 'Try another keyword like "CRM", "ERP", "LMS" or "CS"...'}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveCategory('all');
-                    setSearchQuery('');
-                  }}
-                  className="mt-4 px-5 py-2 rounded-full text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition cursor-pointer"
-                >
-                  {isVi ? 'Xem lại tất cả 12 hệ thống' : 'View all 12 systems'}
-                </button>
+          {/* Lưới 12 thẻ hệ thống (4 Cột x 3 Hàng) */}
+          {filteredSystems.length === 0 ? (
+            <div className="text-center py-16 px-4 bg-white/50 rounded-3xl border border-slate-200/80 backdrop-blur-md flex flex-col items-center justify-center flex-1">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-2">
+                <WebIcon name="search" className="w-6 h-6" />
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 pb-2 my-auto">
-                {filteredSystems.map((item) => (
-                  <article
-                    key={item.id}
-                    onClick={() => handleCardClick(item)}
-                    style={{ background: item.gradient }}
-                    className="relative rounded-[20px] p-3.5 sm:p-4 text-white overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 cursor-pointer flex flex-col justify-between group min-h-[128px]"
-                    title={`Nhấp để xem chi tiết ${item.abbr} - ${item.fullName}`}
-                  >
-                    {/* Top: Icon bên trái (hộp squircle bán trong suốt) + Phân loại, Tên viết tắt, Tên đầy đủ */}
-                    <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/25 flex items-center justify-center shrink-0 shadow-inner group-hover:scale-106 transition-transform duration-300">
-                        <WebIcon name={item.icon} className="w-6 h-6 text-white" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <span className="text-[10.5px] text-white/85 font-medium block truncate">
-                          {item.categoryTag}
-                        </span>
-                        <h3 className="text-xl sm:text-[22px] font-black leading-tight tracking-tight text-white font-play mt-0.5">
-                          {item.abbr}
-                        </h3>
-                        <p className="text-[10.5px] sm:text-[11px] text-white/80 font-medium leading-tight truncate mt-0.5">
-                          {item.fullName}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Bottom: Mô tả 2 dòng + Nút tròn mũi tên chuyển trang */}
-                    <div className="flex items-center justify-between gap-2 mt-3 pt-1 border-t border-white/15">
-                      <p className="text-[10.5px] text-white/90 leading-snug line-clamp-2 flex-1 pr-1 font-medium">
-                        {item.desc}
-                      </p>
-                      <button
-                        type="button"
-                        aria-label={`Xem chi tiết ${item.abbr}`}
-                        className="w-6.5 h-6.5 sm:w-7 sm:h-7 rounded-full bg-white/25 group-hover:bg-white/40 text-white flex items-center justify-center shrink-0 transition-all duration-200 group-hover:translate-x-0.5 cursor-pointer"
-                      >
-                        <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
-                      </button>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* VÙNG BÊN PHẢI: BANNER KIẾN TRÚC HỆ THỐNG (CHUẨN 300px THEO HÌNH ĐÍNH KÈM) */}
-        <aside className="w-full lg:w-[300px] xl:w-[300px] shrink-0 h-full rounded-[22px] bg-white/95 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/10 p-3.5 sm:p-4 shadow-sm backdrop-blur-xl flex flex-col justify-between overflow-y-auto custom-scrollbar select-none text-left gap-2.5 lg:order-2 my-auto">
-          {/* PHẦN 1: HEADER BANNER (Badge Kiến trúc & Badge Trực tuyến 24/7) */}
-          <div className="flex items-center justify-between pb-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800 text-blue-600 dark:text-blue-400 text-[11px] font-bold">
-              <WebIcon name="box" className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-              <span>Kiến trúc</span>
-            </div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 text-[11px] font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Trực tuyến · 24/7</span>
-            </div>
-          </div>
-
-          {/* PHẦN 2: TIÊU ĐỀ & PHỤ ĐỀ */}
-          <div className="flex items-start gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/80 border border-blue-200/70 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs mt-0.5">
-              <WebIcon name="box" className="w-4.5 h-4.5" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <h3 className="text-base font-black font-play text-slate-900 dark:text-white leading-tight">
-                Kiến Trúc Hệ Thống
-              </h3>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5">
-                Power+Service+ – Hệ thống số hóa toàn diện, 12 phân hệ quản trị vận hành xuyên suốt.
+              <p className="text-base font-bold text-slate-700 font-play">
+                Không tìm thấy hệ thống phù hợp
               </p>
-            </div>
-          </div>
-
-          {/* PHẦN 3: TRÍCH DẪN NGHỆ THUẬT (QUOTE) */}
-          <div className="py-0.5">
-            <p className="font-banner-quote text-[17px] sm:text-lg text-slate-800 dark:text-slate-200 font-normal leading-snug italic">
-              “Công nghệ không chỉ là công cụ, mà là nền tảng cho sự phát triển bền vững.”
-            </p>
-            <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5 block text-right">
-              — Nguyễn Hùng Thái
-            </span>
-          </div>
-
-          {/* PHẦN 4: KHUNG VIDEO DEMO TỔNG QUAN */}
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() => setIsFloatingVideo2Open(true)}
-            className="relative w-full aspect-video rounded-xl overflow-hidden bg-black shadow-md border border-slate-200/60 dark:border-white/10 cursor-pointer group/video"
-            title="Nhấp để phát video demo kiến trúc hệ thống"
-          >
-            <video
-              src={VIDEO_1_URL}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover group-hover/video:scale-105 transition-transform duration-500"
-            />
-            {/* Center Pink Play Button */}
-            <div className="absolute inset-0 bg-black/25 group-hover/video:bg-black/35 transition-colors flex items-center justify-center">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-rose-500/95 group-hover/video:bg-rose-500 text-white flex items-center justify-center shadow-lg group-hover/video:scale-110 transition-transform border border-white/80">
-                <svg className="w-4 h-4 ml-0.5 fill-current" viewBox="0 0 24 24">
-                  <polygon points="5 3 19 12 5 21 5 3" />
-                </svg>
-              </div>
-            </div>
-            {/* Time badge */}
-            <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded bg-black/70 text-white font-mono text-[10px] font-bold">
-              03:45
-            </span>
-            {/* Bottom Title bar */}
-            <div className="absolute bottom-0 inset-x-0 p-1.5 bg-gradient-to-t from-black/85 via-black/50 to-transparent">
-              <p className="text-[10px] font-bold text-white truncate text-left pl-1">
-                Demo Tổng quan Kiến trúc Hệ thống
+              <p className="text-xs text-slate-400 mt-1">
+                Hãy thử nhập từ khóa khác như "CRM", "ERP", "LMS" hoặc "CSKH"...
               </p>
-            </div>
-          </div>
-
-          {/* PHẦN 5: 4 THẺ THỐNG KÊ (2x2 GRID) */}
-          <div className="grid grid-cols-2 gap-2">
-            {/* Card 1: 12 Phân hệ */}
-            <div className="p-2 rounded-xl bg-blue-50/70 dark:bg-slate-800/60 border border-blue-100/80 dark:border-white/5 flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                <WebIcon name="box" className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-sm font-black font-play text-slate-800 dark:text-white block leading-tight">
-                  12
-                </span>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
-                  Phân hệ hệ thống
-                </span>
-              </div>
-            </div>
-
-            {/* Card 2: 100% Tích hợp dữ liệu */}
-            <div className="p-2 rounded-xl bg-blue-50/70 dark:bg-slate-800/60 border border-blue-100/80 dark:border-white/5 flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                <WebIcon name="link" className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-sm font-black font-play text-slate-800 dark:text-white block leading-tight">
-                  100%
-                </span>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
-                  Tích hợp dữ liệu
-                </span>
-              </div>
-            </div>
-
-            {/* Card 3: 5 Nền tảng công nghệ */}
-            <div className="p-2 rounded-xl bg-blue-50/70 dark:bg-slate-800/60 border border-blue-100/80 dark:border-white/5 flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                <WebIcon name="layers" className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-sm font-black font-play text-slate-800 dark:text-white block leading-tight">
-                  5
-                </span>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
-                  Nền tảng công nghệ
-                </span>
-              </div>
-            </div>
-
-            {/* Card 4: 24/7 Vận hành liên tục */}
-            <div className="p-2 rounded-xl bg-blue-50/70 dark:bg-slate-800/60 border border-blue-100/80 dark:border-white/5 flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                <WebIcon name="clock" className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-sm font-black font-play text-slate-800 dark:text-white block leading-tight">
-                  24/7
-                </span>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
-                  Vận hành liên tục
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* PHẦN 6: DANH MỤC HỆ THỐNG */}
-          <div className="flex flex-col gap-1.5 pt-0.5">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800 dark:text-white">
-                Danh mục hệ thống
-              </span>
               <button
                 type="button"
                 onClick={() => {
                   setActiveCategory('all');
                   setSearchQuery('');
                 }}
-                className="text-[10.5px] font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-0.5 cursor-pointer"
+                className="mt-4 px-5 py-2 rounded-full text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition cursor-pointer"
               >
-                <span>Xem tất cả</span>
-                <span>→</span>
+                Xem lại tất cả 12 hệ thống
               </button>
             </div>
-            <div className="grid grid-cols-4 gap-1">
-              <button
-                type="button"
-                onClick={() => setActiveCategory('all')}
-                className={`px-1 py-1.5 rounded-xl text-[10px] font-bold transition flex items-center justify-center gap-0.5 cursor-pointer ${
-                  activeCategory === 'all'
-                    ? 'bg-blue-600 text-white shadow-2xs'
-                    : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-white/10 hover:border-blue-400'
-                }`}
-              >
-                <WebIcon name="layout-dashboard" className="w-2.5 h-2.5 shrink-0" />
-                <span className="truncate">Tất cả (12)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveCategory('core')}
-                className={`px-1 py-1.5 rounded-xl text-[10px] font-bold transition flex items-center justify-center gap-0.5 cursor-pointer ${
-                  activeCategory === 'core'
-                    ? 'bg-blue-600 text-white shadow-2xs'
-                    : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-white/10 hover:border-blue-400'
-                }`}
-              >
-                <span className="truncate">Cốt lõi (6)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveCategory('support')}
-                className={`px-1 py-1.5 rounded-xl text-[10px] font-bold transition flex items-center justify-center gap-0.5 cursor-pointer ${
-                  activeCategory === 'support'
-                    ? 'bg-blue-600 text-white shadow-2xs'
-                    : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-white/10 hover:border-blue-400'
-                }`}
-              >
-                <span className="truncate">Hỗ trợ (4)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveCategory('other')}
-                className={`px-1 py-1.5 rounded-xl text-[10px] font-bold transition flex items-center justify-center gap-0.5 cursor-pointer ${
-                  activeCategory === 'other'
-                    ? 'bg-blue-600 text-white shadow-2xs'
-                    : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-white/10 hover:border-blue-400'
-                }`}
-              >
-                <span className="truncate">Khác (2)</span>
-              </button>
-            </div>
-          </div>
+          ) : (
+            <div className="flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3 items-stretch overflow-y-auto no-scrollbar py-0.5">
+              {filteredSystems.map((item) => {
+                const icon = systemIconMap[item.id] || 'cog';
 
-          {/* PHẦN 7: KHỐI GHI CHÚ KIẾN TRÚC MỞ */}
-          <div className="p-2.5 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/40 flex items-start gap-2 text-slate-600 dark:text-slate-300 text-[10px] leading-snug">
-            <span className="text-blue-500 text-xs shrink-0">💡</span>
-            <p>
-              Các hệ thống được xây dựng theo kiến trúc mở, linh hoạt, dễ dàng mở rộng và tích hợp.
-            </p>
-          </div>
+                return (
+                  <article
+                    key={item.id}
+                    onClick={() => handleCardClick(item)}
+                    title={`Nhấp xem chi tiết ${item.abbr} - ${item.fullName}`}
+                    className="system-item cursor-pointer relative overflow-hidden p-2.5 sm:p-3 text-white flex flex-col justify-between select-none rounded-2xl group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 min-h-[92px] h-full"
+                    style={{ background: item.gradient }}
+                  >
+                    {/* Floating Watermark */}
+                    <div className="card-watermark opacity-15 group-hover:opacity-30 pointer-events-none">
+                      <WebIcon name={icon} className="w-14 h-14" />
+                    </div>
+
+                    <div className="relative z-10 flex flex-col justify-between h-full gap-1.5">
+                      {/* DÒNG 1: Tên tiếng Việt hệ thống + Mũi tên liên kết */}
+                      <div className="flex items-center justify-between gap-2 pb-1 border-b border-white/15">
+                        <span className="text-[11px] font-bold text-white/95 font-play truncate">
+                          {item.nameVi}
+                        </span>
+                        <svg
+                          className="w-3.5 h-3.5 text-white/90 shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7V17" />
+                        </svg>
+                      </div>
+
+                      {/* DÒNG 2: Tên viết tắt lớn + Tên đầy đủ + Animated Icon */}
+                      <div className="flex items-center justify-between gap-1.5 pt-0.5">
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="text-xl sm:text-2xl font-black font-play tracking-wider text-white drop-shadow-sm leading-none">
+                            {item.abbr}
+                          </span>
+                          <span
+                            className="text-[10px] text-white/90 font-medium font-play leading-tight mt-1 truncate"
+                            title={item.fullName}
+                          >
+                            {item.fullName}
+                          </span>
+                        </div>
+                        <div className="animated-service-icon text-white shrink-0 ml-1">
+                          <WebIcon name={icon} className="w-[25px] h-[25px]" />
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* VÙNG BÊN PHẢI: BANNER THEO CHIỀU DỌC (RỘNG 300PX) */}
+        <aside className="w-[300px] min-w-[300px] max-w-[300px] shrink-0 h-full flex flex-col overflow-visible">
+          <HeroBanner
+            badgeText="Kiến trúc"
+            title="Kiến Trúc Hệ Thống & Tự Động Hóa"
+            titleIcon="layers"
+            titleColor="text-sky-300"
+            quote="“Số hóa quy trình – Tự động hóa vận hành toàn diện.”"
+            quoteAuthor="— Nguyễn Hùng Thái"
+            badgeColor="text-sky-400"
+            orientation="vertical"
+            className="h-full rounded-[20px] overflow-visible border-none shadow-none text-white"
+          >
+
+            {/* PHẦN 3: 3 TRỤ CỘT CỐT LÕI */}
+            <div className="relative z-10 flex flex-col gap-1.5 shrink-0">
+              <div className="p-1.5 px-2 rounded-lg bg-white/10 border border-white/10 flex items-center justify-between text-left">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-5 h-5 rounded-md bg-sky-500/30 text-sky-300 flex items-center justify-center shrink-0">
+                    <WebIcon name="layers" className="w-3 h-3" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-white">12 Phân Hệ Hợp Nhất</span>
+                    <span className="text-[8.5px] text-slate-300">Single Sign-On & Portal SDP</span>
+                  </div>
+                </div>
+                <span className="text-[9.5px] font-black font-mono text-cyan-300">100%</span>
+              </div>
+
+              <div className="p-1.5 px-2 rounded-lg bg-white/10 border border-white/10 flex items-center justify-between text-left">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-5 h-5 rounded-md bg-purple-500/30 text-purple-300 flex items-center justify-center shrink-0">
+                    <WebIcon name="robot" className="w-3 h-3" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-white">AI Agent & Tự Động Hóa</span>
+                    <span className="text-[8.5px] text-slate-300">Tối ưu 60%+ tác vụ lặp lại</span>
+                  </div>
+                </div>
+                <span className="text-[9.5px] font-black font-mono text-purple-300">60%+</span>
+              </div>
+
+              <div className="p-1.5 px-2 rounded-lg bg-white/10 border border-white/10 flex items-center justify-between text-left">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-5 h-5 rounded-md bg-emerald-500/30 text-emerald-300 flex items-center justify-center shrink-0">
+                    <WebIcon name="shield" className="w-3 h-3" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-white">SLA & Uptime Hệ Thống</span>
+                    <span className="text-[8.5px] text-slate-300">Microservices API Gateway</span>
+                  </div>
+                </div>
+                <span className="text-[9.5px] font-black font-mono text-emerald-300">99.98%</span>
+              </div>
+            </div>
+
+            {/* NHÓM NÚT LỌC DANH MỤC HỆ THỐNG TRONG BANNER (DROPDOWN MENU LIST) */}
+            <div className="relative z-50 flex flex-col gap-1 w-full pt-1.5 border-t border-white/20 shrink-0 pointer-events-auto">
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                  className="w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold font-play tracking-wide transition-all border cursor-pointer flex items-center justify-between gap-2 bg-white/20 hover:bg-white/30 text-white border-white/30 shadow-md backdrop-blur-md"
+                >
+                  <div className="flex items-center gap-2 truncate">
+                    <WebIcon name="filter" className="w-4 h-4 text-sky-300 shrink-0" />
+                    <span className="truncate">
+                      Danh mục: {
+                        categories.find(c => c.id === activeCategory)?.label || 'Tất cả (12)'
+                      }
+                    </span>
+                  </div>
+                  <svg className={`w-3.5 h-3.5 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isFilterDropdownOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 p-1 rounded-2xl bg-slate-900/95 backdrop-blur-2xl border border-white/20 shadow-2xl z-50 flex flex-col gap-1">
+                    {categories.map((cat) => {
+                      const isActive = activeCategory === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => {
+                            setActiveCategory(cat.id);
+                            setIsFilterDropdownOpen(false);
+                          }}
+                          className={`w-full text-left px-3 py-2 rounded-xl text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center justify-between gap-2 ${
+                            isActive
+                              ? 'bg-gradient-to-r from-sky-500 via-indigo-600 to-indigo-700 text-white border-sky-400 shadow-md'
+                              : 'bg-white/5 hover:bg-white/15 text-white/90 border-white/10'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 truncate">
+                            <WebIcon name={cat.icon} className="w-3.5 h-3.5 shrink-0" />
+                            <span className="truncate">{cat.label}</span>
+                          </div>
+                          {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* PHẦN 4: HÀNH ĐỘNG TƯƠNG TÁC */}
+            <div className="relative z-10 pt-2 border-t border-white/15 flex flex-col gap-1.5 shrink-0">
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setIsFloatingVideo2Open(true)}
+                  className="px-2 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 shadow-md shadow-indigo-500/30 transition cursor-pointer active:scale-95"
+                >
+                  <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                  </svg>
+                  <span>Xem Video</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsAuthorModalOpen(true)}
+                  className="px-2 py-1 rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 transition cursor-pointer active:scale-95"
+                >
+                  <WebIcon name="user" className="w-2.5 h-2.5" />
+                  <span>Kiến Trúc Sư</span>
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between text-[9px] text-slate-400 font-medium px-0.5">
+                <span>Kiến trúc Omnichannel</span>
+                <span className="text-cyan-400 font-bold">2026+ Ready</span>
+              </div>
+            </div>
+          </HeroBanner>
         </aside>
       </div>
+
+      {/* VIDEO PLAYER LIGHTBOX MODAL (PHÁT LINK MP4) */}
+      {isVideoModalOpen && (
+        <div
+          onClick={() => setIsVideoModalOpen(false)}
+          className="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-5"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-slate-900 border border-slate-700/80 rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl flex flex-col text-left"
+          >
+            {/* Video Header */}
+            <div className="p-3.5 sm:p-4 bg-slate-800/80 border-b border-slate-700 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-indigo-600/30 border border-indigo-400/50 flex items-center justify-center text-indigo-400 text-xs">
+                  <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3" /></svg>
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white tracking-wide font-play">
+                    Video Giới Thiệu Hệ Thống Vận Hành
+                  </h4>
+                  <p className="text-[11px] text-slate-400">PowerService Enterprise Digital Architecture</p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsVideoModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-700 text-slate-300 hover:text-white hover:bg-slate-600 flex items-center justify-center text-sm transition cursor-pointer"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            {/* HTML5 MP4 Video Player Frame */}
+            <div className="relative w-full aspect-video bg-black flex items-center justify-center">
+              <video
+                controls
+                autoPlay
+                playsInline
+                className="w-full h-full object-contain"
+                poster="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
+              >
+                <source src={MP4_VIDEO_URL} type="video/mp4" />
+                Trình duyệt của bạn không hỗ trợ thẻ phát video HTML5.
+              </video>
+            </div>
+
+            {/* Video Footer */}
+            <div className="p-3 bg-slate-900/90 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M20 6 9 17l-5-5" /></svg>
+                <span>Định dạng: MP4 Full HD 1080p</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsVideoModalOpen(false)}
+                className="px-4 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition cursor-pointer"
+              >
+                Đóng Video
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* SYSTEM DETAIL MODAL */}
       {selectedSystem && (
@@ -660,7 +577,7 @@ export const SystemsView: React.FC = () => {
             >
               <div className="relative z-10 flex items-center gap-3">
                 <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white text-2xl shadow-inner p-1">
-                  <WebIcon name={SYSTEMS_CONFIG.find(c => c.id === selectedSystem.id)?.icon || 'box'} className="w-6 h-6" />
+                  <WebIcon name={systemIconMap[selectedSystem.id] || 'cog'} className="w-6 h-6" />
                 </div>
                 <div>
                   <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-black/25 text-white uppercase tracking-wider font-mono">
@@ -675,12 +592,9 @@ export const SystemsView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedSystem(null)}
-                aria-label="Đóng cửa sổ"
                 className="relative z-10 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white flex items-center justify-center transition cursor-pointer"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" />
-                </svg>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" /></svg>
               </button>
             </div>
 
@@ -743,9 +657,7 @@ export const SystemsView: React.FC = () => {
                     className="px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-1.5 shadow-md shadow-indigo-500/20 transition cursor-pointer"
                   >
                     <span>Mở Cổng Vận Hành</span>
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 17 17 7M7 7h10v10" />
-                    </svg>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M7 17 17 7M7 7h10v10" /></svg>
                   </button>
                 )}
               </div>
@@ -754,51 +666,43 @@ export const SystemsView: React.FC = () => {
         </div>
       )}
 
-      {/* MODAL PHÁT VIDEO DEMO TOÀN MÀN HÌNH */}
-      {isFloatingVideo2Open && (
+      {/* AUTHOR ARCHITECT INFO MODAL */}
+      {isAuthorModalOpen && (
         <div
-          onClick={() => setIsFloatingVideo2Open(false)}
-          className="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-[9999] flex items-center justify-center p-3 sm:p-5 animate-fadeIn"
+          onClick={() => setIsAuthorModalOpen(false)}
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-slate-900 border border-slate-700/80 rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl flex flex-col text-left"
+            className="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 text-center shadow-2xl relative"
           >
-            {/* Header */}
-            <div className="p-3.5 sm:p-4 bg-slate-800/80 border-b border-slate-700 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-rose-600/30 border border-rose-400/50 flex items-center justify-center text-rose-400 text-xs">
-                  <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-white tracking-wide font-play">
-                    Video Demo Tổng Quan Kiến Trúc Hệ Thống
-                  </h4>
-                  <p className="text-[11px] text-slate-400">Power+Service+ Enterprise Digital Architecture</p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setIsFloatingVideo2Open(false)}
-                className="w-8 h-8 rounded-full bg-slate-700 text-slate-300 hover:text-white hover:bg-slate-600 flex items-center justify-center text-sm transition cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Video Player */}
-            <div className="relative aspect-video bg-black flex items-center justify-center">
-              <video
-                src={VIDEO_2_URL}
-                controls
-                autoPlay
-                className="w-full h-full object-contain"
+            <div className="w-20 h-20 mx-auto rounded-full overflow-hidden ring-4 ring-indigo-500/30 mb-3 shadow-md">
+              <img
+                src="https://i.ibb.co/RT3jX4Mv/H-ng-Th-i-Avata-Gif.gif"
+                alt="Kiến Trúc Sư"
+                className="w-full h-full object-cover"
               />
             </div>
+            <h3 className="text-lg font-bold text-slate-800 font-play">
+              Kiến Trúc Sư Hệ Thống CX/CSKH
+            </h3>
+            <p className="text-xs text-indigo-600 font-semibold mb-3">
+              PowerService Enterprise Suite
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed mb-4">
+              Hệ sinh thái gồm 12 phân hệ tích hợp toàn diện, chuẩn hóa dữ liệu tập trung theo mô hình Omnichannel, tự động hóa quy trình nghiệp vụ và tích hợp Trợ lý Trí tuệ Nhân tạo 24/7.
+            </p>
+            <button
+              type="button"
+              onClick={() => setIsAuthorModalOpen(false)}
+              className="px-5 py-2 rounded-full text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 transition cursor-pointer"
+            >
+              Đóng
+            </button>
           </div>
         </div>
       )}
+
     </section>
   );
 };

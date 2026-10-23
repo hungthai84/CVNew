@@ -13,54 +13,37 @@ export interface WeatherWidgetProps {
 export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ currentPreset, onCycle, currentTheme = 'light-glass' }) => {
   const isLight = currentTheme !== 'dark-neon';
 
-  // Format weather card to match currently selected theme (100% trong suốt theo yêu cầu)
-  const getThemeWeatherStyle = () => {
-    switch (currentTheme) {
-      case 'light-glass-multicolor':
-        return {
-          containerClass: 'bg-transparent border-0 shadow-none backdrop-blur-none',
-          tempColor: 'text-[#1E3A6D] dark:text-cyan-300',
-          conditionColor: 'text-[#3B82F6] dark:text-cyan-400',
-          locationColor: 'text-[#58749A] dark:text-slate-400',
-        };
-      case 'dark-neon':
-        return {
-          containerClass: 'bg-transparent border-0 shadow-none backdrop-blur-none',
-          tempColor: 'text-cyan-300',
-          conditionColor: 'text-white',
-          locationColor: 'text-slate-300',
-        };
-      case 'flat-rainbow':
-        return {
-          containerClass: 'bg-transparent border-0 shadow-none backdrop-blur-none',
-          tempColor: 'text-slate-900 dark:text-white',
-          conditionColor: 'text-rose-600 dark:text-rose-400',
-          locationColor: 'text-slate-600 dark:text-slate-300',
-        };
-      case 'light-glass':
-      default:
-        return {
-          containerClass: 'bg-transparent border-0 shadow-none backdrop-blur-none',
-          tempColor: isLight ? 'text-slate-900' : 'text-white',
-          conditionColor: isLight ? 'text-sky-600' : 'text-cyan-400',
-          locationColor: isLight ? 'text-slate-600' : 'text-slate-300',
-        };
-    }
+  // Dynamic theme colors for weather text
+  const getTempColor = () => {
+    if (currentTheme === 'dark-neon') return 'text-cyan-300 drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]';
+    if (currentTheme === 'flat-rainbow') return 'text-slate-900';
+    return isLight ? 'text-slate-900' : 'text-white';
   };
 
-  const themeStyle = getThemeWeatherStyle();
+  const getConditionColor = () => {
+    if (currentTheme === 'dark-neon') return 'text-cyan-200';
+    if (currentTheme === 'flat-rainbow') return 'text-rose-600 font-black';
+    return isLight ? 'text-indigo-900' : 'text-white';
+  };
+
+  const getLocationColor = () => {
+    if (currentTheme === 'dark-neon') return 'text-cyan-400/90';
+    if (currentTheme === 'flat-rainbow') return 'text-slate-700 font-bold';
+    return isLight ? 'text-slate-700 font-semibold' : 'text-white/85';
+  };
 
   return (
     <div
       onClick={onCycle}
       title="Nhấp để đổi trạng thái thời tiết"
-      className="relative w-max max-w-full h-full bg-transparent border-0 shadow-none px-1.5 sm:px-2.5 flex items-center gap-2 sm:gap-3 cursor-pointer select-none transition-all duration-300 overflow-visible group"
+      className="relative w-max max-w-full h-full rounded-[18px] px-2 sm:px-3 flex items-center gap-2 sm:gap-3 cursor-pointer select-none transition-all duration-300 border border-transparent bg-transparent overflow-visible group"
+      style={{ background: 'transparent' }}
     >
       {/* 3D Pop-out Graphic */}
-      <div className="relative z-20 flex items-center shrink-0 -ml-2.5">
+      <div className="relative z-20 flex items-center shrink-0 -ml-1">
         <div className="relative transition-transform duration-500 group-hover:scale-110 weather-float">
           {currentPreset.condition === 'Cloudy' && (
-            <svg viewBox="0 0 100 100" className="w-14 h-14 drop-shadow-md">
+            <svg viewBox="0 0 100 100" className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md">
               <defs>
                 <linearGradient id="sunA" x2="0" y2="1">
                   <stop stopColor="#fff9a6" />
@@ -86,7 +69,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ currentPreset, onC
           )}
 
           {currentPreset.condition === 'Thunder Storm' && (
-            <svg viewBox="0 0 100 100" className="w-14 h-14 drop-shadow-md">
+            <svg viewBox="0 0 100 100" className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md">
               <defs>
                 <linearGradient id="cloudB" x2="0" y2="1">
                   <stop stopColor="#fff" />
@@ -123,7 +106,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ currentPreset, onC
           )}
 
           {currentPreset.condition === 'Overcast' && (
-            <svg viewBox="0 0 100 100" className="w-14 h-14 drop-shadow-md">
+            <svg viewBox="0 0 100 100" className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md">
               <defs>
                 <linearGradient id="cloudC" x2="0" y2="1">
                   <stop stopColor="#fff" />
@@ -142,7 +125,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ currentPreset, onC
           )}
 
           {currentPreset.condition === 'Sunny' && (
-            <svg viewBox="0 0 100 100" className="w-14 h-14 drop-shadow-md">
+            <svg viewBox="0 0 100 100" className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md">
               <defs>
                 <radialGradient id="sunD">
                   <stop stopColor="#fff98a" />
@@ -156,7 +139,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ currentPreset, onC
           )}
 
           {currentPreset.condition === 'Heavy Rain' && (
-            <svg viewBox="0 0 100 100" className="w-14 h-14 drop-shadow-md">
+            <svg viewBox="0 0 100 100" className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md">
               <defs>
                 <linearGradient id="cloudE" x2="0" y2="1">
                   <stop stopColor="#fff" />
@@ -185,7 +168,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ currentPreset, onC
           )}
 
           {currentPreset.condition === 'Lightning' && (
-            <svg viewBox="0 0 100 100" className="w-14 h-14 drop-shadow-md">
+            <svg viewBox="0 0 100 100" className="w-12 h-12 sm:w-14 sm:h-14 drop-shadow-md">
               <defs>
                 <linearGradient id="boltF" x2="0" y2="1">
                   <stop stopColor="#fff66b" />
@@ -206,24 +189,24 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ currentPreset, onC
         </div>
       </div>
 
-      {/* Temperature & Condition - Format theo giao diện đang được chọn */}
-      <div className="relative z-10 flex items-center gap-2 pl-0.5">
-        <div className={`flex items-start tracking-tight drop-shadow-sm font-play ${themeStyle.tempColor}`}>
-          <span className="text-2xl sm:text-3xl font-black leading-none">{currentPreset.temp}</span>
-          <span className="text-xs sm:text-sm font-black leading-none -mt-0.5 ml-0.5">°C</span>
+      {/* Temperature & Condition: Icon + Temperature °C display */}
+      <div className="relative z-10 flex items-center gap-1.5 sm:gap-2 pl-0.5 shrink-0">
+        <div className={`flex items-start tracking-tight drop-shadow-sm font-play shrink-0 ${getTempColor()}`}>
+          <span className="text-lg sm:text-xl font-black leading-none">{currentPreset.temp}</span>
+          <span className="text-xs font-black leading-none ml-0.5">°C</span>
         </div>
 
-        <div className="flex flex-col text-left leading-tight drop-shadow-xs">
-          <span className={`text-xs sm:text-[13px] font-black tracking-tight whitespace-nowrap ${themeStyle.conditionColor}`}>
+        <div className="hidden sm:flex flex-col text-left leading-tight drop-shadow-xs shrink-0">
+          <span className={`text-[11px] font-black tracking-tight whitespace-nowrap ${getConditionColor()}`}>
             {currentPreset.conditionVi || currentPreset.badge || currentPreset.condition}
           </span>
-          <span className={`text-[10px] font-semibold truncate max-w-[120px] sm:max-w-none ${themeStyle.locationColor}`}>
+          <span className={`text-[9.5px] truncate max-w-[100px] ${getLocationColor()}`}>
             {currentPreset.location || 'TP. Hồ Chí Minh'}
           </span>
         </div>
       </div>
 
-      {/* Live Flip Clock Component */}
+      {/* Live Clock Component HH:MM */}
       <Clock isLight={isLight} currentTheme={currentTheme} />
     </div>
   );

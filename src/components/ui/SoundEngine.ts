@@ -1,8 +1,50 @@
 'use client';
 
+const SOUND_STORAGE_KEY = 'hungthai_sound_enabled';
+const ALT_SOUND_STORAGE_KEY = 'portfolio-sound-enabled';
+
 class CustomSoundEngine {
   private ctx: AudioContext | null = null;
   public enabled: boolean = true;
+  private listeners: Set<(enabled: boolean) => void> = new Set();
+
+  constructor() {
+    if (typeof window !== 'undefined') {
+      this.loadPersistedState();
+    }
+  }
+
+  public loadPersistedState(): boolean {
+    if (typeof window === 'undefined') return this.enabled;
+    try {
+      const stored =
+        window.localStorage.getItem(SOUND_STORAGE_KEY) ??
+        window.localStorage.getItem(ALT_SOUND_STORAGE_KEY);
+      if (stored !== null) {
+        this.enabled = stored !== 'false' && stored !== '0';
+      }
+    } catch {
+      // Ignore storage access errors
+    }
+    return this.enabled;
+  }
+
+  public subscribe(listener: (enabled: boolean) => void): () => void {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+
+  private notifyListeners() {
+    this.listeners.forEach((listener) => {
+      try {
+        listener(this.enabled);
+      } catch {
+        // Ignore listener errors
+      }
+    });
+  }
 
   private initCtx() {
     if (typeof window === 'undefined') return;
@@ -17,9 +59,27 @@ class CustomSoundEngine {
     }
   }
 
-  public toggleSound(): boolean {
-    this.enabled = !this.enabled;
+  public setEnabled(nextEnabled: boolean, playFeedback: boolean = true): boolean {
+    this.enabled = nextEnabled;
+    if (typeof window !== 'undefined') {
+      try {
+        window.localStorage.setItem(SOUND_STORAGE_KEY, String(this.enabled));
+        window.localStorage.setItem(ALT_SOUND_STORAGE_KEY, String(this.enabled));
+      } catch {
+        // Ignore storage write errors
+      }
+    }
+    if (!this.enabled) {
+      this.stopMeditationTone();
+    } else if (playFeedback) {
+      this.playTap();
+    }
+    this.notifyListeners();
     return this.enabled;
+  }
+
+  public toggleSound(): boolean {
+    return this.setEnabled(!this.enabled, true);
   }
 
   public playTap() {
@@ -95,6 +155,7 @@ class CustomSoundEngine {
   private meditationGain: GainNode | null = null;
 
   public startMeditationTone() {
+    if (!this.enabled) return;
     try {
       this.initCtx();
       if (!this.ctx) return;

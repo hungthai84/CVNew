@@ -19,17 +19,17 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
   {
     stt: 1,
     categoryKey: 'intro',
-    categoryVi: 'Giới thiệu bản thân & Triết lý vận hành CX',
-    timestamp: '00:00 - 06:45',
+    categoryVi: 'Định vị',
+    timestamp: '00:00 - 00:28',
     startSec: 0,
     endSec: 28,
     askerVi: 'Hội Đồng Phỏng Vấn',
-    questionVi: 'Anh có thể giới thiệu đôi nét về bản thân và triết lý quản trị dịch vụ khách hàng cốt lõi của mình?',
+    questionVi: 'Câu hỏi 01: Xin anh giới thiệu ngắn gọn về hành trình 22 năm trong ngành Dịch vụ Khách hàng?',
     answererVi: 'Nguyễn Hùng Thái',
     answerVi:
-      'Với hơn 20 năm chuyên sâu trong lĩnh vực Dịch vụ Khách hàng (CX/CS) tại các tập đoàn hàng đầu như MoMo, Prudential, V247 Telecom và Garena, triết lý cốt lõi của tôi là "Lấy khách hàng làm trọng tâm (Customer-Centric), kết hợp tối ưu vận hành dựa trên Dữ liệu (Data-Driven) và Công nghệ (AI). Tôi tin rằng dịch vụ xuất sắc bắt nguồn từ một đội ngũ đồng hành và văn hóa lấy khách hàng làm trung tâm."',
+      'Tôi bắt đầu từ vị trí tổng đài viên viễn thông năm 2003 tại MobiFone, qua các tập đoàn lớn như V247, HTVC, Garena, Shopee, Prudential, MoMo và Finviet. Hành trình đó đã tôi luyện cho tôi khả năng quản trị đa kênh, xây dựng quy trình SOP và dẫn dắt đội ngũ hơn 150 nhân sự.',
     keyTakeawayVi:
-      'Lấy khách hàng làm trọng tâm, tối ưu vận hành bằng dữ liệu và công nghệ AI.',
+      'Khởi đầu từ cơ sở vững chắc, tích lũy thực chiến đa ngành và nâng tầm quản trị toàn diện.',
   },
   {
     stt: 2,
@@ -199,16 +199,31 @@ export const INTERVIEW_QUESTIONS: InterviewQuestion[] = [
   {
     stt: 13,
     categoryKey: 'closing',
-    categoryVi: 'Lời kết & Cam kết đồng hành',
-    timestamp: '06:15 - 06:45',
+    categoryVi: 'Lời kết',
+    timestamp: '06:50 - 07:25',
     startSec: 410,
     endSec: 445,
     askerVi: 'Chủ Tịch Hội Đồng',
-    questionVi: 'Tầm nhìn của anh đối với vị trí Head of CS / CX Director trong giai đoạn 2026+ và thông điệp cam kết đồng hành?',
+    questionVi: 'Tầm nhìn của anh đối với vị trí Head of CS / CX Director trong giai đoạn 2026+?',
     answererVi: 'Nguyễn Hùng Thái',
     answerVi:
-      'Giai đoạn 2026+ sẽ là kỷ nguyên của Trải nghiệm Khách hàng Siêu Cá nhân hóa (Hyper-personalization). Bộ phận CSKH không còn là trung tâm chi phí (Cost Center) mà trở thành động lực tăng trưởng doanh thu (Revenue Driver). Tôi cam kết mang toàn bộ 22 năm tâm huyết, kỷ luật và năng lực xây dựng hệ thống để đồng hành kiến tạo chuẩn mực dịch vụ xuất sắc vượt bậc.',
+      'Giai đoạn 2026+ sẽ là kỷ nguyên của Trải nghiệm Khách hàng Siêu Cá nhân hóa (Hyper-personalization). Bộ phận CSKH không còn là trung tâm chi phí (Cost Center) mà sẽ trở thành động lực tăng trưởng doanh thu (Revenue Driver) và giữ chân khách hàng cốt lõi.',
     keyTakeawayVi:
-      'Chuyển dịch vai trò CSKH từ Cost Center thành Revenue Driver và tận tâm đồng hành phát triển bền vững.',
+      'Chuyển dịch vai trò CSKH từ Cost Center thành Revenue & Retention Driver chiến lược.',
+  },
+  {
+    stt: 14,
+    categoryKey: 'closing',
+    categoryVi: 'Lời kết',
+    timestamp: '07:25 - 08:00',
+    startSec: 445,
+    endSec: 480,
+    askerVi: 'Hội Đồng Phỏng Vấn',
+    questionVi: 'Thông điệp cam kết đồng hành của anh gửi đến tổ chức nếu đảm nhận vị trí?',
+    answererVi: 'Nguyễn Hùng Thái',
+    answerVi:
+      'Tôi cam kết mang toàn bộ 22 năm tâm huyết, kỷ luật và năng lực xây dựng hệ thống để cùng Ban Lãnh đạo kiến tạo nên một chuẩn mực dịch vụ khách hàng xuất sắc, tạo dựng niềm tin bền vững và tăng trưởng vượt bậc cho doanh nghiệp.',
+    keyTakeawayVi:
+      'Tận tâm phụng sự, kỷ luật vận hành và đồng hành kiến tạo giá trị đột phá lâu dài.',
   },
 ];

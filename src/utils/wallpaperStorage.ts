@@ -10,6 +10,29 @@ const STORAGE_KEYS = {
   DEFAULT_WALLPAPER_ID: 'hungthai_default_wallpaper_id',
   ACTIVE_WALLPAPER: 'hungthai_active_wallpaper',
   DELETED_WALLPAPER_IDS: 'hungthai_deleted_wallpaper_ids',
+  WALLPAPER_SETTINGS: 'hungthai_wallpaper_advanced_settings',
+};
+
+export interface WallpaperAdvancedSettings {
+  dimmerOpacity: number; // 0 - 80 (%)
+  blurAmount: number; // 0 - 24 (px)
+  parallaxEnabled: boolean;
+  dayNightEnabled: boolean;
+  dayWallpaperId: string;
+  nightWallpaperId: string;
+  slideshowEnabled: boolean;
+  slideshowIntervalMinutes: number; // 0.5, 1, 3, 5
+}
+
+export const DEFAULT_WALLPAPER_SETTINGS: WallpaperAdvancedSettings = {
+  dimmerOpacity: 0,
+  blurAmount: 0,
+  parallaxEnabled: true,
+  dayNightEnabled: false,
+  dayWallpaperId: 'aurora',
+  nightWallpaperId: 'css-aurora-borealis',
+  slideshowEnabled: false,
+  slideshowIntervalMinutes: 3,
 };
 
 // Open IndexedDB safely with Promise
@@ -126,9 +149,278 @@ export async function setStoredItem<T>(key: string, value: T): Promise<void> {
   }
 }
 
-// Load custom wallpapers
+// Split CSS declarations by semicolon outside parentheses and quotes
+function splitCssDeclarations(cssText: string): string[] {
+  const result: string[] = [];
+  let current = '';
+  let parenDepth = 0;
+  let inSingleQuote = false;
+  let inDoubleQuote = false;
+
+  for (let i = 0; i < cssText.length; i++) {
+    const ch = cssText[i];
+    const prev = i > 0 ? cssText[i - 1] : '';
+
+    if (ch === "'" && !inDoubleQuote && prev !== '\\') {
+      inSingleQuote = !inSingleQuote;
+      current += ch;
+    } else if (ch === '"' && !inSingleQuote && prev !== '\\') {
+      inDoubleQuote = !inDoubleQuote;
+      current += ch;
+    } else if (!inSingleQuote && !inDoubleQuote) {
+      if (ch === '(') {
+        parenDepth++;
+        current += ch;
+      } else if (ch === ')') {
+        parenDepth = Math.max(0, parenDepth - 1);
+        current += ch;
+      } else if (ch === ';' && parenDepth === 0) {
+        if (current.trim()) {
+          result.push(current.trim());
+        }
+        current = '';
+      } else {
+        current += ch;
+      }
+    } else {
+      current += ch;
+    }
+  }
+
+  if (current.trim()) {
+    result.push(current.trim());
+  }
+
+  return result;
+}
+
+const ALLOWED_WALLPAPER_STYLE_PROPS: Record<string, keyof React.CSSProperties> = {
+  background: 'background',
+  'background-color': 'backgroundColor',
+  backgroundcolor: 'backgroundColor',
+  'background-image': 'backgroundImage',
+  backgroundimage: 'backgroundImage',
+  'background-size': 'backgroundSize',
+  backgroundsize: 'backgroundSize',
+  'background-position': 'backgroundPosition',
+  backgroundposition: 'backgroundPosition',
+  'background-repeat': 'backgroundRepeat',
+  backgroundrepeat: 'backgroundRepeat',
+  'background-attachment': 'backgroundAttachment',
+  backgroundattachment: 'backgroundAttachment',
+  'background-blend-mode': 'backgroundBlendMode',
+  backgroundblendmode: 'backgroundBlendMode',
+  'box-shadow': 'boxShadow',
+  boxshadow: 'boxShadow',
+  filter: 'filter',
+  opacity: 'opacity',
+  'mix-blend-mode': 'mixBlendMode',
+  mixblendmode: 'mixBlendMode',
+};
+
+function cleanCssPropertyValue(val: string): string {
+  return val
+    .replace(/!important/gi, '')
+    .replace(/;+\s*$/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Convert raw CSS string (single value or multi-property CSS block) into clean React.CSSProperties without semicolons
+export function parseCssToReactStyle(
+  rawCss: string,
+  fallbackStyle?: React.CSSProperties
+): React.CSSProperties {
+  const styleObj: Record<string, string | number> = {};
+
+  if (fallbackStyle && typeof fallbackStyle === 'object') {
+    for (const [k, v] of Object.entries(fallbackStyle)) {
+      if (typeof v === 'string') {
+        const trimmedVal = v.trim();
+        if (!trimmedVal.includes(';') && !/^[a-zA-Z-]+\s*:/.test(trimmedVal)) {
+          styleObj[k] = cleanCssPropertyValue(trimmedVal);
+        }
+      } else if (typeof v === 'number') {
+        styleObj[k] = v;
+      }
+    }
+  }
+
+  const trimmed = (rawCss || '').trim();
+  if (!trimmed) {
+    return styleObj as React.CSSProperties;
+  }
+
+  // Strip CSS comments
+  let cleanedBlock = trimmed.replace(/\/\*[\s\S]*?\*\//g, '');
+
+  // Strip nested rules like @keyframes {...} or &::before {...}
+  cleanedBlock = cleanedBlock.replace(/@keyframes[^{]+\{(?:[^{}]*|\{[^{}]*\})*\}/gi, '');
+  cleanedBlock = cleanedBlock.replace(/[^{};]+\{[^{}]*\}/g, '');
+  cleanedBlock = cleanedBlock.trim();
+
+  if (!cleanedBlock) {
+    return styleObj as React.CSSProperties;
+  }
+
+  const declarations = splitCssDeclarations(cleanedBlock);
+  let matchedAnyDeclaration = false;
+
+  for (const decl of declarations) {
+    const propMatch = decl.match(/^([a-zA-Z-]+)\s*:\s*([\s\S]+)$/);
+    if (propMatch) {
+      const rawProp = propMatch[1].toLowerCase().trim();
+      if (rawProp !== 'http' && rawProp !== 'https' && rawProp !== 'data' && rawProp !== 'blob') {
+        matchedAnyDeclaration = true;
+        const mappedKey = ALLOWED_WALLPAPER_STYLE_PROPS[rawProp];
+        if (mappedKey) {
+          const cleanVal = cleanCssPropertyValue(propMatch[2]);
+          if (cleanVal && !cleanVal.includes(';')) {
+            styleObj[mappedKey as string] = cleanVal;
+          }
+        }
+      }
+    }
+  }
+
+  if (!matchedAnyDeclaration) {
+    const singleVal = cleanCssPropertyValue(cleanedBlock);
+    if (singleVal && !singleVal.includes(';')) {
+      const isSolidColor =
+        /^#([0-9a-fA-F]{3,8})$/.test(singleVal) ||
+        /^rgba?\([^)]+\)$/i.test(singleVal) ||
+        /^hsla?\([^)]+\)$/i.test(singleVal);
+      if (isSolidColor) {
+        styleObj.backgroundColor = singleVal;
+        delete styleObj.background;
+      } else {
+        styleObj.background = singleVal;
+      }
+    }
+  }
+
+  // Avoid React shorthand/longhand conflict between `background` and `backgroundImage` / `backgroundSize` / `backgroundColor`
+  if (
+    styleObj.background &&
+    (styleObj.backgroundImage ||
+      styleObj.backgroundSize ||
+      styleObj.backgroundPosition ||
+      styleObj.backgroundRepeat ||
+      styleObj.backgroundColor)
+  ) {
+    const bgVal = String(styleObj.background).trim();
+    const isSolidColor =
+      /^#([0-9a-fA-F]{3,8})$/.test(bgVal) ||
+      /^rgba?\([^)]+\)$/i.test(bgVal) ||
+      /^hsla?\([^)]+\)$/i.test(bgVal);
+    if (isSolidColor && !styleObj.backgroundColor) {
+      styleObj.backgroundColor = bgVal;
+    } else if (!isSolidColor && !styleObj.backgroundImage) {
+      styleObj.backgroundImage = bgVal;
+    }
+    delete styleObj.background;
+  }
+
+  return styleObj as React.CSSProperties;
+}
+
+// Sanitize any existing React.CSSProperties object so no value contains semicolons or raw CSS declarations
+export function sanitizeWallpaperStyle(
+  style?: React.CSSProperties,
+  fallbackCss?: string
+): React.CSSProperties {
+  if (!style || typeof style !== 'object') {
+    return fallbackCss ? parseCssToReactStyle(fallbackCss) : {};
+  }
+
+  const sanitized: Record<string, string | number> = {};
+
+  for (const [key, rawVal] of Object.entries(style)) {
+    if (typeof rawVal === 'number') {
+      sanitized[key] = rawVal;
+      continue;
+    }
+    if (typeof rawVal !== 'string') continue;
+
+    const trimmed = rawVal.trim();
+    if (!trimmed) continue;
+
+    // Check if value accidentally contains raw CSS declarations (e.g. "background: ..." or semicolons outside data URLs)
+    const hasDeclarationPrefix = /^(background|background-color|background-image|background-size)\s*:/i.test(trimmed);
+    const hasSemicolonOutsideDataUrl =
+      trimmed.includes(';') && !/^url\(['"]?data:/i.test(trimmed);
+
+    if (hasDeclarationPrefix || hasSemicolonOutsideDataUrl) {
+      const parsed = parseCssToReactStyle(trimmed);
+      Object.assign(sanitized, parsed);
+    } else {
+      sanitized[key] = cleanCssPropertyValue(trimmed);
+    }
+  }
+
+  // Resolve shorthand/longhand conflict if present
+  if (
+    sanitized.background &&
+    (sanitized.backgroundImage ||
+      sanitized.backgroundSize ||
+      sanitized.backgroundPosition ||
+      sanitized.backgroundRepeat ||
+      sanitized.backgroundColor)
+  ) {
+    const bgVal = String(sanitized.background).trim();
+    const isSolidColor =
+      /^#([0-9a-fA-F]{3,8})$/.test(bgVal) ||
+      /^rgba?\([^)]+\)$/i.test(bgVal) ||
+      /^hsla?\([^)]+\)$/i.test(bgVal);
+    if (isSolidColor && !sanitized.backgroundColor) {
+      sanitized.backgroundColor = bgVal;
+    } else if (!isSolidColor && !sanitized.backgroundImage) {
+      sanitized.backgroundImage = bgVal;
+    }
+    delete sanitized.background;
+  }
+
+  if (Object.keys(sanitized).length === 0 && fallbackCss) {
+    return parseCssToReactStyle(fallbackCss);
+  }
+
+  return sanitized as React.CSSProperties;
+}
+
+// Load custom wallpapers and automatically sanitize any legacy previewStyle objects
 export async function loadCustomWallpapers(): Promise<WallpaperOption[]> {
-  return await getStoredItem<WallpaperOption[]>(STORAGE_KEYS.CUSTOM_WALLPAPERS, []);
+  const list = await getStoredItem<WallpaperOption[]>(STORAGE_KEYS.CUSTOM_WALLPAPERS, []);
+  if (!Array.isArray(list)) return [];
+
+  let modified = false;
+  const cleaned = list.map((wp) => {
+    if (!wp || typeof wp !== 'object') return wp;
+    const rawBg = wp.previewStyle?.background ? String(wp.previewStyle.background) : '';
+    const needsSanitize =
+      rawBg.includes(';') ||
+      rawBg.includes('\n') ||
+      /^(background|background-color|background-image)\s*:/i.test(rawBg.trim());
+
+    const safePreview = sanitizeWallpaperStyle(
+      wp.previewStyle,
+      wp.type === 'css' || wp.type === 'gradient' || wp.type === 'color' ? wp.value : undefined
+    );
+
+    if (needsSanitize) {
+      modified = true;
+    }
+
+    return {
+      ...wp,
+      previewStyle: safePreview,
+    };
+  });
+
+  if (modified) {
+    await setStoredItem(STORAGE_KEYS.CUSTOM_WALLPAPERS, cleaned);
+  }
+
+  return cleaned;
 }
 
 // Save custom wallpapers
@@ -218,26 +510,39 @@ export function detectWallpaperType(rawInput: string): DetectionResult {
     };
   }
 
-  // 4. CSS Code (Gradients, Colors, Background shorthand)
-  let cssCandidate = trimmed;
-  if (/^background\s*:/i.test(cssCandidate)) {
-    cssCandidate = cssCandidate.replace(/^background\s*:\s*/i, '').replace(/;$/, '').trim();
-  } else if (/^background-image\s*:/i.test(cssCandidate)) {
-    cssCandidate = cssCandidate.replace(/^background-image\s*:\s*/i, '').replace(/;$/, '').trim();
-  } else if (/^background-color\s*:/i.test(cssCandidate)) {
-    cssCandidate = cssCandidate.replace(/^background-color\s*:\s*/i, '').replace(/;$/, '').trim();
+  // 4. CSS Code (Gradients, Colors, Background shorthand, or multi-line CSS declarations)
+  const isMultiPropertyCss =
+    trimmed.includes(';') ||
+    /^(background|background-color|background-image|background-size)\s*:/im.test(trimmed);
+
+  if (isMultiPropertyCss) {
+    const parsedStyle = parseCssToReactStyle(trimmed);
+    const hasGradient =
+      trimmed.includes('linear-gradient') ||
+      trimmed.includes('radial-gradient') ||
+      trimmed.includes('conic-gradient');
+    return {
+      type: hasGradient && !trimmed.includes(';') ? 'gradient' : 'css',
+      cleanedValue: trimmed,
+      previewStyle: parsedStyle,
+      label: hasGradient ? 'Mã CSS Gradient' : 'Mã CSS Tùy Chỉnh',
+      badgeColor: hasGradient
+        ? 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-300'
+        : 'bg-indigo-100 text-indigo-700 border-indigo-300',
+    };
   }
 
   const isGradient =
-    cssCandidate.includes('linear-gradient') ||
-    cssCandidate.includes('radial-gradient') ||
-    cssCandidate.includes('conic-gradient');
+    trimmed.includes('linear-gradient') ||
+    trimmed.includes('radial-gradient') ||
+    trimmed.includes('conic-gradient');
 
   if (isGradient) {
+    const parsedStyle = parseCssToReactStyle(trimmed);
     return {
       type: 'gradient',
-      cleanedValue: cssCandidate,
-      previewStyle: { background: cssCandidate },
+      cleanedValue: cleanCssPropertyValue(trimmed),
+      previewStyle: parsedStyle,
       label: 'Mã CSS Gradient',
       badgeColor: 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-300',
     };
@@ -245,15 +550,16 @@ export function detectWallpaperType(rawInput: string): DetectionResult {
 
   // Hex or RGB or HSL Color
   const isColor =
-    /^#([0-9a-fA-F]{3,8})$/.test(cssCandidate) ||
-    /^rgba?\([^)]+\)$/i.test(cssCandidate) ||
-    /^hsla?\([^)]+\)$/i.test(cssCandidate);
+    /^#([0-9a-fA-F]{3,8})$/.test(trimmed) ||
+    /^rgba?\([^)]+\)$/i.test(trimmed) ||
+    /^hsla?\([^)]+\)$/i.test(trimmed);
 
   if (isColor) {
+    const cleanColor = cleanCssPropertyValue(trimmed);
     return {
       type: 'color',
-      cleanedValue: cssCandidate,
-      previewStyle: { background: cssCandidate },
+      cleanedValue: cleanColor,
+      previewStyle: { backgroundColor: cleanColor },
       label: 'Mã CSS Màu Sắc',
       badgeColor: 'bg-amber-100 text-amber-700 border-amber-300',
     };
@@ -295,8 +601,8 @@ export function detectWallpaperType(rawInput: string): DetectionResult {
   // 6. Generic CSS fallback
   return {
     type: 'css',
-    cleanedValue: cssCandidate,
-    previewStyle: { background: cssCandidate },
+    cleanedValue: trimmed,
+    previewStyle: parseCssToReactStyle(trimmed),
     label: 'Mã CSS Tùy Chỉnh',
     badgeColor: 'bg-indigo-100 text-indigo-700 border-indigo-300',
   };
@@ -384,10 +690,16 @@ export function parseWallpapersJson(jsonString: string): { wallpapers: Wallpaper
         }
       }
 
-      let previewStyle: React.CSSProperties | undefined = (item.previewStyle as React.CSSProperties) || undefined;
-      if (!previewStyle) {
+      let previewStyle: React.CSSProperties | undefined = item.previewStyle
+        ? sanitizeWallpaperStyle(
+            item.previewStyle as React.CSSProperties,
+            type === 'css' || type === 'gradient' || type === 'color' ? String(item.cssCode || value) : undefined
+          )
+        : undefined;
+
+      if (!previewStyle || Object.keys(previewStyle).length === 0) {
         if (type === 'css' || type === 'gradient' || type === 'color') {
-          previewStyle = { background: String(item.cssCode || value) };
+          previewStyle = parseCssToReactStyle(String(item.cssCode || value));
         } else if (previewUrl && previewUrl.startsWith('http')) {
           previewStyle = {
             backgroundImage: `url('${previewUrl}')`,
@@ -434,3 +746,81 @@ export function findWallpaperById(
 ): WallpaperOption | undefined {
   return customList.find((w) => w.id === id) || WALLPAPER_OPTIONS.find((w) => w.id === id);
 }
+
+// Load advanced wallpaper settings (dimmer, blur, parallax, day/night, slideshow)
+export async function loadWallpaperSettings(): Promise<WallpaperAdvancedSettings> {
+  const stored = await getStoredItem<Partial<WallpaperAdvancedSettings>>(
+    STORAGE_KEYS.WALLPAPER_SETTINGS,
+    DEFAULT_WALLPAPER_SETTINGS
+  );
+  if (!stored || typeof stored !== 'object') {
+    return { ...DEFAULT_WALLPAPER_SETTINGS };
+  }
+  return {
+    dimmerOpacity:
+      typeof stored.dimmerOpacity === 'number'
+        ? Math.min(80, Math.max(0, stored.dimmerOpacity))
+        : DEFAULT_WALLPAPER_SETTINGS.dimmerOpacity,
+    blurAmount:
+      typeof stored.blurAmount === 'number'
+        ? Math.min(24, Math.max(0, stored.blurAmount))
+        : DEFAULT_WALLPAPER_SETTINGS.blurAmount,
+    parallaxEnabled:
+      typeof stored.parallaxEnabled === 'boolean'
+        ? stored.parallaxEnabled
+        : DEFAULT_WALLPAPER_SETTINGS.parallaxEnabled,
+    dayNightEnabled:
+      typeof stored.dayNightEnabled === 'boolean'
+        ? stored.dayNightEnabled
+        : DEFAULT_WALLPAPER_SETTINGS.dayNightEnabled,
+    dayWallpaperId:
+      typeof stored.dayWallpaperId === 'string' && stored.dayWallpaperId
+        ? stored.dayWallpaperId
+        : DEFAULT_WALLPAPER_SETTINGS.dayWallpaperId,
+    nightWallpaperId:
+      typeof stored.nightWallpaperId === 'string' && stored.nightWallpaperId
+        ? stored.nightWallpaperId
+        : DEFAULT_WALLPAPER_SETTINGS.nightWallpaperId,
+    slideshowEnabled:
+      typeof stored.slideshowEnabled === 'boolean'
+        ? stored.slideshowEnabled
+        : DEFAULT_WALLPAPER_SETTINGS.slideshowEnabled,
+    slideshowIntervalMinutes:
+      typeof stored.slideshowIntervalMinutes === 'number' && stored.slideshowIntervalMinutes > 0
+        ? stored.slideshowIntervalMinutes
+        : DEFAULT_WALLPAPER_SETTINGS.slideshowIntervalMinutes,
+  };
+}
+
+// Save advanced wallpaper settings
+export async function saveWallpaperSettings(settings: WallpaperAdvancedSettings): Promise<void> {
+  await setStoredItem<WallpaperAdvancedSettings>(STORAGE_KEYS.WALLPAPER_SETTINGS, settings);
+}
+
+// Format a clean, copy-ready CSS snippet for any CSS / Gradient / Color wallpaper
+export function formatWallpaperCssSnippet(wp: WallpaperOption): string {
+  const raw = (wp.value || '').trim();
+  if (!raw) {
+    if (wp.previewStyle?.background) {
+      return `background: ${wp.previewStyle.background};`;
+    }
+    return '';
+  }
+
+  // If it's a built-in class like aurora-bg, use its previewStyle background if available
+  if (wp.type === 'class' && wp.previewStyle?.background) {
+    return `/* ${wp.name} */\nbackground: ${wp.previewStyle.background};`;
+  }
+
+  // If it already contains CSS property declarations like "background:" or "background-color:"
+  if (/^(background|background-color|background-image)\s*:/im.test(raw)) {
+    const endsWithSemicolon = raw.endsWith(';') || raw.endsWith('}');
+    return `/* ${wp.name} */\n${raw}${endsWithSemicolon ? '' : ';'}`;
+  }
+
+  // Otherwise wrap in standard `background: ...;`
+  const cleanVal = raw.replace(/;+\s*$/g, '');
+  return `/* ${wp.name} */\nbackground: ${cleanVal};`;
+}
+
+

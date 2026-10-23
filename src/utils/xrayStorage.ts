@@ -5,7 +5,7 @@ const STORAGE_KEY = 'hungthai_xray_prompt_templates_v1';
 export const DEFAULT_TEMPLATES: XRayPromptTemplate[] = [
   {
     id: 'default-1',
-    createdAt: Date.now() - 3600000 * 24,
+    createdAt: 1710000000000,
     pageName: 'Trang Thư Ngỏ',
     pageId: 1,
     elementSummary: 'Khối video minh họa AI Robot',
@@ -21,7 +21,7 @@ export const DEFAULT_TEMPLATES: XRayPromptTemplate[] = [
   },
   {
     id: 'default-2',
-    createdAt: Date.now() - 3600000 * 12,
+    createdAt: 1710043200000,
     pageName: 'Trang Hệ Thống',
     pageId: 8,
     elementSummary: 'Thẻ dọc giới thiệu Kiến Trúc Sư bên phải',
@@ -37,7 +37,7 @@ export const DEFAULT_TEMPLATES: XRayPromptTemplate[] = [
   },
   {
     id: 'default-3',
-    createdAt: Date.now() - 3600000 * 4,
+    createdAt: 1710072000000,
     pageName: 'Toàn Website',
     pageId: -1,
     elementSummary: 'Nút bấm tương tác trên thanh Header & Footer',

@@ -8,14 +8,12 @@ interface SkillItem {
   name: string;
   percent: number;
   icon: string;
-  desc?: string;
 }
 
 interface SkillCardData {
   id: string;
   filterKey: string;
   code: string;
-  category: string;
   title: string;
   desc: string;
   averagePercent: number;
@@ -33,10 +31,9 @@ interface SkillCardData {
 const SKILL_CARDS: SkillCardData[] = [
   {
     id: 'strength',
-    filterKey: 'strength',
+    filterKey: 'telecom',
     code: '7.1',
-    category: 'Điểm mạnh (Strengths)',
-    title: 'Nền Tảng Vận Hành',
+    title: 'Nền Tảng Vận Hành & Lãnh Đạo',
     desc: 'Những năng lực cốt lõi đã được chứng minh qua thực tiễn quản lý, vận hành và phát triển hệ thống Dịch vụ Khách hàng.',
     averagePercent: 96,
     accentColor: '#0284c7',
@@ -46,27 +43,25 @@ const SKILL_CARDS: SkillCardData[] = [
     iconBorder: 'border-sky-200/80 dark:border-sky-500/40',
     iconColor: 'text-sky-600 dark:text-sky-300',
     iconSvg: (
-      <svg className="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-[22px] h-[22px] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
       </svg>
     ),
-    ambientGlow: 'rgba(2, 132, 199, 0.12)',
+    ambientGlow: 'rgba(2, 132, 199, 0.14)',
     items: [
-      { name: 'Trải nghiệm KH', percent: 98, icon: 'heart' },
-      { name: 'CRM Center', percent: 96, icon: 'headphones' },
-      { name: 'Hiệu suất SLA', percent: 96, icon: 'chart' },
-      { name: 'Lãnh đạo Team', percent: 95, icon: 'users' },
-      { name: 'SOP Chuẩn hóa', percent: 95, icon: 'shield' },
-      { name: 'Xử lý Sự cố', percent: 94, icon: 'sparkles' },
+      { name: 'Trải nghiệm khách hàng', percent: 98, icon: 'heart' },
+      { name: 'CRM Contact Center', percent: 96, icon: 'headphones' },
+      { name: 'Quản trị Hiệu suất', percent: 96, icon: 'chart' },
+      { name: 'Lãnh đạo & Đội ngũ', percent: 95, icon: 'users' },
+      { name: 'SOP & Chuẩn hóa', percent: 95, icon: 'shield' },
     ],
   },
   {
     id: 'improve',
-    filterKey: 'improve',
+    filterKey: 'ecommerce',
     code: '7.2',
-    category: 'Hoàn thiện (Growth)',
-    title: 'Năng Lực Quản Trị',
-    desc: 'Những năng lực cần tiếp tục hoàn thiện để nâng tầm vai trò quản lý từ vận hành hiệu quả sang quản trị chiến lược và phát triển bền vững.',
+    title: 'Nâng Cao Năng Lực Quản Trị',
+    desc: 'Những năng lực cần tiếp tục hoàn thiện để nâng tầm vai trò quản lý từ vận hành hiệu quả sang quản trị chiến lược.',
     averagePercent: 87,
     accentColor: '#ea580c',
     percentColor: 'text-amber-600 dark:text-amber-400',
@@ -75,28 +70,27 @@ const SKILL_CARDS: SkillCardData[] = [
     iconBorder: 'border-orange-200/80 dark:border-orange-500/40',
     iconColor: 'text-orange-600 dark:text-orange-300',
     iconSvg: (
-      <svg className="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-[22px] h-[22px] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
       </svg>
     ),
-    ambientGlow: 'rgba(234, 88, 12, 0.12)',
+    ambientGlow: 'rgba(234, 88, 12, 0.14)',
     items: [
-      { name: 'Tư duy Dịch vụ', percent: 92, icon: 'heart' },
-      { name: 'Đàm phán Giao tiếp', percent: 90, icon: 'message' },
+      { name: 'Tư duy dịch vụ', percent: 92, icon: 'heart' },
+      { name: 'Giao tiếp & Đàm phán', percent: 90, icon: 'message' },
       { name: 'Tư duy Chiến lược', percent: 88, icon: 'compass' },
       { name: 'Quản trị Dự án', percent: 88, icon: 'target' },
-      { name: 'Đổi mới Sáng tạo', percent: 86, icon: 'lightbulb' },
-      { name: 'Kỹ thuật Lập trình', percent: 78, icon: 'code' },
+      { name: 'Công nghệ Đổi mới', percent: 86, icon: 'lightbulb' },
+      { name: 'Thiết kế & Lập trình', percent: 78, icon: 'code' },
     ],
   },
   {
     id: 'opportunity',
-    filterKey: 'opportunity',
+    filterKey: 'fintech',
     code: '7.3',
-    category: 'Cơ hội (Opportunities)',
-    title: 'Công Nghệ Chuyển Đổi',
-    desc: 'Những năng lực tạo đòn bẩy để nâng cao hiệu quả vận hành, tối ưu nguồn lực và chuyển đổi mô hình Dịch vụ Khách hàng trong thời đại số.',
-    averagePercent: 92,
+    title: 'Công Nghệ & Chuyển Dịch Vụ',
+    desc: 'Những năng lực tạo đòn bẩy để nâng cao hiệu quả vận hành, tối ưu nguồn lực và chuyển đổi mô hình CSKH.',
+    averagePercent: 90,
     accentColor: '#7c3aed',
     percentColor: 'text-purple-600 dark:text-purple-400',
     barGradient: 'from-purple-500 via-violet-600 to-indigo-600',
@@ -104,57 +98,24 @@ const SKILL_CARDS: SkillCardData[] = [
     iconBorder: 'border-purple-200/80 dark:border-purple-500/40',
     iconColor: 'text-purple-600 dark:text-purple-300',
     iconSvg: (
-      <svg className="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-[22px] h-[22px] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
       </svg>
     ),
-    ambientGlow: 'rgba(124, 58, 237, 0.12)',
+    ambientGlow: 'rgba(124, 58, 237, 0.14)',
     items: [
-      { name: 'AI Tự động hóa', percent: 94, icon: 'cpu' },
-      { name: 'Kaizen Cải tiến', percent: 94, icon: 'refresh' },
-      { name: 'Tối ưu Chi phí', percent: 93, icon: 'card' },
-      { name: 'Chuyển đổi Số', percent: 92, icon: 'globe' },
-      { name: 'Quản trị Dữ liệu', percent: 91, icon: 'database' },
-      { name: 'Hạ tầng Hệ thống', percent: 87, icon: 'layers' },
+      { name: 'AI & Tự động hóa', percent: 94, icon: 'cpu' },
+      { name: 'Kaizen & Cải tiến', percent: 94, icon: 'refresh' },
+      { name: 'Cloud & Infrastructure', percent: 88, icon: 'layers' },
     ],
   },
   {
     id: 'threat',
-    filterKey: 'threat',
+    filterKey: 'esports',
     code: '7.4',
-    category: 'Thách thức (Threats)',
-    title: 'Thích Ứng Biến Động',
-    desc: 'Những yếu tố tác động trực tiếp đến chất lượng dịch vụ, nhân sự và hiệu quả vận hành, đòi hỏi khả năng thích ứng và quản trị chủ động.',
-    averagePercent: 90,
-    accentColor: '#e11d48',
-    percentColor: 'text-rose-600 dark:text-rose-400',
-    barGradient: 'from-rose-500 via-pink-600 to-red-500',
-    iconBg: 'bg-gradient-to-br from-rose-50 to-pink-100/90 dark:from-rose-950/70 dark:to-pink-900/60',
-    iconBorder: 'border-rose-200/80 dark:border-rose-500/40',
-    iconColor: 'text-rose-600 dark:text-rose-300',
-    iconSvg: (
-      <svg className="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
-    ),
-    ambientGlow: 'rgba(225, 29, 72, 0.12)',
-    items: [
-      { name: 'Tối ưu Chi phí', percent: 94, icon: 'wallet' },
-      { name: 'Thay đổi CSKH', percent: 92, icon: 'zap' },
-      { name: 'Công nghệ Mới', percent: 90, icon: 'rocket' },
-      { name: 'Quản trị Rủi ro', percent: 90, icon: 'shield' },
-      { name: 'Giữ chân Nhân sự', percent: 88, icon: 'users' },
-      { name: 'Kết nối Liên phòng', percent: 86, icon: 'network' },
-    ],
-  },
-  {
-    id: 'language',
-    filterKey: 'language',
-    code: '7.5',
-    category: 'Ngôn ngữ (Languages)',
-    title: 'Ngôn Ngữ Giao Tiếp',
-    desc: 'Khả năng sử dụng ngôn ngữ linh hoạt kết hợp công cụ AI hỗ trợ giao tiếp và làm việc hiệu quả trong môi trường quốc tế.',
-    averagePercent: 84,
+    title: 'Thích Ứng & Quản Trị Biến Động',
+    desc: 'Những yếu tố tác động trực tiếp đến chất lượng dịch vụ, nhân sự và hiệu quả vận hành, đòi hỏi khả năng thích ứng chủ động.',
+    averagePercent: 93,
     accentColor: '#059669',
     percentColor: 'text-emerald-600 dark:text-emerald-400',
     barGradient: 'from-emerald-500 via-teal-600 to-cyan-600',
@@ -162,63 +123,31 @@ const SKILL_CARDS: SkillCardData[] = [
     iconBorder: 'border-emerald-200/80 dark:border-emerald-500/40',
     iconColor: 'text-emerald-600 dark:text-emerald-300',
     iconSvg: (
-      <svg className="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+      <svg className="w-[22px] h-[22px] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
       </svg>
     ),
-    ambientGlow: 'rgba(5, 150, 105, 0.12)',
+    ambientGlow: 'rgba(5, 150, 105, 0.14)',
     items: [
-      { name: 'Tiếng Việt Bản Xứ', percent: 90, icon: 'flag' },
-      { name: 'Tiếng Anh Quốc Tế', percent: 60, icon: 'globe' },
-      { name: 'Ứng dụng AI Dịch', percent: 85, icon: 'sparkles' },
-      { name: 'Đa dạng Văn hóa', percent: 88, icon: 'users' },
-      { name: 'Đàm phán Song ngữ', percent: 86, icon: 'briefcase' },
-      { name: 'AI Real-time Speech', percent: 92, icon: 'headphones' },
-    ],
-  },
-  {
-    id: 'ai',
-    filterKey: 'ai',
-    code: '7.6',
-    category: 'Hệ thống AI (Artificial Intelligence)',
-    title: 'Trí Tuệ Nhân Tạo',
-    desc: 'Năng lực ứng dụng và làm chủ các công nghệ AI tiên tiến, chuyển đổi số hóa và tự động hóa quy trình vận hành dịch vụ thông minh.',
-    averagePercent: 93,
-    accentColor: '#4f46e5',
-    percentColor: 'text-indigo-600 dark:text-indigo-400',
-    barGradient: 'from-indigo-500 via-purple-600 to-pink-500',
-    iconBg: 'bg-gradient-to-br from-indigo-50 to-purple-100/90 dark:from-indigo-950/70 dark:to-purple-900/60',
-    iconBorder: 'border-indigo-200/80 dark:border-indigo-500/40',
-    iconColor: 'text-indigo-600 dark:text-indigo-300',
-    iconSvg: (
-      <svg className="w-6 h-6 stroke-[2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
-    ambientGlow: 'rgba(79, 70, 229, 0.12)',
-    items: [
-      { name: 'GenAI & LLM Bots', percent: 94, icon: 'sparkles' },
-      { name: 'BI Data Analytics', percent: 92, icon: 'chart' },
-      { name: 'Omnichannel Smart AI', percent: 95, icon: 'network' },
-      { name: 'Prompt Engineering', percent: 90, icon: 'terminal' },
-      { name: 'AI Agent Workflows', percent: 92, icon: 'bot' },
-      { name: 'Chatbot Voicebot 24/7', percent: 95, icon: 'headphones' },
+      { name: 'Tối ưu Chi phí', percent: 94, icon: 'wallet' },
+      { name: 'AI & Thay đổi CSKH', percent: 92, icon: 'zap' },
+      { name: 'AI & Phân tích dữ liệu', percent: 92, icon: 'chart' },
+      { name: 'Quản trị Rủi ro', percent: 90, icon: 'shield' },
     ],
   },
 ];
 
 const FILTER_TABS = [
-  { key: 'all', label: 'Tất cả (6)' },
-  { key: 'strength', label: '7.1 Điểm mạnh (S)' },
-  { key: 'improve', label: '7.2 Hoàn thiện (W)' },
-  { key: 'opportunity', label: '7.3 Cơ hội (O)' },
-  { key: 'threat', label: '7.4 Thách thức (T)' },
-  { key: 'language', label: '7.5 Ngôn ngữ' },
-  { key: 'ai', label: '7.6 Hệ thống AI' },
+  { key: 'all', label: 'Tất cả (4)', icon: 'globe' },
+  { key: 'telecom', label: 'Viễn thông', icon: 'headphones' },
+  { key: 'ecommerce', label: 'E-Commerce', icon: 'card' },
+  { key: 'fintech', label: 'FinTech & Bảo hiểm', icon: 'shield' },
+  { key: 'esports', label: 'eSports', icon: 'rocket' },
 ];
 
 export const SkillsView: React.FC = () => {
   const [filter, setFilter] = useState<string>('all');
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
 
   const filteredCards = SKILL_CARDS.filter((card) => {
     if (filter === 'all') return true;
@@ -226,110 +155,149 @@ export const SkillsView: React.FC = () => {
   });
 
   return (
-    <div className="w-full h-full flex-1 flex flex-col justify-between gap-3 sm:gap-4 max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden">
-      {/* 1. TOP HERO BANNER */}
-      <HeroBanner
-        title="Kỹ Năng Quản Trị"
-        subtitle="Làm chủ công nghệ – Nâng tầm năng lực quản trị dịch vụ khách hàng"
-        quote="“Làm chủ công nghệ và rèn giũa kỹ năng quản trị.”"
-        quoteAuthor="— Nguyễn Hùng Thái"
-        videoSrc="https://cdn.scena.ai/project/10223/b5ecf50da08531a13ef8f06600ed5f2c414d15cf98e7fc1a1cfc09cba209ab3d.mp4"
-        bottomControls={
-          <div className="w-full flex items-center justify-end pointer-events-auto">
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-              {FILTER_TABS.map((tab) => {
-                const isActive = filter === tab.key;
-                return (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    onClick={() => setFilter(tab.key)}
-                    className={`px-3 py-1.5 rounded-full text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white border-indigo-500 shadow-md shadow-indigo-500/25 scale-[1.02]'
-                        : 'bg-white/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-white/20 hover:bg-white dark:hover:bg-slate-800 shadow-2xs'
-                    }`}
-                  >
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
+    <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden">
+      {/* 1. VERTICAL HERO BANNER BÊN TRÁI (300PX) */}
+      <aside className="w-full lg:w-[300px] min-w-[300px] max-w-[300px] shrink-0 h-full flex flex-col overflow-hidden">
+        <HeroBanner
+          badgeText="Kỹ năng chuyên môn"
+          title="Kỹ Năng Quản Trị"
+          titleIcon="bolt"
+          badgeColor="text-cyan-300"
+          titleColor="text-cyan-300"
+          quote="“Tích lũy kiến thức – Nâng cao năng lực – Kiến tạo giá trị bền vững trong thời đại số.”"
+          quoteAuthor="— Nguyễn Hùng Thái"
+          orientation="vertical"
+          className="h-full rounded-[20px]"
+        >
+          <div className="relative z-10 flex flex-col gap-1.5 w-full pt-2 border-t border-white/20 shrink-0 pointer-events-auto">
+            <div className="relative">
+              {/* Single Filter Dropdown Button */}
+              <button
+                type="button"
+                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                className="w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold font-play tracking-wide transition-all border cursor-pointer flex items-center justify-between gap-2 bg-white/20 hover:bg-white/30 text-white border-white/30 shadow-md backdrop-blur-md"
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <WebIcon name="filter" className="w-4 h-4 text-cyan-300 shrink-0" />
+                  <span className="truncate">
+                    Danh mục: {
+                      FILTER_TABS.find(c => c.key === filter)?.label || 'Tất cả (4)'
+                    }
+                  </span>
+                </div>
+                <svg className={`w-3.5 h-3.5 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Dropdown Menu List */}
+              {isFilterDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1.5 p-1 rounded-2xl bg-slate-900/95 backdrop-blur-2xl border border-white/20 shadow-2xl z-50 flex flex-col gap-1">
+                  {FILTER_TABS.map((item) => {
+                    const isActive = filter === item.key;
+                    return (
+                      <button
+                        key={item.key}
+                        type="button"
+                        onClick={() => {
+                          setFilter(item.key);
+                          setIsFilterDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 rounded-xl text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center justify-between gap-2 ${
+                          isActive
+                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white border-cyan-300 shadow-md'
+                            : 'bg-white/5 hover:bg-white/15 text-white/90 border-white/10'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 truncate">
+                          <WebIcon name={item.icon} className="w-3.5 h-3.5 shrink-0" />
+                          <span className="truncate">{item.label}</span>
+                        </div>
+                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
-        }
-      />
+        </HeroBanner>
+      </aside>
 
-      {/* 2. MAIN RESPONSIVE BENTO GRID (CHIA ĐỀU 6 THẺ SWOT + NGÔN NGỮ + HỆ THỐNG AI - SMART ADAPTIVE) */}
-      <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-y-auto no-scrollbar py-1">
-        <div
-          className={`grid gap-3.5 sm:gap-4 pb-5 ${
-            filteredCards.length === 1
-              ? 'grid-cols-1 max-w-2xl mx-auto w-full'
-              : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-          }`}
-        >
-          {filteredCards.map((card) => {
-            return (
-              <div
-                key={card.id}
-                className="theme-pastel-card group/skillCard relative rounded-[22px] sm:rounded-[24px] p-4 bg-white/85 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-[0_10px_30px_-5px_rgba(30,27,75,0.08),0_4px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_45px_-8px_rgba(99,102,241,0.2)] transition-all duration-300 hover:-translate-y-1 text-left flex flex-col justify-between h-auto min-w-0"
-              >
-                {/* Soft Ambient Background Glow */}
+      {/* 2. MAIN RIGHT AREA: BENTO GRID CARDS */}
+      <div className="flex-1 min-w-0 h-full flex flex-col gap-2 overflow-hidden">
+        <div className="w-full h-full flex-1 min-h-0 overflow-y-auto no-scrollbar pr-1 pb-2">
+          <div
+            className={`grid gap-[15px] pb-4 ${
+              filteredCards.length === 1
+                ? 'grid-cols-1 max-w-2xl mx-auto w-full'
+                : 'grid-cols-1 md:grid-cols-2'
+            }`}
+          >
+            {filteredCards.map((card) => {
+              return (
                 <div
-                  className="absolute -top-10 -right-10 w-36 h-36 rounded-full blur-2xl pointer-events-none transition-all duration-500 opacity-60 group-hover/skillCard:opacity-90"
-                  style={{ background: card.ambientGlow }}
-                />
+                  key={card.id}
+                  className="theme-pastel-card group/skillCard relative rounded-[20px] p-4 bg-white/85 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-[0_10px_30px_-5px_rgba(30,27,75,0.08),0_4px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.5)] transition-all duration-300 text-left flex flex-col justify-between h-auto min-w-0 overflow-hidden"
+                >
+                  {/* Soft Ambient Background Glow */}
+                  <div
+                    className="absolute -top-10 -right-10 w-36 h-36 rounded-full blur-2xl pointer-events-none transition-all duration-500 opacity-60 group-hover/skillCard:opacity-90"
+                    style={{ background: card.ambientGlow }}
+                  />
 
-                <div className="relative z-10 space-y-2.5 flex-1 flex flex-col justify-between min-w-0">
-                  <div className="space-y-2.5">
-                    {/* Header Row: Squircle Icon + Title (4 Từ) + Code Pill + Average Score */}
-                    <div className="flex items-center justify-between gap-2 min-w-0">
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                        {/* Squircle 3D Icon Box */}
-                        <div
-                          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-[14px] shrink-0 flex items-center justify-center shadow-xs border ${card.iconBorder} ${card.iconBg} ${card.iconColor} transition-transform duration-300 group-hover/skillCard:scale-105`}
-                        >
-                          {card.iconSvg}
-                        </div>
-
-                        {/* 4-Word Card Title (Không cắt chữ, tự động xuống dòng mượt mà) */}
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <h3 className="text-sm sm:text-[15px] font-black font-play text-slate-900 dark:text-white leading-tight break-words [overflow-wrap:anywhere]">
-                              {card.title}
-                            </h3>
-                            <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800/80 border border-slate-200/80 dark:border-white/10 text-slate-500 dark:text-slate-400 shrink-0">
-                              {card.code}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Overall Score Badge */}
-                      <div className="shrink-0 text-right">
-                        <span className={`text-xs sm:text-sm font-black font-play px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-white/10 ${card.percentColor}`}>
-                          {card.averagePercent}%
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="w-full h-1.5 bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full bg-gradient-to-r ${card.barGradient} transition-all duration-700 ease-out`}
-                        style={{ width: `${card.averagePercent}%` }}
-                      />
-                    </div>
+                  {/* Hình Nền Icon Thẻ Kỹ Năng */}
+                  <div
+                    className="absolute -right-4 -bottom-4 w-28 h-28 opacity-15 dark:opacity-10 pointer-events-none select-none transition-all duration-500 group-hover/skillCard:scale-110 group-hover/skillCard:opacity-25"
+                    style={{ color: card.accentColor }}
+                  >
+                    <WebIcon name={card.items[0]?.icon || 'sparkles'} className="w-full h-full" />
                   </div>
 
-                  {/* Skill Items: Chuyển thành dạng danh sách 1 cột có icon trước mỗi kỹ năng, thêm % */}
-                  <div className="flex flex-col gap-1.5 pt-1.5 flex-1 justify-between">
-                    {card.items.map((item) => (
-                      <div
-                        key={item.name}
-                        className="p-1.5 sm:p-2 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/70 dark:border-white/10 shadow-2xs hover:shadow-xs transition-all duration-200 flex flex-col justify-between gap-1 group/item min-w-0"
-                      >
-                        <div className="flex items-center justify-between gap-2 min-w-0">
+                  <div className="relative z-10 space-y-2.5 flex-1 flex flex-col justify-between min-w-0">
+                    <div className="space-y-2">
+                      {/* Header Row */}
+                      <div className="flex items-center justify-between gap-2 min-w-0">
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                          <div
+                            className={`w-10 h-10 rounded-[12px] shrink-0 flex items-center justify-center shadow-xs border ${card.iconBorder} ${card.iconBg} ${card.iconColor}`}
+                          >
+                            {card.iconSvg}
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+                            <h3 className="text-sm sm:text-[15px] font-black font-play text-slate-900 dark:text-white leading-tight truncate">
+                              {card.code}. {card.title}
+                            </h3>
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                              {card.desc}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="shrink-0 text-right">
+                          <span className={`text-xs sm:text-sm font-black font-play px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-white/10 ${card.percentColor}`}>
+                            {card.averagePercent}%
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="w-full h-1.5 bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full bg-gradient-to-r ${card.barGradient} transition-all duration-700 ease-out`}
+                          style={{ width: `${card.averagePercent}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Skill Items Grid (2 columns or list) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 flex-1">
+                      {card.items.map((item) => (
+                        <div
+                          key={item.name}
+                          className="p-2 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/70 dark:border-white/10 shadow-2xs flex items-center justify-between gap-2 min-w-0"
+                        >
                           <div className="flex items-center gap-2 min-w-0 flex-1">
                             <span
                               className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 shadow-2xs"
@@ -338,43 +306,38 @@ export const SkillsView: React.FC = () => {
                                 color: card.accentColor,
                               }}
                             >
-                              <WebIcon name={item.icon} className="w-3.5 h-3.5" />
+                              <WebIcon name={item.icon} className="w-3 h-3" />
                             </span>
-                            <span className="text-[11px] sm:text-[11.5px] font-bold text-slate-800 dark:text-slate-100 truncate">
+                            <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
                               {item.name}
                             </span>
                           </div>
-                          <span
-                            className="text-[10px] sm:text-[11px] font-mono font-black shrink-0 px-2 py-0.5 rounded shadow-2xs"
-                            style={{
-                              background: `${card.accentColor}18`,
-                              color: card.accentColor,
-                            }}
-                          >
-                            {item.percent}%
-                          </span>
-                        </div>
 
-                        {/* Mini bar */}
-                        <div className="w-full h-1 bg-slate-200/70 dark:bg-white/10 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full rounded-full bg-gradient-to-r ${card.barGradient}`}
-                            style={{ width: `${item.percent}%` }}
-                          />
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span
+                              className="text-[10.5px] font-mono font-black px-1.5 py-0.2 rounded shadow-2xs"
+                              style={{
+                                background: `${card.accentColor}14`,
+                                color: card.accentColor,
+                              }}
+                            >
+                              {item.percent}%
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Subtle Bottom Accent Line */}
-                <div
-                  className="w-full h-0.5 rounded-full mt-2.5 opacity-60 shrink-0"
-                  style={{ background: card.accentColor }}
-                />
-              </div>
-            );
-          })}
+                  {/* Subtle Bottom Accent Line */}
+                  <div
+                    className="w-full h-0.5 rounded-full mt-2.5 opacity-60 shrink-0"
+                    style={{ background: card.accentColor }}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
-import { useLanguage } from '@/context/LanguageContext';
 
 export interface HomeViewProps {
   slideIndex?: number;
@@ -13,7 +12,6 @@ export interface HomeViewProps {
 
 export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContact, onNavigatePage }) => {
   const { showToast } = useToast();
-  const { t, language } = useLanguage();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const IDLE_URL = 'https://cdn.scena.ai/project/10169/eae59f7007421658e611c298c206755ca060c878d07087694c06935208b9d8f9.mp4';
@@ -28,7 +26,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
 
   // Slide index state: 0 (Giới thiệu), 1 (Năng lực cốt lõi), 2 (Dấu ấn thành tựu)
   const [currentSlide, setCurrentSlide] = useState<number>(slideIndex !== undefined ? slideIndex : 0);
-  const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
+  const [isAutoPlay, setIsAutoPlay] = useState<boolean>(false);
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
   const TOTAL_SLIDES = 3;
 
   useEffect(() => {
@@ -37,25 +36,46 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
     }
   }, [slideIndex]);
 
-  const handlePrevSlide = () => {
-    setSlideDirection('prev');
-    setCurrentSlide((prev) => (prev > 0 ? prev - 1 : TOTAL_SLIDES - 1));
-  };
+  const handlePrevSlide = useCallback(() => {
+    setSlideDirection('left');
+    setCurrentSlide((prev) => {
+      const nextIdx = prev > 0 ? prev - 1 : TOTAL_SLIDES - 1;
+      if (onNavigatePage) {
+        // Option to sync with parent if needed
+      }
+      return nextIdx;
+    });
+  }, [onNavigatePage]);
 
-  const handleNextSlide = () => {
-    setSlideDirection('next');
-    setCurrentSlide((prev) => (prev < TOTAL_SLIDES - 1 ? prev + 1 : 0));
-  };
+  const handleNextSlide = useCallback(() => {
+    setSlideDirection('right');
+    setCurrentSlide((prev) => {
+      const nextIdx = prev < TOTAL_SLIDES - 1 ? prev + 1 : 0;
+      if (onNavigatePage) {
+        // Option to sync with parent if needed
+      }
+      return nextIdx;
+    });
+  }, [onNavigatePage]);
 
   const handleSelectDot = (idx: number) => {
-    setSlideDirection(idx > currentSlide ? 'next' : 'prev');
+    setSlideDirection(idx > currentSlide ? 'right' : 'left');
     setCurrentSlide(idx);
   };
 
-  // Keyboard navigation for Home slides
+  // Auto-play timer for slides
+  useEffect(() => {
+    if (!isAutoPlay || isIntroMode) return;
+    const interval = setInterval(() => {
+      handleNextSlide();
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [isAutoPlay, isIntroMode, handleNextSlide]);
+
+  // Keyboard arrow keys navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
+      if (isIntroMode) return;
       if (e.key === 'ArrowLeft') {
         handlePrevSlide();
       } else if (e.key === 'ArrowRight') {
@@ -64,7 +84,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentSlide]);
+  }, [isIntroMode, handlePrevSlide, handleNextSlide]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -145,6 +165,83 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
     video.currentTime = pct * video.duration;
   };
 
+  const slidesData = [
+    {
+      id: 0,
+      badge: 'Giao diện Slide 01 / 03',
+      badgeColor: 'text-blue-600 dark:text-cyan-400',
+      icon: 'user',
+      title: 'Giới thiệu',
+      subtitle: 'Trưởng phòng Chăm sóc Khách hàng',
+      name: 'Nguyễn Hùng Thái',
+      description:
+        '22+ năm kinh nghiệm quản trị và vận hành hệ thống Contact Center & CX đa kênh quy mô lớn (MobiFone, Shopee, Garena, Viễn Liên...). Tiên phong tích hợp AI và tự động hóa quy trình CSKH.',
+      bullets: [
+        { icon: 'target', label: 'Lãnh đạo & Kiến trúc vận hành Contact Center' },
+        { icon: 'shield', label: 'Tối ưu hóa hành trình trải nghiệm khách hàng (CX)' },
+        { icon: 'bot', label: 'Chuyển đổi số & Ứng dụng AI Agent CSKH' },
+      ],
+      primaryBtnText: 'Xem giới thiệu',
+      primaryBtnAction: handlePlayIntro,
+      primaryBtnIcon: 'play',
+      secondaryBtnText: 'Liên hệ trực tiếp',
+      secondaryBtnAction: onNavigateContact,
+      cardThemeBg: 'from-blue-50/80 via-white/90 to-indigo-50/80 dark:from-slate-900/90 dark:via-slate-900/95 dark:to-blue-950/80',
+      borderColor: 'border-blue-200/80 dark:border-blue-800/60',
+      accentGlow: 'shadow-blue-500/20',
+    },
+    {
+      id: 1,
+      badge: 'Giao diện Slide 02 / 03',
+      badgeColor: 'text-purple-600 dark:text-purple-400',
+      icon: 'rocket',
+      title: 'Năng lực cốt lõi',
+      subtitle: 'Customer Centricity & Tech',
+      name: 'Vận hành & Trải nghiệm CX',
+      description:
+        'Chuyên môn chuyên sâu trong quản trị lực lượng CSKH quy mô 100+ nhân sự, xây dựng tiêu chuẩn SLA/KPI realtime và tự động hóa quy trình xử lý phản hồi đa kênh.',
+      bullets: [
+        { icon: 'target', label: 'Trải nghiệm KH chuẩn hóa (CSAT 98%)' },
+        { icon: 'phone', label: 'Contact Center 24/7 SLA/KPI realtime' },
+        { icon: 'bot', label: 'AI Agent Workflows & Tự động hóa' },
+      ],
+      primaryBtnText: 'Khám phá kỹ năng',
+      primaryBtnAction: () => (onNavigatePage ? onNavigatePage(6) : onNavigateContact()),
+      primaryBtnIcon: 'bolt',
+      secondaryBtnText: 'Liên hệ trực tiếp',
+      secondaryBtnAction: onNavigateContact,
+      cardThemeBg: 'from-purple-50/80 via-white/90 to-indigo-50/80 dark:from-slate-900/90 dark:via-slate-900/95 dark:to-purple-950/80',
+      borderColor: 'border-purple-200/80 dark:border-purple-800/60',
+      accentGlow: 'shadow-purple-500/20',
+    },
+    {
+      id: 2,
+      badge: 'Giao diện Slide 03 / 03',
+      badgeColor: 'text-amber-500 dark:text-amber-400',
+      icon: 'trophy',
+      title: 'Dấu ấn thành tựu',
+      subtitle: 'Hành trình 2003 - 2026+',
+      name: 'Dấu ấn vận hành bền vững',
+      description:
+        'Xây dựng bộ chỉ số đo lường hiệu quả (KPIs/OKRs), triển khai hệ thống báo cáo C-Level Power BI, giúp cắt giảm 25% chi phí vận hành mà vẫn nâng cao trải nghiệm hài lòng của khách hàng.',
+      bullets: [
+        { icon: 'users', label: 'Lãnh đạo & phát triển 100+ nhân sự' },
+        { icon: 'chart', label: 'Dashboard Power BI & Báo cáo C-Level' },
+        { icon: 'bolt', label: 'Giảm Cost-to-Serve 25% tối ưu chi phí' },
+      ],
+      primaryBtnText: 'Xem dự án',
+      primaryBtnAction: () => (onNavigatePage ? onNavigatePage(7) : onNavigateContact()),
+      primaryBtnIcon: 'target',
+      secondaryBtnText: 'Kinh nghiệm thực chiến',
+      secondaryBtnAction: () => (onNavigatePage ? onNavigatePage(5) : onNavigateContact()),
+      cardThemeBg: 'from-amber-50/80 via-white/90 to-orange-50/80 dark:from-slate-900/90 dark:via-slate-900/95 dark:to-amber-950/80',
+      borderColor: 'border-amber-200/80 dark:border-amber-800/60',
+      accentGlow: 'shadow-amber-500/20',
+    },
+  ];
+
+  const activeSlideData = slidesData[currentSlide] || slidesData[0];
+
   return (
     <div className="relative w-full h-full flex-1 flex flex-col justify-between overflow-hidden select-none">
       {/* 1. Main Background Video Player */}
@@ -160,39 +257,63 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
           onEnded={handleEnded}
           className="w-full h-full min-w-full min-h-full object-cover object-center transition-all duration-700 brightness-105 contrast-102"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-900/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/25 to-transparent pointer-events-none" />
       </div>
 
-      {/* Top Floating Info Tag */}
-      <div className="relative z-10 p-4 sm:p-5 flex items-center justify-between pointer-events-none">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/75 backdrop-blur-md border border-white/80 shadow-sm pointer-events-auto">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-bold text-slate-700">Digital Identity • Live Stream</span>
+      {/* Top Floating Tag & Slide Selector Pills */}
+      <div className="relative z-10 p-3 sm:p-4 lg:p-5 flex items-center justify-between pointer-events-none flex-wrap gap-2">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/80 dark:border-white/20 shadow-sm pointer-events-auto">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Digital Identity • Trang Chủ Slide</span>
         </div>
+
+        {/* Dynamic Slide Selector Buttons */}
+        <div className="hidden sm:flex items-center gap-1.5 p-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/80 dark:border-white/20 shadow-sm pointer-events-auto">
+          {slidesData.map((item) => {
+            const isSelected = currentSlide === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => handleSelectDot(item.id)}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
+                  isSelected
+                    ? 'bg-blue-600 text-white shadow-sm scale-105'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800/50'
+                }`}
+              >
+                <WebIcon name={item.icon} className="w-3.5 h-3.5" />
+                <span>0{item.id + 1}. {item.title}</span>
+              </button>
+            );
+          })}
+        </div>
+
         {isIntroMode && (
-          <div className="px-2.5 py-1 rounded-full bg-rose-500/90 text-white text-[11px] font-bold shadow-md animate-pulse">
+          <div className="px-2.5 py-1 rounded-full bg-rose-500/90 text-white text-[11px] font-bold shadow-md animate-pulse pointer-events-auto">
             Đang phát Intro
           </div>
         )}
       </div>
 
-      {/* 2. Bottom 3 Cards Container (Thẻ chính + 2 bản sao nằm ngang cách nhau 15px) */}
-      <div className="relative z-20 w-full p-3.5 sm:p-5 lg:p-6 pointer-events-none mt-auto">
+      {/* 2. Slide Main Stage Container */}
+      {/* 2. Interactive Overlay Cards (Compact size, positioned bottom right) */}
+      <div className="relative z-20 w-full flex justify-end p-3 sm:p-4 lg:p-6 pointer-events-none mt-auto">
         {isIntroMode ? (
           /* Video Intro Playing Controller Bar */
-          <div className="w-full max-w-2xl mx-auto p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-2xl pointer-events-auto">
+          <div className="w-full max-w-lg p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-2xl pointer-events-auto">
             <div className="flex flex-col justify-between space-y-3">
               <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/10">
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-                  {t.home.nowPlaying}
+                  Đang phát: Lời Chào Giới Thiệu
                 </span>
                 <button
                   type="button"
                   onClick={handleCancelIntro}
                   className="text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
                 >
-                  {t.common.close} ✕
+                  Đóng ✕
                 </button>
               </div>
 
@@ -223,14 +344,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                       <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                       </svg>
-                      <span>{t.home.pause}</span>
+                      <span>Tạm dừng</span>
                     </>
                   ) : (
                     <>
                       <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z" />
                       </svg>
-                      <span>{t.home.resume}</span>
+                      <span>Phát tiếp</span>
                     </>
                   )}
                 </button>
@@ -240,7 +361,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                   onClick={handleToggleMute}
                   className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center gap-1.5 border border-slate-300 dark:border-white/10 shadow-sm transition cursor-pointer"
                 >
-                  <span>{isMuted ? t.home.unmute : t.home.mute}</span>
+                  <span>{isMuted ? 'Bật tiếng' : 'Tắt tiếng'}</span>
                 </button>
 
                 <button
@@ -248,509 +369,142 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
                   onClick={handleCancelIntro}
                   className="px-3.5 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 font-semibold text-xs transition cursor-pointer"
                 >
-                  {t.home.stopIntro}
+                  Dừng lại
                 </button>
               </div>
             </div>
           </div>
         ) : (
-          /* Trình chiếu Slide Trang Chủ (3 Slide tương tác cao) */
-          <div className="relative w-full max-w-3xl xl:max-w-4xl mx-auto pointer-events-auto">
-            {/* Top Slide Tabs Navigation */}
-            <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-2 sm:mb-2.5">
-              {[
-                { idx: 0, label: language === 'vi' ? '01 Giới Thiệu' : '01 Intro', icon: 'sparkles' },
-                { idx: 1, label: language === 'vi' ? '02 Năng Lực CX' : '02 Core CX', icon: 'rocket' },
-                { idx: 2, label: language === 'vi' ? '03 Thành Tựu' : '03 Milestones', icon: 'trophy' },
-              ].map((tab) => (
-                <button
-                  key={tab.idx}
-                  type="button"
-                  onClick={() => handleSelectDot(tab.idx)}
-                  className={`px-3 sm:px-3.5 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer backdrop-blur-xl shadow-xs active:scale-95 ${
-                    currentSlide === tab.idx
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md scale-105'
-                      : 'bg-white/80 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-white/60 dark:border-white/10'
-                  }`}
-                >
-                  <WebIcon name={tab.icon} className="w-3.5 h-3.5" />
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-            </div>
-
-            {/* Slide Card Area with Floating Side Navigation Buttons */}
-            <div className="relative group/slidecard">
-              {/* Floating Prev Button */}
+          /* Single Compact Interactive Slide Display Card (Positioned Bottom Right) */
+          <div className="w-full max-w-xs sm:max-w-sm flex flex-col items-end pointer-events-auto">
+            {/* Slide Navigation Header Bar */}
+            <div className="w-full flex items-center justify-between mb-2 px-1">
+              {/* Left Arrow Button */}
               <button
                 type="button"
                 onClick={handlePrevSlide}
-                className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 dark:bg-slate-800/95 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-xl flex items-center justify-center cursor-pointer transition-all hover:scale-110 active:scale-95 z-30 opacity-75 group-hover/slidecard:opacity-100"
-                title="Slide trước (←)"
-                aria-label="Slide trước"
+                title="Slide trước (Mũi tên trái)"
+                className="w-8 h-8 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-800 border border-white/90 dark:border-white/20 text-slate-800 dark:text-slate-100 flex items-center justify-center shadow-lg active:scale-95 transition cursor-pointer shrink-0"
               >
-                <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
+                <WebIcon name="arrow-left" className="w-3.5 h-3.5" />
               </button>
 
-              {/* Floating Next Button */}
+              {/* Slide Pagination Dots & Auto-slide Toggle */}
+              <div className="flex items-center gap-2 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/90 dark:border-white/20 px-3 py-1 rounded-full shadow-md">
+                <div className="flex items-center gap-1.5">
+                  {slidesData.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleSelectDot(item.id)}
+                      className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                        currentSlide === item.id
+                          ? 'w-6 bg-blue-600 dark:bg-cyan-400 shadow-xs'
+                          : 'w-2 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600'
+                      }`}
+                      title={`Đến Slide ${item.id + 1}: ${item.title}`}
+                    />
+                  ))}
+                </div>
+
+                <div className="h-3 w-[1px] bg-slate-300 dark:bg-slate-700 mx-0.5" />
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsAutoPlay((prev) => !prev);
+                    showToast(!isAutoPlay ? 'Đã bật tự động chuyển slide' : 'Đã tắt tự động chuyển slide');
+                  }}
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition cursor-pointer flex items-center gap-1 ${
+                    isAutoPlay
+                      ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                  }`}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full ${isAutoPlay ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'}`} />
+                  <span>{isAutoPlay ? 'Tự động' : 'Thủ công'}</span>
+                </button>
+              </div>
+
+              {/* Right Arrow Button */}
               <button
                 type="button"
                 onClick={handleNextSlide}
-                className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/95 dark:bg-slate-800/95 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-xl flex items-center justify-center cursor-pointer transition-all hover:scale-110 active:scale-95 z-30 opacity-75 group-hover/slidecard:opacity-100"
-                title="Slide tiếp (→)"
-                aria-label="Slide tiếp"
+                title="Slide tiếp theo (Mũi tên phải)"
+                className="w-8 h-8 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-800 border border-white/90 dark:border-white/20 text-slate-800 dark:text-slate-100 flex items-center justify-center shadow-lg active:scale-95 transition cursor-pointer shrink-0"
               >
-                <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
+                <WebIcon name="arrow-right" className="w-3.5 h-3.5" />
               </button>
+            </div>
 
-              {/* SLIDE 0: Giới thiệu & Định vị */}
-              {currentSlide === 0 && (
-                <div
-                  key="home-slide-0"
-                  className={`w-full min-h-[220px] p-4 sm:p-5 rounded-2xl overflow-hidden flex flex-col justify-between bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-2xl transition-all duration-300 text-left ${
-                    slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'
-                  }`}
-                >
-                  <div className="space-y-2.5">
-                    {/* Header */}
-                    <div className="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-[11px] shadow-sm">
-                        <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
-                          <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z" />
-                        </svg>
-                        <span>{t.home.card1Title}</span>
-                      </div>
-
-                      {/* Center Dots */}
-                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-800/40">
-                        {[0, 1, 2].map((idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => handleSelectDot(idx)}
-                            className={`transition-all duration-300 rounded-full cursor-pointer ${
-                              currentSlide === idx
-                                ? 'w-5 h-2 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-xs'
-                                : 'w-2 h-2 bg-blue-200 dark:bg-blue-800 hover:bg-blue-300'
-                            }`}
-                            title={`Slide ${idx + 1}`}
-                          />
-                        ))}
-                      </div>
-
-                      {/* Compact Switcher */}
-                      <div className="flex items-center p-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800">
-                        <button
-                          type="button"
-                          onClick={handlePrevSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide trước (←)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
-                        <span className="px-1.5 text-[10px] font-mono font-black text-blue-800 dark:text-blue-200">
-                          1 / 3
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleNextSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide tiếp (→)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-                      <div className="md:col-span-6 space-y-1">
-                        <span className="text-xs font-semibold text-blue-600 dark:text-cyan-400 block">{t.home.greeting}</span>
-                        <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white font-play leading-snug">
-                          {t.home.name}
-                        </h2>
-                        <p className="text-xs sm:text-[13px] font-bold text-slate-700 dark:text-slate-200 leading-snug">
-                          {t.home.role}
-                        </p>
-                      </div>
-
-                      <div className="md:col-span-6">
-                        <p className="text-xs sm:text-[12.5px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium bg-blue-50/70 dark:bg-blue-950/40 p-2.5 sm:p-3 rounded-xl border border-blue-100/70 dark:border-blue-900/50">
-                          {t.home.heroDesc}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Actions & Footer */}
-                  <div className="pt-2.5 mt-2.5 border-t border-slate-200/80 dark:border-white/10 flex flex-col gap-2">
-                    <div className="flex items-center justify-between gap-2 flex-wrap">
-                      <div className="flex items-center gap-2 flex-1 min-w-[240px]">
-                        <button
-                          type="button"
-                          onClick={handlePlayIntro}
-                          className="flex-1 min-h-[36px] px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/25 active:scale-95 transition cursor-pointer"
-                        >
-                          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                          <span>{t.home.watchIntro}</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={onNavigateContact}
-                          className="flex-1 min-h-[36px] px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1 border border-slate-300 dark:border-white/15 shadow-sm active:scale-95 transition cursor-pointer"
-                        >
-                          <span>{t.common.contact}</span>
-                        </button>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={handleNextSlide}
-                        className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/50 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-800 flex items-center gap-1.5 cursor-pointer transition active:scale-95 ml-auto"
-                      >
-                        <span>{language === 'vi' ? 'Tiếp: Năng Lực CX' : 'Next: Core CX'}</span>
-                        <span>→</span>
-                      </button>
-                    </div>
-
-                    {/* Progress Bar & Hint */}
-                    <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1">
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 sm:w-28 h-1.5 rounded-full bg-blue-100 dark:bg-blue-950 overflow-hidden">
-                          <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600" />
-                        </div>
-                        <span className="font-mono text-blue-600 dark:text-blue-400 font-bold">Slide 1 / 3 (33%)</span>
-                      </div>
-                      <span className="hidden sm:inline font-medium">
-                        ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">→</kbd> để chuyển slide
-                      </span>
-                    </div>
-                  </div>
+            {/* Active Slide Card Container */}
+            <div
+              key={`slide-card-${currentSlide}`}
+              className={`w-full min-h-[180px] p-3 sm:p-4 rounded-2xl overflow-hidden flex flex-col justify-between bg-gradient-to-br ${activeSlideData.cardThemeBg} backdrop-blur-2xl border ${activeSlideData.borderColor} shadow-xl ${activeSlideData.accentGlow} transition-all duration-500 animate-page-enter text-left relative group`}
+            >
+              <div className="space-y-3">
+                {/* Slide Header: Icon trước tiêu đề không đóng khung icon, icon chuyển động tại chỗ, màu tiêu đề trùng màu icon */}
+                <div className="flex items-center justify-between gap-2 border-b border-slate-200/80 dark:border-white/10 pb-2.5">
+                  <h2 className={`text-base sm:text-lg font-bold ${activeSlideData.badgeColor} flex items-center gap-2 font-play`}>
+                    <WebIcon name={activeSlideData.icon} className={`w-4.5 h-4.5 ${activeSlideData.badgeColor} animate-pulse shrink-0 inline-block`} />
+                    <span>{activeSlideData.title}</span>
+                  </h2>
+                  <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-full bg-white/60 dark:bg-slate-800/60 border border-slate-200/60 dark:border-white/10 shadow-2xs">
+                    0{activeSlideData.id + 1} / 03
+                  </span>
                 </div>
-              )}
 
-              {/* SLIDE 1: Năng lực cốt lõi */}
-              {currentSlide === 1 && (
-                <div
-                  key="home-slide-1"
-                  className={`w-full min-h-[220px] p-4 sm:p-5 rounded-2xl overflow-hidden flex flex-col justify-between bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-2xl transition-all duration-300 text-left ${
-                    slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'
-                  }`}
-                >
-                  <div className="space-y-2.5">
-                    {/* Header */}
-                    <div className="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-[11px] shadow-sm">
-                        <WebIcon name="rocket" className="w-3.5 h-3.5" />
-                        <span>{t.home.card2Title}</span>
-                      </div>
-
-                      {/* Center Dots */}
-                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/60 dark:border-purple-800/40">
-                        {[0, 1, 2].map((idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => handleSelectDot(idx)}
-                            className={`transition-all duration-300 rounded-full cursor-pointer ${
-                              currentSlide === idx
-                                ? 'w-5 h-2 bg-gradient-to-r from-purple-600 to-indigo-600 shadow-xs'
-                                : 'w-2 h-2 bg-purple-200 dark:bg-purple-800 hover:bg-purple-300'
-                            }`}
-                            title={`Slide ${idx + 1}`}
-                          />
-                        ))}
-                      </div>
-
-                      {/* Compact Switcher */}
-                      <div className="flex items-center p-0.5 rounded-full bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800">
-                        <button
-                          type="button"
-                          onClick={handlePrevSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-purple-200 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide trước (←)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
-                        <span className="px-1.5 text-[10px] font-mono font-black text-purple-800 dark:text-purple-200">
-                          2 / 3
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleNextSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-purple-200 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide tiếp (→)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div>
-                      <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 block">Customer Centricity &amp; Tech</span>
-                      <h3 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white font-play leading-snug">
-                        {language === 'vi' ? 'Vận Hành & Trải Nghiệm CX' : 'CX & Operations Leadership'}
-                      </h3>
-                    </div>
-
-                    {/* 3 Pillars in Responsive Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                      <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-purple-50/70 dark:bg-purple-950/40 border border-purple-100/70 dark:border-purple-900/50 shadow-2xs">
-                        <span className="w-7 h-7 rounded-lg bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 flex items-center justify-center shrink-0">
-                          <WebIcon name="target" className="w-4 h-4" />
-                        </span>
-                        <div className="min-w-0">
-                          <div className="font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                            {language === 'vi' ? 'Trải Nghiệm Chuẩn Hóa' : 'Standardized CX'}
-                          </div>
-                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">CSAT 98% · CJM Matrix</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-100/70 dark:border-indigo-900/50 shadow-2xs">
-                        <span className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0">
-                          <WebIcon name="phone" className="w-4 h-4" />
-                        </span>
-                        <div className="min-w-0">
-                          <div className="font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                            {language === 'vi' ? 'Contact Center 24/7' : 'Contact Center 24/7'}
-                          </div>
-                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">SLA 98% · Realtime KPI</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-100/70 dark:border-blue-900/50 shadow-2xs">
-                        <span className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 flex items-center justify-center shrink-0">
-                          <WebIcon name="bot" className="w-4 h-4" />
-                        </span>
-                        <div className="min-w-0">
-                          <div className="font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                            {language === 'vi' ? 'AI Agent Workflows' : 'AI Workflows'}
-                          </div>
-                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">Tự động hóa RPA &amp; GenAI</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Actions & Footer */}
-                  <div className="pt-2.5 mt-2.5 border-t border-slate-200/80 dark:border-white/10 flex flex-col gap-2">
-                    <div className="flex items-center justify-between gap-2 flex-wrap">
-                      <div className="flex items-center gap-2 flex-1 min-w-[240px]">
-                        <button
-                          type="button"
-                          onClick={() => (onNavigatePage ? onNavigatePage(6) : onNavigateContact())}
-                          className="flex-1 min-h-[36px] px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-md shadow-purple-500/25 active:scale-95 transition cursor-pointer"
-                        >
-                          <WebIcon name="sparkles" className="w-3.5 h-3.5" />
-                          <span>{language === 'vi' ? 'Khám Phá Kỹ Năng' : 'Explore Skills'}</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={onNavigateContact}
-                          className="flex-1 min-h-[36px] px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1 border border-slate-300 dark:border-white/15 shadow-sm active:scale-95 transition cursor-pointer"
-                        >
-                          <span>{t.common.contact}</span>
-                        </button>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={handleNextSlide}
-                        className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/50 dark:hover:bg-purple-900/50 border border-purple-200 dark:border-purple-800 flex items-center gap-1.5 cursor-pointer transition active:scale-95 ml-auto"
-                      >
-                        <span>{language === 'vi' ? 'Tiếp: Dấu Ấn Thành Tựu' : 'Next: Milestones'}</span>
-                        <span>→</span>
-                      </button>
-                    </div>
-
-                    {/* Progress Bar & Hint */}
-                    <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1">
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 sm:w-28 h-1.5 rounded-full bg-purple-100 dark:bg-purple-950 overflow-hidden">
-                          <div className="h-full w-2/3 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600" />
-                        </div>
-                        <span className="font-mono text-purple-600 dark:text-purple-400 font-bold">Slide 2 / 3 (66%)</span>
-                      </div>
-                      <span className="hidden sm:inline font-medium">
-                        ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">→</kbd> để chuyển slide
-                      </span>
-                    </div>
-                  </div>
+                {/* Subtitle & Title */}
+                <div>
+                  <span className={`text-xs font-bold ${activeSlideData.badgeColor} block tracking-wide uppercase`}>
+                    {activeSlideData.subtitle}
+                  </span>
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-slate-900 dark:text-white font-play leading-snug mt-0.5">
+                    {activeSlideData.name}
+                  </h3>
                 </div>
-              )}
 
-              {/* SLIDE 2: Dấu ấn thành tựu */}
-              {currentSlide === 2 && (
-                <div
-                  key="home-slide-2"
-                  className={`w-full min-h-[220px] p-4 sm:p-5 rounded-2xl overflow-hidden flex flex-col justify-between bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-2xl transition-all duration-300 text-left ${
-                    slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'
-                  }`}
-                >
-                  <div className="space-y-2.5">
-                    {/* Header */}
-                    <div className="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold text-[11px] shadow-sm">
-                        <WebIcon name="trophy" className="w-3.5 h-3.5" />
-                        <span>{t.home.card3Title}</span>
-                      </div>
+                {/* Description Text */}
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium bg-white/60 dark:bg-slate-800/60 p-3 rounded-xl border border-white/80 dark:border-white/10 shadow-2xs">
+                  {activeSlideData.description}
+                </p>
 
-                      {/* Center Dots */}
-                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40">
-                        {[0, 1, 2].map((idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => handleSelectDot(idx)}
-                            className={`transition-all duration-300 rounded-full cursor-pointer ${
-                              currentSlide === idx
-                                ? 'w-5 h-2 bg-gradient-to-r from-amber-500 to-orange-600 shadow-xs'
-                                : 'w-2 h-2 bg-amber-200 dark:bg-amber-800 hover:bg-amber-300'
-                            }`}
-                            title={`Slide ${idx + 1}`}
-                          />
-                        ))}
-                      </div>
-
-                      {/* Compact Switcher */}
-                      <div className="flex items-center p-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800">
-                        <button
-                          type="button"
-                          onClick={handlePrevSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-amber-200 dark:hover:bg-amber-800 text-amber-700 dark:text-amber-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide trước (←)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
-                        <span className="px-1.5 text-[10px] font-mono font-black text-amber-800 dark:text-amber-200">
-                          3 / 3
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleNextSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-amber-200 dark:hover:bg-amber-800 text-amber-700 dark:text-amber-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide tiếp (→)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div>
-                      <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 block">
-                        {language === 'vi' ? 'Hành trình 2002 - 2026+' : 'Journey 2002 - 2026+'}
+                {/* Bullets Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                  {activeSlideData.bullets.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-2 p-2 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-white/10 shadow-2xs"
+                    >
+                      <span className="w-6 h-6 rounded-lg bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
+                        <WebIcon name={item.icon} className="w-3.5 h-3.5" />
                       </span>
-                      <h3 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white font-play leading-snug">
-                        {language === 'vi' ? 'Dấu Ấn Vận Hành Bền Vững' : 'Sustainable Operational Milestones'}
-                      </h3>
-                    </div>
-
-                    {/* 3 Milestones in Responsive Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                      <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-100/70 dark:border-amber-900/50 shadow-2xs">
-                        <span className="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0">
-                          <WebIcon name="users" className="w-4 h-4" />
-                        </span>
-                        <div className="min-w-0">
-                          <div className="font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                            {language === 'vi' ? 'Lãnh Đạo Nhân Sự' : 'Team Leadership'}
-                          </div>
-                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">100+ nhân sự CSKH</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-100/70 dark:border-emerald-900/50 shadow-2xs">
-                        <span className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0">
-                          <WebIcon name="chart" className="w-4 h-4" />
-                        </span>
-                        <div className="min-w-0">
-                          <div className="font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                            {language === 'vi' ? 'Dashboard Power BI' : 'Power BI Reporting'}
-                          </div>
-                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">C-Level BI Analytics</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 p-2 sm:p-2.5 rounded-xl bg-cyan-50/70 dark:bg-cyan-950/40 border border-cyan-100/70 dark:border-cyan-900/50 shadow-2xs">
-                        <span className="w-7 h-7 rounded-lg bg-cyan-100 dark:bg-cyan-900/60 text-cyan-700 dark:text-cyan-300 flex items-center justify-center shrink-0">
-                          <WebIcon name="bolt" className="w-4 h-4" />
-                        </span>
-                        <div className="min-w-0">
-                          <div className="font-bold text-slate-800 dark:text-slate-100 leading-tight">
-                            {language === 'vi' ? 'Tối Ưu Chi Phí' : 'Cost Optimization'}
-                          </div>
-                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">Giảm 25% Cost-to-Serve</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Actions & Footer */}
-                  <div className="pt-2.5 mt-2.5 border-t border-slate-200/80 dark:border-white/10 flex flex-col gap-2">
-                    <div className="flex items-center justify-between gap-2 flex-wrap">
-                      <div className="flex items-center gap-2 flex-1 min-w-[240px]">
-                        <button
-                          type="button"
-                          onClick={() => (onNavigatePage ? onNavigatePage(7) : onNavigateContact())}
-                          className="flex-1 min-h-[36px] px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-xs flex items-center justify-center gap-1 shadow-md shadow-amber-500/25 active:scale-95 transition cursor-pointer"
-                        >
-                          <WebIcon name="briefcase" className="w-3.5 h-3.5" />
-                          <span>{language === 'vi' ? 'Xem Dự Án' : 'View Projects'}</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => (onNavigatePage ? onNavigatePage(5) : onNavigateContact())}
-                          className="flex-1 min-h-[36px] px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs flex items-center justify-center gap-1 border border-slate-300 dark:border-white/15 shadow-sm active:scale-95 transition cursor-pointer"
-                        >
-                          <span>{language === 'vi' ? 'Kinh Nghiệm' : 'Experience'}</span>
-                        </button>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={handleNextSlide}
-                        className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/50 dark:hover:bg-amber-900/50 border border-amber-200 dark:border-amber-800 flex items-center gap-1.5 cursor-pointer transition active:scale-95 ml-auto"
-                      >
-                        <span>↺ {language === 'vi' ? 'Xem lại từ đầu' : 'Start Over'}</span>
-                      </button>
-                    </div>
-
-                    {/* Progress Bar & Hint */}
-                    <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1">
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 sm:w-28 h-1.5 rounded-full bg-amber-100 dark:bg-amber-950 overflow-hidden">
-                          <div className="h-full w-full rounded-full bg-gradient-to-r from-amber-500 to-orange-600" />
-                        </div>
-                        <span className="font-mono text-amber-600 dark:text-amber-400 font-bold">Slide 3 / 3 (100%)</span>
-                      </div>
-                      <span className="hidden sm:inline font-medium">
-                        ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-mono text-[9px]">→</kbd> để chuyển slide
+                      <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 line-clamp-1">
+                        {item.label}
                       </span>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              )}
+              </div>
+
+              {/* Slide Action Buttons */}
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-200/80 dark:border-white/10 mt-3 flex-wrap sm:flex-nowrap">
+                <button
+                  type="button"
+                  onClick={activeSlideData.primaryBtnAction}
+                  className="flex-1 min-h-[40px] px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-blue-500/25 active:scale-95 transition cursor-pointer"
+                >
+                  <WebIcon name={activeSlideData.primaryBtnIcon} className="w-4 h-4" />
+                  <span>{activeSlideData.primaryBtnText}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={activeSlideData.secondaryBtnAction}
+                  className="flex-1 min-h-[40px] px-4 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border border-slate-300 dark:border-white/15 shadow-sm active:scale-95 transition cursor-pointer"
+                >
+                  <span>{activeSlideData.secondaryBtnText}</span>
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -3,7 +3,7 @@
     "id": "custom-css-1790281790561",
     "name": "Hình nền CSS Custom",
     "type": "css",
-    "value": "background:\n  linear-gradient(\n    to right bottom,\n    #0093E9 0%,\n    #80D0C7 100%\n  );",
+    "value": "background:\n  linear-gradient(\n    to right bottom,\n    #0093E9 0%,\n    #80D0C7 100%\n  )",
     "previewStyle": {
       "background": "linear-gradient(to right bottom, #0093E9 0%, #80D0C7 100%)"
     },

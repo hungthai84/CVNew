@@ -39,76 +39,53 @@ const THEME_PREVIEWS: Record<SiteTheme, ThemePreviewData> = {
     ),
   },
   'light-glass': {
-    accentColor: '#0284c7',
-    badgeBg: 'bg-sky-100 text-sky-800 border-sky-300',
+    accentColor: '#60A5FA',
+    badgeBg: 'bg-purple-100 text-purple-800 border-purple-300',
     previewStyle: {
-      background: 'linear-gradient(135deg, #fdf4ff 0%, #e0f2fe 35%, #ecfdf5 70%, #fffbeb 100%)',
+      background: 'linear-gradient(135deg, #F5F3FF 0%, #EFF6FF 35%, #ECFDF5 70%, #FFFBEB 100%)',
     },
     sampleElements: (
-      <div className="w-full p-2.5 rounded-2xl bg-white/80 border border-white/95 shadow-sm relative overflow-hidden flex items-center justify-between text-xs text-slate-800">
-        <span className="font-bold relative z-10 flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-sky-400 via-rose-400 to-amber-400" />
-          Kính Sáng 12 Màu
+      <div className="w-full p-2.5 rounded-2xl bg-white/75 backdrop-blur-md border border-white/95 shadow-sm relative overflow-hidden flex items-center justify-between text-xs text-[#1E1B4B]">
+        <span className="font-bold relative z-10 flex items-center gap-1.5 text-[#1E1B4B]">
+          <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-[#60A5FA] via-[#FB7185] to-[#FCD34D]" />
+          Glass UI Light Multicolor
         </span>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded-[999px] bg-sky-100 text-sky-700 font-bold relative z-10">
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded-[999px] bg-purple-100 text-purple-700 font-bold relative z-10 shadow-2xs">
           Light Glass
         </span>
       </div>
     ),
   } as ThemePreviewData,
-  'light-glass-multicolor': {
-    badgeBg: 'bg-blue-100 text-blue-900 border-blue-300',
-    previewStyle: {
-      background: 'linear-gradient(135deg, #EAF4FF 0%, #F1F5FF 50%, #F5F3FF 100%)',
-    },
-    sampleElements: (
-      <div className="w-full p-2.5 rounded-2xl bg-white/80 border border-white/95 shadow-sm relative overflow-hidden flex items-center justify-between text-xs text-[#1E3A6D]">
-        <span className="font-extrabold relative z-10 flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#22C1DC] to-[#A78BFA]" />
-          Kính Sáng Đa Sắc
-        </span>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded-[999px] bg-blue-100 text-blue-800 font-black relative z-10">
-          Multicolor
-        </span>
-      </div>
-    ),
-  },
   'dark-neon': {
-    badgeBg: 'bg-cyan-950 text-cyan-300 border-cyan-500/50',
+    badgeBg: 'bg-cyan-950/80 text-cyan-300 border-cyan-500/50',
     previewStyle: {
-      background: 'linear-gradient(135deg, #060814 0%, #15102a 50%, #081c24 100%)',
+      background: 'linear-gradient(135deg, #070A14 0%, #0B1020 50%, #11182B 100%)',
     },
     sampleElements: (
-      <div className="w-full p-2.5 rounded-2xl bg-[#0a0e24]/90 border border-cyan-400/60 shadow-[0_0_15px_rgba(0,242,254,0.3)] relative overflow-hidden flex items-center justify-between text-xs text-cyan-200">
-        <span className="font-bold relative z-10 flex items-center gap-1.5 drop-shadow-[0_0_8px_#00f2fe]">
+      <div className="w-full p-2.5 rounded-2xl bg-[#141C30]/80 border border-cyan-400/50 shadow-[0_0_15px_rgba(34,211,238,0.25)] relative overflow-hidden flex items-center justify-between text-xs text-slate-100">
+        <span className="font-bold relative z-10 flex items-center gap-1.5 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]">
           <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-          Thẻ Neon Gương
+          Kính Tối Neon Đa Sắc
         </span>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded-[999px] bg-cyan-900/60 text-cyan-300 font-bold border border-cyan-400/40 relative z-10 shadow-[0_0_8px_rgba(0,242,254,0.4)]">
-          Cyber Neon
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded-[999px] bg-cyan-950/80 text-cyan-300 font-bold border border-cyan-400/40 relative z-10 shadow-[0_0_8px_rgba(34,211,238,0.3)]">
+          Dark Neon
         </span>
       </div>
     ),
   },
   'flat-rainbow': {
-    badgeBg: 'bg-rose-100 text-rose-800 border-rose-300',
+    badgeBg: 'bg-blue-100 text-blue-800 border-blue-300',
     previewStyle: {
-      background: 'linear-gradient(135deg, #ffffff 0%, #fdf2f8 30%, #eff6ff 70%, #fefce8 100%)',
+      background: 'linear-gradient(135deg, #F8FAFF 0%, #EFF6FF 35%, #ECFDF5 70%, #F5F3FF 100%)',
     },
     sampleElements: (
-      <div
-        className="w-full p-2.5 rounded-2xl shadow-sm flex items-center justify-between text-xs text-slate-800"
-        style={{
-          background: 'linear-gradient(#fff, #fff) padding-box, linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7) border-box',
-          border: '2px solid transparent',
-        }}
-      >
-        <span className="font-extrabold flex items-center gap-1.5 text-slate-900">
-          <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-red-500 via-yellow-400 to-indigo-500" />
-          Phẳng Cầu Vồng 7 Màu
+      <div className="w-full p-2.5 rounded-2xl shadow-xs flex items-center justify-between text-xs text-[#1E1B4B] bg-white border border-slate-200/90">
+        <span className="font-extrabold flex items-center gap-1.5 text-[#1E1B4B]">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#60A5FA]" />
+          Flat UI Light Multicolor
         </span>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded-[999px] bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black shadow-xs">
-          Flat Rainbow
+        <span className="text-[10px] font-mono px-2 py-0.5 rounded-[999px] bg-blue-100 text-blue-700 font-bold shadow-2xs">
+          Flat Light
         </span>
       </div>
     ),

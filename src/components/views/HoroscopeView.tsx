@@ -14,65 +14,6 @@ import { WebIcon } from '@/components/ui/WebIcon';
 import { HeroBanner } from '@/components/ui/HeroBanner';
 import { useToast } from '@/components/ui/Toast';
 
-export interface TuViSlideItem {
-  id: number;
-  shortName: string;
-  fullName: string;
-  icon: string;
-  tag: string;
-  accentColor: string;
-  btnGradient: string;
-  borderColor: string;
-  themeBg: string;
-}
-
-export const TU_VI_SLIDES: TuViSlideItem[] = [
-  {
-    id: 0,
-    shortName: 'Cung Mệnh Bát Trạch',
-    fullName: 'Cung Mệnh Bát Trạch',
-    icon: 'compass',
-    tag: 'Đoài Kim Tây Tứ',
-    accentColor: 'from-purple-700 via-indigo-600 to-amber-600 dark:from-purple-300 dark:via-indigo-300 dark:to-amber-300',
-    btnGradient: 'from-purple-600 to-indigo-600',
-    borderColor: 'border-purple-200/80 dark:border-purple-800/60',
-    themeBg: 'bg-white/95 dark:bg-slate-900/95',
-  },
-  {
-    id: 1,
-    shortName: 'Phong Cách Quản Trị',
-    fullName: 'Phong Cách Quản Trị',
-    icon: 'briefcase',
-    tag: '4 Trụ Cột Quản Trị',
-    accentColor: 'from-blue-600 via-cyan-500 to-indigo-500',
-    btnGradient: 'from-blue-600 to-cyan-600',
-    borderColor: 'border-blue-200/80 dark:border-blue-800/60',
-    themeBg: 'bg-white/95 dark:bg-slate-900/95',
-  },
-  {
-    id: 2,
-    shortName: 'Lục Cung Ngũ Hành',
-    fullName: 'Lục Cung Ngũ Hành',
-    icon: 'target',
-    tag: '6 Cung & 5 Hành Tố',
-    accentColor: 'from-emerald-600 via-teal-500 to-cyan-500',
-    btnGradient: 'from-emerald-600 to-teal-600',
-    borderColor: 'border-emerald-200/80 dark:border-emerald-800/60',
-    themeBg: 'bg-white/95 dark:bg-slate-900/95',
-  },
-  {
-    id: 3,
-    shortName: 'Triết Lý Lãnh Đạo',
-    fullName: 'Triết Lý Lãnh Đạo',
-    icon: 'award',
-    tag: '6 Giá Trị Cốt Lõi',
-    accentColor: 'from-amber-600 via-orange-500 to-yellow-500',
-    btnGradient: 'from-amber-600 to-orange-600',
-    borderColor: 'border-amber-200/80 dark:border-amber-800/60',
-    themeBg: 'bg-white/95 dark:bg-slate-900/95',
-  },
-];
-
 export const HoroscopeView: React.FC = () => {
   const { showToast } = useToast();
 
@@ -89,12 +30,6 @@ export const HoroscopeView: React.FC = () => {
     setSlideDirection('next');
     setCurrentSlide((prev) => (prev < 3 ? prev + 1 : 0));
   }, []);
-
-  const handleGoToSlide = useCallback((index: number) => {
-    if (index === currentSlide) return;
-    setSlideDirection(index > currentSlide ? 'next' : 'prev');
-    setCurrentSlide(index);
-  }, [currentSlide]);
 
   // Keyboard navigation for slides
   useEffect(() => {
@@ -113,27 +48,11 @@ export const HoroscopeView: React.FC = () => {
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Zodiac Synergy Tab / Interactive Lookup State (Mặc định null: không hiển thị nội dung tra cứu)
-  const [selectedZodiacId, setSelectedZodiacId] = useState<string | null>(null);
+  // Zodiac Synergy Tab / Interactive Lookup State
+  const [selectedZodiacId, setSelectedZodiacId] = useState<string>('than');
   const [searchYearInput, setSearchYearInput] = useState<string>('');
   const [zodiacFilterTier, setZodiacFilterTier] = useState<string>('all');
-  const [isZodiacFilterOpen, setIsZodiacFilterOpen] = useState<boolean>(false);
-  const zodiacFilterRef = useRef<HTMLDivElement>(null);
-
-  // Close zodiac filter dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (zodiacFilterRef.current && !zodiacFilterRef.current.contains(e.target as Node)) {
-        setIsZodiacFilterOpen(false);
-      }
-    };
-    if (isZodiacFilterOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isZodiacFilterOpen]);
+  const [hasSearched, setHasSearched] = useState<boolean>(false);
 
   // Compass view mode: Âm Dương hoặc Bát Trạch Quái
   const [compassMode, setCompassMode] = useState<'yinyang' | 'battrach'>('yinyang');
@@ -169,8 +88,10 @@ export const HoroscopeView: React.FC = () => {
 
   // Memoize active zodiac data
   const currentZodiac = useMemo(() => {
-    if (!selectedZodiacId) return null;
-    return ZODIAC_SYNERGY_LIST.find((z) => z.id === selectedZodiacId) || null;
+    return (
+      ZODIAC_SYNERGY_LIST.find((z) => z.id === selectedZodiacId) ||
+      ZODIAC_SYNERGY_LIST[0]
+    );
   }, [selectedZodiacId]);
 
   // Handle year search
@@ -193,6 +114,7 @@ export const HoroscopeView: React.FC = () => {
       ];
       const targetId = zodiacOrder[year % 12];
       setSelectedZodiacId(targetId);
+      setHasSearched(true);
       const found = ZODIAC_SYNERGY_LIST.find((z) => z.id === targetId);
       if (found) {
         showToast(`Tra cứu năm ${year}: Tuổi ${found.nameVi} (${found.animalVi}) · ${found.score}`);
@@ -203,11 +125,30 @@ export const HoroscopeView: React.FC = () => {
   }, [searchYearInput, showToast]);
 
   const filteredZodiacList = useMemo(() => {
-    return ZODIAC_SYNERGY_LIST.filter((item) => {
+    const list = ZODIAC_SYNERGY_LIST.filter((item) => {
       if (zodiacFilterTier === 'all') return true;
       if (zodiacFilterTier === 'best') return item.tier === 'best' || item.tier === 'luc_hop';
       return item.tier === zodiacFilterTier;
     });
+
+    const traditionalOrder = [
+      'ty',
+      'suu',
+      'dan',
+      'mao',
+      'thin',
+      'ty_snake',
+      'ngo',
+      'mui',
+      'than',
+      'dau',
+      'tuat',
+      'hoi',
+    ];
+
+    return [...list].sort(
+      (a, b) => traditionalOrder.indexOf(a.id) - traditionalOrder.indexOf(b.id)
+    );
   }, [zodiacFilterTier]);
 
   const getZodiacTheme = (tier: string) => {
@@ -270,585 +211,355 @@ export const HoroscopeView: React.FC = () => {
   const batTrachCat = [
     {
       direction: 'Tây Bắc',
-      star: 'Thiên Y',
+      star: 'Sinh Khí',
       meaning: 'Thu hút tài lộc, danh tiếng & thăng tiến',
-      icon: 'mountain',
-      color: 'border-teal-200/80 bg-[#f0fdfa] text-teal-800 dark:bg-slate-800/80 dark:border-teal-800/60 dark:text-teal-300',
-      tagColor: 'text-teal-600 dark:text-teal-400',
+      tag: 'Cát Tinh bậc 1',
+      color: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300',
     },
     {
       direction: 'Tây Nam',
-      star: 'Sinh Khí',
+      star: 'Diên Niên',
       meaning: 'Củng cố các mối quan hệ & đồng đội gắn kết',
-      icon: 'sprout',
-      color: 'border-emerald-200/80 bg-[#f0fdf4] text-emerald-800 dark:bg-slate-800/80 dark:border-emerald-800/60 dark:text-emerald-300',
-      tagColor: 'text-emerald-600 dark:text-emerald-400',
+      tag: 'Cát Tinh bậc 2',
+      color: 'border-teal-500/40 bg-teal-500/10 text-teal-800 dark:text-teal-300',
     },
     {
       direction: 'Đông Bắc',
-      star: 'Diên Niên',
+      star: 'Thiên Y',
       meaning: 'Cải thiện sức khỏe, trường thọ & bình an',
-      icon: 'shield',
-      color: 'border-sky-200/80 bg-[#f0f9ff] text-sky-800 dark:bg-slate-800/80 dark:border-sky-800/60 dark:text-sky-300',
-      tagColor: 'text-sky-600 dark:text-sky-400',
+      tag: 'Cát Tinh bậc 3',
+      color: 'border-cyan-500/40 bg-cyan-500/10 text-cyan-800 dark:text-cyan-300',
     },
     {
       direction: 'Chính Tây',
       star: 'Phục Vị',
       meaning: 'Củng cố sức mạnh tinh thần, may mắn thi cử',
-      icon: 'star',
-      color: 'border-purple-200/80 bg-[#faf5ff] text-purple-800 dark:bg-slate-800/80 dark:border-purple-800/60 dark:text-purple-300',
-      tagColor: 'text-purple-600 dark:text-purple-400',
-    },
-  ];
-
-  const DISPLAY_7_ZODIACS = [
-    {
-      id: 'than',
-      nameVi: 'Thân',
-      animalVi: 'Khỉ',
-      iconName: 'than',
-      displayScore: '100%',
-      badgeClass: 'bg-[#10b981]',
-      highlight: true,
-    },
-    {
-      id: 'thin',
-      nameVi: 'Thìn',
-      animalVi: 'Rồng',
-      iconName: 'thin',
-      displayScore: '98%',
-      badgeClass: 'bg-[#10b981]',
-      highlight: false,
-    },
-    {
-      id: 'suu',
-      nameVi: 'Sửu',
-      animalVi: 'Trâu',
-      iconName: 'suu',
-      displayScore: '90%',
-      badgeClass: 'bg-[#a855f7]',
-      highlight: false,
-    },
-    {
-      id: 'hoi',
-      nameVi: 'Hợi',
-      animalVi: 'Heo',
-      iconName: 'hoi',
-      displayScore: '88%',
-      badgeClass: 'bg-[#0ea5e9]',
-      highlight: false,
-    },
-    {
-      id: 'tuat',
-      nameVi: 'Tuất',
-      animalVi: 'Chó',
-      iconName: 'tuat',
-      displayScore: '88%',
-      badgeClass: 'bg-[#0ea5e9]',
-      highlight: false,
-    },
-    {
-      id: 'dau',
-      nameVi: 'Dậu',
-      animalVi: 'Gà',
-      iconName: 'dau',
-      displayScore: '82%',
-      badgeClass: 'bg-[#3b82f6]',
-      highlight: false,
-    },
-    {
-      id: 'dan',
-      nameVi: 'Dần',
-      animalVi: 'Hổ',
-      iconName: 'dan',
-      displayScore: '80%',
-      badgeClass: 'bg-[#3b82f6]',
-      highlight: false,
+      tag: 'Cát Tinh bậc 4',
+      color: 'border-indigo-500/40 bg-indigo-500/10 text-indigo-800 dark:text-indigo-300',
     },
   ];
 
   return (
     <section
       id="tuvi"
-      className="relative w-full h-full flex-1 min-h-0 flex flex-col justify-start items-stretch font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-hidden"
+      className="relative w-full h-auto flex flex-col justify-start items-stretch font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent pb-8"
     >
       {/* Main Container */}
-      <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-2.5 sm:gap-3 max-w-7xl mx-auto justify-start select-none overflow-hidden">
-        {/* HERO BANNER TỬ VI TƯƠNG HỢP VỚI CÁC TAB ĐIỀU HƯỚNG SLIDE */}
+      <div className="w-full flex-grow flex flex-col gap-[15px] max-w-7xl mx-auto justify-start select-none">
+        {/* HERO BANNER VỚI THANH CHUYỂN SLIDE & ÂM THANH THIỀN */}
         <HeroBanner
-          title="Bản Đồ Tử Vi"
-          subtitle="Hải Trung Kim · Đoài Kim Tây Tứ Mệnh · Phong Thủy & Cung Mệnh Quản Trị"
-          quote="“Lãnh đạo bằng bản lĩnh Kim kiên định – Đồng hành cùng nhân sự bằng sự thấu cảm.”"
+          title="Tử Vi Tương Hợp"
+          subtitle="Giáp Tý 1984 · Hải Trung Kim · Đoài Kim Tây Tứ Mệnh · Hòa hợp nhân duyên & phát triển sự nghiệp"
+          quote="“Thiên thời – Địa lợi – Nhân hòa: Hòa khí sinh tài, đồng tâm đắc lợi.”"
           quoteAuthor="— Nguyễn Hùng Thái"
-          videoSrc="/videos/domains-banner.mp4"
-          posterSrc="/images/tuvi/hero-banner.png"
+          videoSrc="https://cdn.scena.ai/project/10223/a333574db47ac4b8323deae8d3863918a26f626c40a08a507cf96db0297a65e0.mp4"
           bottomControls={
-            <div className="w-full flex items-center justify-between gap-2 pointer-events-auto flex-wrap sm:flex-nowrap">
-              {/* 4 Slide Tabs */}
-              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-                {TU_VI_SLIDES.map((slide, idx) => {
-                  const isActive = currentSlide === idx;
-                  return (
-                    <button
-                      key={slide.id}
-                      type="button"
-                      onClick={() => handleGoToSlide(idx)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap shadow-2xs ${
-                        isActive
-                          ? `bg-gradient-to-r ${slide.btnGradient} text-white border-white/50 shadow-md scale-[1.02]`
-                          : 'bg-white/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-white/20 hover:bg-white dark:hover:bg-slate-800'
-                      }`}
-                    >
-                      <WebIcon name={slide.icon} className="w-3.5 h-3.5 shrink-0" />
-                      <span>{slide.shortName}</span>
-                      <span className={`text-[9.5px] px-1.5 py-0.2 rounded-full font-mono ${isActive ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'}`}>
-                        0{idx + 1}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Right: Audio Zen Meditation + Slide Navigation Counter (< 1/4 >) */}
-              <div className="flex items-center gap-2 shrink-0">
-                {/* Nút Âm thanh Thiền định 432Hz */}
-                <button
-                  type="button"
-                  onClick={toggleAudio}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10.5px] font-bold transition-all border shadow-2xs cursor-pointer ${
-                    isAudioPlaying
-                      ? 'bg-amber-500 text-white border-amber-400 animate-pulse'
-                      : 'bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-amber-50'
-                  }`}
-                  title={isAudioPlaying ? 'Tắt âm thanh thiền định 432Hz' : 'Phát âm thanh thiền định 432Hz'}
-                >
-                  <span>{isAudioPlaying ? '🔊' : '🎵'}</span>
-                  <span className="hidden md:inline">Thiền 432Hz</span>
-                </button>
-
-                {/* Slide Counter < 1/4 > */}
-                <div className="flex items-center p-0.5 rounded-full bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/80 shadow-2xs">
-                  <button
-                    type="button"
-                    onClick={handlePrevSlide}
-                    className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer transition-all active:scale-95"
-                    title="Slide trước (Phím ←)"
-                    aria-label="Slide trước"
-                  >
-                    <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-
-                  <div className="px-2 text-[11px] font-mono font-black text-slate-800 dark:text-slate-200 whitespace-nowrap">
-                    <span>{currentSlide + 1}</span>
-                    <span className="text-slate-400 mx-1">/</span>
-                    <span className="text-slate-500">4</span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleNextSlide}
-                    className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 cursor-pointer transition-all active:scale-95"
-                    title="Slide kế tiếp (Phím →)"
-                    aria-label="Slide kế tiếp"
-                  >
-                    <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={toggleAudio}
+                className={`px-3 py-1 rounded-full text-[11px] font-black border shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer ${
+                  isAudioPlaying
+                    ? 'bg-amber-500 text-white border-amber-400 animate-pulse'
+                    : 'bg-white/90 dark:bg-slate-900/90 text-amber-700 dark:text-amber-300 border-amber-300 hover:bg-amber-50'
+                }`}
+                title="Bật/Tắt âm thanh thiền định tĩnh tâm"
+              >
+                <WebIcon name={isAudioPlaying ? 'pause' : 'play'} className="w-3.5 h-3.5" />
+                <span>{isAudioPlaying ? 'Thiền Định Đang Phát' : 'Âm Hưởng Thiền 432Hz'}</span>
+              </button>
             </div>
           }
         />
 
-        {/* BỐ CỤC 2 CỘT CÂN BẰNG CHIỀU CAO: TRÁI 74% (SLIDE TỬ VI), PHẢI 26% (TRA HỢP CÔNG VIỆC) */}
-        <div id="info-card-tuvi" className="w-full flex-1 min-h-0 flex flex-col lg:flex-row gap-2.5 sm:gap-3.5 items-stretch relative z-10 overflow-hidden">
-          {/* ================= CỘT TRÁI (74%): CUNG MỆNH BÁT TRẠCH & CÁC SLIDE ================= */}
-          <div className="w-full lg:w-[74%] xl:w-[74%] flex flex-col min-w-0 relative h-full min-h-0 overflow-hidden group/slidearea">
-            {/* Floating Prev Button */}
+        {/* BỐ CỤC 2 CỘT: TRÁI 80% CHỨA SLIDE, PHẢI 20% CHỨA CÔNG CỤ TRA HỢP CÔNG VIỆC */}
+        {/* BỐ CỤC 2 CỘT: TRÁI 80% CHỨA SLIDE, PHẢI 20% CHỨA CÔNG CỤ TRA HỢP CÔNG VIỆC */}
+        <div id="info-card-tuvi" className="w-full flex flex-col lg:flex-row gap-4 items-stretch lg:h-[620px] xl:h-[640px] relative z-10">
+          {/* ================= CỘT TRÁI (80%): CHỨA CÁC SLIDE NỘI DUNG ================= */}
+          <div className="w-full lg:w-[78%] xl:w-[80%] flex flex-col min-w-0 relative h-full">
+            {/* CẶP NÚT TRÒN ĐIỀU HƯỚNG SLIDE BÊN TRÁI & PHẢI (CĂN CENTER CHIỀU DỌC) */}
             <button
               type="button"
               onClick={handlePrevSlide}
-              className="absolute left-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-md flex items-center justify-center cursor-pointer transition-all hover:scale-110 z-30 opacity-40 group-hover/slidearea:opacity-100"
-              title="Slide trước (←)"
+              className="fixed lg:absolute left-1.5 sm:left-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-100 border border-slate-200/90 dark:border-slate-700/80 shadow-[0_4px_16px_rgba(0,0,0,0.18)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 cursor-pointer z-40 group"
+              title="Slide trước (Phím ←)"
               aria-label="Slide trước"
             >
-              <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.8] transition-transform duration-200 group-hover:-translate-x-0.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
 
-            {/* Floating Next Button */}
             <button
               type="button"
               onClick={handleNextSlide}
-              className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-md flex items-center justify-center cursor-pointer transition-all hover:scale-110 z-30 opacity-40 group-hover/slidearea:opacity-100"
-              title="Slide tiếp (→)"
-              aria-label="Slide tiếp"
+              className="fixed lg:absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-100 border border-slate-200/90 dark:border-slate-700/80 shadow-[0_4px_16px_rgba(0,0,0,0.18)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 cursor-pointer z-40 group"
+              title="Slide kế tiếp (Phím →)"
+              aria-label="Slide kế tiếp"
             >
-              <svg className="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.8] transition-transform duration-200 group-hover:translate-x-0.5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
             </button>
 
-            {/* SLIDE 0: Cung Mệnh, La Bàn Âm Dương & Hồ Sơ Nhân Thân (Chuẩn theo hình đính kèm) */}
+            {/* SLIDE 1: 1. Cung Mệnh, La Bàn Âm Dương & Bát Trạch Quản Trị */}
             {currentSlide === 0 && (
-              <div key="slide-1" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
+              <div key="slide-1" className={`w-full h-full flex flex-col ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-1"
-                  className="w-full h-full bg-white/95 dark:bg-slate-900/95 border border-purple-200/80 dark:border-purple-800/60 rounded-2xl md:rounded-3xl p-3 sm:p-3.5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden"
+                  className="w-full h-full bg-gradient-to-br from-white/95 via-purple-50/25 to-amber-50/30 dark:from-slate-900/95 dark:via-purple-950/20 dark:to-slate-900/95 border border-purple-200/80 dark:border-purple-800/60 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-[0_8px_32px_0_rgba(147,51,234,0.07)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)] backdrop-blur-2xl flex flex-col justify-between relative overflow-hidden group"
                 >
-                  {/* Header thẻ Cung Mệnh Bát Trạch */}
-                  <div className="relative z-10 flex items-center justify-between pb-2 border-b border-purple-100 dark:border-purple-900/40 shrink-0 flex-wrap gap-2">
-                    <div className="flex items-center gap-2 text-left">
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-purple-600 via-indigo-600 to-amber-500 text-white flex items-center justify-center font-bold shadow-sm shadow-purple-500/25 shrink-0">
-                        <WebIcon name="compass" className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-                      </div>
-                      <h3 className="text-base sm:text-lg font-black tracking-wide font-play bg-gradient-to-r from-purple-700 via-indigo-600 to-amber-600 dark:from-purple-300 dark:via-indigo-300 dark:to-amber-300 bg-clip-text text-transparent">
-                        Cung Mệnh Bát Trạch
-                      </h3>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {/* 4 Interactive Slide Dots */}
-                      <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-full bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/60 dark:border-purple-800/40">
-                        {TU_VI_SLIDES.map((s, idx) => (
+                  <div className="absolute -top-24 -right-24 w-80 h-80 bg-purple-500/10 dark:bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
+                  <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+
+                  {/* Header thẻ: unframed animated icon & sentence case title */}
+                  <div className="relative z-10 flex items-center justify-between pb-2.5 border-b border-purple-200/50 dark:border-purple-800/40 flex-wrap gap-2.5 shrink-0">
+                    <h2 className="text-base sm:text-lg font-bold text-purple-600 dark:text-purple-300 flex items-center gap-2 font-play">
+                      <WebIcon name="compass" className="w-4.5 h-4.5 text-purple-600 dark:text-purple-300 animate-pulse shrink-0 inline-block" />
+                      <span>Tử vi bát trạch</span>
+                    </h2>
+                  </div>
+
+                  <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar pt-3 pr-0.5">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-stretch">
+                      {/* Cột trái: La Bàn Âm Dương */}
+                      <div className="lg:col-span-4 bg-gradient-to-br from-purple-500/15 via-white/80 dark:via-slate-800/80 to-amber-500/15 border border-purple-300/60 dark:border-purple-700/50 rounded-2xl p-3.5 sm:p-4 flex flex-col items-center justify-between text-center space-y-3 shadow-sm backdrop-blur-xl relative overflow-hidden">
+                        <div className="flex items-center justify-between pb-2 border-b border-purple-200/50 dark:border-purple-800/40 w-full text-left">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-3.5 bg-gradient-to-b from-purple-600 to-amber-500 rounded-full shrink-0" />
+                            <WebIcon name="sparkles" className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
+                            <h4 className="text-xs sm:text-sm font-black text-purple-800 dark:text-purple-300 tracking-wide">
+                              La Bàn Âm Dương
+                            </h4>
+                          </div>
                           <button
-                            key={s.id}
                             type="button"
-                            onClick={() => handleGoToSlide(idx)}
-                            className={`transition-all duration-300 rounded-full cursor-pointer ${
-                              currentSlide === idx
-                                ? 'w-5 h-2 bg-gradient-to-r from-purple-600 to-indigo-600 shadow-xs'
-                                : 'w-2 h-2 bg-purple-200 dark:bg-purple-800 hover:bg-purple-300'
-                            }`}
-                            title={`Chuyển đến Slide ${idx + 1}: ${s.shortName}`}
-                          />
-                        ))}
-                      </div>
-
-                      <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/40 text-purple-800 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/60 shadow-2xs flex items-center gap-1.5">
-                        <span className="text-xs">☯</span>
-                        <span>Đoài Kim Tây Tứ</span>
-                      </span>
-
-                      {/* Compact Slide Switcher */}
-                      <div className="flex items-center p-0.5 rounded-full bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800">
-                        <button
-                          type="button"
-                          onClick={handlePrevSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-purple-200 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide trước (←)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
-                        <span className="px-1.5 text-[9.5px] font-mono font-black text-purple-800 dark:text-purple-200">
-                          1/4
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleNextSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-purple-200 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide tiếp (→)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Body chia 2 cột con: Trái La Bàn Âm Dương (34%), Phải Hồ Sơ Nhân Thân (66%) */}
-                  <div className="relative z-10 flex-1 min-h-0 pt-2 flex flex-col lg:flex-row gap-2.5 sm:gap-3 items-stretch overflow-hidden">
-                    {/* Cột con 1: La Bàn Âm Dương */}
-                    <div className="w-full lg:w-[34%] shrink-0 bg-gradient-to-b from-[#faf5ff]/60 to-[#ffffff] dark:from-slate-900/90 dark:to-slate-900/70 border border-purple-200/70 dark:border-purple-800/50 rounded-2xl p-2.5 sm:p-3 flex flex-col justify-between items-center text-center shadow-2xs relative overflow-hidden">
-                      <div className="flex items-center justify-between pb-1.5 border-b border-purple-100 dark:border-purple-900/40 w-full text-left shrink-0">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-amber-500 text-sm">✦</span>
-                          <h4 className="text-xs sm:text-[13px] font-black text-purple-900 dark:text-purple-300 tracking-wide">
-                            La Bàn Âm Dương
-                          </h4>
+                            onClick={() => setCompassMode(compassMode === 'yinyang' ? 'battrach' : 'yinyang')}
+                            className="text-[9.5px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:brightness-110 shadow-xs cursor-pointer transition-all"
+                            title="Chuyển chế độ xem Âm Dương / Bát Trạch"
+                          >
+                            {compassMode === 'yinyang' ? 'Xem Bát Trạch' : 'Xem Âm Dương'}
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => setCompassMode(compassMode === 'yinyang' ? 'battrach' : 'yinyang')}
-                          className="text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-[#7c3aed] text-white hover:brightness-110 shadow-xs cursor-pointer transition-all"
-                          title="Chuyển chế độ xem Âm Dương / Bát Trạch"
-                        >
-                          {compassMode === 'yinyang' ? 'Xem Bát Trạch' : 'Xem Âm Dương'}
-                        </button>
-                      </div>
 
-                      {compassMode === 'yinyang' ? (
-                        <div className="relative w-full flex-1 min-h-0 max-h-[195px] flex items-center justify-center my-auto">
-                          {/* Đồ hình La Bàn Âm Dương sơn thủy phong thủy */}
-                          <div className="relative w-full h-full flex items-center justify-center">
-                            <img
-                              src="/images/tuvi/compass-view.png"
-                              alt="La Bàn Âm Dương"
-                              className={`max-h-full max-w-full object-contain cursor-pointer transition-transform duration-300 hover:scale-[1.02] ${
-                                isAudioPlaying ? 'filter drop-shadow-[0_0_12px_rgba(245,158,11,0.55)]' : ''
-                              }`}
+                        {compassMode === 'yinyang' ? (
+                          <div className="relative my-1">
+                            <div
+                              role="button"
+                              tabIndex={0}
+                              aria-label={isAudioPlaying ? 'Tắt âm thanh tĩnh tâm' : 'Phát âm thanh thiền định'}
                               onClick={toggleAudio}
-                              title={isAudioPlaying ? 'Tắt âm thanh thiền định' : 'Nhấp la bàn để nghe thiền định 432Hz'}
-                            />
-
-                            {/* Cặp nút điều hướng slide mượt mà trên la bàn */}
-                            <button
-                              type="button"
-                              onClick={handlePrevSlide}
-                              className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/95 dark:bg-slate-800/95 hover:bg-white text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700 shadow-md flex items-center justify-center cursor-pointer transition-all hover:scale-110 z-20"
-                              title="Slide trước"
-                              aria-label="Slide trước"
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  toggleAudio();
+                                }
+                              }}
+                              className={`w-28 h-28 sm:w-32 sm:h-32 rounded-full p-2 shadow-md flex items-center justify-center cursor-pointer transition-all duration-500 group relative ${
+                                isAudioPlaying
+                                  ? 'bg-gradient-to-br from-amber-300 via-amber-500 to-amber-600 ring-3 ring-amber-400/60 shadow-[0_0_25px_rgba(245,158,11,0.65)]'
+                                  : 'bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 ring-2 ring-amber-300/40 hover:brightness-105'
+                              }`}
+                              title={isAudioPlaying ? 'Tắt âm thanh tĩnh tâm' : 'Phát âm thanh thiền định'}
                             >
-                              <svg className="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                              </svg>
-                            </button>
+                              <div className="w-full h-full rounded-full bg-slate-950 border-2 border-amber-300 flex items-center justify-center relative overflow-hidden shadow-inner">
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <img
+                                    src="https://i.ibb.co/nsKpgT8V/Yin-Yan.jpg"
+                                    alt="Yin Yang Compass"
+                                    className={`w-full h-full rounded-full object-cover transition-all duration-700 ${
+                                      isAudioPlaying ? 'animate-[spin_10s_linear_infinite]' : ''
+                                    }`}
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).src =
+                                        'https://placehold.co/200x200/1e1b4b/fbbf24?text=Yin-Yang';
+                                    }}
+                                  />
+                                </div>
 
-                            <button
-                              type="button"
-                              onClick={handleNextSlide}
-                              className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/95 dark:bg-slate-800/95 hover:bg-white text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700 shadow-md flex items-center justify-center cursor-pointer transition-all hover:scale-110 z-20"
-                              title="Slide kế tiếp"
-                              aria-label="Slide kế tiếp"
-                            >
-                              <svg className="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="relative my-auto w-28 h-28 sm:w-32 sm:h-32 rounded-full border-2 border-indigo-400/50 bg-indigo-950/80 p-1.5 flex items-center justify-center text-white shadow-inner">
-                          <div className="w-full h-full rounded-full border border-indigo-300/30 flex flex-col items-center justify-center relative text-center">
-                            <div className="text-[10px] font-black text-amber-300">TÂY TỨ MỆNH</div>
-                            <div className="text-sm sm:text-base font-black text-cyan-300 my-0.5 font-play">Đoài Kim</div>
-                            <div className="text-[8px] text-slate-300">Kim Tứ Cục · Cung Tý</div>
-                            <span className="absolute top-0.5 text-[8px] font-black text-emerald-300 bg-emerald-950/70 px-1 rounded">TB Sinh Khí</span>
-                            <span className="absolute bottom-0.5 text-[8px] font-black text-teal-300 bg-teal-950/70 px-1 rounded">TN Diên Niên</span>
-                            <span className="absolute left-0.5 text-[8px] font-black text-cyan-300 bg-cyan-950/70 px-1 rounded">ĐB Thiên Y</span>
-                            <span className="absolute right-0.5 text-[8px] font-black text-indigo-300 bg-indigo-950/70 px-1 rounded">T Phục Vị</span>
-                          </div>
-                        </div>
-                      )}
+                                <div className="absolute inset-0 bg-slate-950/20 dark:bg-slate-950/30 rounded-full flex items-center justify-center transition-opacity group-hover:bg-slate-950/45">
+                                  <div
+                                    className={`p-2 rounded-full text-white shadow-lg backdrop-blur-sm border border-white/50 transition-all ${
+                                      isAudioPlaying
+                                        ? 'bg-amber-500 shadow-amber-500/50 ring-2 ring-white'
+                                        : 'bg-black/70 hover:brightness-110'
+                                    }`}
+                                  >
+                                    <WebIcon name={isAudioPlaying ? 'pause' : 'play'} className="w-3.5 h-3.5 fill-current" />
+                                  </div>
+                                </div>
 
-                      {/* Nút bấm nghe thiền định ở chân la bàn */}
-                      <button
-                        type="button"
-                        onClick={toggleAudio}
-                        className={`w-full py-1 sm:py-1.5 px-2 rounded-full border text-[10px] sm:text-[10.5px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shrink-0 ${
-                          isAudioPlaying
-                            ? 'bg-amber-500/15 border-amber-400 text-amber-800 dark:text-amber-300 shadow-xs'
-                            : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-amber-950/30'
-                        }`}
-                      >
-                        <span className="text-xs">🎧</span>
-                        <span>{isAudioPlaying ? 'Đang phát thiền định 432Hz' : 'Nhấp la bàn để nghe thiền định 432Hz'}</span>
-                      </button>
-                    </div>
+                                <span className="absolute top-1 text-[9px] font-black text-amber-300 z-10 pointer-events-none drop-shadow">N</span>
+                                <span className="absolute bottom-1 text-[9px] font-black text-amber-300 z-10 pointer-events-none drop-shadow">S</span>
+                                <span className="absolute left-1.5 text-[9px] font-black text-amber-300 z-10 pointer-events-none drop-shadow">W</span>
+                                <span className="absolute right-1.5 text-[9px] font-black text-amber-300 z-10 pointer-events-none drop-shadow">E</span>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="relative my-1 w-28 h-28 sm:w-32 sm:h-32 rounded-full border-2 border-indigo-400/50 bg-indigo-950/80 p-1.5 flex items-center justify-center text-white shadow-inner">
+                            <div className="w-full h-full rounded-full border border-indigo-300/30 flex flex-col items-center justify-center relative text-center">
+                              <div className="text-[10px] font-black text-amber-300">TÂY TỨ MỆNH</div>
+                              <div className="text-sm sm:text-base font-black text-cyan-300 my-0.5 font-play">Đoài Kim</div>
+                              <div className="text-[8px] text-slate-300">Kim Tứ Cục · Cung Tý</div>
+                              <span className="absolute top-0.5 text-[8px] font-black text-emerald-300 bg-emerald-950/70 px-1 rounded">TB Sinh Khí</span>
+                              <span className="absolute bottom-0.5 text-[8px] font-black text-teal-300 bg-teal-950/70 px-1 rounded">TN Diên Niên</span>
+                              <span className="absolute left-0.5 text-[8px] font-black text-cyan-300 bg-cyan-950/70 px-1 rounded">ĐB Thiên Y</span>
+                              <span className="absolute right-0.5 text-[8px] font-black text-indigo-300 bg-indigo-950/70 px-1 rounded">T Phục Vị</span>
+                            </div>
+                          </div>
+                        )}
 
-                    {/* Cột con 2: Hồ Sơ Nhân Thân & Hướng Cát Bát Trạch */}
-                    <div className="w-full lg:w-[66%] flex-1 flex flex-col justify-between rounded-2xl border border-purple-200/70 dark:border-purple-800/50 bg-white/95 dark:bg-slate-900/90 p-2.5 sm:p-3 shadow-2xs overflow-hidden">
-                      {/* Tiêu đề Hồ sơ nhân thân */}
-                      <div className="flex items-center justify-between pb-1.5 border-b border-purple-100 dark:border-purple-900/40 shrink-0">
-                        <div className="flex items-center gap-1.5">
-                          <WebIcon name="user" className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
-                          <h4 className="text-xs sm:text-[13px] font-black text-purple-900 dark:text-purple-300 tracking-wide">
-                            Hồ Sơ Nhân Thân
-                          </h4>
-                        </div>
-                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs">
-                          Hải Trung Kim • Đoài Kim
-                        </span>
-                      </div>
-
-                      {/* 6 Khối thông số nhân thân (Grid 3 cols x 2 rows) */}
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 my-auto">
-                        {/* 1. Dương Lịch */}
-                        <div className="p-1.5 sm:p-2 bg-[#f0f7ff] dark:bg-slate-800/80 rounded-xl border border-blue-100 dark:border-blue-900/40 flex items-center gap-2">
-                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                            <WebIcon name="calendar" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                        <div className="w-full flex flex-col items-center gap-1.5">
+                          <div className="flex items-center gap-1.5 h-3">
+                            {[40, 70, 100, 60, 90, 50, 80, 40].map((height, i) => (
+                              <span
+                                key={i}
+                                className={`w-1 rounded-full transition-all duration-300 ${
+                                  isAudioPlaying ? 'bg-amber-500 animate-pulse' : 'bg-slate-300 dark:bg-slate-700'
+                                }`}
+                                style={{ height: isAudioPlaying ? `${height}%` : '30%' }}
+                              />
+                            ))}
                           </div>
-                          <div className="min-w-0">
-                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400 truncate">
-                              DƯƠNG LỊCH KHỞI SINH
-                            </div>
-                            <div className="text-[10.5px] sm:text-[11px] font-black text-slate-800 dark:text-slate-100 truncate">
-                              16/06/1984
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 2. Âm Lịch */}
-                        <div className="p-1.5 sm:p-2 bg-[#faf5ff] dark:bg-slate-800/80 rounded-xl border border-purple-100 dark:border-purple-900/40 flex items-center gap-2">
-                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
-                            <WebIcon name="clock" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-purple-600 dark:text-purple-400 truncate">
-                              ÂM LỊCH GIÁP TÝ
-                            </div>
-                            <div className="text-[10.5px] sm:text-[11px] font-black text-slate-800 dark:text-slate-100 truncate">
-                              17 tháng 05 năm Giáp Tý
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 3. Giờ Sinh Can Chi */}
-                        <div className="p-1.5 sm:p-2 bg-[#fffbeb] dark:bg-slate-800/80 rounded-xl border border-amber-100 dark:border-amber-900/40 flex items-center gap-2">
-                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                            <WebIcon name="award" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400 truncate">
-                              GIỜ SINH CAN CHI
-                            </div>
-                            <div className="text-[10.5px] sm:text-[11px] font-black text-slate-800 dark:text-slate-100 truncate">
-                              Giờ Dậu (17h - 19h)
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 4. Bản Mệnh Nạp Âm */}
-                        <div className="p-1.5 sm:p-2 bg-[#f0fdf4] dark:bg-slate-800/80 rounded-xl border border-emerald-100 dark:border-emerald-900/40 flex items-center gap-2">
-                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                            <WebIcon name="shield" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-[10px] sm:text-[10.5px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 truncate">
-                              BẢN MỆNH NẠP ÂM
-                            </div>
-                            <div className="text-[10.5px] sm:text-[11px] font-black text-emerald-800 dark:text-emerald-300 truncate">
-                              Hải Trung Kim
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 5. Cung Mệnh Bối Kim */}
-                        <div className="p-1.5 sm:p-2 bg-[#ecfeff] dark:bg-slate-800/80 rounded-xl border border-cyan-100 dark:border-cyan-900/40 flex items-center gap-2">
-                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
-                            <WebIcon name="globe" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-[10px] sm:text-[10.5px] font-extrabold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 truncate">
-                              CUNG MỆNH BỐI KIM
-                            </div>
-                            <div className="text-[10.5px] sm:text-[11px] font-black text-cyan-800 dark:text-cyan-300 truncate">
-                              Đoài Kim
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* 6. Kim Tứ Cục Vận */}
-                        <div className="p-1.5 sm:p-2 bg-[#fff1f2] dark:bg-slate-800/80 rounded-xl border border-rose-100 dark:border-rose-900/40 flex items-center gap-2">
-                          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
-                            <WebIcon name="hash" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-[10px] sm:text-[10.5px] font-extrabold uppercase tracking-wider text-rose-600 dark:text-rose-400 truncate">
-                              KIM TỨ CỤC VẬN
-                            </div>
-                            <div className="text-[10.5px] sm:text-[11px] font-black text-rose-800 dark:text-rose-300 truncate">
-                              Kim Tứ Cục (Số 4)
-                            </div>
-                          </div>
+                          <p className="text-[11px] font-bold text-slate-700 dark:text-slate-200">
+                            {isAudioPlaying ? 'Đang phát âm thanh thiền định tĩnh tâm' : 'Nhấp la bàn để nghe thiền định 432Hz'}
+                          </p>
                         </div>
                       </div>
 
-                      {/* Hướng Cát Bát Trạch (4 Thẻ: Tây Bắc, Sinh Khí, Diên Niên, Phục Vị) */}
-                      <div className="pt-1.5 border-t border-purple-100 dark:border-purple-900/40 space-y-1 sm:space-y-1.5 shrink-0">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5 text-[11px] font-black text-purple-900 dark:text-purple-300">
-                            <WebIcon name="compass" className="w-3 h-3 text-purple-600 dark:text-purple-400" />
-                            <span>Hướng Cát Bát Trạch</span>
-                          </div>
-                          <span className="text-[10.5px] font-semibold px-2 py-0.2 rounded-full bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800/50">
-                            Tây Tứ Trạch
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                          {/* 1. Tây Bắc / Thiên Y */}
-                          <div className="p-1.5 sm:p-2 rounded-xl bg-[#f0fdfa] dark:bg-slate-800/80 border border-teal-200/60 dark:border-teal-800/40 text-left shadow-2xs">
-                            <div className="flex items-center gap-1 text-[10px] font-black text-teal-900 dark:text-teal-200">
-                              <span className="text-teal-600 font-bold">▲</span>
-                              <span>Tây Bắc</span>
+                      {/* Cột phải: Thẻ chi tiết thông số nhân thân */}
+                      <div className="lg:col-span-8 flex flex-col justify-between space-y-3">
+                        <div className="space-y-3 p-3.5 sm:p-4 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-purple-200/70 dark:border-purple-800/60 shadow-sm backdrop-blur-xl h-full flex flex-col justify-between">
+                          <div className="w-full flex flex-col gap-1.5 pb-2 border-b border-purple-200/40 dark:border-purple-800/40">
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                              <div className="flex items-center gap-1.5">
+                                <WebIcon name="user" className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
+                                <h4 className="text-xs sm:text-sm font-black text-purple-800 dark:text-purple-300 tracking-wide">
+                                  Hồ Sơ Nhân Thân
+                                </h4>
+                              </div>
+                              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shrink-0 shadow-2xs">
+                                Hải Trung Kim • Đoài Kim
+                              </span>
                             </div>
-                            <div className="text-[10px] font-bold text-teal-600 dark:text-teal-400">Thiên Y</div>
-                            <p className="text-[10px] sm:text-[10.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
-                              Thu hút tài lộc, danh tiếng & thăng tiến
-                            </p>
                           </div>
 
-                          {/* 2. Sinh Khí / Tây Nam */}
-                          <div className="p-1.5 sm:p-2 rounded-xl bg-[#f0fdf4] dark:bg-slate-800/80 border border-emerald-200/60 dark:border-emerald-800/40 text-left shadow-2xs">
-                            <div className="flex items-center gap-1 text-[10px] font-black text-emerald-900 dark:text-emerald-200">
-                              <span className="text-emerald-600 font-bold">🌱</span>
-                              <span>Sinh Khí</span>
+                          {/* 6 Thẻ thông số: Tiêu đề 4 chữ viết hoa chữ đầu, không sub tiêu đề */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                            <div className="p-2 sm:p-2.5 bg-indigo-50/70 dark:bg-indigo-950/30 rounded-xl border border-indigo-200/50 dark:border-indigo-800/40 flex items-start gap-2 transition-all hover:border-indigo-400 shadow-2xs text-left">
+                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+                                <WebIcon name="calendar" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 truncate">
+                                  Dương Lịch Khởi Sinh
+                                </div>
+                                <div className="text-[11px] font-black text-slate-900 dark:text-slate-100 truncate">
+                                  {TU_VI_PROFILE.birthDateSolar}
+                                </div>
+                              </div>
                             </div>
-                            <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">Tây Nam</div>
-                            <p className="text-[10px] sm:text-[10.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
-                              Củng cố các mối quan hệ & đồng đội gắn kết
-                            </p>
+
+                            <div className="p-2 sm:p-2.5 bg-purple-50/70 dark:bg-purple-950/30 rounded-xl border border-purple-200/50 dark:border-purple-800/40 flex items-start gap-2 transition-all hover:border-purple-400 shadow-2xs text-left">
+                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 mt-0.5">
+                                <WebIcon name="moon" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-purple-600 dark:text-purple-400 truncate">
+                                  Âm Lịch Giáp Tý
+                                </div>
+                                <div className="text-[11px] font-black text-slate-900 dark:text-slate-100 truncate">
+                                  {TU_VI_PROFILE.birthDateLunar}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="p-2 sm:p-2.5 bg-amber-50/70 dark:bg-amber-950/30 rounded-xl border border-amber-200/50 dark:border-amber-800/40 flex items-start gap-2 transition-all hover:border-amber-400 shadow-2xs text-left">
+                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                                <WebIcon name="clock" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400 truncate">
+                                  Giờ Sinh Can Chi
+                                </div>
+                                <div className="text-[11px] font-black text-slate-900 dark:text-slate-100 truncate">
+                                  {TU_VI_PROFILE.birthHourLunar}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="p-2 sm:p-2.5 bg-emerald-50/70 dark:bg-emerald-950/30 rounded-xl border border-emerald-200/50 dark:border-emerald-800/40 flex items-start gap-2 transition-all hover:border-emerald-400 shadow-2xs text-left">
+                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                                <WebIcon name="shield" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 truncate">
+                                  Bản Mệnh Nạp Âm
+                                </div>
+                                <div className="text-[11px] font-black text-emerald-800 dark:text-emerald-300 truncate">
+                                  {TU_VI_PROFILE.elementNapAm}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="p-2 sm:p-2.5 bg-cyan-50/70 dark:bg-cyan-950/30 rounded-xl border border-cyan-200/50 dark:border-cyan-800/40 flex items-start gap-2 transition-all hover:border-cyan-400 shadow-2xs text-left">
+                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0 mt-0.5">
+                                <WebIcon name="compass" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 truncate">
+                                  Cung Mệnh Đoài Kim
+                                </div>
+                                <div className="text-[11px] font-black text-cyan-800 dark:text-cyan-300 truncate">
+                                  {TU_VI_PROFILE.menhQuai}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="p-2 sm:p-2.5 bg-rose-50/70 dark:bg-rose-950/30 rounded-xl border border-rose-200/50 dark:border-rose-800/40 flex items-start gap-2 transition-all hover:border-rose-400 shadow-2xs text-left">
+                              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mt-0.5">
+                                <WebIcon name="hash" className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-rose-600 dark:text-rose-400 truncate">
+                                  Kim Tứ Cục Vận
+                                </div>
+                                <div className="text-[11px] font-black text-rose-700 dark:text-rose-300 truncate">
+                                  {TU_VI_PROFILE.cucVan}
+                                </div>
+                              </div>
+                            </div>
                           </div>
 
-                          {/* 3. Diên Niên / Đông Bắc */}
-                          <div className="p-1.5 sm:p-2 rounded-xl bg-[#f0f9ff] dark:bg-slate-800/80 border border-sky-200/60 dark:border-sky-800/40 text-left shadow-2xs">
-                            <div className="flex items-center gap-1 text-[10px] font-black text-sky-900 dark:text-sky-200">
-                              <span className="text-sky-600 font-bold">🛡️</span>
-                              <span>Diên Niên</span>
+                          {/* Bát Trạch: Tiêu đề 4 chữ viết hoa chữ đầu, không sub tiêu đề */}
+                          <div className="pt-2 border-t border-slate-200/80 dark:border-slate-800/80 space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-slate-700 dark:text-slate-300">
+                                <WebIcon name="compass" className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
+                                <span>Hướng Cát Bát Trạch</span>
+                              </div>
+                              <span className="text-[9.5px] font-bold text-slate-500">Tây Tứ Trạch</span>
                             </div>
-                            <div className="text-[10px] font-bold text-sky-600 dark:text-sky-400">Đông Bắc</div>
-                            <p className="text-[10px] sm:text-[10.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
-                              Cải thiện sức khỏe, trường thọ & bình an
-                            </p>
-                          </div>
 
-                          {/* 4. Phục Vị / Chính Tây */}
-                          <div className="p-1.5 sm:p-2 rounded-xl bg-[#faf5ff] dark:bg-slate-800/80 border border-purple-200/60 dark:border-purple-800/40 text-left shadow-2xs">
-                            <div className="flex items-center gap-1 text-[10px] font-black text-purple-900 dark:text-purple-200">
-                              <span className="text-purple-600 font-bold">★</span>
-                              <span>Phục Vị</span>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                              {batTrachCat.map((item) => (
+                                <div
+                                  key={item.direction}
+                                  className={`p-2 rounded-xl border text-left shadow-2xs ${item.color}`}
+                                >
+                                  <div className="flex items-center justify-between text-[9.5px] font-black">
+                                    <span>{item.direction}</span>
+                                    <span className="opacity-90">{item.star}</span>
+                                  </div>
+                                  <p className="text-[10px] font-semibold mt-0.5 leading-snug line-clamp-2">{item.meaning}</p>
+                                </div>
+                              ))}
                             </div>
-                            <div className="text-[10px] font-bold text-purple-600 dark:text-purple-400">Chính Tây</div>
-                            <p className="text-[10px] sm:text-[10.5px] text-slate-600 dark:text-slate-300 mt-0.5 leading-snug line-clamp-2">
-                              Củng cố sức mạnh tinh thần, may mắn thi cử
-                            </p>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Slide 0 Footer */}
-                  <div className="relative z-10 pt-2 border-t border-purple-100 dark:border-purple-900/40 shrink-0 flex items-center justify-between flex-wrap gap-2 text-left">
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 sm:w-32 h-1.5 rounded-full bg-purple-100 dark:bg-purple-950 overflow-hidden">
-                        <div className="h-full w-1/4 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600" />
-                      </div>
-                      <span className="text-[10px] text-purple-600 dark:text-purple-300 font-mono hidden md:inline">
-                        Slide 1 / 4 (25%)
-                      </span>
-                    </div>
-
-                    <span className="text-[10px] text-slate-400 hidden lg:inline font-medium">
-                      ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 font-mono text-[9px]">→</kbd> để chuyển slide
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={handleNextSlide}
-                      className="px-3 py-1 rounded-full text-[10.5px] font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:brightness-110 shadow-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
-                    >
-                      <span>Tiếp: Phong Cách Quản Trị</span>
-                      <span>→</span>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -856,74 +567,20 @@ export const HoroscopeView: React.FC = () => {
 
             {/* SLIDE 2: 2. Phong Cách Quản Trị */}
             {currentSlide === 1 && (
-              <div key="slide-2" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
+              <div key="slide-2" className={`w-full h-full flex flex-col ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-2"
-                  className="w-full h-full bg-white/95 dark:bg-slate-900/95 border border-blue-200/80 dark:border-blue-800/60 rounded-2xl md:rounded-3xl p-3 sm:p-4 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden"
+                  className="w-full h-full bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-blue-400/30 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden"
                 >
-                  {/* Header thẻ Slide 1: Phong Cách Quản Trị */}
-                  <div className="relative z-10 flex items-center justify-between pb-2 border-b border-blue-100 dark:border-blue-900/40 shrink-0 flex-wrap gap-2">
-                    <div className="flex items-center gap-2 text-left">
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-blue-600 via-cyan-500 to-indigo-600 text-white flex items-center justify-center font-bold shadow-sm shadow-blue-500/25 shrink-0">
-                        <WebIcon name="briefcase" className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-                      </div>
-                      <h3 className="text-base sm:text-lg font-black tracking-wide font-play bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-500 bg-clip-text text-transparent">
-                        Phong Cách Quản Trị
-                      </h3>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      {/* 4 Interactive Slide Dots */}
-                      <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-full bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-800/40">
-                        {TU_VI_SLIDES.map((s, idx) => (
-                          <button
-                            key={s.id}
-                            type="button"
-                            onClick={() => handleGoToSlide(idx)}
-                            className={`transition-all duration-300 rounded-full cursor-pointer ${
-                              currentSlide === idx
-                                ? 'w-5 h-2 bg-gradient-to-r from-blue-600 to-cyan-600 shadow-xs'
-                                : 'w-2 h-2 bg-blue-200 dark:bg-blue-800 hover:bg-blue-300'
-                            }`}
-                            title={`Chuyển đến Slide ${idx + 1}: ${s.shortName}`}
-                          />
-                        ))}
-                      </div>
-
-                      <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 shadow-2xs">
-                        4 Trụ Cột Quản Trị
-                      </span>
-
-                      {/* Compact Slide Switcher */}
-                      <div className="flex items-center p-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800">
-                        <button
-                          type="button"
-                          onClick={handlePrevSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide trước (←)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
-                        <span className="px-1.5 text-[9.5px] font-mono font-black text-blue-800 dark:text-blue-200">
-                          2/4
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleNextSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide tiếp (→)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
+                  {/* Header thẻ: unframed animated icon & sentence case title */}
+                  <div className="flex items-center justify-between pb-2.5 border-b border-blue-200/50 dark:border-blue-800/50 shrink-0">
+                    <h2 className="text-base sm:text-lg font-bold text-blue-600 dark:text-cyan-400 flex items-center gap-2 font-play">
+                      <WebIcon name="briefcase" className="w-[25px] h-[25px] text-blue-600 dark:text-cyan-400 animate-pulse shrink-0 inline-block card-title-icon" />
+                      <span>Phong cách quản trị</span>
+                    </h2>
                   </div>
 
-                  <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-3 pr-1">
+                  <div className="flex-1 overflow-y-auto no-scrollbar pt-3 pr-0.5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-left">
                       {WORK_PERSONALITY_TRAITS.map((trait, index) => {
                         const colorPalette = [
@@ -977,7 +634,7 @@ export const HoroscopeView: React.FC = () => {
                                   </h4>
                                 </div>
                                 <span
-                                  className={`text-[10px] font-black px-2 py-0.5 rounded-full ${colorPalette.bg} ${colorPalette.badgeText} border ${colorPalette.border} shrink-0`}
+                                  className={`text-[9.5px] font-black px-2 py-0.5 rounded-full ${colorPalette.bg} ${colorPalette.badgeText} border ${colorPalette.border} shrink-0`}
                                 >
                                   {trait.tag}
                                 </span>
@@ -1003,106 +660,27 @@ export const HoroscopeView: React.FC = () => {
                       })}
                     </div>
                   </div>
-
-                  {/* Slide 1 Footer */}
-                  <div className="relative z-10 pt-2 border-t border-blue-100 dark:border-blue-900/40 shrink-0 flex items-center justify-between flex-wrap gap-2 text-left">
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 sm:w-32 h-1.5 rounded-full bg-blue-100 dark:bg-blue-950 overflow-hidden">
-                        <div className="h-full w-2/4 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600" />
-                      </div>
-                      <span className="text-[10px] text-blue-600 dark:text-cyan-300 font-mono hidden md:inline">
-                        Slide 2 / 4 (50%)
-                      </span>
-                    </div>
-
-                    <span className="text-[10px] text-slate-400 hidden lg:inline font-medium">
-                      ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 font-mono text-[9px]">→</kbd> để chuyển slide
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={handleNextSlide}
-                      className="px-3 py-1 rounded-full text-[10.5px] font-bold text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:brightness-110 shadow-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
-                    >
-                      <span>Tiếp: Lục Cung Ngũ Hành</span>
-                      <span>→</span>
-                    </button>
-                  </div>
                 </div>
               </div>
             )}
 
             {/* SLIDE 3: 3. Lục Cung Ngũ Hành */}
             {currentSlide === 2 && (
-              <div key="slide-3" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
+              <div key="slide-3" className={`w-full h-full flex flex-col ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-3"
-                  className="w-full h-full bg-white/95 dark:bg-slate-900/95 border border-emerald-200/80 dark:border-emerald-800/60 rounded-2xl md:rounded-3xl p-3 sm:p-4 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
+                  className="w-full h-full bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-emerald-400/30 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
                 >
-                  {/* Header thẻ Slide 2: Lục Cung Ngũ Hành */}
-                  <div className="relative z-10 flex items-center justify-between pb-2 border-b border-emerald-100 dark:border-emerald-900/40 shrink-0 flex-wrap gap-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-emerald-600 via-teal-500 to-cyan-600 text-white flex items-center justify-center font-bold shadow-sm shadow-emerald-500/25 shrink-0">
-                        <WebIcon name="target" className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-                      </div>
-                      <h3 className="text-base sm:text-lg font-black tracking-wide font-play bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 bg-clip-text text-transparent">
-                        Lục Cung Ngũ Hành
-                      </h3>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      {/* 4 Interactive Slide Dots */}
-                      <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40">
-                        {TU_VI_SLIDES.map((s, idx) => (
-                          <button
-                            key={s.id}
-                            type="button"
-                            onClick={() => handleGoToSlide(idx)}
-                            className={`transition-all duration-300 rounded-full cursor-pointer ${
-                              currentSlide === idx
-                                ? 'w-5 h-2 bg-gradient-to-r from-emerald-600 to-teal-600 shadow-xs'
-                                : 'w-2 h-2 bg-emerald-200 dark:bg-emerald-800 hover:bg-emerald-300'
-                            }`}
-                            title={`Chuyển đến Slide ${idx + 1}: ${s.shortName}`}
-                          />
-                        ))}
-                      </div>
-
-                      <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs">
-                        6 Cung & 5 Hành Tố
-                      </span>
-
-                      {/* Compact Slide Switcher */}
-                      <div className="flex items-center p-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800">
-                        <button
-                          type="button"
-                          onClick={handlePrevSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-emerald-200 dark:hover:bg-emerald-800 text-emerald-700 dark:text-emerald-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide trước (←)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
-                        <span className="px-1.5 text-[9.5px] font-mono font-black text-emerald-800 dark:text-emerald-200">
-                          3/4
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleNextSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-emerald-200 dark:hover:bg-emerald-800 text-emerald-700 dark:text-emerald-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide tiếp (→)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
+                  {/* Header thẻ: unframed animated icon & sentence case title */}
+                  <div className="flex items-center justify-between pb-2.5 border-b border-emerald-200/50 dark:border-emerald-800/50 shrink-0">
+                    <h2 className="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-2 font-play">
+                      <WebIcon name="target" className="w-[25px] h-[25px] text-emerald-600 dark:text-emerald-400 animate-pulse shrink-0 inline-block card-title-icon" />
+                      <span>Lục cung ngũ hành</span>
+                    </h2>
                   </div>
 
                   {/* 6 Cung cốt lõi & 5 Hành tố */}
-                  <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-3 pr-1 space-y-3.5">
+                  <div className="flex-1 overflow-y-auto no-scrollbar pt-3 pr-0.5 space-y-3.5">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {SIX_CORE_PALACES.map((palace, index) => {
                         const palette = [
@@ -1164,7 +742,7 @@ export const HoroscopeView: React.FC = () => {
                                     {palace.name}
                                   </h5>
                                 </div>
-                                <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${palette.bg} ${palette.badgeText} border ${palette.border}`}>
+                                <span className={`text-[9.5px] font-black px-2 py-0.5 rounded-full ${palette.bg} ${palette.badgeText} border ${palette.border}`}>
                                   {palace.tag}
                                 </span>
                               </div>
@@ -1179,7 +757,7 @@ export const HoroscopeView: React.FC = () => {
                                 {palace.stars.map((star, i) => (
                                   <span
                                     key={i}
-                                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${
+                                    className={`text-[9.5px] font-bold px-1.5 py-0.5 rounded-md ${
                                       star.main
                                         ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30'
                                         : 'bg-slate-500/10 text-slate-700 dark:text-slate-300 border border-slate-500/20'
@@ -1215,7 +793,7 @@ export const HoroscopeView: React.FC = () => {
                             <div className="space-y-1">
                               <div className="flex items-center justify-between pb-1 border-b border-black/5 dark:border-white/5">
                                 <h5 className={`text-[11px] font-black ${el.titleColor}`}>{el.element}</h5>
-                                <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${el.iconBg}`}>
+                                <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full ${el.iconBg}`}>
                                   Hành Tố
                                 </span>
                               </div>
@@ -1226,105 +804,26 @@ export const HoroscopeView: React.FC = () => {
                       </div>
                     </div>
                   </div>
-
-                  {/* Slide 2 Footer */}
-                  <div className="relative z-10 pt-2 border-t border-emerald-100 dark:border-emerald-900/40 shrink-0 flex items-center justify-between flex-wrap gap-2 text-left">
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 sm:w-32 h-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950 overflow-hidden">
-                        <div className="h-full w-3/4 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600" />
-                      </div>
-                      <span className="text-[10px] text-emerald-600 dark:text-teal-300 font-mono hidden md:inline">
-                        Slide 3 / 4 (75%)
-                      </span>
-                    </div>
-
-                    <span className="text-[10px] text-slate-400 hidden lg:inline font-medium">
-                      ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 font-mono text-[9px]">→</kbd> để chuyển slide
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={handleNextSlide}
-                      className="px-3 py-1 rounded-full text-[10.5px] font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 shadow-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
-                    >
-                      <span>Tiếp: Triết Lý Lãnh Đạo</span>
-                      <span>→</span>
-                    </button>
-                  </div>
                 </div>
               </div>
             )}
 
             {/* SLIDE 4: 4. Triết Lý Lãnh Đạo (Đổi tên & tách thành Slide 4) */}
             {currentSlide === 3 && (
-              <div key="slide-4" className={`w-full h-full flex flex-col min-h-0 ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
+              <div key="slide-4" className={`w-full h-full flex flex-col ${slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'}`}>
                 <div
                   id="tuvi-section-5"
-                  className="w-full h-full bg-white/95 dark:bg-slate-900/95 border border-amber-200/80 dark:border-amber-800/60 rounded-2xl md:rounded-3xl p-3 sm:p-4 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
+                  className="w-full h-full bg-white/85 dark:bg-slate-900/85 border border-slate-200/90 dark:border-amber-400/30 rounded-2xl md:rounded-3xl p-4 sm:p-5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
                 >
-                  {/* Header thẻ Slide 3: Triết Lý Lãnh Đạo */}
-                  <div className="relative z-10 flex items-center justify-between pb-2 border-b border-amber-100 dark:border-amber-900/40 shrink-0 flex-wrap gap-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-amber-600 via-orange-500 to-yellow-500 text-white flex items-center justify-center font-bold shadow-sm shadow-amber-500/25 shrink-0">
-                        <WebIcon name="award" className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-                      </div>
-                      <h3 className="text-base sm:text-lg font-black tracking-wide font-play bg-gradient-to-r from-amber-600 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
-                        Triết Lý Lãnh Đạo
-                      </h3>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      {/* 4 Interactive Slide Dots */}
-                      <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-full bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40">
-                        {TU_VI_SLIDES.map((s, idx) => (
-                          <button
-                            key={s.id}
-                            type="button"
-                            onClick={() => handleGoToSlide(idx)}
-                            className={`transition-all duration-300 rounded-full cursor-pointer ${
-                              currentSlide === idx
-                                ? 'w-5 h-2 bg-gradient-to-r from-amber-600 to-orange-600 shadow-xs'
-                                : 'w-2 h-2 bg-amber-200 dark:bg-amber-800 hover:bg-amber-300'
-                            }`}
-                            title={`Chuyển đến Slide ${idx + 1}: ${s.shortName}`}
-                          />
-                        ))}
-                      </div>
-
-                      <span className="text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 shadow-2xs">
-                        6 Giá Trị Cốt Lõi
-                      </span>
-
-                      {/* Compact Slide Switcher */}
-                      <div className="flex items-center p-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800">
-                        <button
-                          type="button"
-                          onClick={handlePrevSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-amber-200 dark:hover:bg-amber-800 text-amber-700 dark:text-amber-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide trước (←)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                          </svg>
-                        </button>
-                        <span className="px-1.5 text-[9.5px] font-mono font-black text-amber-800 dark:text-amber-200">
-                          4/4
-                        </span>
-                        <button
-                          type="button"
-                          onClick={handleNextSlide}
-                          className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-amber-200 dark:hover:bg-amber-800 text-amber-700 dark:text-amber-200 cursor-pointer transition-all active:scale-95"
-                          title="Slide tiếp (→)"
-                        >
-                          <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
+                  {/* Header thẻ: unframed animated icon & sentence case title */}
+                  <div className="flex items-center justify-between pb-2.5 border-b border-amber-200/50 dark:border-amber-800/50 shrink-0">
+                    <h2 className="text-base sm:text-lg font-bold text-amber-600 dark:text-amber-400 flex items-center gap-2 font-play">
+                      <WebIcon name="award" className="w-[25px] h-[25px] text-amber-600 dark:text-amber-400 animate-pulse shrink-0 inline-block card-title-icon" />
+                      <span>Triết lý lãnh đạo</span>
+                    </h2>
                   </div>
 
-                  <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pt-3 pr-1 space-y-3.5">
+                  <div className="flex-1 overflow-y-auto no-scrollbar pt-3 pr-0.5 space-y-3.5">
                     {/* 6 Thẻ triết lý: Tiêu đề 4 chữ viết hoa chữ đầu, không sub tiêu đề */}
                     <div
                       id="tuvi-philosophy-cards"
@@ -1356,7 +855,7 @@ export const HoroscopeView: React.FC = () => {
                                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/80 dark:border-amber-700/50 flex items-center justify-center shrink-0">
                                   <WebIcon name={iconName} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 </div>
-                                <span className="text-[10px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-100/70 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/40">
+                                <span className="text-[9.5px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-100/70 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/40">
                                   0{idx + 1}
                                 </span>
                               </div>
@@ -1370,7 +869,7 @@ export const HoroscopeView: React.FC = () => {
                               </p>
                             </div>
 
-                            <div className="pt-1.5 border-t border-amber-100 dark:border-amber-900/40 flex items-center gap-1.5 text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">
+                            <div className="pt-1.5 border-t border-amber-100 dark:border-amber-900/40 flex items-center gap-1.5 text-[9.5px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">
                               <WebIcon name="sparkles" className="w-2.5 h-2.5 shrink-0" />
                               <span>Giá trị cốt lõi</span>
                             </div>
@@ -1402,188 +901,153 @@ export const HoroscopeView: React.FC = () => {
                       </div>
                     </div>
                   </div>
-
-                  {/* Slide 3 Footer */}
-                  <div className="relative z-10 pt-2 border-t border-amber-100 dark:border-amber-900/40 shrink-0 flex items-center justify-between flex-wrap gap-2 text-left">
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 sm:w-32 h-1.5 rounded-full bg-amber-100 dark:bg-amber-950 overflow-hidden">
-                        <div className="h-full w-full rounded-full bg-gradient-to-r from-amber-600 to-orange-600" />
-                      </div>
-                      <span className="text-[10px] text-amber-600 dark:text-amber-300 font-mono hidden md:inline">
-                        Slide 4 / 4 (100%)
-                      </span>
-                    </div>
-
-                    <span className="text-[10px] text-slate-400 hidden lg:inline font-medium">
-                      ✦ Dùng phím <kbd className="px-1 py-0.2 rounded bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 font-mono text-[9px]">←</kbd> <kbd className="px-1 py-0.2 rounded bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 font-mono text-[9px]">→</kbd> để chuyển slide
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={handleNextSlide}
-                      className="px-3 py-1 rounded-full text-[10.5px] font-bold text-white bg-gradient-to-r from-amber-600 to-orange-600 hover:brightness-110 shadow-xs flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
-                    >
-                      <span>Xem lại từ đầu</span>
-                      <span>↺</span>
-                    </button>
-                  </div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* ================= CỘT PHẢI (26%): CÔNG CỤ TRA HỢP CÔNG VIỆC (Chuẩn theo hình đính kèm) ================= */}
-          <div className="w-full lg:w-[26%] xl:w-[26%] shrink-0 flex flex-col min-w-0 h-full min-h-0 rounded-2xl md:rounded-3xl border border-teal-200/80 dark:border-teal-800/60 bg-white/95 dark:bg-slate-900/95 p-3 sm:p-3.5 shadow-sm backdrop-blur-2xl overflow-hidden justify-between text-left">
-            {/* Header thẻ: Tra Hợp Công Việc & 12 Con giáp */}
-            <div className="flex items-center justify-between pb-2 border-b border-teal-100 dark:border-teal-900/40 shrink-0">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-teal-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                  <WebIcon name="briefcase" className="w-3.5 h-3.5" />
+          {/* ================= CỘT PHẢI (20%): CÔNG CỤ TRA HỢP CÔNG VIỆC ================= */}
+          <div className="w-full lg:w-[22%] xl:w-[20%] shrink-0 flex flex-col min-w-0 h-full">
+            <div
+              id="tuvi-tool-zodiac"
+              className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-teal-200/90 dark:border-teal-500/30 rounded-2xl p-3 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left"
+            >
+              {/* Header thẻ: 4 chữ viết hoa chữ đầu, không tạo sub tiêu đề */}
+              <div className="flex items-center justify-between pb-2 border-b border-teal-200/50 dark:border-teal-800/50 shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <WebIcon name="users" className="w-3.5 h-3.5 text-teal-500 shrink-0" />
+                  <h3 className="text-xs sm:text-sm font-black font-play bg-gradient-to-r from-teal-600 to-sky-600 bg-clip-text text-transparent">
+                    Tra Hợp Công Việc
+                  </h3>
                 </div>
-                <h3 className="text-xs sm:text-sm font-black font-play text-teal-800 dark:text-teal-300">
-                  Tra Hợp Công Việc
-                </h3>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800 flex items-center gap-1 shadow-2xs">
-                <WebIcon name="layers" className="w-3 h-3 text-teal-600" />
-                <span>12 Con giáp</span>
-              </span>
-            </div>
 
-            {/* Ô tìm kiếm năm sinh */}
-            <div className="pt-2 pb-1 shrink-0 flex items-center gap-1.5 w-full">
-              <div className="relative flex-1">
-                <WebIcon
-                  name="search"
-                  className="w-3 h-3 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
-                />
-                <input
-                  type="number"
-                  placeholder="Năm sinh (vd: 1990, 1988, ...)"
-                  value={searchYearInput}
-                  onChange={(e) => setSearchYearInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleYearSearch()}
-                  className="w-full pl-7 pr-2.5 py-1 rounded-full text-[10.5px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-medium"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={handleYearSearch}
-                className="px-3 py-1 rounded-full text-[10.5px] font-black bg-teal-600 hover:bg-teal-700 text-white transition-all cursor-pointer shrink-0 shadow-xs active:scale-95"
-              >
-                Tra
-              </button>
-            </div>
-
-            {/* Danh sách 7 Con Giáp tương hợp khớp 100% hình tham chiếu */}
-            <div className="flex-1 min-h-0 flex flex-col justify-between py-1 gap-1 sm:gap-1.5 overflow-hidden">
-              {DISPLAY_7_ZODIACS.map((item) => {
-                const isSelected = selectedZodiacId === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setSelectedZodiacId(item.id)}
-                    className={`w-full p-1.5 px-2.5 rounded-xl border flex items-center justify-between text-left transition-all duration-200 cursor-pointer ${
-                      item.highlight
-                        ? 'bg-[#ecfdf5] dark:bg-teal-950/40 border-teal-300 dark:border-teal-700 shadow-2xs'
-                        : isSelected
-                        ? 'bg-teal-50 dark:bg-teal-950/60 border-teal-400 dark:border-teal-600 shadow-xs ring-1 ring-teal-400/50'
-                        : 'bg-white/80 dark:bg-slate-900/80 border-slate-100 dark:border-slate-800 hover:border-teal-200 hover:bg-teal-50/40'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <img
-                        src={`/images/tuvi/icon-${item.iconName}.png`}
-                        alt={item.nameVi}
-                        className="w-4.5 h-4.5 object-contain shrink-0"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
+              {/* Scrollable Tool Body */}
+              <div className="flex-1 overflow-y-auto no-scrollbar pt-2 pr-0.5 space-y-2 flex flex-col">
+                {/* Tra cứu năm sinh với icon filter tích hợp */}
+                <div className="space-y-1.5 shrink-0">
+                  <div className="flex items-center gap-1.5 w-full">
+                    <div className="relative flex-1">
+                      <WebIcon
+                        name="search"
+                        className="w-3 h-3 text-slate-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none"
                       />
-                      <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-100 truncate">
-                        Tuổi {item.nameVi} ({item.animalVi})
-                      </span>
+                      <input
+                        type="number"
+                        placeholder="Năm sinh (vd: 1992)..."
+                        value={searchYearInput}
+                        onChange={(e) => setSearchYearInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleYearSearch()}
+                        className="w-full pl-7 pr-7 py-1 rounded-lg text-[10.5px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-semibold"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const order = ['all', 'best', 'support', 'caution'];
+                          const nextIdx = (order.indexOf(zodiacFilterTier) + 1) % order.length;
+                          const nextTier = order[nextIdx];
+                          setZodiacFilterTier(nextTier);
+                          showToast(`Đã lọc: ${nextTier === 'all' ? 'Tất cả 12 Giáp' : nextTier === 'best' ? 'Tam / Lục Hợp' : nextTier === 'support' ? 'Tương Trợ' : 'Tránh Xung'}`);
+                        }}
+                        title={`Lọc: ${zodiacFilterTier} (Click để đổi)`}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-600 dark:text-teal-400 hover:text-teal-700 cursor-pointer flex items-center justify-center"
+                      >
+                        <WebIcon name="filter" className="w-3 h-3" />
+                      </button>
                     </div>
+                    <button
+                      type="button"
+                      onClick={handleYearSearch}
+                      className="px-2 py-1 rounded-lg text-[10.5px] font-black bg-teal-600 hover:bg-teal-700 text-white transition-all cursor-pointer shrink-0 shadow-xs active:scale-95"
+                    >
+                      Tra
+                    </button>
+                  </div>
+                </div>
 
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white shadow-2xs ${item.badgeClass}`}>
-                        {item.displayScore}
-                      </span>
-                      <span className="text-[11px] text-slate-400 font-bold">›</span>
-                    </div>
-                  </button>
-                );
-              })}
+                {/* Grid 12 Con Giáp (1 Cột) */}
+                <div className="grid grid-cols-1 gap-1 shrink-0 p-0.5 max-h-[300px] overflow-y-auto no-scrollbar">
+                  {filteredZodiacList.map((item) => {
+                    const isSelected = selectedZodiacId === item.id;
+                    const theme = getZodiacTheme(item.tier);
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedZodiacId(item.id);
+                          setHasSearched(true);
+                        }}
+                        className={`p-1.5 px-2 rounded-lg flex items-center justify-between text-left transition-all duration-200 cursor-pointer border ${
+                          isSelected ? theme.bgSelected : `${theme.bgUnselected} hover:brightness-105`
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-lg leading-none shrink-0">{item.icon}</span>
+                          <span className="text-[10.5px] font-bold text-slate-900 dark:text-white truncate">
+                            Tuổi {item.nameVi} ({item.animalVi})
+                          </span>
+                        </div>
+                        <span className={`text-[8.5px] font-mono font-black px-1.5 py-0.2 rounded-xs shrink-0 ${theme.badge}`}>
+                          {item.score.split(' ')[0]}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Chi tiết tương hợp con giáp được chọn (Chỉ hiển thị khi đã tra cứu) */}
+                {hasSearched && currentZodiac && (
+                  (() => {
+                    const activeTheme = getZodiacTheme(currentZodiac.tier);
+                    return (
+                      <div className={`p-2 rounded-xl bg-gradient-to-br ${activeTheme.gradientBox} border space-y-1.5 text-xs shrink-0 animate-fadeIn`}>
+                        <div className="flex items-center justify-between gap-1.5 pb-1 border-b border-slate-200/50 dark:border-slate-800/60">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="text-xl shrink-0">{currentZodiac.icon}</span>
+                            <div className="min-w-0">
+                              <h4 className="text-[11px] font-black text-slate-900 dark:text-white truncate">
+                                Tuổi {currentZodiac.nameVi} ({currentZodiac.animalVi})
+                              </h4>
+                              <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 block truncate">
+                                {currentZodiac.relationshipVi}
+                              </span>
+                            </div>
+                          </div>
+                          <span className={`px-1.5 py-0.5 rounded-full text-[8.5px] font-black shrink-0 ${activeTheme.badge}`}>
+                            {currentZodiac.score}
+                          </span>
+                        </div>
+
+                        <div className="space-y-1 text-[9.5px]">
+                          <div className="p-1 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50 dark:border-slate-800/50">
+                            <span className="font-bold text-slate-700 dark:text-slate-300 block">📅 Năm sinh:</span>
+                            <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.years}</span>
+                          </div>
+                          <div className="p-1 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50 dark:border-slate-800/50">
+                            <span className="font-bold text-slate-700 dark:text-slate-300 block">🏢 Môi trường:</span>
+                            <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.workplaceFitVi}</span>
+                          </div>
+                          <div className="p-1 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50 dark:border-slate-800/50">
+                            <span className="font-bold text-slate-700 dark:text-slate-300 block">🧭 Hướng bàn:</span>
+                            <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.deskDirectionVi}</span>
+                          </div>
+                          <div className={`p-1 rounded-md ${activeTheme.accentBg} border`}>
+                            <span className={`font-bold ${activeTheme.textColor} block`}>💡 Lời khuyên:</span>
+                            <p className="text-slate-800 dark:text-slate-200 leading-snug line-clamp-3">
+                              {currentZodiac.workplaceAdviceVi}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* MODAL DIALOG CHI TIẾT TƯƠNG HỢP CON GIÁP (Đảm bảo thẻ không bị tràn chiều cao) */}
-      {currentZodiac && (
-        <div
-          className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
-          onClick={() => setSelectedZodiacId(null)}
-        >
-          <div
-            className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-5 shadow-2xl border border-teal-200/80 dark:border-teal-700/80 text-left space-y-3.5"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header Modal */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-teal-50 dark:bg-teal-950/50 flex items-center justify-center text-2xl border border-teal-200/50 dark:border-teal-800/50">
-                  {currentZodiac.icon}
-                </div>
-                <div>
-                  <h4 className="text-base font-black text-slate-900 dark:text-white">
-                    Tuổi {currentZodiac.nameVi} ({currentZodiac.animalVi})
-                  </h4>
-                  <span className="text-xs font-semibold text-teal-600 dark:text-teal-400">
-                    {currentZodiac.relationshipVi}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-1 rounded-full text-xs font-black bg-teal-600 text-white shadow-xs">
-                  {currentZodiac.score}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setSelectedZodiacId(null)}
-                  className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 flex items-center justify-center cursor-pointer transition-all"
-                  aria-label="Đóng"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-
-            {/* Chi tiết tương hợp */}
-            <div className="space-y-2 text-xs">
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                <span className="font-bold text-slate-700 dark:text-slate-300 block mb-0.5">📅 Các năm sinh:</span>
-                <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.years}</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                <span className="font-bold text-slate-700 dark:text-slate-300 block mb-0.5">🏢 Vị trí cộng tác tối ưu:</span>
-                <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.workplaceFitVi}</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                <span className="font-bold text-slate-700 dark:text-slate-300 block mb-0.5">🧭 Hướng bàn làm việc cát lợi:</span>
-                <span className="text-slate-900 dark:text-white font-medium">{currentZodiac.deskDirectionVi}</span>
-              </div>
-              <div className="p-2.5 rounded-xl bg-teal-50/60 dark:bg-teal-950/30 border border-teal-200/50 dark:border-teal-800/50">
-                <span className="font-bold text-teal-800 dark:text-teal-300 block mb-0.5">💡 Lời khuyên phối hợp quản trị:</span>
-                <p className="text-slate-800 dark:text-slate-200 leading-relaxed">
-                  {currentZodiac.workplaceAdviceVi}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };

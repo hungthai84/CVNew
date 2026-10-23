@@ -74,6 +74,73 @@
   --card-wave-glow: rgba(14, 165, 233, 0.38);
 }
 
+/* ========================================================
+   GLASS UI DARK NEON MULTICOLOR THEME (3. Color System & Tokens)
+   ======================================================== */
+[data-theme="dark-neon"] {
+  color-scheme: dark;
+
+  /* Color System — Backgrounds */
+  --page-bg: #070A14;
+  --bg-main: #070A14;
+  --bg-secondary: #0B1020;
+  --bg-elevated: #11182B;
+  --bg-deep: #080D19;
+  --surface-bg: rgba(20, 28, 48, 0.62);
+
+  /* Glass Surfaces */
+  --glass-bg: rgba(20, 28, 48, 0.62);
+  --glass-bg-hover: rgba(30, 42, 70, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.08);
+  --glass-blur: 16px;
+  --glass-saturate: 180%;
+  --glass-shadow: 
+    0 16px 40px -8px rgba(7, 10, 20, 0.85),
+    0 0 24px 0 rgba(34, 211, 238, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.12);
+
+  /* Neon Palette */
+  --neon-cyan: #22D3EE;
+  --electric-blue: #3B82F6;
+  --neon-purple: #A855F7;
+  --neon-pink: #F472B6;
+  --neon-green: #34D399;
+  --neon-yellow: #FACC15;
+  --neon-orange: #FB923C;
+
+  /* Primary Accent Aliases */
+  --color-primary: #22D3EE;
+  --color-secondary: #A855F7;
+  --color-accent: #3B82F6;
+  --color-success: #34D399;
+  --color-warning: #FACC15;
+  --color-danger: #F472B6;
+
+  /* Text Colors */
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-disabled: #64748B;
+
+  /* Card Themes */
+  --card-theme-color: #22D3EE;
+  --card-wave-color: rgba(34, 211, 238, 0.28);
+  --card-wave-soft: rgba(59, 130, 246, 0.12);
+  --card-wave-glow: rgba(168, 85, 247, 0.35);
+  --book-card-bg: rgba(20, 28, 48, 0.85);
+  --book-border: rgba(255, 255, 255, 0.14);
+
+  /* Ambient Glow Variables */
+  --aurora-base: #070A14;
+  --aurora-radial-1: rgba(34, 211, 238, 0.18);  /* Cyan */
+  --aurora-radial-2: rgba(59, 130, 246, 0.16);  /* Blue */
+  --aurora-radial-3: rgba(168, 85, 247, 0.18); /* Purple */
+  --aurora-radial-4: rgba(244, 114, 182, 0.14); /* Pink */
+  --aurora-radial-5: rgba(52, 211, 153, 0.12); /* Green */
+  --aurora-radial-6: rgba(250, 204, 21, 0.10); /* Yellow */
+}
+
 /* Glass panel utility & Smooth Theme Transitions */
 html {
   transition: background-color 0.28s ease, color 0.22s ease;
@@ -175,10 +242,10 @@ body {
 
 /* Footer Util Buttons (Kích thước hài hòa: 114px x 46px, bo cong 4 góc 999px) */
 .footer-util-btn {
-  width: 114px;
-  height: 46px;
+  width: 130px;
+  height: 50px;
   border-radius: 999px;
-  padding: 4px 10px 4px 5px;
+  padding: 4px 12px 4px 6px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -967,82 +1034,100 @@ body {
 /* ========================================================
    THEME: FLAT UI RAINBOW 7 MÀU (BẢY MÀU CẦU VỒNG HIỆN ĐẠI)
    ======================================================== */
-[data-theme="flat-rainbow"] {
+/* ========================================================
+   THEME: FLAT UI LIGHT MULTICOLOR (GIAO DIỆN PHẲNG SÁNG ĐA SẮC)
+   ======================================================== */
+[data-theme="flat-rainbow"],
+[data-theme="flat-multicolor"] {
   color-scheme: light;
 
   --font-play: 'Play', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* 7 sắc cầu vồng rực rỡ chuẩn Flat UI */
-  --rainbow-red: #ef4444;
-  --rainbow-orange: #f97316;
-  --rainbow-yellow: #eab308;
-  --rainbow-green: #22c55e;
-  --rainbow-cyan: #06b6d4;
-  --rainbow-blue: #3b82f6;
-  --rainbow-purple: #a855f7;
+  /* Clay & Pastel Palette */
+  --clay-blue: #60A5FA;
+  --clay-green: #34D399;
+  --clay-yellow: #FCD34D;
+  --clay-coral: #FB7185;
+  --clay-purple: #A78BFA;
+  --ink: #1E1B4B;
 
-  --page-bg: #f8fafc;
-  --surface-bg: #ffffff;
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --accent-blue: #3b82f6;
-  --accent-green: #22c55e;
-  --accent-yellow: #eab308;
-  --accent-coral: #ef4444;
-  --accent-purple: #a855f7;
+  --page-bg: #F8FAFF;
+  --page-bg-secondary: #F5F3FF;
+  --surface-bg: #FFFFFF;
+  --surface-soft-blue: #EFF6FF;
+  --surface-soft-green: #ECFDF5;
+  --surface-soft-yellow: #FFFBEB;
+  --surface-soft-coral: #FFF1F2;
+  --surface-soft-purple: #F5F3FF;
 
-  --glass-border: #e2e8f0;
+  --text-primary: #1E1B4B;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-disabled: #94A3B8;
+
+  --accent-blue: #60A5FA;
+  --accent-green: #34D399;
+  --accent-yellow: #FCD34D;
+  --accent-coral: #FB7185;
+  --accent-purple: #A78BFA;
+
+  --glass-border: #E2E8F0;
   --glass-blur: 0px;
-  --glass-bg: #ffffff;
+  --glass-bg: #FFFFFF;
   --glass-saturate: 100%;
   --glass-shadow: 
-    0 10px 25px -5px rgba(15, 23, 42, 0.08), 
-    0 4px 6px -2px rgba(15, 23, 42, 0.04),
-    0 0 0 1px #e2e8f0;
+    0 4px 14px -2px rgba(30, 27, 75, 0.05), 
+    0 2px 4px -1px rgba(30, 27, 75, 0.03),
+    0 0 0 1px #E2E8F0;
 
-  --color-primary: #3b82f6;
-  --color-secondary: #a855f7;
-  --color-accent: #ec4899;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  --color-primary: #60A5FA;
+  --color-secondary: #A78BFA;
+  --color-accent: #FB7185;
+  --color-success: #34D399;
+  --color-warning: #FCD34D;
+  --color-danger: #FB7185;
 
-  --book-card-bg: #ffffff;
-  --book-border: #e2e8f0;
+  --book-card-bg: #FFFFFF;
+  --book-border: #E2E8F0;
 
-  --card-theme-color: #3b82f6;
-  --card-wave-color: rgba(59, 130, 246, 0.2);
-  --card-wave-soft: rgba(59, 130, 246, 0.05);
+  --card-theme-color: #60A5FA;
+  --card-wave-color: rgba(96, 165, 250, 0.2);
+  --card-wave-soft: rgba(96, 165, 250, 0.05);
 }
 
-[data-theme="flat-rainbow"] body {
-  background-color: #f8fafc !important;
+[data-theme="flat-rainbow"] body,
+[data-theme="flat-multicolor"] body {
+  background-color: #F8FAFF !important;
+  color: #1E1B4B !important;
 }
 
-[data-theme="flat-rainbow"] .glass-panel {
-  background: #ffffff !important;
-  border: 2px solid #e2e8f0 !important;
-  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08) !important;
+[data-theme="flat-rainbow"] .glass-panel,
+[data-theme="flat-multicolor"] .glass-panel {
+  background: #FFFFFF !important;
+  border: 1.5px solid #E2E8F0 !important;
+  box-shadow: 0 4px 16px -2px rgba(30, 27, 75, 0.06) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-[data-theme="flat-rainbow"] .theme-hero-banner {
-  border-bottom: 3.5px solid transparent !important;
-  border-image: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7) 1 !important;
+[data-theme="flat-rainbow"] .theme-hero-banner,
+[data-theme="flat-multicolor"] .theme-hero-banner {
+  border: none !important;
 }
 
-[data-theme="flat-rainbow"] .nav-item-default {
-  background: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  color: #1e293b !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+[data-theme="flat-rainbow"] .nav-item-default,
+[data-theme="flat-multicolor"] .nav-item-default {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #1E1B4B !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03) !important;
 }
 
-[data-theme="flat-rainbow"] .nav-item-default:hover {
-  background: #f8fafc !important;
-  border-color: #cbd5e1 !important;
-  color: #0f172a !important;
+[data-theme="flat-rainbow"] .nav-item-default:hover,
+[data-theme="flat-multicolor"] .nav-item-default:hover {
+  background: #F5F3FF !important;
+  border-color: #CBD5E1 !important;
+  color: #1E1B4B !important;
 }
 
 /* Tùy biến toàn bộ giao diện khi bật Theme Dark Neon - Multicolor Glassmorphism UI */
@@ -2084,7 +2169,12 @@ body {
    Vivid Theme Transition Ripple & Chromatic Wave
    "khi thay đổi giao diện thêm hiệu ứng chuyển sang giao diện sống động"
    ============================================================ */
-.theme-vivid-overlay {
+/* ============================================================
+   Enhanced Subtle Blur-Fade Theme Transition System
+   Smooth perceived transition when switching between Glass UI and Flat UI
+   ============================================================ */
+.theme-vivid-overlay,
+.theme-blur-fade-overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -2093,8 +2183,62 @@ body {
   overflow: hidden;
 }
 
-.theme-vivid-overlay.is-animating {
-  animation: themeVividFlash 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.theme-vivid-overlay.is-animating,
+.theme-blur-fade-overlay.is-animating {
+  animation: themeVividFlash 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle ambient blur-fade veil during theme switch */
+.theme-blur-fade-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(245, 243, 255, 0.16) 45%,
+    transparent 100%
+  );
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  opacity: 0;
+}
+
+[data-theme="dark-neon"] .theme-blur-fade-veil {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(34, 211, 238, 0.10) 0%,
+    rgba(168, 85, 247, 0.08) 45%,
+    transparent 100%
+  );
+}
+
+.theme-vivid-overlay.is-animating .theme-blur-fade-veil,
+.theme-blur-fade-overlay.is-animating .theme-blur-fade-veil {
+  animation: themeBlurFadeVeilAnim 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes themeBlurFadeVeilAnim {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  30% {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  65% {
+    opacity: 0.6;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
 }
 
 .theme-vivid-wave {
@@ -2105,13 +2249,14 @@ body {
   height: 150vmax;
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0.05);
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.5) 0%, rgba(168, 85, 247, 0.45) 30%, rgba(244, 63, 94, 0.35) 55%, rgba(251, 191, 36, 0.2) 75%, transparent 100%);
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.4) 0%, rgba(168, 85, 247, 0.35) 30%, rgba(244, 63, 94, 0.25) 55%, rgba(251, 191, 36, 0.15) 75%, transparent 100%);
   filter: blur(24px);
   pointer-events: none;
 }
 
-.theme-vivid-overlay.is-animating .theme-vivid-wave {
-  animation: themeVividWaveExpand 0.75s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
+.theme-vivid-overlay.is-animating .theme-vivid-wave,
+.theme-blur-fade-overlay.is-animating .theme-vivid-wave {
+  animation: themeVividWaveExpand 0.65s cubic-bezier(0.2, 0.8, 0.25, 1) forwards;
 }
 
 @keyframes themeVividFlash {
@@ -2122,7 +2267,7 @@ body {
     opacity: 1;
   }
   75% {
-    opacity: 0.8;
+    opacity: 0.75;
   }
   100% {
     opacity: 0;
@@ -2132,242 +2277,102 @@ body {
 @keyframes themeVividWaveExpand {
   0% {
     transform: translate(-50%, -50%) scale(0.08);
-    filter: blur(10px) saturate(2);
+    filter: blur(10px) saturate(1.8);
   }
   45% {
-    filter: blur(28px) saturate(2.6) brightness(1.25);
+    filter: blur(24px) saturate(2.2) brightness(1.15);
   }
   100% {
     transform: translate(-50%, -50%) scale(1.18);
-    filter: blur(45px) saturate(1.8) brightness(1.05);
+    filter: blur(40px) saturate(1.5) brightness(1.02);
   }
 }
 
-/* Smooth vivid transitions during theme switch */
+/* Keyframe animation for subtle blur-fade on all components */
+@keyframes themeComponentBlurFade {
+  0% {
+    filter: blur(0px);
+    opacity: 1;
+    transform: scale(1);
+  }
+  30% {
+    filter: blur(3.5px);
+    opacity: 0.88;
+    transform: scale(0.998);
+  }
+  65% {
+    filter: blur(1.5px);
+    opacity: 0.96;
+    transform: scale(0.999);
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Smooth transitions for all visual properties during theme switch */
 html.theme-transitioning,
-html.theme-transitioning body,
+html.theme-transitioning * {
+  transition: background-color 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              backdrop-filter 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              -webkit-backdrop-filter 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              color 0.35s ease !important;
+}
+
+/* Subtle blur-fade applied to all core layout components */
 html.theme-transitioning #app-root-layout,
+html.theme-transitioning #center-card,
+html.theme-transitioning header,
+html.theme-transitioning footer,
+html.theme-transitioning #content-display,
 html.theme-transitioning .glass-panel,
-html.theme-transitioning nav,
-html.theme-transitioning footer {
-  transition: background-color 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-              background 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-              border-color 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-              box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1),
-              color 0.4s ease !important;
+html.theme-transitioning .theme-pastel-card,
+html.theme-transitioning .hero-banner,
+html.theme-transitioning .theme-hero-banner,
+html.theme-transitioning .system-item,
+html.theme-transitioning .edu-stack-card,
+html.theme-transitioning aside,
+html.theme-transitioning main,
+html.theme-transitioning article {
+  animation: themeComponentBlurFade 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: filter, opacity, transform;
 }
 
-/* =====================================================================
-   THEME: LIGHT GLASS MULTICOLOR DASHBOARD
-   - Light Glassmorphism, Ice Blue & Lavender Background
-   - Multicolor Pastel Components, Floating Capsule Navigation
-   - Smart Adaptive Cards, Soft Ambient Lighting
-   - 12-Component Design System Coverage
-   ===================================================================== */
-[data-theme="light-glass-multicolor"] {
-  color-scheme: light;
-
-  /* 1. Background Palette Tokens */
-  --page-bg: #EAF4FF;
-  --page-bg-secondary: #F1F5FF;
-  --surface-lavender: #F5F3FF;
-  --surface-white: #FFFFFF;
-  --ice-blue: #DCEEFF;
-  --soft-blue: #EFF6FF;
-  --soft-green: #ECFDF5;
-  --soft-yellow: #FFFBEB;
-  --soft-coral: #FFF1F2;
-  --soft-purple: #F5F3FF;
-
-  /* 2. Typography Colors */
-  --primary-ink: #1E3A6D;
-  --secondary-text: #58749A;
-  --muted-text: #7890B0;
-  --text-primary: #1E3A6D;
-  --text-secondary: #58749A;
-
-  /* 3. Accent Colors */
-  --accent-blue: #3B82F6;
-  --accent-cyan: #22C1DC;
-  --accent-green: #34D399;
-  --accent-yellow: #FCD34D;
-  --accent-orange: #FB923C;
-  --accent-coral: #FB7185;
-  --accent-purple: #A78BFA;
-  --accent-teal: #2DD4BF;
-
-  /* 4. Glass Tokens */
-  --glass-surface: rgba(255, 255, 255, 0.68);
-  --glass-surface-strong: rgba(255, 255, 255, 0.84);
-  --glass-border: rgba(255, 255, 255, 0.92);
-  --glass-colored-border: rgba(96, 165, 250, 0.20);
-  --glass-blur: 16px;
-  --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-saturate: 180%;
-  --glass-shadow: 0 8px 28px rgba(62, 115, 180, 0.10);
-  --glass-shadow-hover: 0 12px 32px rgba(62, 115, 180, 0.16);
-
-  /* 5. Brand Standard Roles */
-  --color-primary: #3B82F6;
-  --color-secondary: #22C1DC;
-  --color-accent: #FB7185;
-  --color-success: #34D399;
-  --color-warning: #FCD34D;
-  --color-danger: #FB7185;
+/* ========================================================
+   GLOBAL CARD TITLE & HEADER ICON STANDARDIZATION (25PX)
+   ======================================================== */
+.card-title-icon,
+.card-header-icon,
+[data-card-icon="true"] {
+  width: 25px !important;
+  height: 25px !important;
+  min-width: 25px !important;
+  min-height: 25px !important;
+  max-width: 25px !important;
+  max-height: 25px !important;
+  flex-shrink: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-/* Base Body & Glass Panels in Light Glass Multicolor */
-[data-theme="light-glass-multicolor"] body {
-  background-color: #EAF4FF !important;
-  color: #1E3A6D;
+.card-title-icon svg,
+.card-header-icon svg,
+[data-card-icon="true"] svg {
+  width: 25px !important;
+  height: 25px !important;
+  min-width: 25px !important;
+  min-height: 25px !important;
+  max-width: 25px !important;
+  max-height: 25px !important;
+  flex-shrink: 0 !important;
 }
 
-[data-theme="light-glass-multicolor"] .glass-panel {
-  background: rgba(255, 255, 255, 0.72) !important;
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1.5px solid rgba(255, 255, 255, 0.92) !important;
-  box-shadow: 0 8px 28px rgba(62, 115, 180, 0.10), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
-}
-
-/* COMPONENT 01 — HEADER & CAPSULE NAVIGATION */
-[data-theme="light-glass-multicolor"] #app-header {
-  background: rgba(255, 255, 255, 0.78) !important;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.92) !important;
-  box-shadow: 0 12px 32px rgba(62, 115, 180, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
-}
-
-[data-theme="light-glass-multicolor"] .neonav-item {
-  color: #1E3A6D !important;
-  transition: all 0.22s ease-in-out;
-}
-
-[data-theme="light-glass-multicolor"] .neonav-item:hover {
-  background: rgba(255, 255, 255, 0.92) !important;
-  color: #3B82F6 !important;
-  box-shadow: 0 4px 14px rgba(62, 115, 180, 0.12) !important;
-  transform: translateY(-1px);
-}
-
-[data-theme="light-glass-multicolor"] .neonav-item.active {
-  background: linear-gradient(135deg, #3B82F6 0%, #22C1DC 100%) !important;
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.95) !important;
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.38), inset 0 1px 1.5px rgba(255, 255, 255, 0.8) !important;
-}
-
-/* COMPONENT 02 — HERO BANNER */
-[data-theme="light-glass-multicolor"] .hero-banner,
-[data-theme="light-glass-multicolor"] .theme-hero-banner {
-  border: 1.5px solid rgba(255, 255, 255, 0.92) !important;
-  border-radius: 24px;
-  box-shadow: 0 10px 30px rgba(62, 115, 180, 0.10) !important;
-}
-
-/* COMPONENT 03 & 04 — SMART ADAPTIVE CARDS & SUB-CARDS */
-[data-theme="light-glass-multicolor"] .theme-pastel-card {
-  border-radius: 20px;
-  box-shadow: 0 8px 24px rgba(62, 115, 180, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-[data-theme="light-glass-multicolor"] .theme-pastel-card:hover {
-  transform: translateY(-2.5px);
-  box-shadow: 0 14px 34px rgba(62, 115, 180, 0.16);
-  border-color: rgba(96, 165, 250, 0.4);
-}
-
-/* Sub-card Pastel Categories */
-[data-theme="light-glass-multicolor"] .pastel-subcard-blue {
-  background: #EFF6FF !important;
-  border: 1px solid rgba(59, 130, 246, 0.25) !important;
-  color: #1E3A6D !important;
-}
-
-[data-theme="light-glass-multicolor"] .pastel-subcard-green {
-  background: #ECFDF5 !important;
-  border: 1px solid rgba(52, 211, 153, 0.25) !important;
-  color: #065F46 !important;
-}
-
-[data-theme="light-glass-multicolor"] .pastel-subcard-yellow {
-  background: #FFFBEB !important;
-  border: 1px solid rgba(251, 146, 60, 0.25) !important;
-  color: #92400E !important;
-}
-
-[data-theme="light-glass-multicolor"] .pastel-subcard-coral {
-  background: #FFF1F2 !important;
-  border: 1px solid rgba(251, 113, 133, 0.25) !important;
-  color: #9F1239 !important;
-}
-
-[data-theme="light-glass-multicolor"] .pastel-subcard-purple {
-  background: #F5F3FF !important;
-  border: 1px solid rgba(167, 139, 250, 0.25) !important;
-  color: #5B21B6 !important;
-}
-
-/* COMPONENT 05 — TYPOGRAPHY REFINEMENTS */
-[data-theme="light-glass-multicolor"] h1,
-[data-theme="light-glass-multicolor"] h2,
-[data-theme="light-glass-multicolor"] h3,
-[data-theme="light-glass-multicolor"] h4,
-[data-theme="light-glass-multicolor"] .text-slate-900,
-[data-theme="light-glass-multicolor"] .text-blue-950,
-[data-theme="light-glass-multicolor"] .text-slate-800 {
-  color: #1E3A6D !important;
-}
-
-[data-theme="light-glass-multicolor"] p,
-[data-theme="light-glass-multicolor"] .text-slate-600,
-[data-theme="light-glass-multicolor"] .text-slate-700 {
-  color: #58749A;
-}
-
-[data-theme="light-glass-multicolor"] .text-slate-400,
-[data-theme="light-glass-multicolor"] .text-slate-500 {
-  color: #7890B0;
-}
-
-/* COMPONENT 07 — CAPSULE BUTTONS & FILTER CHIPS */
-[data-theme="light-glass-multicolor"] .capsule-chip {
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  color: #1E3A6D;
-  transition: all 0.2s ease;
-}
-
-[data-theme="light-glass-multicolor"] .capsule-chip:hover {
-  background: #EFF6FF;
-  color: #3B82F6;
-  border-color: rgba(59, 130, 246, 0.3);
-}
-
-[data-theme="light-glass-multicolor"] .capsule-chip.active {
-  background: linear-gradient(135deg, #3B82F6 0%, #22C1DC 100%) !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
-}
-
-/* COMPONENT 10 — FOOTER DOCK */
-[data-theme="light-glass-multicolor"] #app-footer {
-  background: rgba(255, 255, 255, 0.78) !important;
-  border-top: 2px solid rgba(255, 255, 255, 0.92) !important;
-  box-shadow: 0 -12px 32px rgba(62, 115, 180, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.95) !important;
-}
-
-/* Form Inputs Focus Ring in Light Glass Multicolor */
-[data-theme="light-glass-multicolor"] input:focus,
-[data-theme="light-glass-multicolor"] textarea:focus,
-[data-theme="light-glass-multicolor"] select:focus {
-  border-color: #3B82F6 !important;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22) !important;
-  outline: none !important;
-}
 
 
 

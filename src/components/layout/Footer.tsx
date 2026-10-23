@@ -6,7 +6,6 @@ import { THEME_LIST } from '@/data/themes';
 import { WeatherWidget } from './WeatherWidget';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
-import { useLanguage } from '@/context/LanguageContext';
 
 export interface FooterProps {
   pages: PageMeta[];
@@ -36,17 +35,12 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenAiChat,
 }) => {
   const { showToast } = useToast();
-  const { language, setLanguage, t } = useLanguage();
   const activePage = pages[currentPage] || pages[0];
 
   const [isPageMenuOpen, setIsPageMenuOpen] = useState<boolean>(false);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState<boolean>(false);
-  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState<boolean>(false);
-  const [isLangMenuOpen, setIsLangMenuOpen] = useState<boolean>(false);
   const pageMenuContainerRef = useRef<HTMLDivElement>(null);
   const contactContainerRef = useRef<HTMLDivElement>(null);
-  const themeMenuContainerRef = useRef<HTMLDivElement>(null);
-  const langMenuContainerRef = useRef<HTMLDivElement>(null);
 
   // Close popup menus when clicking outside
   useEffect(() => {
@@ -57,20 +51,14 @@ export const Footer: React.FC<FooterProps> = ({
       if (contactContainerRef.current && !contactContainerRef.current.contains(event.target as Node)) {
         setIsContactMenuOpen(false);
       }
-      if (themeMenuContainerRef.current && !themeMenuContainerRef.current.contains(event.target as Node)) {
-        setIsThemeMenuOpen(false);
-      }
-      if (langMenuContainerRef.current && !langMenuContainerRef.current.contains(event.target as Node)) {
-        setIsLangMenuOpen(false);
-      }
     };
-    if (isPageMenuOpen || isContactMenuOpen || isThemeMenuOpen || isLangMenuOpen) {
+    if (isPageMenuOpen || isContactMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isPageMenuOpen, isContactMenuOpen, isThemeMenuOpen, isLangMenuOpen]);
+  }, [isPageMenuOpen, isContactMenuOpen]);
 
   return (
     <footer
@@ -99,7 +87,7 @@ export const Footer: React.FC<FooterProps> = ({
             <button
               type="button"
               onClick={onPrevPage}
-              title={`${t.footer.prevPage} (←)`}
+              title="Trang trước (Lùi trang)"
               className="w-[34px] h-[34px] rounded-[999px] bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-cyan-400 flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0"
             >
               <svg className="w-[14px] h-[14px] stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +103,7 @@ export const Footer: React.FC<FooterProps> = ({
                 e.stopPropagation();
                 setIsPageMenuOpen((prev) => !prev);
               }}
-              title={`${t.footer.pageOf} ${t.pages[activePage.id]?.shortTitle || activePage.shortTitle} (${currentPage + 1}/${pages.length}) — ${t.footer.quickJump}`}
+              title={`Đang ở ${activePage.shortTitle} (${currentPage + 1}/${pages.length}) — Nhấp để tới trang nhanh`}
               className="flex-1 h-[34px] flex items-center justify-center cursor-pointer transition-transform hover:scale-105 px-0.5"
             >
               {currentPage === 6 ? (
@@ -127,8 +115,6 @@ export const Footer: React.FC<FooterProps> = ({
                       ? 'bg-slate-950/90 border border-cyan-400/80 shadow-[0_0_12px_rgba(6,182,212,0.6)] text-cyan-300'
                       : currentTheme === 'flat-rainbow'
                       ? 'bg-white text-slate-900 border-2 font-black shadow-xs'
-                      : currentTheme === 'light-glass-multicolor'
-                      ? 'bg-gradient-to-r from-blue-50/90 to-indigo-50/90 border border-blue-200/90 shadow-2xs text-[#1E3A6D]'
                       : 'bg-indigo-50/90 border border-indigo-200/90 shadow-2xs text-indigo-700'
                   }`}
                   style={
@@ -162,7 +148,7 @@ export const Footer: React.FC<FooterProps> = ({
             <button
               type="button"
               onClick={onNextPage}
-              title={`${t.footer.nextPage} (→)`}
+              title="Trang kế tiếp (Tới trang)"
               className="w-[34px] h-[34px] rounded-[999px] bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-cyan-400 flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0"
             >
               <svg className="w-[14px] h-[14px] stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,7 +172,7 @@ export const Footer: React.FC<FooterProps> = ({
                   <WebIcon name="compass" className="w-3.5 h-3.5" />
                 </span>
                 <span className="text-xs font-black text-slate-800 dark:text-slate-100">
-                  {t.footer.quickJump} ({currentPage + 1}/{pages.length})
+                  Đi Tới Trang Nhanh ({currentPage + 1}/{pages.length})
                 </span>
               </div>
               <button
@@ -202,7 +188,6 @@ export const Footer: React.FC<FooterProps> = ({
             <div className="grid grid-cols-2 gap-1.5 max-h-64 overflow-y-auto no-scrollbar py-0.5">
               {pages.map((p, idx) => {
                 const isActive = idx === currentPage;
-                const pageTitle = t.pages[p.id]?.shortTitle || p.shortTitle;
                 return (
                   <button
                     key={p.id}
@@ -224,7 +209,7 @@ export const Footer: React.FC<FooterProps> = ({
                       {p.iconSvg}
                     </span>
                     <span className="text-[11px] truncate flex-1">
-                      {idx + 1}. {pageTitle}
+                      {idx + 1}. {p.shortTitle}
                     </span>
                   </button>
                 );
@@ -238,97 +223,36 @@ export const Footer: React.FC<FooterProps> = ({
       <div className="flex-1 h-full flex items-center justify-end overflow-visible pl-2 min-w-0 relative z-20">
         <div className="flex items-center justify-end py-1 relative">
           {/* Tiện ích 1: Ngôn Ngữ */}
-          <div ref={langMenuContainerRef} className="relative z-10">
-            <button
-              type="button"
-              onClick={() => setIsLangMenuOpen((prev) => !prev)}
-              className="footer-util-btn border border-indigo-300/80 dark:border-indigo-400/40 cursor-pointer"
+          <button
+            type="button"
+            onClick={() => showToast('Đã mở chuyển đổi Ngôn Ngữ')}
+            className="footer-util-btn border border-indigo-300/80 dark:border-indigo-400/40"
+            style={{
+              background: currentTheme === 'dark-neon' ? 'rgba(30, 27, 75, 0.75)' : 'rgba(224, 231, 255, 0.7)',
+              color: currentTheme === 'dark-neon' ? '#818cf8' : '#4f46e5',
+              zIndex: 10,
+            }}
+            title="Ngôn Ngữ"
+          >
+            <div
+              className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0"
               style={{
-                background: currentTheme === 'dark-neon' ? 'rgba(30, 27, 75, 0.75)' : 'rgba(224, 231, 255, 0.7)',
+                background: currentTheme === 'dark-neon' ? 'rgba(99, 102, 241, 0.25)' : 'rgba(99, 102, 241, 0.2)',
                 color: currentTheme === 'dark-neon' ? '#818cf8' : '#4f46e5',
               }}
-              title={t.footer.language}
             >
-              <div
-                className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 text-base"
-                style={{
-                  background: currentTheme === 'dark-neon' ? 'rgba(99, 102, 241, 0.25)' : 'rgba(99, 102, 241, 0.2)',
-                  color: currentTheme === 'dark-neon' ? '#818cf8' : '#4f46e5',
-                }}
-              >
-                {language === 'vi' ? '🇻🇳' : '🇬🇧'}
-              </div>
-              <span
-                className="text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight flex items-center gap-1"
-                style={{ color: currentTheme === 'dark-neon' ? '#818cf8' : '#4f46e5' }}
-              >
-                <span>{language === 'vi' ? 'Tiếng Việt' : 'English'}</span>
-                <span className="text-[9px] font-black opacity-70">▾</span>
-              </span>
-            </button>
-
-            {/* Popup Menu Chọn Ngôn Ngữ */}
-            {isLangMenuOpen && (
-              <div
-                className="absolute bottom-[calc(100%+10px)] left-0 w-48 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-2xl p-2.5 text-left z-[100] flex flex-col gap-1.5 font-play select-none animate-in fade-in zoom-in-95 duration-150"
-                style={{
-                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.2)',
-                }}
-              >
-                <div className="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-white/10 px-1">
-                  <span className="text-[11px] font-black text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-                    <span>🌐</span>
-                    <span>{t.footer.selectLanguage}</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setIsLangMenuOpen(false)}
-                    className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center text-xs"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLanguage('vi');
-                    setIsLangMenuOpen(false);
-                    showToast('Đã chuyển ngôn ngữ sang Tiếng Việt');
-                  }}
-                  className={`w-full p-2 rounded-xl text-left flex items-center justify-between transition cursor-pointer ${
-                    language === 'vi'
-                      ? 'bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-300 dark:border-cyan-400 text-indigo-700 dark:text-cyan-300 font-black'
-                      : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold'
-                  }`}
-                >
-                  <span className="flex items-center gap-2 text-xs">
-                    <span className="text-base">🇻🇳</span>
-                    <span>Tiếng Việt</span>
-                  </span>
-                  {language === 'vi' && <span className="text-indigo-600 dark:text-cyan-400 text-xs font-bold">✓</span>}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setLanguage('en');
-                    setIsLangMenuOpen(false);
-                    showToast('Switched language to English');
-                  }}
-                  className={`w-full p-2 rounded-xl text-left flex items-center justify-between transition cursor-pointer ${
-                    language === 'en'
-                      ? 'bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-300 dark:border-cyan-400 text-indigo-700 dark:text-cyan-300 font-black'
-                      : 'hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold'
-                  }`}
-                >
-                  <span className="flex items-center gap-2 text-xs">
-                    <span className="text-base">🇬🇧</span>
-                    <span>English</span>
-                  </span>
-                  {language === 'en' && <span className="text-indigo-600 dark:text-cyan-400 text-xs font-bold">✓</span>}
-                </button>
-              </div>
-            )}
-          </div>
+              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+            </div>
+            <span
+              className="text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight"
+              style={{ color: currentTheme === 'dark-neon' ? '#818cf8' : '#4f46e5' }}
+            >
+              Ngôn Ngữ
+            </span>
+          </button>
 
           {/* Tiện ích 2: Hình Nền (xếp chồng đè lên nút Ngôn Ngữ) */}
           <button
@@ -366,157 +290,86 @@ export const Footer: React.FC<FooterProps> = ({
             </span>
           </button>
 
-          {/* Tiện ích 3: Nút Giao Diện - Click mở Danh sách Giao diện (Icon & Tiêu đề 4 chữ) */}
-          <div ref={themeMenuContainerRef} className="relative -ml-[64px] z-30">
-            <button
-              id="theme-toggle-footer-btn"
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsThemeMenuOpen((prev) => !prev);
-              }}
-              className="footer-util-btn border cursor-pointer"
+          {/* Tiện ích 3: Nút Giao Diện - Click mở Danh sách Giao diện (ThemeSelectorModal) */}
+          <button
+            id="theme-toggle-footer-btn"
+            type="button"
+            onClick={() => {
+              if (onOpenThemeModal) {
+                onOpenThemeModal();
+              } else if (onSelectTheme) {
+                const nextTheme: SiteTheme =
+                  currentTheme === 'dark-neon'
+                    ? 'flat-rainbow'
+                    : currentTheme === 'flat-rainbow'
+                    ? 'light-glass'
+                    : 'dark-neon';
+                onSelectTheme(nextTheme);
+              }
+            }}
+            className="footer-util-btn border -ml-[64px] cursor-pointer"
+            style={{
+              background:
+                currentTheme === 'dark-neon'
+                  ? 'linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.85) 100%)'
+                  : currentTheme === 'flat-rainbow'
+                  ? 'linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, rgba(240, 253, 244, 0.9) 50%, rgba(238, 242, 255, 0.95) 100%)'
+                  : 'linear-gradient(135deg, rgba(245, 243, 255, 0.9) 0%, rgba(254, 243, 199, 0.85) 100%)',
+              borderColor:
+                currentTheme === 'dark-neon'
+                  ? 'rgba(56, 189, 248, 0.5)'
+                  : currentTheme === 'flat-rainbow'
+                  ? 'rgba(236, 72, 153, 0.8)'
+                  : 'rgba(252, 211, 77, 0.8)',
+              color:
+                currentTheme === 'dark-neon'
+                  ? '#38bdf8'
+                  : currentTheme === 'flat-rainbow'
+                  ? '#db2777'
+                  : '#d97706',
+              zIndex: 30,
+            }}
+            title="Tùy chọn giao diện hệ thống (Nhấp để mở danh sách chọn)"
+          >
+            <div
+              className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs"
               style={{
                 background:
                   currentTheme === 'dark-neon'
-                    ? 'linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.85) 100%)'
+                    ? 'rgba(56, 189, 248, 0.2)'
                     : currentTheme === 'flat-rainbow'
-                    ? 'linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, rgba(240, 253, 244, 0.9) 50%, rgba(238, 242, 255, 0.95) 100%)'
-                    : currentTheme === 'light-glass-multicolor'
-                    ? 'linear-gradient(135deg, rgba(234, 244, 255, 0.95) 0%, rgba(241, 245, 255, 0.9) 50%, rgba(245, 243, 255, 0.95) 100%)'
-                    : 'linear-gradient(135deg, rgba(245, 243, 255, 0.9) 0%, rgba(254, 243, 199, 0.85) 100%)',
-                borderColor:
-                  currentTheme === 'dark-neon'
-                    ? 'rgba(56, 189, 248, 0.5)'
-                    : currentTheme === 'flat-rainbow'
-                    ? 'rgba(236, 72, 153, 0.8)'
-                    : currentTheme === 'light-glass-multicolor'
-                    ? 'rgba(59, 130, 246, 0.45)'
-                    : 'rgba(252, 211, 77, 0.8)',
+                    ? 'rgba(236, 72, 153, 0.2)'
+                    : 'rgba(251, 191, 36, 0.25)',
                 color:
                   currentTheme === 'dark-neon'
                     ? '#38bdf8'
                     : currentTheme === 'flat-rainbow'
                     ? '#db2777'
-                    : currentTheme === 'light-glass-multicolor'
-                    ? '#1E3A6D'
                     : '#d97706',
               }}
-              title="Tùy chọn giao diện hệ thống (Nhấp để mở danh sách chọn)"
             >
-              <div
-                className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs"
-                style={{
-                  background:
-                    currentTheme === 'dark-neon'
-                      ? 'rgba(56, 189, 248, 0.2)'
-                      : currentTheme === 'flat-rainbow'
-                      ? 'rgba(236, 72, 153, 0.2)'
-                      : currentTheme === 'light-glass-multicolor'
-                      ? 'rgba(59, 130, 246, 0.18)'
-                      : 'rgba(251, 191, 36, 0.25)',
-                  color:
-                    currentTheme === 'dark-neon'
-                      ? '#38bdf8'
-                      : currentTheme === 'flat-rainbow'
-                      ? '#db2777'
-                      : currentTheme === 'light-glass-multicolor'
-                      ? '#3B82F6'
-                      : '#d97706',
-                }}
-              >
-                {currentTheme === 'dark-neon' ? (
-                  <WebIcon name="moon" className="w-[16px] h-[16px]" />
-                ) : currentTheme === 'flat-rainbow' ? (
-                  <WebIcon name="palette" className="w-[16px] h-[16px]" />
-                ) : currentTheme === 'light-glass-multicolor' ? (
-                  <WebIcon name="layoutdashboard" className="w-[16px] h-[16px]" />
-                ) : (
-                  <WebIcon name="sun" className="w-[16px] h-[16px]" />
-                )}
-              </div>
-              <span
-                className="text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play"
-                style={{
-                  color:
-                    currentTheme === 'dark-neon'
-                      ? '#38bdf8'
-                      : currentTheme === 'flat-rainbow'
-                      ? '#db2777'
-                      : currentTheme === 'light-glass-multicolor'
-                      ? '#1E3A6D'
-                      : '#d97706',
-                }}
-              >
-                Giao Diện
-              </span>
-            </button>
-
-            {/* Popup Menu Danh sách Giao diện (Icon & Tiêu đề 4 chữ) */}
-            {isThemeMenuOpen && (
-              <div
-                className="absolute bottom-[calc(100%+14px)] right-0 w-64 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-2xl p-2.5 text-left z-[100] flex flex-col gap-1.5 font-play select-none animate-in fade-in zoom-in-95 duration-150"
-                style={{
-                  boxShadow: '0 20px 45px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.2)',
-                }}
-              >
-                <div className="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-white/10 px-1">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                    Chọn Giao Diện
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setIsThemeMenuOpen(false)}
-                    className="w-5 h-5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 flex items-center justify-center cursor-pointer text-xs"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <div className="flex flex-col gap-1">
-                  {THEME_LIST.map((theme) => {
-                    const isSelected = currentTheme === theme.id;
-                    const iconName = theme.icon.toLowerCase();
-                    return (
-                      <button
-                        key={theme.id}
-                        type="button"
-                        onClick={() => {
-                          if (onSelectTheme) {
-                            onSelectTheme(theme.id);
-                          }
-                          setIsThemeMenuOpen(false);
-                          showToast(`Đã chuyển sang ${theme.fourWordName}`);
-                        }}
-                        className={`w-full p-2 rounded-xl border flex items-center justify-between gap-2.5 transition cursor-pointer text-left ${
-                          isSelected
-                            ? 'bg-indigo-50 dark:bg-indigo-950/70 border-indigo-300 dark:border-cyan-400 text-indigo-700 dark:text-cyan-300 font-bold shadow-2xs'
-                            : 'bg-white/70 dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-700/60 border-slate-200/60 dark:border-white/10 text-slate-700 dark:text-slate-200'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <span
-                            className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 shadow-2xs"
-                            style={{
-                              background: theme.accentColor + '22',
-                              color: theme.accentColor,
-                            }}
-                          >
-                            <WebIcon name={iconName} className="w-3.5 h-3.5" />
-                          </span>
-                          <span className="text-xs font-bold truncate">
-                            {theme.fourWordName}
-                          </span>
-                        </div>
-                        {isSelected && (
-                          <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 shadow-xs" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
+              {currentTheme === 'dark-neon' ? (
+                <WebIcon name="moon" className="w-[16px] h-[16px]" />
+              ) : currentTheme === 'flat-rainbow' ? (
+                <WebIcon name="palette" className="w-[16px] h-[16px]" />
+              ) : (
+                <WebIcon name="sun" className="w-[16px] h-[16px]" />
+              )}
+            </div>
+            <span
+              className="text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play"
+              style={{
+                color:
+                  currentTheme === 'dark-neon'
+                    ? '#38bdf8'
+                    : currentTheme === 'flat-rainbow'
+                    ? '#db2777'
+                    : '#d97706',
+              }}
+            >
+              Giao Diện
+            </span>
+          </button>
 
           {/* Tiện ích 4: Avatar Hùng Thái biến đổi hình thái từ pill -> circle -> bay lên + Pure CSS Circle Menu */}
           <div ref={contactContainerRef} className="avatar-circle-menu-container -ml-[64px] z-42">

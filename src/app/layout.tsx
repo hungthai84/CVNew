@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import '@/styles/globals.css';
 import { ToastProvider } from '@/components/ui/Toast';
-import { LanguageProvider } from '@/context/LanguageContext';
 
 export const metadata: Metadata = {
   title: 'Hùng Thái Portal - Light Multi-Color Glass UI',
@@ -28,14 +27,15 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('portfolio-theme')||localStorage.getItem('hungthai_site_theme')||'light-glass';var val=t==='dark-neon'?'dark-neon':(t==='flat-rainbow'?'flat-rainbow':'light-glass');document.documentElement.setAttribute('data-theme',val);if(val==='dark-neon')document.documentElement.classList.add('dark');}catch(e){}})();`,
+            __html: `(function(){try{var _f=typeof window.fetch==='function'?window.fetch.bind(window):undefined;if(_f){try{Object.defineProperty(window,'fetch',{configurable:true,enumerable:true,get:function(){return _f;},set:function(v){if(typeof v==='function')_f=v;}});}catch(e){}try{if(typeof Window!=='undefined'&&Window.prototype){Object.defineProperty(Window.prototype,'fetch',{configurable:true,enumerable:true,get:function(){return _f;},set:function(v){if(typeof v==='function')_f=v;}});}}catch(e){}}}catch(e){}try{var t=localStorage.getItem('portfolio-theme')||localStorage.getItem('hungthai_site_theme')||'light-glass';var val=t==='dark-neon'?'dark-neon':(t==='flat-rainbow'?'flat-rainbow':'light-glass');document.documentElement.setAttribute('data-theme',val);if(val==='dark-neon')document.documentElement.classList.add('dark');}catch(e){}})();`,
           }}
         />
       </head>
-      <body className="text-slate-800 h-screen w-screen overflow-hidden p-0 m-0 relative bg-slate-50 dark:bg-[#080b18]">
-        <LanguageProvider>
-          <ToastProvider>{children}</ToastProvider>
-        </LanguageProvider>
+      <body
+        suppressHydrationWarning
+        className="text-slate-800 h-screen w-screen overflow-hidden p-0 m-0 relative bg-slate-50 dark:bg-[#080b18]"
+      >
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

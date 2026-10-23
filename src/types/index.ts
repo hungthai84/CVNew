@@ -171,8 +171,6 @@ export interface ProjectData {
   image: string;
   mindmap: string;
   quote: string;
-  englishTitle?: string;
-  fullContent?: string;
   star: {
     situation: string;
     approach: string;
@@ -255,7 +253,7 @@ export interface WallpaperOption {
   createdAt?: number;
 }
 
-export type SiteTheme = 'light-glass' | 'light-glass-multicolor' | 'dark-neon' | 'flat-rainbow' | (string & {});
+export type SiteTheme = 'light-glass' | 'dark-neon' | 'flat-rainbow' | (string & {});
 
 export interface ThemeOption {
   id: SiteTheme;
