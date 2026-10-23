@@ -223,9 +223,7 @@ export const DomainsView: React.FC = () => {
 
   return (
     <div
-      className={`w-full h-full flex-1 flex flex-col justify-between gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 ${
-        selectedDomain ? 'overflow-y-auto no-scrollbar pb-2' : 'overflow-hidden'
-      }`}
+      className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 overflow-hidden"
     >
       {/* 1. TOP HERO BANNER */}
       <HeroBanner
@@ -359,10 +357,10 @@ export const DomainsView: React.FC = () => {
       />
 
       {/* 3. VÙNG HIỂN THỊ NỘI DUNG LĨNH VỰC (GRID 6 THẺ CĂN CHỈNH CHIỀU CAO NẰM GỌN TRONG THẺ CHÍNH) */}
-      <div className="w-full flex-1 min-h-0 relative flex flex-col">
+      <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
         {!selectedDomain ? (
           /* Grid View 3x2 tự động co giãn chiều cao vừa khít thẻ chính với khoảng cách 15px */
-          <div className="w-full h-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-[15px] items-stretch">
+          <div className="w-full h-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-[15px] items-stretch overflow-y-auto lg:overflow-visible glass-scrollbar pr-0.5">
             {filteredDomains.map((domain) => {
               const cfg = getCardVisualConfig(domain.id);
               return (
@@ -474,11 +472,12 @@ export const DomainsView: React.FC = () => {
             })}
           </div>
         ) : (
-          /* Detail View: Compact, Harmonious, Optimized Layout with Full Dark Glass Neon Support */
-          <div
-            style={{ borderRadius: '22px' }}
-            className={`w-full p-4 sm:p-5 border ${selectedDomain.colorTheme.border} dark:border-white/20 shadow-2xl flex flex-col gap-3.5 relative overflow-hidden text-left glass-panel bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl`}
-          >
+          /* Detail View: Compact, Harmonious, Optimized Layout with Full Dark Glass Neon Support & Smooth Scrollbar */
+          <div className="w-full h-full flex-1 min-h-0 overflow-y-auto glass-scrollbar pr-1.5 pb-2">
+            <div
+              style={{ borderRadius: '22px' }}
+              className={`w-full p-4 sm:p-5 border ${selectedDomain.colorTheme.border} dark:border-white/20 shadow-2xl flex flex-col gap-3.5 relative overflow-x-hidden text-left glass-panel bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl`}
+            >
             {/* 1. Header Bar: Compact & Integrated */}
             <div className="w-full flex items-center justify-between gap-3 pb-2.5 border-b border-slate-200/80 dark:border-white/10">
               <div
@@ -679,6 +678,7 @@ export const DomainsView: React.FC = () => {
                 </div>
               </div>
 
+            </div>
             </div>
           </div>
         )}

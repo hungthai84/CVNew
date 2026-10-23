@@ -5,11 +5,13 @@ import { EXPERIENCE_MILESTONES } from '@/data/experience';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { HeroBanner } from '@/components/ui/HeroBanner';
+import { CareerMindmap } from '@/components/ui/CareerMindmap';
 
 export const ExperienceView: React.FC = () => {
   const { showToast } = useToast();
   const [activeKey, setActiveKey] = useState<string>('2013');
   const [showJobCard, setShowJobCard] = useState<boolean>(false);
+  const [showMindmap, setShowMindmap] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [carouselSlideIdx, setCarouselSlideIdx] = useState<number>(0);
   const [isPaused, setIsPaused] = useState<boolean>(false);
@@ -253,20 +255,39 @@ export const ExperienceView: React.FC = () => {
             videoSrc="https://cdn.scena.ai/project/10223/7aed89cdf840dad2b1adad177bdd91b7df0cb825e5ab35a9640a65bd04d4ca9a.mp4"
             bottomControls={
               <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-1 px-1">
-                {/* Lịch Sử Công Tác nằm dưới banner bên trong banner */}
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md border border-white shadow-2xs">
-                  <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-xs">
-                    <svg className="w-3 h-3 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <circle cx="12" cy="12" r="9" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 014 9 15 15 0 01-4 9 15 15 0 01-4-9 15 15 0 014-9z" />
-                    </svg>
+                {/* Cụm trái: Lịch Sử Công Tác & Nút Chuyển đổi Sơ đồ Tư duy (Interactive Career Mindmap) */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 backdrop-blur-md border border-white shadow-2xs">
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-xs">
+                      <svg className="w-3 h-3 stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="9" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 014 9 15 15 0 01-4 9 15 15 0 01-4-9 15 15 0 014-9z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xs sm:text-sm font-black font-play tracking-tight text-blue-950">
+                      Lịch Sử Công Tác
+                    </h3>
+                    <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                      2003 – 2026+
+                    </span>
                   </div>
-                  <h3 className="text-xs sm:text-sm font-black font-play tracking-tight text-blue-950">
-                    Lịch Sử Công Tác
-                  </h3>
-                  <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
-                    2003 – 2026+
-                  </span>
+
+                  {/* Nút bật/tắt Bản đồ Tư duy Tương tác (Interactive Career Mindmap) */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMindmap((prev) => !prev);
+                    }}
+                    className={`px-3 py-1 rounded-full text-xs font-black font-play tracking-tight transition-all duration-200 flex items-center gap-1.5 cursor-pointer border shadow-2xs ${
+                      showMindmap
+                        ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white border-white/80 shadow-sm scale-[1.02]'
+                        : 'bg-white/95 hover:bg-indigo-50 text-indigo-700 border-indigo-200/90'
+                    }`}
+                    title="Kết nối trực tiếp cột mốc Kinh nghiệm (2003–2026+) với Kỹ năng và Dự án tương ứng"
+                  >
+                    <WebIcon name="layers" className="w-3.5 h-3.5" />
+                    <span>{showMindmap ? 'Đang mở Sơ Đồ Mindmap' : 'Bản Đồ Tư Duy (Mindmap)'}</span>
+                  </button>
                 </div>
 
                 {/* Tìm kiếm nằm dưới banner bên trong banner */}
@@ -304,13 +325,20 @@ export const ExperienceView: React.FC = () => {
           />
 
           {/* =====================================================================
-              2. 8-CARD HORIZONTAL TIMELINE (Năm 2003 -> Năm 2026+)
-              - Căn chỉnh thu gọn nằm gọn trong thẻ chính
-              - Logo hình tròn lắp đầy, KHÔNG viền
-              - LBC có thêm 1 hình sản phẩm HTVC
-              - Đã bỏ line kết nối thừa
-              - Click vào logo để mở thẻ Job (ẩn tất cả kể cả banner)
+              2. BẢN ĐỒ TƯ DUY TƯƠNG TÁC (MINDMAP) HOẶC 8-CARD HORIZONTAL TIMELINE
               ===================================================================== */}
+          {showMindmap ? (
+            <div className="w-full flex-1 min-h-0 overflow-hidden flex flex-col">
+              <CareerMindmap
+                initialMilestoneKey={activeKey.startsWith('2013') || activeKey === '2014-airpay' ? '2013' : activeKey}
+                onClose={() => setShowMindmap(false)}
+                onOpenJobCard={(milestoneKey) => {
+                  setShowMindmap(false);
+                  handleOpenJobCard(milestoneKey);
+                }}
+              />
+            </div>
+          ) : (
           <div className="w-full flex-1 min-h-0 p-2.5 sm:p-3 rounded-[20px] bg-white/85 backdrop-blur-xl border border-white/95 shadow-xs overflow-x-auto no-scrollbar relative flex flex-col justify-center">
             <div className="w-full h-full min-w-[960px] grid grid-cols-8 gap-2 pt-2 pb-0.5 items-stretch">
               {filteredRoadmapCards.map((item, idx) => {
@@ -479,6 +507,7 @@ export const ExperienceView: React.FC = () => {
               })}
             </div>
           </div>
+          )}
 
         </>
       )}

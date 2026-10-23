@@ -187,7 +187,6 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
             <div className="grid grid-cols-2 gap-1.5 max-h-64 overflow-y-auto no-scrollbar py-0.5">
               {pages.map((p, idx) => {
-                const isActive = idx === currentPage;
                 return (
                   <button
                     key={p.id}
@@ -196,11 +195,7 @@ export const Footer: React.FC<FooterProps> = ({
                       onSelectPage(idx);
                       setIsPageMenuOpen(false);
                     }}
-                    className={`p-1.5 px-2.5 rounded-full border text-left flex items-center gap-2 transition cursor-pointer ${
-                      isActive
-                        ? 'bg-indigo-50 dark:bg-indigo-950/80 border-indigo-400 dark:border-cyan-400 text-indigo-700 dark:text-cyan-300 font-black shadow-2xs'
-                        : 'bg-white/80 dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/80 border-slate-100 dark:border-white/10 text-slate-700 dark:text-slate-200 font-semibold'
-                    }`}
+                    className="p-1.5 px-2.5 rounded-full border text-left flex items-center gap-2 transition cursor-pointer bg-white/80 dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/80 border-slate-100 dark:border-white/10 text-slate-700 dark:text-slate-200 font-semibold"
                   >
                     <span
                       className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"

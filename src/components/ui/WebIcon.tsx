@@ -795,6 +795,48 @@ export const WebIcon: React.FC<WebIconProps> = ({ name, className = 'w-4 h-4' })
         </svg>
       );
 
+    case 'qr-code':
+    case 'qrcode':
+      return (
+        <svg className={iconClass} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <rect width="5" height="5" x="3" y="3" rx="1" />
+          <rect width="5" height="5" x="16" y="3" rx="1" />
+          <rect width="5" height="5" x="3" y="16" rx="1" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M21 16h-3a2 2 0 0 0-2 2v3M21 21v.01M12 7v3a2 2 0 0 1-2 2H7M3 12h.01M12 3h.01M12 16v.01M16 12h1M21 12v.01M12 21v-1" />
+        </svg>
+      );
+
+    case 'cloud-rain':
+    case 'weather':
+      return (
+        <svg className={iconClass} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16 14v6M8 14v6M12 16v6" />
+        </svg>
+      );
+
+    case 'eye-off':
+      return (
+        <svg className={iconClass} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="m2 2 20 20" />
+        </svg>
+      );
+
+    case 'share':
+    case 'share-2':
+      return (
+        <svg className={iconClass} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">
+          <circle cx="18" cy="5" r="3" />
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="19" r="3" />
+          <line strokeLinecap="round" strokeLinejoin="round" x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+          <line strokeLinecap="round" strokeLinejoin="round" x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+        </svg>
+      );
+
     default:
       return (
         <svg className={iconClass} fill="none" stroke="currentColor" strokeWidth="1.85" viewBox="0 0 24 24">

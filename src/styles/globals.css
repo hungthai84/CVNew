@@ -178,30 +178,30 @@ html.theme-transitioning footer {
 .glass-scrollbar,
 #content-display {
   scrollbar-width: thin;
-  scrollbar-color: rgba(59, 130, 246, 0.35) rgba(255, 255, 255, 0.18);
+  scrollbar-color: rgba(59, 130, 246, 0.52) rgba(255, 255, 255, 0.22);
 }
 
 [data-theme="dark-neon"] .glass-scrollbar,
 [data-theme="dark-neon"] #content-display,
 .dark .glass-scrollbar,
 .dark #content-display {
-  scrollbar-color: rgba(34, 211, 238, 0.42) rgba(15, 23, 42, 0.35);
+  scrollbar-color: rgba(34, 211, 238, 0.58) rgba(15, 23, 42, 0.42);
 }
 
 [data-theme="flat-rainbow"] .glass-scrollbar,
 [data-theme="flat-rainbow"] #content-display {
-  scrollbar-color: rgba(96, 165, 250, 0.45) rgba(241, 245, 249, 0.6);
+  scrollbar-color: rgba(96, 165, 250, 0.58) rgba(241, 245, 249, 0.65);
 }
 
 .glass-scrollbar::-webkit-scrollbar,
 #content-display::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 .glass-scrollbar::-webkit-scrollbar-track,
 #content-display::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.28);
   border-radius: 999px;
   margin: 6px 0;
 }
@@ -210,34 +210,34 @@ html.theme-transitioning footer {
 [data-theme="dark-neon"] #content-display::-webkit-scrollbar-track,
 .dark .glass-scrollbar::-webkit-scrollbar-track,
 .dark #content-display::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.38);
+  background: rgba(15, 23, 42, 0.45);
 }
 
 .glass-scrollbar::-webkit-scrollbar-thumb,
 #content-display::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.45), rgba(139, 92, 246, 0.45));
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.6), rgba(139, 92, 246, 0.6));
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
 .glass-scrollbar::-webkit-scrollbar-thumb:hover,
 #content-display::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(37, 99, 235, 0.72), rgba(124, 58, 237, 0.72));
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.85), rgba(124, 58, 237, 0.85));
 }
 
 [data-theme="dark-neon"] .glass-scrollbar::-webkit-scrollbar-thumb,
 [data-theme="dark-neon"] #content-display::-webkit-scrollbar-thumb,
 .dark .glass-scrollbar::-webkit-scrollbar-thumb,
 .dark #content-display::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(34, 211, 238, 0.5), rgba(168, 85, 247, 0.5));
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.65), rgba(168, 85, 247, 0.65));
+  border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 [data-theme="dark-neon"] .glass-scrollbar::-webkit-scrollbar-thumb:hover,
 [data-theme="dark-neon"] #content-display::-webkit-scrollbar-thumb:hover,
 .dark .glass-scrollbar::-webkit-scrollbar-thumb:hover,
 .dark #content-display::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(34, 211, 238, 0.8), rgba(244, 114, 182, 0.75));
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.92), rgba(244, 114, 182, 0.88));
 }
 
 /* =========================================================================
@@ -278,3 +278,59 @@ html.theme-transitioning footer {
   scroll-snap-align: start;
   scroll-margin-top: 12px;
 }
+
+/* =========================================================================
+   ANIMATED LIVING MESH CSS (@keyframes orbit & background flow)
+   ========================================================================= */
+@keyframes living-mesh-orbit {
+  0% {
+    background-position: 0% 50%, 100% 50%, 50% 0%, 50% 100%, 0% 0%;
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    background-position: 65% 20%, 25% 80%, 80% 45%, 20% 35%, 25% 25%;
+  }
+  50% {
+    background-position: 100% 70%, 10% 25%, 35% 95%, 85% 15%, 50% 50%;
+    filter: hue-rotate(12deg);
+  }
+  75% {
+    background-position: 35% 85%, 75% 30%, 15% 60%, 70% 80%, 75% 25%;
+  }
+  100% {
+    background-position: 0% 50%, 100% 50%, 50% 0%, 50% 100%, 0% 0%;
+    filter: hue-rotate(0deg);
+  }
+}
+
+.living-mesh-slow {
+  background-size: 165% 165% !important;
+  animation: living-mesh-orbit 24s ease-in-out infinite;
+}
+
+.living-mesh-normal {
+  background-size: 165% 165% !important;
+  animation: living-mesh-orbit 14s ease-in-out infinite;
+}
+
+.living-mesh-fast {
+  background-size: 165% 165% !important;
+  animation: living-mesh-orbit 8s ease-in-out infinite;
+}
+
+/* =========================================================================
+   TYPOGRAPHY QUICK SCALER (A- / A / A+) FOR COMFORTABLE READING
+   ========================================================================= */
+html[data-font-scale="sm"] #content-display {
+  zoom: 0.94;
+}
+
+html[data-font-scale="md"] #content-display {
+  zoom: 1;
+}
+
+html[data-font-scale="lg"] #content-display {
+  zoom: 1.07;
+}
+
+

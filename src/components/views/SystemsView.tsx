@@ -599,7 +599,7 @@ export const SystemsView: React.FC = () => {
             </div>
 
             {/* Modal Body */}
-            <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto font-play">
+            <div className="p-5 space-y-4 max-h-[70vh] overflow-y-auto glass-scrollbar font-play">
               <div>
                 <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 font-mono">
                   Tên đầy đủ quốc tế

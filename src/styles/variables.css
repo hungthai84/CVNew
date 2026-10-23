@@ -344,13 +344,10 @@ body {
   transform: none;
 }
 
-/* Active State - Bỏ hoàn toàn hiệu ứng nổi lên trên (no translateY, no scale) */
+/* Active State - Đã xóa hoàn toàn hiệu ứng chọn trang theo yêu cầu */
 .neonav-item.active {
-  border: 1px solid rgba(255, 255, 255, 0.95) !important;
   transform: none !important;
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: none !important;
 }
 
 /* Icon Box inside NeoNav Item */
@@ -1583,12 +1580,192 @@ body {
   color: #1e293b !important;
 }
 
-/* Hero Banner Standard Responsive CSS (Giảm chiều cao tương đương từ 500px xuống 400px: tỷ lệ 80%) */
-.hero-banner {
-  width: 100%;
-  height: clamp(145px, 12vw, 208px);
-  border-radius: 14px;
-  overflow: hidden;
+/* Hero Banner Standard Responsive CSS & Dynamic Layout Switcher (Horizontal <-> Vertical 300px <-> Compact 64px) */
+.hero-banner:not(.hero-banner-vertical):not(.hero-banner-compact) {
+  width: 100% !important;
+  min-height: clamp(140px, 11.5vw, 195px);
+  height: auto;
+  border-radius: 20px;
+  overflow: visible;
+}
+
+/* Chế độ Thu Gọn Tiêu Đề Banner Siêu Gọn 64px (Compact / Mini Header Mode) */
+.hero-banner.hero-banner-compact {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  min-height: 64px !important;
+  height: 64px !important;
+  max-height: 64px !important;
+  border-radius: 16px !important;
+  overflow: visible !important;
+}
+
+/* Tinh chỉnh các nút/input bên trong thanh 64px để vừa vặn, không bị tràn chiều cao */
+.hero-banner.hero-banner-compact .hero-banner-bottom-controls,
+.hero-banner.hero-banner-compact .hero-banner-custom-children {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.hero-banner.hero-banner-compact .hero-banner-bottom-controls > div {
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  flex-wrap: nowrap !important;
+}
+
+.hero-banner.hero-banner-compact input {
+  height: 32px !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  font-size: 11px !important;
+}
+
+/* Banner dọc cố định chiều rộng 300px trên Desktop và tự thích ứng trên Mobile/Tablet */
+.hero-banner.hero-banner-vertical {
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+  height: 100%;
+  border-radius: 20px;
+  overflow: visible;
+}
+
+@media (max-width: 1023px) {
+  .hero-banner.hero-banner-vertical {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    min-height: 240px;
+    height: auto;
+  }
+}
+
+/* 1. Khi trang mặc định Banner Ngang được người dùng chuyển sang Banner Dọc 300px trên Desktop (Hỗ trợ Ghim Trái / Ghim Phải) */
+@media (min-width: 1024px) {
+  div:has(> .hero-banner-vertical),
+  section:has(> .hero-banner-vertical) {
+    flex-direction: row !important;
+    align-items: stretch !important;
+  }
+
+  /* Ghim cột Banner Dọc 300px sang bên Phải cho các trang trực tiếp */
+  div:has(> .hero-banner-vertical.hero-banner-pin-right),
+  section:has(> .hero-banner-vertical.hero-banner-pin-right) {
+    flex-direction: row-reverse !important;
+  }
+
+  div:has(> .hero-banner-vertical) > .hero-banner-vertical,
+  section:has(> .hero-banner-vertical) > .hero-banner-vertical {
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    height: auto !important;
+    min-height: 100% !important;
+    align-self: stretch !important;
+    flex-shrink: 0 !important;
+  }
+
+  div:has(> .hero-banner-vertical) > *:not(.hero-banner-vertical):not(style):not(.fixed),
+  section:has(> .hero-banner-vertical) > *:not(.hero-banner-vertical):not(style):not(.fixed) {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+  }
+
+  /* Hỗ trợ Ghim Trái / Ghim Phải cho các trang có <aside> bọc ngoài .hero-banner-vertical (Kỹ năng, Dự án, Hệ thống, Phỏng vấn) */
+  section:has(> aside > .hero-banner-vertical.hero-banner-pin-left),
+  div:has(> aside > .hero-banner-vertical.hero-banner-pin-left),
+  section:has(> aside > .hero-banner-vertical.hero-banner-pin-right),
+  div:has(> aside > .hero-banner-vertical.hero-banner-pin-right) {
+    flex-direction: row !important;
+  }
+
+  aside:has(> .hero-banner-vertical.hero-banner-pin-left) {
+    order: -10 !important;
+  }
+
+  aside:has(> .hero-banner-vertical.hero-banner-pin-right) {
+    order: 10 !important;
+  }
+}
+
+/* Tự động sắp xếp lại các nút lọc/tìm kiếm trong bottomControls khi ở chế độ Banner Dọc 300px */
+.hero-banner.hero-banner-vertical .hero-banner-bottom-controls > div {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.hero-banner.hero-banner-vertical .hero-banner-bottom-controls .overflow-x-auto {
+  flex-wrap: wrap !important;
+  overflow-x: visible !important;
+}
+
+.hero-banner.hero-banner-vertical .hero-banner-bottom-controls input {
+  width: 100% !important;
+}
+
+.hero-banner.hero-banner-vertical .hero-banner-bottom-controls .sm\:w-72,
+.hero-banner.hero-banner-vertical .hero-banner-bottom-controls .sm\:w-56,
+.hero-banner.hero-banner-vertical .hero-banner-bottom-controls .md\:w-64,
+.hero-banner.hero-banner-vertical .hero-banner-bottom-controls .md\:w-auto {
+  width: 100% !important;
+}
+
+/* 2. Khi trang mặc định Banner Dọc (bọc trong <aside>) được chuyển sang Banner Ngang hoặc Thu gọn 64px */
+aside:has(> .hero-banner-horizontal) {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  order: -10 !important;
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+}
+
+section:has(> aside > .hero-banner-horizontal),
+div:has(> aside > .hero-banner-horizontal) {
+  flex-direction: column !important;
+}
+
+/* Riêng trang Phỏng vấn (3 khối con: Video + Aside Banner + Thẻ Câu trả lời) khi chuyển sang Banner Ngang hoặc Thu gọn 64px */
+@media (min-width: 1024px) {
+  div:has(> aside > .hero-banner-horizontal):has(> :nth-child(3)) {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-content: flex-start !important;
+  }
+
+  div:has(> aside > .hero-banner-horizontal):has(> :nth-child(3)) > aside {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+  }
+
+  div:has(> aside > .hero-banner-horizontal):has(> :nth-child(3)) > *:not(aside) {
+    height: calc(100% - 170px) !important;
+  }
+
+  div:has(> aside > .hero-banner-compact):has(> :nth-child(3)) > *:not(aside) {
+    height: calc(100% - 76px) !important;
+  }
+}
+
+/* Gọn hóa khối nội dung phụ bên trong Banner khi chuyển từ Dọc sang Ngang */
+.hero-banner.hero-banner-horizontal .hero-banner-custom-children > .my-auto {
+  display: none !important;
+}
+
+.hero-banner.hero-banner-horizontal .hero-banner-custom-children > div:first-child:not(:only-child) {
+  display: none !important;
+}
+
+.hero-banner.hero-banner-horizontal .hero-banner-custom-children > div {
+  width: auto !important;
+  border-top: none !important;
+  padding-top: 0 !important;
 }
 
 .hero-banner img,

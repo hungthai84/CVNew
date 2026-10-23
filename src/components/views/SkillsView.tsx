@@ -1,166 +1,127 @@
 'use client';
 
 import React, { useState } from 'react';
-import { WebIcon } from '@/components/ui/WebIcon';
+import { motion } from 'motion/react';
+import {
+  Target,
+  Rocket,
+  Gem,
+  TrendingDown,
+  Bot,
+  Sparkles,
+  Database,
+  Monitor,
+  Cpu,
+  Users,
+  Coins,
+  Globe,
+  BarChart3,
+  Brain,
+  Workflow,
+  HeartHandshake,
+  TrendingUp,
+  Lightbulb,
+  ShieldAlert,
+  Headphones,
+  Zap,
+  Languages,
+  Layers,
+  PieChart,
+  ShieldCheck,
+  LayoutGrid,
+  Compass,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { HeroBanner } from '@/components/ui/HeroBanner';
+import { WebIcon } from '@/components/ui/WebIcon';
+import { CareerMindmap } from '@/components/ui/CareerMindmap';
+import {
+  STRENGTHS_DATA,
+  WEAKNESSES_DATA,
+  OPPORTUNITIES_DATA,
+  THREATS_DATA,
+  LANGUAGES_DATA,
+} from '@/data/skills';
 
-interface SkillItem {
-  name: string;
-  percent: number;
-  icon: string;
-}
-
-interface SkillCardData {
-  id: string;
-  filterKey: string;
-  code: string;
-  title: string;
-  desc: string;
-  averagePercent: number;
-  accentColor: string;
-  percentColor: string;
-  barGradient: string;
-  iconBg: string;
-  iconBorder: string;
-  iconColor: string;
-  iconSvg: React.ReactNode;
-  ambientGlow: string;
-  items: SkillItem[];
-}
-
-const SKILL_CARDS: SkillCardData[] = [
-  {
-    id: 'strength',
-    filterKey: 'telecom',
-    code: '7.1',
-    title: 'Nền Tảng Vận Hành & Lãnh Đạo',
-    desc: 'Những năng lực cốt lõi đã được chứng minh qua thực tiễn quản lý, vận hành và phát triển hệ thống Dịch vụ Khách hàng.',
-    averagePercent: 96,
-    accentColor: '#0284c7',
-    percentColor: 'text-sky-600 dark:text-sky-400',
-    barGradient: 'from-sky-500 via-blue-600 to-indigo-600',
-    iconBg: 'bg-gradient-to-br from-sky-50 to-blue-100/90 dark:from-sky-950/70 dark:to-blue-900/60',
-    iconBorder: 'border-sky-200/80 dark:border-sky-500/40',
-    iconColor: 'text-sky-600 dark:text-sky-300',
-    iconSvg: (
-      <svg className="w-[22px] h-[22px] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
-    ambientGlow: 'rgba(2, 132, 199, 0.14)',
-    items: [
-      { name: 'Trải nghiệm khách hàng', percent: 98, icon: 'heart' },
-      { name: 'CRM Contact Center', percent: 96, icon: 'headphones' },
-      { name: 'Quản trị Hiệu suất', percent: 96, icon: 'chart' },
-      { name: 'Lãnh đạo & Đội ngũ', percent: 95, icon: 'users' },
-      { name: 'SOP & Chuẩn hóa', percent: 95, icon: 'shield' },
-    ],
-  },
-  {
-    id: 'improve',
-    filterKey: 'ecommerce',
-    code: '7.2',
-    title: 'Nâng Cao Năng Lực Quản Trị',
-    desc: 'Những năng lực cần tiếp tục hoàn thiện để nâng tầm vai trò quản lý từ vận hành hiệu quả sang quản trị chiến lược.',
-    averagePercent: 87,
-    accentColor: '#ea580c',
-    percentColor: 'text-amber-600 dark:text-amber-400',
-    barGradient: 'from-amber-500 via-orange-500 to-rose-500',
-    iconBg: 'bg-gradient-to-br from-amber-50 to-orange-100/90 dark:from-amber-950/70 dark:to-orange-900/60',
-    iconBorder: 'border-orange-200/80 dark:border-orange-500/40',
-    iconColor: 'text-orange-600 dark:text-orange-300',
-    iconSvg: (
-      <svg className="w-[22px] h-[22px] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-      </svg>
-    ),
-    ambientGlow: 'rgba(234, 88, 12, 0.14)',
-    items: [
-      { name: 'Tư duy dịch vụ', percent: 92, icon: 'heart' },
-      { name: 'Giao tiếp & Đàm phán', percent: 90, icon: 'message' },
-      { name: 'Tư duy Chiến lược', percent: 88, icon: 'compass' },
-      { name: 'Quản trị Dự án', percent: 88, icon: 'target' },
-      { name: 'Công nghệ Đổi mới', percent: 86, icon: 'lightbulb' },
-      { name: 'Thiết kế & Lập trình', percent: 78, icon: 'code' },
-    ],
-  },
-  {
-    id: 'opportunity',
-    filterKey: 'fintech',
-    code: '7.3',
-    title: 'Công Nghệ & Chuyển Dịch Vụ',
-    desc: 'Những năng lực tạo đòn bẩy để nâng cao hiệu quả vận hành, tối ưu nguồn lực và chuyển đổi mô hình CSKH.',
-    averagePercent: 90,
-    accentColor: '#7c3aed',
-    percentColor: 'text-purple-600 dark:text-purple-400',
-    barGradient: 'from-purple-500 via-violet-600 to-indigo-600',
-    iconBg: 'bg-gradient-to-br from-purple-50 to-violet-100/90 dark:from-purple-950/70 dark:to-violet-900/60',
-    iconBorder: 'border-purple-200/80 dark:border-purple-500/40',
-    iconColor: 'text-purple-600 dark:text-purple-300',
-    iconSvg: (
-      <svg className="w-[22px] h-[22px] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-      </svg>
-    ),
-    ambientGlow: 'rgba(124, 58, 237, 0.14)',
-    items: [
-      { name: 'AI & Tự động hóa', percent: 94, icon: 'cpu' },
-      { name: 'Kaizen & Cải tiến', percent: 94, icon: 'refresh' },
-      { name: 'Cloud & Infrastructure', percent: 88, icon: 'layers' },
-    ],
-  },
-  {
-    id: 'threat',
-    filterKey: 'esports',
-    code: '7.4',
-    title: 'Thích Ứng & Quản Trị Biến Động',
-    desc: 'Những yếu tố tác động trực tiếp đến chất lượng dịch vụ, nhân sự và hiệu quả vận hành, đòi hỏi khả năng thích ứng chủ động.',
-    averagePercent: 93,
-    accentColor: '#059669',
-    percentColor: 'text-emerald-600 dark:text-emerald-400',
-    barGradient: 'from-emerald-500 via-teal-600 to-cyan-600',
-    iconBg: 'bg-gradient-to-br from-emerald-50 to-teal-100/90 dark:from-emerald-950/70 dark:to-teal-900/60',
-    iconBorder: 'border-emerald-200/80 dark:border-emerald-500/40',
-    iconColor: 'text-emerald-600 dark:text-emerald-300',
-    iconSvg: (
-      <svg className="w-[22px] h-[22px] stroke-[2.2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
-    ),
-    ambientGlow: 'rgba(5, 150, 105, 0.14)',
-    items: [
-      { name: 'Tối ưu Chi phí', percent: 94, icon: 'wallet' },
-      { name: 'AI & Thay đổi CSKH', percent: 92, icon: 'zap' },
-      { name: 'AI & Phân tích dữ liệu', percent: 92, icon: 'chart' },
-      { name: 'Quản trị Rủi ro', percent: 90, icon: 'shield' },
-    ],
-  },
-];
-
-const FILTER_TABS = [
-  { key: 'all', label: 'Tất cả (4)', icon: 'globe' },
-  { key: 'telecom', label: 'Viễn thông', icon: 'headphones' },
-  { key: 'ecommerce', label: 'E-Commerce', icon: 'card' },
-  { key: 'fintech', label: 'FinTech & Bảo hiểm', icon: 'shield' },
-  { key: 'esports', label: 'eSports', icon: 'rocket' },
-];
+// Helper map to resolve icon components from strings
+const getSkillIcon = (name: string) => {
+  switch (name) {
+    case 'Sparkles':
+      return Sparkles;
+    case 'Database':
+      return Database;
+    case 'BarChart3':
+      return BarChart3;
+    case 'Users':
+      return Users;
+    case 'Workflow':
+      return Workflow;
+    case 'ShieldAlert':
+      return ShieldAlert;
+    case 'HeartHandshake':
+      return HeartHandshake;
+    case 'Lightbulb':
+      return Lightbulb;
+    case 'Target':
+      return Target;
+    case 'Rocket':
+      return Rocket;
+    case 'Cpu':
+      return Cpu;
+    case 'Monitor':
+      return Monitor;
+    case 'Bot':
+      return Bot;
+    case 'TrendingUp':
+      return TrendingUp;
+    case 'Coins':
+      return Coins;
+    case 'Headphones':
+      return Headphones;
+    case 'Brain':
+      return Brain;
+    case 'Zap':
+      return Zap;
+    case 'Globe':
+      return Globe;
+    case 'Languages':
+      return Languages;
+    case 'Layers':
+      return Layers;
+    case 'PieChart':
+      return PieChart;
+    case 'ShieldCheck':
+      return ShieldCheck;
+    case 'LayoutGrid':
+      return LayoutGrid;
+    case 'Compass':
+      return Compass;
+    default:
+      return Gem;
+  }
+};
 
 export const SkillsView: React.FC = () => {
-  const [filter, setFilter] = useState<string>('all');
-  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
+  const isVi = true;
+  const [selectedSwot, setSelectedSwot] = useState<string | null>(null);
+  const [showMindmap, setShowMindmap] = useState<boolean>(false);
 
-  const filteredCards = SKILL_CARDS.filter((card) => {
-    if (filter === 'all') return true;
-    return card.filterKey === filter;
-  });
+  // Helper to get glass card class compatible with all site themes
+  const getGlassCardClass = () => {
+    return 'theme-pastel-card bg-white/75 dark:bg-[#121218]/85 border-white/60 dark:border-white/20 backdrop-blur-2xl backdrop-saturate-[180%] shadow-[0_10px_35px_0_rgba(31,38,135,0.08)]';
+  };
 
   return (
-    <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden">
-      {/* 1. VERTICAL HERO BANNER BÊN TRÁI (300PX) */}
-      <aside className="w-full lg:w-[300px] min-w-[300px] max-w-[300px] shrink-0 h-full flex flex-col overflow-hidden">
+    <section
+      id="skills"
+      className="relative w-full h-full flex-1 min-h-0 flex flex-col lg:flex-row-reverse justify-start items-stretch gap-[15px] max-w-7xl mx-auto font-sans text-slate-900 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-hidden select-none"
+    >
+      {/* 1. VERTICAL HERO BANNER (300PX) */}
+      <aside className="w-full lg:w-[300px] lg:min-w-[300px] lg:max-w-[300px] shrink-0 lg:h-full flex flex-col overflow-hidden">
         <HeroBanner
           badgeText="Kỹ năng chuyên môn"
-          title="Kỹ Năng Quản Trị"
+          title="Kỹ Năng Quản Trị & Chuyên Môn"
+          subtitle="Phân tích năng lực cốt lõi theo ma trận SWOT (Điểm mạnh · Hoàn thiện · Cơ hội · Thách thức) & Ngoại ngữ"
           titleIcon="bolt"
           badgeColor="text-cyan-300"
           titleColor="text-cyan-300"
@@ -168,178 +129,517 @@ export const SkillsView: React.FC = () => {
           quoteAuthor="— Nguyễn Hùng Thái"
           orientation="vertical"
           className="h-full rounded-[20px]"
-        >
-          <div className="relative z-10 flex flex-col gap-1.5 w-full pt-2 border-t border-white/20 shrink-0 pointer-events-auto">
-            <div className="relative">
-              {/* Single Filter Dropdown Button */}
+          bottomControls={
+            <div className="w-full flex flex-col gap-2 pt-2 border-t border-white/20 pointer-events-auto">
               <button
                 type="button"
-                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                className="w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold font-play tracking-wide transition-all border cursor-pointer flex items-center justify-between gap-2 bg-white/20 hover:bg-white/30 text-white border-white/30 shadow-md backdrop-blur-md"
+                onClick={() => setShowMindmap((prev) => !prev)}
+                className={`w-full px-3 py-2 rounded-xl text-[11.5px] font-bold font-play tracking-wide transition-all border cursor-pointer flex items-center justify-center gap-2 shadow-md backdrop-blur-md ${
+                  showMindmap
+                    ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white border-cyan-300'
+                    : 'bg-white/20 hover:bg-white/30 text-white border-white/30'
+                }`}
+                title="Mở sơ đồ nút tương tác kết nối Kỹ năng với các cột mốc Kinh nghiệm (2003–2026+) và Dự án"
               >
-                <div className="flex items-center gap-2 truncate">
-                  <WebIcon name="filter" className="w-4 h-4 text-cyan-300 shrink-0" />
-                  <span className="truncate">
-                    Danh mục: {
-                      FILTER_TABS.find(c => c.key === filter)?.label || 'Tất cả (4)'
-                    }
-                  </span>
-                </div>
-                <svg className={`w-3.5 h-3.5 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
+                <WebIcon name="layers" className="w-4 h-4 text-cyan-300 shrink-0" />
+                <span className="truncate">{showMindmap ? 'Đóng Sơ Đồ Mindmap' : 'Bản Đồ Tư Duy Sự Nghiệp'}</span>
               </button>
-
-              {/* Dropdown Menu List */}
-              {isFilterDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1.5 p-1 rounded-2xl bg-slate-900/95 backdrop-blur-2xl border border-white/20 shadow-2xl z-50 flex flex-col gap-1">
-                  {FILTER_TABS.map((item) => {
-                    const isActive = filter === item.key;
-                    return (
-                      <button
-                        key={item.key}
-                        type="button"
-                        onClick={() => {
-                          setFilter(item.key);
-                          setIsFilterDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-3 py-2 rounded-xl text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center justify-between gap-2 ${
-                          isActive
-                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white border-cyan-300 shadow-md'
-                            : 'bg-white/5 hover:bg-white/15 text-white/90 border-white/10'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 truncate">
-                          <WebIcon name={item.icon} className="w-3.5 h-3.5 shrink-0" />
-                          <span className="truncate">{item.label}</span>
-                        </div>
-                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+            </div>
+          }
+        >
+          {/* Thống kê tóm tắt SWOT & Ngoại ngữ trong Banner dọc */}
+          <div className="relative z-10 my-auto py-1.5 hidden lg:flex flex-col gap-2 w-full pointer-events-auto">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-1.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-center">
+                <div className="text-sm font-black text-cyan-300">SWOT</div>
+                <div className="text-[9.5px] text-white/80 font-medium">4 Nhóm Năng Lực</div>
+              </div>
+              <div className="p-1.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-center">
+                <div className="text-sm font-black text-emerald-400">20</div>
+                <div className="text-[9.5px] text-white/80 font-medium">Chỉ Số Cốt Lõi</div>
+              </div>
             </div>
           </div>
         </HeroBanner>
       </aside>
 
-      {/* 2. MAIN RIGHT AREA: BENTO GRID CARDS */}
-      <div className="flex-1 min-w-0 h-full flex flex-col gap-2 overflow-hidden">
-        <div className="w-full h-full flex-1 min-h-0 overflow-y-auto no-scrollbar pr-1 pb-2">
-          <div
-            className={`grid gap-[15px] pb-4 ${
-              filteredCards.length === 1
-                ? 'grid-cols-1 max-w-2xl mx-auto w-full'
-                : 'grid-cols-1 md:grid-cols-2'
-            }`}
-          >
-            {filteredCards.map((card) => {
-              return (
-                <div
-                  key={card.id}
-                  className="theme-pastel-card group/skillCard relative rounded-[20px] p-4 bg-white/85 dark:bg-slate-900/60 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-[0_10px_30px_-5px_rgba(30,27,75,0.08),0_4px_12px_rgba(0,0,0,0.03)] dark:shadow-[0_12px_36px_-6px_rgba(0,0,0,0.5)] transition-all duration-300 text-left flex flex-col justify-between h-auto min-w-0 overflow-hidden"
+      {/* 2. VÙNG NỘI DUNG CHÍNH BÊN TRÁI (CUỘN ĐỘC LẬP) */}
+      <div className="flex-1 min-w-0 h-full min-h-0 flex flex-col gap-[15px] overflow-y-auto glass-scrollbar pr-1 pb-2">
+        {showMindmap ? (
+          <CareerMindmap onClose={() => setShowMindmap(false)} />
+        ) : (
+          <>
+            {/* ========================================================================= */}
+            {/* VIEW: SWOT 4-QUADRANT BENTO GRID                                        */}
+            {/* ========================================================================= */}
+            <div className="w-full flex flex-col gap-[15px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-[15px] items-stretch relative w-full justify-center">
+                {/* 1. STRENGTHS (S) */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35 }}
+                  style={{ borderRadius: 'var(--theme-radius-card, 18px)' }}
+                  onClick={() => setSelectedSwot('S')}
+                  className={cn(
+                    'p-[15px] border transition-all duration-300 flex flex-col justify-between overflow-hidden group/main cursor-pointer relative text-left min-h-[280px]',
+                    'rounded-[18px]',
+                    getGlassCardClass(),
+                    selectedSwot === 'S' &&
+                      'ring-2 ring-blue-500/30 border-blue-400 dark:border-cyan-400'
+                  )}
                 >
-                  {/* Soft Ambient Background Glow */}
-                  <div
-                    className="absolute -top-10 -right-10 w-36 h-36 rounded-full blur-2xl pointer-events-none transition-all duration-500 opacity-60 group-hover/skillCard:opacity-90"
-                    style={{ background: card.ambientGlow }}
-                  />
-
-                  {/* Hình Nền Icon Thẻ Kỹ Năng */}
-                  <div
-                    className="absolute -right-4 -bottom-4 w-28 h-28 opacity-15 dark:opacity-10 pointer-events-none select-none transition-all duration-500 group-hover/skillCard:scale-110 group-hover/skillCard:opacity-25"
-                    style={{ color: card.accentColor }}
-                  >
-                    <WebIcon name={card.items[0]?.icon || 'sparkles'} className="w-full h-full" />
-                  </div>
-
-                  <div className="relative z-10 space-y-2.5 flex-1 flex flex-col justify-between min-w-0">
-                    <div className="space-y-2">
-                      {/* Header Row */}
-                      <div className="flex items-center justify-between gap-2 min-w-0">
-                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                          <div
-                            className={`w-10 h-10 rounded-[12px] shrink-0 flex items-center justify-center shadow-xs border ${card.iconBorder} ${card.iconBg} ${card.iconColor}`}
-                          >
-                            {card.iconSvg}
-                          </div>
-
-                          <div className="min-w-0 flex-1">
-                            <h3 className="text-sm sm:text-[15px] font-black font-play text-slate-900 dark:text-white leading-tight truncate">
-                              {card.code}. {card.title}
-                            </h3>
-                            <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
-                              {card.desc}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="shrink-0 text-right">
-                          <span className={`text-xs sm:text-sm font-black font-play px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-white/10 ${card.percentColor}`}>
-                            {card.averagePercent}%
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Progress Bar */}
-                      <div className="w-full h-1.5 bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full rounded-full bg-gradient-to-r ${card.barGradient} transition-all duration-700 ease-out`}
-                          style={{ width: `${card.averagePercent}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Skill Items Grid (2 columns or list) */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 flex-1">
-                      {card.items.map((item) => (
-                        <div
-                          key={item.name}
-                          className="p-2 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-slate-200/70 dark:border-white/10 shadow-2xs flex items-center justify-between gap-2 min-w-0"
+                  <div className="relative z-10 w-full">
+                    {/* Quadrant Header */}
+                    <div className="flex items-center justify-between border-b border-blue-100 dark:border-slate-800 pb-3 mb-3">
+                      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 text-left">
+                        <motion.div
+                          animate={{ y: [0, -3, 0], scale: [1, 1.08, 1] }}
+                          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                          className="shrink-0"
                         >
-                          <div className="flex items-center gap-2 min-w-0 flex-1">
-                            <span
-                              className="w-5 h-5 rounded-md flex items-center justify-center shrink-0 shadow-2xs"
-                              style={{
-                                background: `${card.accentColor}18`,
-                                color: card.accentColor,
-                              }}
-                            >
-                              <WebIcon name={item.icon} className="w-3 h-3" />
-                            </span>
-                            <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
-                              {item.name}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-1.5 shrink-0">
-                            <span
-                              className="text-[10.5px] font-mono font-black px-1.5 py-0.2 rounded shadow-2xs"
-                              style={{
-                                background: `${card.accentColor}14`,
-                                color: card.accentColor,
-                              }}
-                            >
-                              {item.percent}%
-                            </span>
-                          </div>
+                          <Gem className="w-5 h-5 text-blue-600 dark:text-cyan-400" />
+                        </motion.div>
+                        <div className="min-w-0 text-left">
+                          <motion.h6
+                            animate={{ opacity: [0.9, 1, 0.9] }}
+                            transition={{ duration: 4, repeat: Infinity }}
+                            className="text-sm sm:text-base font-bold text-blue-600 dark:text-cyan-400 truncate font-play text-left"
+                          >
+                            {isVi
+                              ? '7.1. Thế mạnh vận hành'
+                              : '7.1. Operational Core Strengths'}
+                          </motion.h6>
                         </div>
-                      ))}
+                      </div>
+
+                      <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold text-blue-700 dark:text-cyan-300 bg-blue-500/10 dark:bg-cyan-500/10 rounded-full border border-blue-200/30 dark:border-cyan-500/20 uppercase tracking-wider shrink-0">
+                        {isVi ? 'S' : 'S'}
+                      </span>
+                    </div>
+
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-300 leading-relaxed mb-3.5">
+                      {isVi
+                        ? 'Những thế mạnh cốt lõi nổi bật nhất đã được chứng minh qua thực tiễn quản trị, vận hành và nâng cấp hệ thống CSKH.'
+                        : 'Core outstanding strengths proven through hands-on management, operation, and CX system elevation.'}
+                    </p>
+
+                    {/* Skills Progress List */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                      {STRENGTHS_DATA.map((item, index) => {
+                        const ItemIcon = getSkillIcon(item.iconName);
+                        return (
+                          <div
+                            key={item.id}
+                            className="flex flex-col gap-1.5 p-2 rounded-xl border border-transparent hover:border-blue-100 dark:hover:border-cyan-500/15 bg-transparent hover:bg-blue-50/30 dark:hover:bg-cyan-500/5 transition-all duration-300 group/item min-w-0"
+                          >
+                            <div className="flex items-center justify-between gap-2.5 w-full min-w-0">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-5 h-5 rounded-md bg-transparent flex items-center justify-center shrink-0">
+                                  <ItemIcon className="w-3.5 h-3.5 text-blue-600 dark:text-cyan-400 shrink-0" />
+                                </div>
+                                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate font-play">
+                                  {isVi ? item.labelVi : item.labelEn}
+                                </span>
+                              </div>
+
+                              <span className="px-2 py-0.5 rounded-[6px] bg-blue-500/10 text-blue-700 dark:text-cyan-300 border border-blue-500/25 dark:border-cyan-500/20 text-xs font-mono font-black tracking-wide shrink-0">
+                                {item.percent}%
+                              </span>
+                            </div>
+
+                            <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden relative">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                whileInView={{ width: `${item.percent}%` }}
+                                viewport={{ once: true }}
+                                transition={{
+                                  duration: 0.85,
+                                  ease: 'easeOut',
+                                  delay: index * 0.06,
+                                }}
+                                className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full"
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
+                </motion.div>
 
-                  {/* Subtle Bottom Accent Line */}
-                  <div
-                    className="w-full h-0.5 rounded-full mt-2.5 opacity-60 shrink-0"
-                    style={{ background: card.accentColor }}
-                  />
+                {/* 2. WEAKNESSES / GROWTH (W) */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: 0.05 }}
+                  style={{ borderRadius: 'var(--theme-radius-card, 18px)' }}
+                  onClick={() => setSelectedSwot('W')}
+                  className={cn(
+                    'p-[15px] border transition-all duration-300 flex flex-col justify-between overflow-hidden group/main cursor-pointer relative text-left min-h-[280px]',
+                    'rounded-[18px]',
+                    getGlassCardClass(),
+                    selectedSwot === 'W' &&
+                      'ring-2 ring-orange-500/30 border-orange-400 dark:border-amber-400'
+                  )}
+                >
+                  <div className="relative z-10 w-full">
+                    <div className="flex items-center justify-between border-b border-orange-100 dark:border-slate-800 pb-3 mb-3">
+                      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 text-left">
+                        <motion.div
+                          animate={{ rotate: [0, -6, 6, 0], scale: [1, 1.04, 1] }}
+                          transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+                          className="shrink-0"
+                        >
+                          <TrendingDown className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                        </motion.div>
+                        <div className="min-w-0 text-left">
+                          <motion.h6
+                            animate={{ opacity: [0.9, 1, 0.9] }}
+                            transition={{ duration: 4.2, repeat: Infinity }}
+                            className="text-sm sm:text-base font-bold text-amber-600 dark:text-amber-400 truncate font-play text-left"
+                          >
+                            {isVi
+                              ? '7.2. Hoàn thiện quản trị'
+                              : '7.2. Strategic Management Refinements'}
+                          </motion.h6>
+                        </div>
+                      </div>
+
+                      <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold text-orange-700 dark:text-amber-300 bg-orange-500/10 dark:bg-amber-500/10 rounded-full border border-orange-200/30 dark:border-amber-500/20 uppercase tracking-wider shrink-0">
+                        {isVi ? 'W' : 'W'}
+                      </span>
+                    </div>
+
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-300 leading-relaxed mb-3.5">
+                      {isVi
+                        ? 'Những khía cạnh cần liên tục hoàn thiện nhằm nâng tầm kỹ năng quản lý thực thi sang quản trị định hướng chiến lược.'
+                        : 'Capabilities to continuously refine to elevate management from execution to strategic governance.'}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                      {WEAKNESSES_DATA.map((item, index) => {
+                        const ItemIcon = getSkillIcon(item.iconName);
+                        return (
+                          <div
+                            key={item.id}
+                            className="flex flex-col gap-1.5 p-2 rounded-xl border border-transparent hover:border-orange-100 dark:hover:border-amber-500/15 bg-transparent hover:bg-orange-50/30 dark:hover:bg-amber-500/5 transition-all duration-300 group/item min-w-0"
+                          >
+                            <div className="flex items-center justify-between gap-2.5 w-full min-w-0">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-5 h-5 rounded-md bg-transparent flex items-center justify-center shrink-0">
+                                  <ItemIcon className="w-3.5 h-3.5 text-orange-600 dark:text-amber-400 shrink-0" />
+                                </div>
+                                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate font-play">
+                                  {isVi ? item.labelVi : item.labelEn}
+                                </span>
+                              </div>
+                              <span className="px-2 py-0.5 rounded-[6px] bg-orange-500/10 text-orange-700 dark:text-amber-300 border border-orange-500/25 dark:border-amber-500/20 text-xs font-mono font-black tracking-wide shrink-0">
+                                {item.percent}%
+                              </span>
+                            </div>
+
+                            <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden relative">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                whileInView={{ width: `${item.percent}%` }}
+                                viewport={{ once: true }}
+                                transition={{
+                                  duration: 0.85,
+                                  ease: 'easeOut',
+                                  delay: index * 0.06,
+                                }}
+                                className="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* 3. OPPORTUNITIES (O) */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: 0.1 }}
+                  style={{ borderRadius: 'var(--theme-radius-card, 18px)' }}
+                  onClick={() => setSelectedSwot('O')}
+                  className={cn(
+                    'p-[15px] border transition-all duration-300 flex flex-col justify-between overflow-hidden group/main cursor-pointer relative text-left min-h-[280px]',
+                    'rounded-[18px]',
+                    getGlassCardClass(),
+                    selectedSwot === 'O' &&
+                      'ring-2 ring-purple-500/30 border-purple-400 dark:border-purple-400'
+                  )}
+                >
+                  <div className="relative z-10 w-full">
+                    <div className="flex items-center justify-between border-b border-purple-100 dark:border-slate-800 pb-3 mb-3">
+                      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 text-left">
+                        <motion.div
+                          animate={{ y: [0, -4, 0], x: [0, 2, 0] }}
+                          transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+                          className="shrink-0"
+                        >
+                          <Rocket className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                        </motion.div>
+                        <div className="min-w-0 text-left">
+                          <motion.h6
+                            animate={{ opacity: [0.9, 1, 0.9] }}
+                            transition={{ duration: 3.8, repeat: Infinity }}
+                            className="text-sm sm:text-base font-bold text-emerald-600 dark:text-emerald-400 truncate font-play text-left"
+                          >
+                            {isVi ? '7.3. Cơ hội bứt phá' : '7.3. Innovative Digital Paths'}
+                          </motion.h6>
+                        </div>
+                      </div>
+
+                      <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold text-purple-700 dark:text-purple-300 bg-purple-500/10 dark:bg-purple-500/10 rounded-full border border-purple-200/30 dark:border-purple-500/20 uppercase tracking-wider shrink-0">
+                        {isVi ? 'O' : 'O'}
+                      </span>
+                    </div>
+
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-300 leading-relaxed mb-3.5">
+                      {isVi
+                        ? 'Những cơ hội đón đầu làn sóng số, chuyển đổi dịch vụ sang kênh thông minh và ứng dụng AI nâng cao hiệu năng.'
+                        : 'Excellent avenues to capture digital waves, automating workflows, and leveraging AI models.'}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                      {OPPORTUNITIES_DATA.map((item, index) => {
+                        const ItemIcon = getSkillIcon(item.iconName);
+                        return (
+                          <div
+                            key={item.id}
+                            className="flex flex-col gap-1.5 p-2 rounded-xl border border-transparent hover:border-purple-100 dark:hover:border-purple-500/15 bg-transparent hover:bg-purple-50/30 dark:hover:bg-purple-500/5 transition-all duration-300 group/item min-w-0"
+                          >
+                            <div className="flex items-center justify-between gap-2.5 w-full min-w-0">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-5 h-5 rounded-md bg-transparent flex items-center justify-center shrink-0">
+                                  <ItemIcon className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
+                                </div>
+                                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate font-play">
+                                  {isVi ? item.labelVi : item.labelEn}
+                                </span>
+                              </div>
+                              <span className="px-2 py-0.5 rounded-[6px] bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/25 dark:border-purple-500/20 text-xs font-mono font-black tracking-wide shrink-0">
+                                {item.percent}%
+                              </span>
+                            </div>
+
+                            <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden relative">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                whileInView={{ width: `${item.percent}%` }}
+                                viewport={{ once: true }}
+                                transition={{
+                                  duration: 0.85,
+                                  ease: 'easeOut',
+                                  delay: index * 0.06,
+                                }}
+                                className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* 4. THREATS (T) */}
+                <motion.div
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: 0.15 }}
+                  style={{ borderRadius: 'var(--theme-radius-card, 18px)' }}
+                  onClick={() => setSelectedSwot('T')}
+                  className={cn(
+                    'p-[15px] border transition-all duration-300 flex flex-col justify-between overflow-hidden group/main cursor-pointer relative text-left min-h-[280px]',
+                    'rounded-[18px]',
+                    getGlassCardClass(),
+                    selectedSwot === 'T' &&
+                      'ring-2 ring-red-500/30 border-red-400 dark:border-rose-400'
+                  )}
+                >
+                  <div className="relative z-10 w-full">
+                    <div className="flex items-center justify-between border-b border-red-100 dark:border-slate-800 pb-3 mb-3">
+                      <div className="flex items-center gap-2 sm:gap-2.5 min-w-0 text-left">
+                        <motion.div
+                          animate={{ scale: [1, 1.1, 1] }}
+                          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                          className="shrink-0"
+                        >
+                          <Target className="w-5 h-5 text-violet-600 dark:text-fuchsia-400" />
+                        </motion.div>
+                        <div className="min-w-0 text-left">
+                          <motion.h6
+                            animate={{ opacity: [0.9, 1, 0.9] }}
+                            transition={{ duration: 3.5, repeat: Infinity }}
+                            className="text-sm sm:text-base font-bold text-violet-600 dark:text-fuchsia-400 truncate font-play text-left"
+                          >
+                            {isVi ? '7.4. Thách thức thích ứng' : '7.4. Agility Under Pressure'}
+                          </motion.h6>
+                        </div>
+                      </div>
+
+                      <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold text-red-700 dark:text-rose-300 bg-red-500/10 dark:bg-rose-500/10 rounded-full border border-red-200/30 dark:border-rose-500/20 uppercase tracking-wider shrink-0">
+                        {isVi ? 'T' : 'T'}
+                      </span>
+                    </div>
+
+                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-300 leading-relaxed mb-3.5">
+                      {isVi
+                        ? 'Những thách thức khách quan từ môi trường kinh tế và thay đổi công nghệ đột phá tác động trực tiếp đến dịch vụ.'
+                        : 'Key external risks from volatile economy and rapid technical changes demanding persistent agility.'}
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                      {THREATS_DATA.map((item, index) => {
+                        const ItemIcon = getSkillIcon(item.iconName);
+                        return (
+                          <div
+                            key={item.id}
+                            className="flex flex-col gap-1.5 p-2 rounded-xl border border-transparent hover:border-red-100 dark:hover:border-rose-500/15 bg-transparent hover:bg-red-50/30 dark:hover:bg-rose-500/5 transition-all duration-300 group/item min-w-0"
+                          >
+                            <div className="flex items-center justify-between gap-2 w-full min-w-0">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-5 h-5 rounded-md bg-transparent flex items-center justify-center shrink-0">
+                                  <ItemIcon className="w-3.5 h-3.5 text-red-600 dark:text-rose-400 shrink-0" />
+                                </div>
+                                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate font-play">
+                                  {isVi ? item.labelVi : item.labelEn}
+                                </span>
+                              </div>
+
+                              {/* CRITICAL: Must use label 'Mức độ tác động' instead of 'Mức độ kỹ năng' */}
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span className="text-[9.5px] sm:text-[10px] text-red-600/85 dark:text-rose-400/85 font-mono font-medium whitespace-nowrap">
+                                  {isVi ? 'Mức độ tác động' : 'Impact level'}
+                                </span>
+                                <span className="px-2 py-0.5 rounded-[6px] bg-red-500/10 text-red-700 dark:text-rose-300 border border-red-500/25 dark:border-rose-500/20 text-xs font-mono font-black tracking-wide">
+                                  {item.percent}%
+                                </span>
+                              </div>
+                            </div>
+
+                            <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden relative">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                whileInView={{ width: `${item.percent}%` }}
+                                viewport={{ once: true }}
+                                transition={{
+                                  duration: 0.85,
+                                  ease: 'easeOut',
+                                  delay: index * 0.06,
+                                }}
+                                className="h-full bg-gradient-to-r from-red-500 to-rose-600 rounded-full"
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+
+            {/* ========================================================================= */}
+            {/* SECTION 7.5: NĂNG LỰC NGÔN NGỮ (LANGUAGES PROFICIENCY)                   */}
+            {/* ========================================================================= */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45 }}
+              style={{ borderRadius: 'var(--theme-radius-card, 18px)' }}
+              className={cn(
+                'w-full p-5 sm:p-6 border select-none flex flex-col gap-4 text-left transition-all duration-300',
+                'rounded-[18px]',
+                getGlassCardClass()
+              )}
+            >
+              {/* Section Header */}
+              <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-white/10 pb-3 flex-wrap gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <motion.div
+                    animate={{ y: [0, -3, 0], rotate: [0, 4, -4, 0] }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                    className="w-8 h-8 rounded-xl bg-transparent flex items-center justify-center text-blue-600 dark:text-cyan-400 shrink-0"
+                  >
+                    <Globe className="w-5 h-5" />
+                  </motion.div>
+                  <h6 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-play">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 dark:from-blue-400 dark:via-indigo-300 dark:to-cyan-300">
+                      {isVi
+                        ? '7.5. Năng lực ngôn ngữ & Giao tiếp quốc tế'
+                        : '7.5. Language Proficiency & Global Communication'}
+                    </span>
+                  </h6>
                 </div>
-              );
-            })}
-          </div>
-        </div>
+
+                <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
+                  Native · Professional · AI
+                </span>
+              </div>
+
+              {/* 3 Circular Language Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {LANGUAGES_DATA.map((langItem) => (
+                  <div
+                    key={langItem.id}
+                    className="flex items-center gap-4 p-4 rounded-2xl bg-white/60 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800 shadow-2xs hover:scale-[1.02] transition-all relative overflow-hidden group/lang min-w-0"
+                  >
+                    {/* SVG Progress Circle */}
+                    <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0 z-10">
+                      <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                        <path
+                          className="text-slate-200 dark:text-slate-800 stroke-current"
+                          strokeWidth="3.2"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path
+                          className={cn('stroke-current', langItem.color)}
+                          strokeWidth="3.2"
+                          strokeDasharray={`${langItem.percent}, 100`}
+                          strokeLinecap="round"
+                          fill="none"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                      </svg>
+                      <span className="absolute text-xs font-mono font-black text-slate-900 dark:text-white">
+                        {langItem.percent}%
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col min-w-0 text-left relative z-10">
+                      <h6 className="font-bold text-sm text-slate-900 dark:text-white leading-tight font-play truncate">
+                        {isVi ? langItem.nameVi : langItem.nameEn}
+                      </h6>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium leading-relaxed mt-0.5 break-words">
+                        {isVi ? langItem.roleVi : langItem.roleEn}
+                      </span>
+                      <span
+                        className={cn(
+                          'text-xs font-extrabold mt-1 leading-tight font-play',
+                          langItem.color
+                        )}
+                      >
+                        {isVi ? langItem.levelVi : langItem.levelEn}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
       </div>
-    </div>
+    </section>
   );
 };
+
+export const Skills = SkillsView;
+export default SkillsView;

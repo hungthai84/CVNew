@@ -10,8 +10,82 @@ const STORAGE_KEYS = {
   DEFAULT_WALLPAPER_ID: 'hungthai_default_wallpaper_id',
   ACTIVE_WALLPAPER: 'hungthai_active_wallpaper',
   DELETED_WALLPAPER_IDS: 'hungthai_deleted_wallpaper_ids',
+  FAVORITE_WALLPAPER_IDS: 'hungthai_favorite_wallpaper_ids',
   WALLPAPER_SETTINGS: 'hungthai_wallpaper_advanced_settings',
 };
+
+export type CinematicLutPresetId = 'none' | 'cyberpunk' | 'vintage' | 'nordic' | 'golden' | 'noir';
+
+export interface CinematicLutPreset {
+  id: CinematicLutPresetId;
+  name: string;
+  shortLabel: string;
+  cssFilter: string;
+  tintOverlay: string;
+  mixBlendMode?: React.CSSProperties['mixBlendMode'];
+  badgeColor: string;
+}
+
+export const CINEMATIC_LUT_PRESETS: CinematicLutPreset[] = [
+  {
+    id: 'none',
+    name: 'Nguyên Bản (Original)',
+    shortLabel: 'Gốc',
+    cssFilter: 'none',
+    tintOverlay: 'transparent',
+    badgeColor: 'bg-slate-600 text-white',
+  },
+  {
+    id: 'cyberpunk',
+    name: 'Cyberpunk Teal & Orange',
+    shortLabel: 'Cyberpunk',
+    cssFilter: 'contrast(1.16) saturate(1.35) brightness(0.97) hue-rotate(-6deg)',
+    tintOverlay:
+      'linear-gradient(135deg, rgba(6, 182, 212, 0.24) 0%, rgba(15, 23, 42, 0.08) 50%, rgba(249, 115, 22, 0.24) 100%)',
+    mixBlendMode: 'overlay',
+    badgeColor: 'bg-cyan-600 text-white',
+  },
+  {
+    id: 'vintage',
+    name: 'Vintage Film Kodak',
+    shortLabel: 'Vintage Film',
+    cssFilter: 'sepia(0.34) contrast(1.06) brightness(0.96) saturate(0.88)',
+    tintOverlay:
+      'radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.12) 0%, rgba(120, 53, 15, 0.26) 100%)',
+    mixBlendMode: 'soft-light',
+    badgeColor: 'bg-amber-700 text-white',
+  },
+  {
+    id: 'nordic',
+    name: 'Nordic Cold Arctic',
+    shortLabel: 'Nordic Cold',
+    cssFilter: 'saturate(0.76) contrast(1.12) brightness(1.03) hue-rotate(8deg)',
+    tintOverlay:
+      'linear-gradient(180deg, rgba(56, 189, 248, 0.18) 0%, rgba(30, 58, 138, 0.16) 100%)',
+    mixBlendMode: 'screen',
+    badgeColor: 'bg-sky-600 text-white',
+  },
+  {
+    id: 'golden',
+    name: 'Warm Golden Hour',
+    shortLabel: 'Golden Hour',
+    cssFilter: 'sepia(0.22) saturate(1.34) contrast(1.08) brightness(1.02)',
+    tintOverlay:
+      'linear-gradient(145deg, rgba(251, 146, 60, 0.24) 0%, rgba(236, 72, 153, 0.14) 60%, rgba(120, 53, 15, 0.12) 100%)',
+    mixBlendMode: 'soft-light',
+    badgeColor: 'bg-orange-500 text-white',
+  },
+  {
+    id: 'noir',
+    name: 'Neo-Noir Cinema',
+    shortLabel: 'Neo-Noir',
+    cssFilter: 'grayscale(0.74) contrast(1.26) brightness(0.92)',
+    tintOverlay:
+      'radial-gradient(circle at 50% 50%, transparent 35%, rgba(2, 6, 23, 0.42) 100%)',
+    mixBlendMode: 'multiply',
+    badgeColor: 'bg-slate-900 text-white',
+  },
+];
 
 export interface WallpaperAdvancedSettings {
   dimmerOpacity: number; // 0 - 80 (%)
@@ -22,6 +96,19 @@ export interface WallpaperAdvancedSettings {
   nightWallpaperId: string;
   slideshowEnabled: boolean;
   slideshowIntervalMinutes: number; // 0.5, 1, 3, 5
+  slideshowFavoritesOnly: boolean;
+  weatherSyncEnabled: boolean;
+  autoAccentGlow: boolean;
+  cinematicLut: CinematicLutPresetId;
+  livingMeshEnabled: boolean;
+  livingMeshSpeed: 'slow' | 'normal' | 'fast';
+  ambientSoundEnabled: boolean;
+  ambientSoundMode: 'auto' | 'rain' | 'ocean' | 'forest' | 'cosmos';
+  ambientSoundVolume: number; // 0 - 100
+  pomodoroFocusMinutes: number; // 15, 25, 45
+  pomodoroBreakMinutes: number; // 5, 10, 15
+  pomodoroFocusWallpaperId: string;
+  pomodoroBreakWallpaperId: string;
 }
 
 export const DEFAULT_WALLPAPER_SETTINGS: WallpaperAdvancedSettings = {
@@ -33,6 +120,19 @@ export const DEFAULT_WALLPAPER_SETTINGS: WallpaperAdvancedSettings = {
   nightWallpaperId: 'css-aurora-borealis',
   slideshowEnabled: false,
   slideshowIntervalMinutes: 3,
+  slideshowFavoritesOnly: false,
+  weatherSyncEnabled: false,
+  autoAccentGlow: true,
+  cinematicLut: 'none',
+  livingMeshEnabled: true,
+  livingMeshSpeed: 'normal',
+  ambientSoundEnabled: false,
+  ambientSoundMode: 'auto',
+  ambientSoundVolume: 45,
+  pomodoroFocusMinutes: 25,
+  pomodoroBreakMinutes: 5,
+  pomodoroFocusWallpaperId: 'css-deep-space',
+  pomodoroBreakWallpaperId: 'aurora',
 };
 
 // Open IndexedDB safely with Promise
@@ -448,6 +548,22 @@ export async function saveDeletedWallpaperIds(ids: string[]): Promise<void> {
   await setStoredItem<string[]>(STORAGE_KEYS.DELETED_WALLPAPER_IDS, ids);
 }
 
+// Load favorite wallpaper IDs (for Favorite Playlist & Slideshow)
+export async function loadFavoriteWallpaperIds(): Promise<string[]> {
+  const list = await getStoredItem<string[]>(STORAGE_KEYS.FAVORITE_WALLPAPER_IDS, [
+    'aurora',
+    'css-aurora-borealis',
+    'css-sunset-mesh',
+    'css-deep-space',
+  ]);
+  return Array.isArray(list) ? list : [];
+}
+
+// Save favorite wallpaper IDs
+export async function saveFavoriteWallpaperIds(ids: string[]): Promise<void> {
+  await setStoredItem<string[]>(STORAGE_KEYS.FAVORITE_WALLPAPER_IDS, ids);
+}
+
 // Auto-detect wallpaper type from single input string
 export interface DetectionResult {
   type: WallpaperType;
@@ -789,6 +905,69 @@ export async function loadWallpaperSettings(): Promise<WallpaperAdvancedSettings
       typeof stored.slideshowIntervalMinutes === 'number' && stored.slideshowIntervalMinutes > 0
         ? stored.slideshowIntervalMinutes
         : DEFAULT_WALLPAPER_SETTINGS.slideshowIntervalMinutes,
+    slideshowFavoritesOnly:
+      typeof stored.slideshowFavoritesOnly === 'boolean'
+        ? stored.slideshowFavoritesOnly
+        : DEFAULT_WALLPAPER_SETTINGS.slideshowFavoritesOnly,
+    weatherSyncEnabled:
+      typeof stored.weatherSyncEnabled === 'boolean'
+        ? stored.weatherSyncEnabled
+        : DEFAULT_WALLPAPER_SETTINGS.weatherSyncEnabled,
+    autoAccentGlow:
+      typeof stored.autoAccentGlow === 'boolean'
+        ? stored.autoAccentGlow
+        : DEFAULT_WALLPAPER_SETTINGS.autoAccentGlow,
+    cinematicLut:
+      stored.cinematicLut === 'cyberpunk' ||
+      stored.cinematicLut === 'vintage' ||
+      stored.cinematicLut === 'nordic' ||
+      stored.cinematicLut === 'golden' ||
+      stored.cinematicLut === 'noir' ||
+      stored.cinematicLut === 'none'
+        ? stored.cinematicLut
+        : DEFAULT_WALLPAPER_SETTINGS.cinematicLut,
+    livingMeshEnabled:
+      typeof stored.livingMeshEnabled === 'boolean'
+        ? stored.livingMeshEnabled
+        : DEFAULT_WALLPAPER_SETTINGS.livingMeshEnabled,
+    livingMeshSpeed:
+      stored.livingMeshSpeed === 'slow' ||
+      stored.livingMeshSpeed === 'normal' ||
+      stored.livingMeshSpeed === 'fast'
+        ? stored.livingMeshSpeed
+        : DEFAULT_WALLPAPER_SETTINGS.livingMeshSpeed,
+    ambientSoundEnabled:
+      typeof stored.ambientSoundEnabled === 'boolean'
+        ? stored.ambientSoundEnabled
+        : DEFAULT_WALLPAPER_SETTINGS.ambientSoundEnabled,
+    ambientSoundMode:
+      stored.ambientSoundMode === 'auto' ||
+      stored.ambientSoundMode === 'rain' ||
+      stored.ambientSoundMode === 'ocean' ||
+      stored.ambientSoundMode === 'forest' ||
+      stored.ambientSoundMode === 'cosmos'
+        ? stored.ambientSoundMode
+        : DEFAULT_WALLPAPER_SETTINGS.ambientSoundMode,
+    ambientSoundVolume:
+      typeof stored.ambientSoundVolume === 'number'
+        ? Math.min(100, Math.max(0, stored.ambientSoundVolume))
+        : DEFAULT_WALLPAPER_SETTINGS.ambientSoundVolume,
+    pomodoroFocusMinutes:
+      typeof stored.pomodoroFocusMinutes === 'number' && stored.pomodoroFocusMinutes > 0
+        ? stored.pomodoroFocusMinutes
+        : DEFAULT_WALLPAPER_SETTINGS.pomodoroFocusMinutes,
+    pomodoroBreakMinutes:
+      typeof stored.pomodoroBreakMinutes === 'number' && stored.pomodoroBreakMinutes > 0
+        ? stored.pomodoroBreakMinutes
+        : DEFAULT_WALLPAPER_SETTINGS.pomodoroBreakMinutes,
+    pomodoroFocusWallpaperId:
+      typeof stored.pomodoroFocusWallpaperId === 'string' && stored.pomodoroFocusWallpaperId
+        ? stored.pomodoroFocusWallpaperId
+        : DEFAULT_WALLPAPER_SETTINGS.pomodoroFocusWallpaperId,
+    pomodoroBreakWallpaperId:
+      typeof stored.pomodoroBreakWallpaperId === 'string' && stored.pomodoroBreakWallpaperId
+        ? stored.pomodoroBreakWallpaperId
+        : DEFAULT_WALLPAPER_SETTINGS.pomodoroBreakWallpaperId,
   };
 }
 
@@ -822,5 +1001,408 @@ export function formatWallpaperCssSnippet(wp: WallpaperOption): string {
   const cleanVal = raw.replace(/;+\s*$/g, '');
   return `/* ${wp.name} */\nbackground: ${cleanVal};`;
 }
+
+// Convert Hex color to "r, g, b" string
+function hexToRgbTuple(hex: string): { r: number; g: number; b: number } | null {
+  const cleaned = hex.replace(/^#/, '').trim();
+  if (cleaned.length === 3) {
+    const r = parseInt(cleaned[0] + cleaned[0], 16);
+    const g = parseInt(cleaned[1] + cleaned[1], 16);
+    const b = parseInt(cleaned[2] + cleaned[2], 16);
+    if (!Number.isNaN(r) && !Number.isNaN(g) && !Number.isNaN(b)) return { r, g, b };
+  } else if (cleaned.length >= 6) {
+    const r = parseInt(cleaned.slice(0, 2), 16);
+    const g = parseInt(cleaned.slice(2, 4), 16);
+    const b = parseInt(cleaned.slice(4, 6), 16);
+    if (!Number.isNaN(r) && !Number.isNaN(g) && !Number.isNaN(b)) return { r, g, b };
+  }
+  return null;
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  const clamp = (n: number) => Math.max(0, Math.min(255, Math.round(n)));
+  return (
+    '#' +
+    [clamp(r), clamp(g), clamp(b)]
+      .map((x) => x.toString(16).padStart(2, '0'))
+      .join('')
+  );
+}
+
+// Boost overly dark or desaturated colors so the card glow remains vibrant and visible
+function ensureVibrantAccent(r: number, g: number, b: number): { hex: string; rgb: string } {
+  const maxC = Math.max(r, g, b);
+  const minC = Math.min(r, g, b);
+  // If too dark (e.g. #05050d or #030014), lift towards electric indigo/cyan
+  if (maxC < 65) {
+    return { hex: '#6366f1', rgb: '99, 102, 241' };
+  }
+  // If almost pure white/gray, tint towards soft sky-indigo
+  if (minC > 225 && maxC - minC < 20) {
+    return { hex: '#38bdf8', rgb: '56, 189, 248' };
+  }
+  const hex = rgbToHex(r, g, b);
+  return { hex, rgb: `${r}, ${g}, ${b}` };
+}
+
+// Auto-extract the dominant vibrant accent color from any WallpaperOption
+export function extractWallpaperAccentColor(wp?: WallpaperOption): {
+  hex: string;
+  rgb: string;
+  label: string;
+} {
+  if (!wp) {
+    return { hex: '#6366f1', rgb: '99, 102, 241', label: 'Indigo Aura' };
+  }
+
+  // Known signature presets
+  const idLower = wp.id.toLowerCase();
+  if (idLower.includes('aurora')) {
+    return { hex: '#10b981', rgb: '16, 185, 129', label: 'Emerald Aurora' };
+  }
+  if (idLower.includes('cyber') || idLower.includes('neon')) {
+    return { hex: '#00f2fe', rgb: '0, 242, 254', label: 'Cyber Cyan' };
+  }
+  if (idLower.includes('sunset')) {
+    return { hex: '#ff5e62', rgb: '255, 94, 98', label: 'Sunset Coral' };
+  }
+  if (idLower.includes('space') || idLower.includes('cosmic') || idLower.includes('night')) {
+    return { hex: '#8b5cf6', rgb: '139, 92, 246', label: 'Cosmic Violet' };
+  }
+  if (idLower.includes('emerald') || idLower.includes('rainforest')) {
+    return { hex: '#10b981', rgb: '16, 185, 129', label: 'Emerald Matrix' };
+  }
+  if (idLower.includes('ocean')) {
+    return { hex: '#0ea5e9', rgb: '14, 165, 233', label: 'Ocean Azure' };
+  }
+  if (idLower.includes('autumn')) {
+    return { hex: '#f59e0b', rgb: '245, 158, 11', label: 'Golden Amber' };
+  }
+
+  // Search for hex colors in value & previewStyle
+  const combinedSource = [
+    wp.value || '',
+    typeof wp.previewStyle?.background === 'string' ? wp.previewStyle.background : '',
+    typeof wp.previewStyle?.backgroundImage === 'string' ? wp.previewStyle.backgroundImage : '',
+    typeof wp.previewStyle?.backgroundColor === 'string' ? wp.previewStyle.backgroundColor : '',
+  ].join(' ');
+
+  const hexMatches = combinedSource.match(/#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b/g);
+  if (hexMatches && hexMatches.length > 0) {
+    // Pick the first hex that isn't near-black or near-white
+    for (const h of hexMatches) {
+      const tuple = hexToRgbTuple(h);
+      if (tuple) {
+        const max = Math.max(tuple.r, tuple.g, tuple.b);
+        const min = Math.min(tuple.r, tuple.g, tuple.b);
+        if (max >= 75 && !(min > 230 && max - min < 15)) {
+          const vibrant = ensureVibrantAccent(tuple.r, tuple.g, tuple.b);
+          return { ...vibrant, label: vibrant.hex.toUpperCase() };
+        }
+      }
+    }
+    const fallbackTuple = hexToRgbTuple(hexMatches[0]);
+    if (fallbackTuple) {
+      const vibrant = ensureVibrantAccent(fallbackTuple.r, fallbackTuple.g, fallbackTuple.b);
+      return { ...vibrant, label: vibrant.hex.toUpperCase() };
+    }
+  }
+
+  // Check rgba(...) or rgb(...) matches
+  const rgbMatch = combinedSource.match(/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})/i);
+  if (rgbMatch) {
+    const r = Number(rgbMatch[1]);
+    const g = Number(rgbMatch[2]);
+    const b = Number(rgbMatch[3]);
+    const vibrant = ensureVibrantAccent(r, g, b);
+    return { ...vibrant, label: vibrant.hex.toUpperCase() };
+  }
+
+  // Deterministic vibrant palette for Video / Image wallpapers based on ID hash
+  const palette = [
+    { hex: '#ec4899', rgb: '236, 72, 153', label: 'Rose Magenta' },
+    { hex: '#06b6d4', rgb: '6, 182, 212', label: 'Electric Cyan' },
+    { hex: '#8b5cf6', rgb: '139, 92, 246', label: 'Royal Violet' },
+    { hex: '#10b981', rgb: '16, 185, 129', label: 'Emerald Glow' },
+    { hex: '#f59e0b', rgb: '245, 158, 11', label: 'Solar Amber' },
+    { hex: '#3b82f6', rgb: '59, 130, 246', label: 'Sapphire Blue' },
+  ];
+  let hash = 0;
+  for (let i = 0; i < wp.id.length; i++) {
+    hash = (hash * 31 + wp.id.charCodeAt(i)) >>> 0;
+  }
+  return palette[hash % palette.length];
+}
+
+// Gradient Studio Preset Sharing (Compact Code + JSON + Visual QR Matrix)
+export interface StudioPresetShareStop {
+  color: string;
+  position: number;
+  x: number;
+  y: number;
+}
+
+export interface StudioPresetSharePayload {
+  name: string;
+  mode: 'linear' | 'radial' | 'mesh';
+  angle: number;
+  baseColor: string;
+  stops: StudioPresetShareStop[];
+}
+
+// Encode a Gradient Studio preset into a compact shareable string (HTG1:...)
+export function encodeStudioPresetCode(payload: StudioPresetSharePayload): string {
+  const modeChar = payload.mode === 'mesh' ? 'M' : payload.mode === 'radial' ? 'R' : 'L';
+  const stopsPart = payload.stops
+    .map((s) => `${s.color.replace('#', '')}@${Math.round(s.position)},${Math.round(s.x)},${Math.round(s.y)}`)
+    .join('|');
+  const safeName = encodeURIComponent((payload.name || 'Gradient Preset').slice(0, 40));
+  return `HTG1:${modeChar}:${Math.round(payload.angle)}:${payload.baseColor.replace('#', '')}:${stopsPart}:${safeName}`;
+}
+
+// Decode either a compact HTG1:... string or a JSON string back into a StudioPresetSharePayload
+export function decodeStudioPresetCode(rawInput: string): StudioPresetSharePayload | null {
+  const trimmed = (rawInput || '').trim();
+  if (!trimmed) return null;
+
+  // 1. Check compact HTG1:... format
+  if (trimmed.startsWith('HTG1:')) {
+    try {
+      const parts = trimmed.split(':');
+      if (parts.length < 5) return null;
+      const modeChar = parts[1];
+      const mode: 'linear' | 'radial' | 'mesh' =
+        modeChar === 'M' ? 'mesh' : modeChar === 'R' ? 'radial' : 'linear';
+      const angle = Math.min(360, Math.max(0, Number(parts[2]) || 135));
+      const baseColor = `#${parts[3].replace(/^#/, '')}`;
+      const rawStops = parts[4].split('|').filter(Boolean);
+      const stops: StudioPresetShareStop[] = rawStops.map((token) => {
+        const [hexPart, coordsPart] = token.split('@');
+        const [pos, x, y] = (coordsPart || '50,50,50').split(',').map((n) => Number(n));
+        return {
+          color: `#${(hexPart || '6366f1').replace(/^#/, '')}`,
+          position: Number.isFinite(pos) ? Math.min(100, Math.max(0, pos)) : 50,
+          x: Number.isFinite(x) ? Math.min(100, Math.max(0, x)) : 50,
+          y: Number.isFinite(y) ? Math.min(100, Math.max(0, y)) : 50,
+        };
+      });
+      if (stops.length < 2) return null;
+      const name = parts[5] ? decodeURIComponent(parts.slice(5).join(':')) : 'Imported Studio Preset';
+      return { name, mode, angle, baseColor, stops };
+    } catch {
+      return null;
+    }
+  }
+
+  // 2. Try JSON format
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (!parsed || typeof parsed !== 'object') return null;
+    const mode: 'linear' | 'radial' | 'mesh' =
+      parsed.mode === 'linear' || parsed.mode === 'radial' || parsed.mode === 'mesh'
+        ? parsed.mode
+        : 'mesh';
+    const angle = typeof parsed.angle === 'number' ? parsed.angle : 135;
+    const baseColor = typeof parsed.baseColor === 'string' ? parsed.baseColor : '#070b19';
+    if (!Array.isArray(parsed.stops) || parsed.stops.length < 2) return null;
+    const stops: StudioPresetShareStop[] = parsed.stops.map((s: Record<string, unknown>) => ({
+      color: typeof s.color === 'string' ? s.color : '#6366f1',
+      position: typeof s.position === 'number' ? s.position : 50,
+      x: typeof s.x === 'number' ? s.x : 50,
+      y: typeof s.y === 'number' ? s.y : 50,
+    }));
+    return {
+      name: typeof parsed.name === 'string' ? parsed.name : 'Imported Studio Preset',
+      mode,
+      angle,
+      baseColor,
+      stops,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// Generate a crisp 25x25 QR-Code-styled visual matrix from any preset code string
+export function generateQrMatrix(data: string, size = 25): boolean[][] {
+  const matrix: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
+  const reserved: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
+
+  // Helper to place 7x7 finder pattern
+  const placeFinder = (rowOffset: number, colOffset: number) => {
+    for (let r = -1; r <= 7; r++) {
+      for (let c = -1; c <= 7; c++) {
+        const rr = rowOffset + r;
+        const cc = colOffset + c;
+        if (rr < 0 || rr >= size || cc < 0 || cc >= size) continue;
+        reserved[rr][cc] = true;
+        if (r >= 0 && r <= 6 && c >= 0 && c <= 6) {
+          const isBorder = r === 0 || r === 6 || c === 0 || c === 6;
+          const isInner = r >= 2 && r <= 4 && c >= 2 && c <= 4;
+          matrix[rr][cc] = isBorder || isInner;
+        } else {
+          matrix[rr][cc] = false;
+        }
+      }
+    }
+  };
+
+  placeFinder(0, 0);
+  placeFinder(0, size - 7);
+  placeFinder(size - 7, 0);
+
+  // Timing patterns
+  for (let i = 8; i < size - 8; i++) {
+    reserved[6][i] = true;
+    matrix[6][i] = i % 2 === 0;
+    reserved[i][6] = true;
+    matrix[i][6] = i % 2 === 0;
+  }
+
+  // Alignment pattern at bottom-right (5x5 centered at size-7, size-7)
+  const alignCenter = size - 7;
+  for (let r = -2; r <= 2; r++) {
+    for (let c = -2; c <= 2; c++) {
+      const rr = alignCenter + r;
+      const cc = alignCenter + c;
+      reserved[rr][cc] = true;
+      const isBorder = Math.abs(r) === 2 || Math.abs(c) === 2;
+      const isCenter = r === 0 && c === 0;
+      matrix[rr][cc] = isBorder || isCenter;
+    }
+  }
+
+  // Convert string into a bit stream + deterministic hash padding
+  const bytes: number[] = [];
+  for (let i = 0; i < data.length; i++) {
+    bytes.push(data.charCodeAt(i) & 0xff);
+  }
+  if (bytes.length === 0) bytes.push(0x48, 0x54);
+
+  let bitIdx = 0;
+  let hashState = 2166136261;
+  for (const b of bytes) {
+    hashState ^= b;
+    hashState = Math.imul(hashState, 16777619) >>> 0;
+  }
+
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c < size; c++) {
+      if (reserved[r][c]) continue;
+      const byteVal = bytes[Math.floor(bitIdx / 8) % bytes.length];
+      const bitOffset = 7 - (bitIdx % 8);
+      const dataBit = ((byteVal >> bitOffset) & 1) === 1;
+      const maskBit = ((r * 17 + c * 31 + (hashState >> (bitIdx % 16))) & 1) === 1;
+      matrix[r][c] = dataBit !== maskBit;
+      bitIdx++;
+    }
+  }
+
+  return matrix;
+}
+
+// Render any Gradient Studio configuration (Mesh, Linear, or Radial) to a high-resolution 4K PNG (3840x2160)
+export async function exportGradientStudioToPng(
+  payload: StudioPresetSharePayload,
+  width = 3840,
+  height = 2160
+): Promise<void> {
+  if (typeof document === 'undefined') return;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Trình duyệt không hỗ trợ Canvas 2D.');
+  }
+
+  const sortedStops = [...payload.stops].sort((a, b) => a.position - b.position);
+
+  if (payload.mode === 'linear') {
+    // Convert CSS angle (0deg = bottom-to-top, 90deg = left-to-right, 135deg = top-left to bottom-right)
+    const rad = ((payload.angle - 90) * Math.PI) / 180;
+    const cx = width / 2;
+    const cy = height / 2;
+    const halfDiag = Math.sqrt(width * width + height * height) / 2;
+    const x0 = cx - Math.cos(rad) * halfDiag;
+    const y0 = cy - Math.sin(rad) * halfDiag;
+    const x1 = cx + Math.cos(rad) * halfDiag;
+    const y1 = cy + Math.sin(rad) * halfDiag;
+
+    const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+    for (const stop of sortedStops) {
+      grad.addColorStop(Math.min(1, Math.max(0, stop.position / 100)), stop.color);
+    }
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, height);
+  } else if (payload.mode === 'radial') {
+    const centerStop = payload.stops[0] || { x: 50, y: 50 };
+    const cx = (centerStop.x / 100) * width;
+    const cy = (centerStop.y / 100) * height;
+    const maxRadius = Math.max(width, height) * 0.85;
+
+    ctx.fillStyle = payload.baseColor || '#030014';
+    ctx.fillRect(0, 0, width, height);
+
+    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius);
+    for (const stop of sortedStops) {
+      grad.addColorStop(Math.min(1, Math.max(0, stop.position / 100)), stop.color);
+    }
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, height);
+  } else {
+    // Multi-point Mesh Gradient rendering at 4K UHD
+    ctx.fillStyle = payload.baseColor || '#070b19';
+    ctx.fillRect(0, 0, width, height);
+
+    const radius = Math.max(width, height) * 0.62;
+    ctx.globalCompositeOperation = 'screen';
+
+    for (const stop of payload.stops) {
+      const cx = (stop.x / 100) * width;
+      const cy = (stop.y / 100) * height;
+      const rgb = hexToRgbTuple(stop.color) || { r: 99, g: 102, b: 241 };
+
+      const radial = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+      radial.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.92)`);
+      radial.addColorStop(0.45, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.45)`);
+      radial.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0)`);
+
+      ctx.fillStyle = radial;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          reject(new Error('Không thể kết xuất tệp PNG.'));
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const safeSlug = (payload.name || 'gradient-4k')
+          .toLowerCase()
+          .replace(/[^a-z0-9-_]+/gi, '-')
+          .replace(/^-+|-+$/g, '');
+        link.href = url;
+        link.download = `${safeSlug || 'hung-thai-gradient'}-${width}x${height}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        resolve();
+      },
+      'image/png',
+      1.0
+    );
+  });
+}
+
+
 
 

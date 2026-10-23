@@ -3,7 +3,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SiteTheme } from '@/types';
 import { FloatingIcons } from './FloatingIcons';
-import { sanitizeWallpaperStyle } from '@/utils/wallpaperStorage';
+import {
+  sanitizeWallpaperStyle,
+  CINEMATIC_LUT_PRESETS,
+  CinematicLutPresetId,
+} from '@/utils/wallpaperStorage';
 
 export interface BackgroundLayerProps {
   wallpaperClass?: string;
@@ -14,7 +18,152 @@ export interface BackgroundLayerProps {
   dimmerOpacity?: number; // 0 - 80
   blurAmount?: number; // 0 - 24
   parallaxEnabled?: boolean;
+  weatherSyncEnabled?: boolean;
+  weatherCondition?: string;
+  cinematicLut?: CinematicLutPresetId;
+  livingMeshEnabled?: boolean;
+  livingMeshSpeed?: 'slow' | 'normal' | 'fast';
 }
+
+const RAIN_DROPS = [
+  { left: '6%', delay: '0s', duration: '1.15s', height: 48 },
+  { left: '14%', delay: '0.35s', duration: '0.95s', height: 62 },
+  { left: '22%', delay: '0.7s', duration: '1.25s', height: 54 },
+  { left: '31%', delay: '0.15s', duration: '1.05s', height: 68 },
+  { left: '39%', delay: '0.55s', duration: '1.1s', height: 50 },
+  { left: '47%', delay: '0.25s', duration: '0.9s', height: 64 },
+  { left: '56%', delay: '0.8s', duration: '1.2s', height: 58 },
+  { left: '64%', delay: '0.4s', duration: '1.0s', height: 60 },
+  { left: '73%', delay: '0.1s', duration: '1.15s', height: 52 },
+  { left: '81%', delay: '0.6s', duration: '0.95s', height: 66 },
+  { left: '89%', delay: '0.3s', duration: '1.1s', height: 56 },
+  { left: '95%', delay: '0.75s', duration: '1.05s', height: 48 },
+];
+
+const GLASS_DROPLETS = [
+  { left: '12%', top: '18%', size: 6, delay: '0s' },
+  { left: '28%', top: '34%', size: 8, delay: '1.2s' },
+  { left: '44%', top: '15%', size: 5, delay: '2.1s' },
+  { left: '62%', top: '27%', size: 7, delay: '0.7s' },
+  { left: '78%', top: '22%', size: 9, delay: '1.6s' },
+  { left: '86%', top: '48%', size: 6, delay: '2.5s' },
+  { left: '19%', top: '68%', size: 7, delay: '0.9s' },
+  { left: '53%', top: '74%', size: 8, delay: '1.8s' },
+  { left: '74%', top: '79%', size: 6, delay: '0.4s' },
+];
+
+const WeatherAmbientOverlay: React.FC<{ condition?: string }> = ({ condition = 'Sunny' }) => {
+  const norm = condition.toLowerCase();
+  const isSunny = norm.includes('sun');
+  const isRain = norm.includes('rain') || norm.includes('thunder') || norm.includes('lightning');
+  const isStorm = norm.includes('thunder') || norm.includes('lightning');
+  const isCloudyOrMist = norm.includes('cloud') || norm.includes('overcast');
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-[2] transition-opacity duration-700">
+      {/* 1. SUNNY: Warm Solar Rays & Golden Lens Flare */}
+      {isSunny && (
+        <>
+          <div
+            className="absolute -top-[18%] -right-[10%] w-[680px] h-[680px] rounded-full blur-3xl opacity-55 animate-pulse"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(251, 191, 36, 0.36) 0%, rgba(245, 158, 11, 0.18) 42%, rgba(56, 189, 248, 0.08) 70%, transparent 85%)',
+              animationDuration: '6s',
+            }}
+          />
+          <div
+            className="absolute top-0 inset-x-0 h-[45%] opacity-35"
+            style={{
+              background:
+                'linear-gradient(135deg, rgba(254, 240, 138, 0.18) 0%, rgba(251, 191, 36, 0.08) 45%, transparent 75%)',
+            }}
+          />
+        </>
+      )}
+
+      {/* 2. CLOUDY / OVERCAST: Soft Aurora Mist & Cool Atmospheric Veil */}
+      {isCloudyOrMist && (
+        <>
+          <div
+            className="absolute -top-[10%] left-[8%] w-[640px] h-[360px] rounded-full blur-3xl opacity-45 animate-pulse"
+            style={{
+              background:
+                'radial-gradient(ellipse, rgba(148, 163, 184, 0.32) 0%, rgba(56, 189, 248, 0.16) 55%, transparent 80%)',
+              animationDuration: '8s',
+            }}
+          />
+          <div
+            className="absolute bottom-[5%] right-[6%] w-[620px] h-[340px] rounded-full blur-3xl opacity-40 animate-pulse"
+            style={{
+              background:
+                'radial-gradient(ellipse, rgba(167, 139, 250, 0.24) 0%, rgba(96, 165, 250, 0.14) 55%, transparent 80%)',
+              animationDuration: '9.5s',
+            }}
+          />
+        </>
+      )}
+
+      {/* 3. RAIN / STORM: Rain Streaks & Water Droplets on Glass */}
+      {isRain && (
+        <>
+          <div
+            className="absolute inset-0"
+            style={{
+              background: isStorm
+                ? 'linear-gradient(180deg, rgba(15, 23, 42, 0.34) 0%, rgba(30, 58, 138, 0.16) 60%, rgba(15, 23, 42, 0.28) 100%)'
+                : 'linear-gradient(180deg, rgba(15, 23, 42, 0.18) 0%, rgba(56, 189, 248, 0.08) 100%)',
+            }}
+          />
+
+          {/* Falling rain streaks */}
+          {RAIN_DROPS.map((drop, idx) => (
+            <div
+              key={idx}
+              className="absolute -top-16 w-[1.5px] rounded-full opacity-55 animate-bounce"
+              style={{
+                left: drop.left,
+                height: `${drop.height}px`,
+                background: 'linear-gradient(180deg, transparent, rgba(186, 230, 253, 0.85), transparent)',
+                animationDuration: drop.duration,
+                animationDelay: drop.delay,
+                transform: 'rotate(12deg)',
+              }}
+            />
+          ))}
+
+          {/* Water droplets clinging to glass */}
+          {GLASS_DROPLETS.map((d, idx) => (
+            <div
+              key={idx}
+              className="absolute rounded-full border border-white/50 bg-sky-200/25 shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)] animate-pulse"
+              style={{
+                left: d.left,
+                top: d.top,
+                width: `${d.size}px`,
+                height: `${d.size * 1.25}px`,
+                animationDuration: '3.8s',
+                animationDelay: d.delay,
+              }}
+            />
+          ))}
+        </>
+      )}
+
+      {/* 4. THUNDER STORM / LIGHTNING: Electric Atmospheric Glow */}
+      {isStorm && (
+        <div
+          className="absolute -top-[12%] left-[25%] w-[680px] h-[420px] rounded-full blur-3xl opacity-35 animate-pulse"
+          style={{
+            background:
+              'radial-gradient(circle, rgba(192, 132, 252, 0.38) 0%, rgba(56, 189, 248, 0.22) 45%, transparent 75%)',
+            animationDuration: '3.2s',
+          }}
+        />
+      )}
+    </div>
+  );
+};
 
 export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
   wallpaperClass = 'prism-light-bg',
@@ -25,6 +174,11 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
   dimmerOpacity = 0,
   blurAmount = 0,
   parallaxEnabled = true,
+  weatherSyncEnabled = false,
+  weatherCondition = 'Sunny',
+  cinematicLut = 'none',
+  livingMeshEnabled = true,
+  livingMeshSpeed = 'normal',
 }) => {
   const safeWallpaperStyle = sanitizeWallpaperStyle(wallpaperStyle);
   const hasCustomWallpaper =
@@ -32,6 +186,27 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
     Boolean(safeWallpaperStyle?.backgroundImage) ||
     Boolean(safeWallpaperStyle?.backgroundColor) ||
     Boolean(wallpaperClass && wallpaperClass !== 'prism-light-bg' && wallpaperClass !== 'dark-neon-bg');
+
+  const isGradientOrCssWallpaper =
+    !wallpaperVideo &&
+    !(
+      typeof safeWallpaperStyle?.backgroundImage === 'string' &&
+      safeWallpaperStyle.backgroundImage.trim().toLowerCase().startsWith('url(')
+    );
+
+  const livingMeshClass =
+    livingMeshEnabled && isGradientOrCssWallpaper
+      ? livingMeshSpeed === 'slow'
+        ? 'living-mesh-slow'
+        : livingMeshSpeed === 'fast'
+        ? 'living-mesh-fast'
+        : 'living-mesh-normal'
+      : '';
+
+  const activeLutPreset =
+    CINEMATIC_LUT_PRESETS.find((lut) => lut.id === cinematicLut) || CINEMATIC_LUT_PRESETS[0];
+  const lutFilterStyle: React.CSSProperties =
+    activeLutPreset.id !== 'none' ? { filter: activeLutPreset.cssFilter } : {};
 
   // Subtle Mouse Parallax state for Desktop
   const [parallaxOffset, setParallaxOffset] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -87,7 +262,7 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
     <>
       {wallpaperVideo ? (
         <div className="fixed inset-0 w-screen h-screen z-0 overflow-hidden pointer-events-none">
-          <div className="w-full h-full" style={parallaxStyle}>
+          <div className="w-full h-full" style={{ ...parallaxStyle, ...lutFilterStyle }}>
             <video
               key={wallpaperVideo}
               src={wallpaperVideo}
@@ -101,7 +276,18 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
           {/* Subtle contrast tint overlay */}
           <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
-          {/* Customizable Dimmer & Blur Filter Overlay */}
+          {/* Cinematic LUT Split-Tone Color Grading Overlay */}
+          {activeLutPreset.id !== 'none' && (
+            <div
+              className="absolute inset-0 pointer-events-none transition-all duration-500 z-[1]"
+              style={{
+                background: activeLutPreset.tintOverlay,
+                mixBlendMode: activeLutPreset.mixBlendMode,
+              }}
+            />
+          )}
+
+          {/*Customizable Dimmer & Blur Filter Overlay */}
           {showFilterOverlay && (
             <div
               className="absolute inset-0 pointer-events-none transition-all duration-300 z-[1]"
@@ -109,16 +295,20 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
             />
           )}
 
+          {/* Weather-Synced Ambient Overlay */}
+          {weatherSyncEnabled && <WeatherAmbientOverlay condition={weatherCondition} />}
+
           {/* Dynamic Floating Icons above video background */}
           <FloatingIcons theme={theme} currentPage={currentPage} />
         </div>
       ) : (
         <div className="fixed inset-0 w-screen h-screen z-0 overflow-hidden pointer-events-none">
           <div
-            className={`w-full h-full transition-colors duration-700 ${wallpaperClass}`}
+            className={`w-full h-full transition-colors duration-700 ${wallpaperClass} ${livingMeshClass}`}
             style={{
               ...safeWallpaperStyle,
               ...parallaxStyle,
+              ...lutFilterStyle,
             }}
           >
             {/* THEME 1 & SÁNG: Light Multi-color Ambient Flares (Chỉ hiển thị khi không dùng hình nền tùy biến riêng) */}
@@ -247,6 +437,17 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
             )}
           </div>
 
+          {/* Cinematic LUT Split-Tone Color Grading Overlay */}
+          {activeLutPreset.id !== 'none' && (
+            <div
+              className="absolute inset-0 pointer-events-none transition-all duration-500 z-[1]"
+              style={{
+                background: activeLutPreset.tintOverlay,
+                mixBlendMode: activeLutPreset.mixBlendMode,
+              }}
+            />
+          )}
+
           {/* Customizable Dimmer & Blur Filter Overlay */}
           {showFilterOverlay && (
             <div
@@ -254,6 +455,9 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
               style={filterOverlayStyle}
             />
           )}
+
+          {/* Weather-Synced Ambient Overlay */}
+          {weatherSyncEnabled && <WeatherAmbientOverlay condition={weatherCondition} />}
 
           {/* DYNAMIC FLOATING ICONS (Tự động di chuyển vị trí ngẫu nhiên trên toàn website) */}
           <FloatingIcons theme={theme} currentPage={currentPage} />

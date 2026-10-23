@@ -30,14 +30,54 @@ export const Header: React.FC<HeaderProps> = ({
   // Trạng thái Bật/Tắt âm thanh giao diện toàn cục (lưu trong localStorage & đồng bộ với SoundEngine)
   const [isSoundEnabled, setIsSoundEnabled] = useState<boolean>(true);
 
+  // Trạng thái Tùy chỉnh Cỡ chữ Linh hoạt (Typography Quick Scaler: 'sm' = A-, 'md' = A, 'lg' = A+)
+  const [fontScale, setFontScale] = useState<'sm' | 'md' | 'lg'>('md');
+
+  const applyFontScaleToDom = (scale: 'sm' | 'md' | 'lg') => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.setAttribute('data-font-scale', scale);
+    const rootFontSize = scale === 'sm' ? '14.5px' : scale === 'lg' ? '17.5px' : '16px';
+    document.documentElement.style.fontSize = rootFontSize;
+  };
+
   useEffect(() => {
     const initial = SoundEngine.loadPersistedState();
     setIsSoundEnabled(initial);
     const unsubscribe = SoundEngine.subscribe((enabled) => {
       setIsSoundEnabled(enabled);
     });
+
+    try {
+      const savedScale = localStorage.getItem('hungthai_font_scale') as 'sm' | 'md' | 'lg' | null;
+      if (savedScale === 'sm' || savedScale === 'md' || savedScale === 'lg') {
+        setFontScale(savedScale);
+        applyFontScaleToDom(savedScale);
+      } else {
+        applyFontScaleToDom('md');
+      }
+    } catch {
+      applyFontScaleToDom('md');
+    }
+
     return unsubscribe;
   }, []);
+
+  const handleSelectFontScale = (nextScale: 'sm' | 'md' | 'lg') => {
+    SoundEngine.playTap();
+    setFontScale(nextScale);
+    applyFontScaleToDom(nextScale);
+    try {
+      localStorage.setItem('hungthai_font_scale', nextScale);
+    } catch {
+      // Ignore storage error
+    }
+    const labelMap = {
+      sm: 'Cỡ chữ Thu gọn (A- · 90%)',
+      md: 'Cỡ chữ Chuẩn mặc định (A · 100%)',
+      lg: 'Cỡ chữ Phóng đại dễ đọc (A+ · 110%)',
+    };
+    showToast(`Đã áp dụng: ${labelMap[nextScale]}`);
+  };
 
   const handleToggleGlobalSound = () => {
     const nextState = SoundEngine.toggleSound();
@@ -202,10 +242,9 @@ export const Header: React.FC<HeaderProps> = ({
           }`}
         >
           {headerPages.map((page, index) => {
-            const isSelected = currentPage === page.id;
             const isHovered = hoveredId === page.id;
             const baseZIndex = index + 1;
-            const itemZIndex = isHovered ? 50 : isSelected ? 35 : baseZIndex;
+            const itemZIndex = isHovered ? 50 : baseZIndex;
 
             return (
               <button
@@ -218,9 +257,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }}
                 onMouseEnter={() => setHoveredId(page.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className={`neonav-item relative h-[38px] flex items-center justify-start gap-1.5 pl-1.5 pr-2.5 rounded-full border cursor-pointer select-none transition-colors duration-200 shrink-0 ${
-                  isSelected ? 'active' : ''
-                }`}
+                className="neonav-item relative h-[38px] flex items-center justify-start gap-1.5 pl-1.5 pr-2.5 rounded-full border cursor-pointer select-none transition-colors duration-200 shrink-0"
                 style={{
                   width: `${longestWidth}px`,
                   minWidth: `${longestWidth}px`,
@@ -228,36 +265,24 @@ export const Header: React.FC<HeaderProps> = ({
                   marginLeft: isOverflowing && index > 0 ? `-${overlapAmount}px` : undefined,
                   zIndex: itemZIndex,
                   transform: 'none',
-                  boxShadow: 'none', // Xóa hoàn toàn hiệu ứng chọn trang/nổi lên trên
-                  ...(isSelected
-                    ? {
-                        background: page.theme,
-                        borderColor: page.theme,
-                        color: '#ffffff',
-                      }
-                    : {
-                        borderColor: isDark ? `${page.theme}60` : page.borderColor || `${page.theme}45`,
-                        background: isDark
-                          ? 'rgba(15, 23, 42, 0.75)'
-                          : page.bgNormal || page.bgLight || `${page.theme}15`,
-                        color: page.theme, // Tiêu đề có màu trùng khớp với màu icon
-                      }),
+                  boxShadow: 'none',
+                  borderColor: isDark ? `${page.theme}60` : page.borderColor || `${page.theme}45`,
+                  background: isDark
+                    ? 'rgba(15, 23, 42, 0.75)'
+                    : page.bgNormal || page.bgLight || `${page.theme}15`,
+                  color: page.theme,
                 }}
                 title={page.fullName}
               >
-                {/* Circular Icon Container */}
+                {/* Circular Icon Container - Không có hiệu ứng chọn trang */}
                 <div
                   className="neonav-icon-box w-7 h-7 rounded-full flex items-center justify-center shrink-0 shadow-none transition-none"
                   style={{
-                    background: isSelected
-                      ? 'rgba(255, 255, 255, 0.25)'
-                      : isDark
-                      ? 'rgba(15, 23, 42, 0.85)'
-                      : page.bgLight,
-                    color: isSelected ? '#ffffff' : page.theme,
+                    background: isDark ? 'rgba(15, 23, 42, 0.85)' : page.bgLight,
+                    color: page.theme,
                   }}
                 >
-                  <span className="w-4 h-4 flex items-center justify-center" style={{ color: isSelected ? '#ffffff' : page.theme }}>
+                  <span className="w-4 h-4 flex items-center justify-center" style={{ color: page.theme }}>
                     {page.iconSvg}
                   </span>
                 </div>
@@ -266,7 +291,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <span
                   className="whitespace-nowrap font-bold text-[11px] sm:text-[11.5px] tracking-tight transition-colors z-10 text-left truncate flex-1"
                   style={{
-                    color: isSelected ? '#ffffff' : page.theme,
+                    color: page.theme,
                   }}
                 >
                   {page.shortTitle}
@@ -277,8 +302,58 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </nav>
 
-      {/* Nút Bật/Tắt Âm Thanh Toàn Cục (Global Mute/Unmute Toggle) */}
-      <div className="shrink-0 pr-2 pl-1 flex items-center z-20">
+      {/* Cụm điều khiển nhanh: Tùy chỉnh Cỡ chữ (A- / A / A+) & Bật/Tắt Âm Thanh Toàn Cục */}
+      <div className="shrink-0 pr-2 pl-1 flex items-center gap-1.5 z-20">
+        {/* Typography Quick Scaler (A- / A / A+) */}
+        <div
+          id="header-font-scaler"
+          role="group"
+          aria-label="Tùy chỉnh cỡ chữ hiển thị"
+          className={`h-[38px] px-1 rounded-full border flex items-center gap-0.5 transition-all duration-200 ${
+            isDark
+              ? 'bg-slate-900/85 border-slate-700/90 text-slate-300'
+              : currentTheme === 'flat-rainbow'
+              ? 'bg-white/95 border-indigo-200 text-slate-700'
+              : 'bg-white/85 border-slate-200/90 text-slate-600 shadow-2xs'
+          }`}
+        >
+          {(
+            [
+              { key: 'sm', label: 'A-', title: 'Cỡ chữ thu gọn (90%)' },
+              { key: 'md', label: 'A', title: 'Cỡ chữ mặc định (100%)' },
+              { key: 'lg', label: 'A+', title: 'Cỡ chữ phóng đại dễ đọc (110%)' },
+            ] as const
+          ).map((item) => {
+            const isActive = fontScale === item.key;
+            return (
+              <button
+                key={item.key}
+                type="button"
+                onClick={() => handleSelectFontScale(item.key)}
+                aria-pressed={isActive}
+                title={item.title}
+                className={`h-[28px] min-w-[26px] px-1.5 rounded-full font-play font-black tracking-tight flex items-center justify-center cursor-pointer transition-all duration-150 ${
+                  item.key === 'sm'
+                    ? 'text-[10px]'
+                    : item.key === 'lg'
+                    ? 'text-[12px]'
+                    : 'text-[11px]'
+                } ${
+                  isActive
+                    ? isDark
+                      ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-400/60 shadow-[0_0_10px_rgba(34,211,238,0.25)]'
+                      : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-2xs'
+                    : isDark
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
+
         <button
           id="header-sound-toggle"
           type="button"

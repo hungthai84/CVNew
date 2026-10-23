@@ -24,9 +24,6 @@ export const PageCardHeader: React.FC<PageCardHeaderProps> = ({ pageId, classNam
           {pageMeta?.iconSvg || <WebIcon name="sparkles" className="w-5 h-5" />}
         </div>
         <div>
-          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
-            Hồ Sơ Chuyên Gia
-          </span>
           <h1 className="text-lg sm:text-xl md:text-2xl font-black font-play text-slate-900 dark:text-white leading-tight">
             {pageMeta?.fullName || 'Hồ Sơ Chuyên Gia & Thông Tin Cá Nhân'}
           </h1>

@@ -19,9 +19,16 @@ import {
   loadWallpaperSettings,
   saveWallpaperSettings,
   loadDeletedWallpaperIds,
+  loadFavoriteWallpaperIds,
+  extractWallpaperAccentColor,
   DEFAULT_WALLPAPER_SETTINGS,
   WallpaperAdvancedSettings,
 } from '@/utils/wallpaperStorage';
+import {
+  AmbientSoundEngine,
+  resolveAutoAmbientTrack,
+  AmbientTrackId,
+} from '@/utils/ambientSoundEngine';
 import { AiChatModal } from '@/components/ui/AiChatModal';
 import { ThemeSelectorModal } from '@/components/ui/ThemeSelectorModal';
 import { XRayEditor } from '@/components/ui/XRayEditor';
@@ -52,18 +59,27 @@ export default function HomePage() {
   const [wallpaperStyle, setWallpaperStyle] = useState<React.CSSProperties>({});
   const [wallpaperVideo, setWallpaperVideo] = useState<string>('');
   const [activeWallpaperId, setActiveWallpaperId] = useState<string>('prism');
+  const [activeWallpaperOption, setActiveWallpaperOption] = useState<WallpaperOption | undefined>(
+    WALLPAPER_OPTIONS[0]
+  );
   const [defaultWallpaperId, setDefaultWallpaperId] = useState<string>('prism');
   const [wallpaperSettings, setWallpaperSettings] = useState<WallpaperAdvancedSettings>(
     DEFAULT_WALLPAPER_SETTINGS
   );
   const [weatherIdx, setWeatherIdx] = useState<number>(0);
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
+  const [isZenMode, setIsZenMode] = useState<boolean>(false);
+  const [zenCountdown, setZenCountdown] = useState<number | null>(null);
   const contentDisplayRef = useRef<HTMLDivElement | null>(null);
   const activeScrollTargetRef = useRef<HTMLElement | null>(null);
   const activeWallpaperIdRef = useRef<string>(activeWallpaperId);
+  const wallpaperSettingsRef = useRef<WallpaperAdvancedSettings>(wallpaperSettings);
   useEffect(() => {
     activeWallpaperIdRef.current = activeWallpaperId;
   }, [activeWallpaperId]);
+  useEffect(() => {
+    wallpaperSettingsRef.current = wallpaperSettings;
+  }, [wallpaperSettings]);
 
   const [cardMousePos, setCardMousePos] = useState<{ x: number; y: number; active: boolean }>({
     x: 0,
@@ -72,6 +88,88 @@ export default function HomePage() {
   });
 
   const currentWeather = WEATHER_PRESETS[weatherIdx] || WEATHER_PRESETS[0];
+  const activeAccent = extractWallpaperAccentColor(activeWallpaperOption);
+
+  // Resolved Ambient Soundscape Track (auto-detects from weather & wallpaper or uses manual selection)
+  const resolvedAmbientTrack: AmbientTrackId =
+    wallpaperSettings.ambientSoundMode === 'auto'
+      ? resolveAutoAmbientTrack(
+          activeWallpaperOption,
+          currentWeather?.condition,
+          wallpaperSettings.weatherSyncEnabled
+        )
+      : wallpaperSettings.ambientSoundMode;
+
+  useEffect(() => {
+    if (wallpaperSettings.ambientSoundEnabled) {
+      AmbientSoundEngine.startTrack(resolvedAmbientTrack, wallpaperSettings.ambientSoundVolume);
+    } else {
+      AmbientSoundEngine.stop();
+    }
+  }, [
+    wallpaperSettings.ambientSoundEnabled,
+    wallpaperSettings.ambientSoundVolume,
+    resolvedAmbientTrack,
+  ]);
+
+  // Pomodoro Focus / Break Wallpaper Sync Timer state
+  const [pomodoroRunning, setPomodoroRunning] = useState<boolean>(false);
+  const [pomodoroPhase, setPomodoroPhase] = useState<'focus' | 'break'>('focus');
+  const [pomodoroSecondsLeft, setPomodoroSecondsLeft] = useState<number>(25 * 60);
+
+  // Keep Pomodoro seconds synced with configured duration when timer is paused at full duration
+  useEffect(() => {
+    if (!pomodoroRunning) {
+      const targetMins =
+        pomodoroPhase === 'focus'
+          ? wallpaperSettings.pomodoroFocusMinutes || 25
+          : wallpaperSettings.pomodoroBreakMinutes || 5;
+      setPomodoroSecondsLeft(targetMins * 60);
+    }
+  }, [
+    pomodoroRunning,
+    pomodoroPhase,
+    wallpaperSettings.pomodoroFocusMinutes,
+    wallpaperSettings.pomodoroBreakMinutes,
+  ]);
+
+  // Trigger Zen Mode (Full-screen Wallpaper Preview by hiding Header, Footer & Center Card)
+  const handleTriggerZenMode = useCallback((durationSeconds?: number) => {
+    SoundEngine.playTap();
+    setIsZenMode(true);
+    if (typeof durationSeconds === 'number' && durationSeconds > 0) {
+      setZenCountdown(durationSeconds);
+    } else {
+      setZenCountdown(null);
+    }
+  }, []);
+
+  // Zen Mode countdown & Escape key listener
+  useEffect(() => {
+    if (!isZenMode) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsZenMode(false);
+        setZenCountdown(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isZenMode]);
+
+  useEffect(() => {
+    if (!isZenMode || zenCountdown === null) return;
+    if (zenCountdown <= 0) {
+      setIsZenMode(false);
+      setZenCountdown(null);
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setZenCountdown((prev) => (prev !== null ? prev - 1 : null));
+    }, 1000);
+    return () => window.clearTimeout(timer);
+  }, [isZenMode, zenCountdown]);
 
   // Reset Back to Top visibility when changing pages
   useEffect(() => {
@@ -128,6 +226,7 @@ export default function HomePage() {
   // Apply a WallpaperOption to the background layer
   const applyWallpaperOption = useCallback((wp: WallpaperOption) => {
     setActiveWallpaperId(wp.id);
+    setActiveWallpaperOption(wp);
 
     if (wp.type === 'video') {
       setWallpaperVideo(wp.value);
@@ -174,17 +273,27 @@ export default function HomePage() {
     try {
       const customWallpapers = await loadCustomWallpapers();
       const deletedIds = await loadDeletedWallpaperIds();
+      const favoriteIds = await loadFavoriteWallpaperIds();
       const raw = [...customWallpapers, ...WALLPAPER_OPTIONS];
       const seenIds = new Set<string>();
-      const pool: WallpaperOption[] = [];
+      const allPool: WallpaperOption[] = [];
 
       for (const wp of raw) {
         if (deletedIds.includes(wp.id) || seenIds.has(wp.id)) continue;
         seenIds.add(wp.id);
-        pool.push(wp);
+        allPool.push(wp);
       }
 
-      if (pool.length === 0) return;
+      if (allPool.length === 0) return;
+
+      let pool = allPool;
+      if (wallpaperSettingsRef.current.slideshowFavoritesOnly && favoriteIds.length > 0) {
+        const favPool = allPool.filter((wp) => favoriteIds.includes(wp.id));
+        if (favPool.length > 0) {
+          pool = favPool;
+        }
+      }
+
       const currentIdx = pool.findIndex((w) => w.id === activeWallpaperIdRef.current);
       const nextIdx = (currentIdx + 1) % pool.length;
       applyWallpaperOption(pool[nextIdx]);
@@ -220,6 +329,91 @@ export default function HomePage() {
     wallpaperSettings.nightWallpaperId,
     applyWallpaperOption,
   ]);
+
+  // Helper to apply wallpaper by ID from custom + built-in list
+  const applyWallpaperById = useCallback(
+    async (targetId: string) => {
+      try {
+        const customWallpapers = await loadCustomWallpapers();
+        const found = findWallpaperById(targetId, customWallpapers);
+        if (found) {
+          applyWallpaperOption(found);
+        }
+      } catch {
+        // ignore
+      }
+    },
+    [applyWallpaperOption]
+  );
+
+  // Toggle or switch Pomodoro Focus / Break mode and sync wallpaper immediately
+  const handleTogglePomodoro = useCallback(
+    (nextRunning?: boolean, forcePhase?: 'focus' | 'break') => {
+      SoundEngine.playTap();
+      const targetPhase = forcePhase || pomodoroPhase;
+      const shouldRun = typeof nextRunning === 'boolean' ? nextRunning : !pomodoroRunning;
+
+      if (forcePhase && forcePhase !== pomodoroPhase) {
+        setPomodoroPhase(forcePhase);
+        const mins =
+          forcePhase === 'focus'
+            ? wallpaperSettingsRef.current.pomodoroFocusMinutes || 25
+            : wallpaperSettingsRef.current.pomodoroBreakMinutes || 5;
+        setPomodoroSecondsLeft(mins * 60);
+      }
+
+      setPomodoroRunning(shouldRun);
+
+      if (shouldRun) {
+        const targetWpId =
+          targetPhase === 'focus'
+            ? wallpaperSettingsRef.current.pomodoroFocusWallpaperId || 'css-deep-space'
+            : wallpaperSettingsRef.current.pomodoroBreakWallpaperId || 'aurora';
+        applyWallpaperById(targetWpId);
+      }
+    },
+    [pomodoroPhase, pomodoroRunning, applyWallpaperById]
+  );
+
+  const handleResetPomodoro = useCallback(() => {
+    SoundEngine.playTap();
+    setPomodoroRunning(false);
+    const mins =
+      pomodoroPhase === 'focus'
+        ? wallpaperSettingsRef.current.pomodoroFocusMinutes || 25
+        : wallpaperSettingsRef.current.pomodoroBreakMinutes || 5;
+    setPomodoroSecondsLeft(mins * 60);
+  }, [pomodoroPhase]);
+
+  // Pomodoro 1-second countdown & automatic phase transition (Focus <-> Break) with Wallpaper Sync
+  useEffect(() => {
+    if (!pomodoroRunning) return;
+
+    const timer = window.setInterval(() => {
+      setPomodoroSecondsLeft((prev) => {
+        if (prev > 1) return prev - 1;
+
+        // Phase finished -> switch between Focus and Break and apply corresponding wallpaper
+        const nextPhase: 'focus' | 'break' = pomodoroPhase === 'focus' ? 'break' : 'focus';
+        setPomodoroPhase(nextPhase);
+        SoundEngine.playPop();
+
+        const nextMins =
+          nextPhase === 'focus'
+            ? wallpaperSettingsRef.current.pomodoroFocusMinutes || 25
+            : wallpaperSettingsRef.current.pomodoroBreakMinutes || 5;
+        const targetWpId =
+          nextPhase === 'focus'
+            ? wallpaperSettingsRef.current.pomodoroFocusWallpaperId || 'css-deep-space'
+            : wallpaperSettingsRef.current.pomodoroBreakWallpaperId || 'aurora';
+
+        applyWallpaperById(targetWpId);
+        return nextMins * 60;
+      });
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [pomodoroRunning, pomodoroPhase, applyWallpaperById]);
 
   // Wallpaper Slideshow Mode timer
   useEffect(() => {
@@ -366,10 +560,74 @@ export default function HomePage() {
         dimmerOpacity={wallpaperSettings.dimmerOpacity}
         blurAmount={wallpaperSettings.blurAmount}
         parallaxEnabled={wallpaperSettings.parallaxEnabled}
+        weatherSyncEnabled={wallpaperSettings.weatherSyncEnabled}
+        weatherCondition={currentWeather?.condition}
+        cinematicLut={wallpaperSettings.cinematicLut}
+        livingMeshEnabled={wallpaperSettings.livingMeshEnabled}
+        livingMeshSpeed={wallpaperSettings.livingMeshSpeed}
       />
 
+      {/* Floating Zen Mode HUD Bar (Appears when Header, Footer & Center Card are hidden) */}
+      {isZenMode && (
+        <div className="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4 pointer-events-none animate-fade-in">
+          <div className="pointer-events-auto flex flex-wrap items-center gap-2.5 px-4 py-2.5 rounded-full bg-slate-950/75 text-white border border-white/25 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.55)]">
+            <span
+              className="w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_10px_currentColor]"
+              style={{ backgroundColor: activeAccent.hex, color: activeAccent.hex }}
+            />
+            <span className="text-xs font-bold tracking-wide">
+              Zen Mode: <span className="text-cyan-300">{activeWallpaperOption?.name || 'Hình nền hiện tại'}</span>
+            </span>
+
+            {zenCountdown !== null && (
+              <span className="px-2 py-0.5 rounded-full text-[10.5px] font-mono font-bold bg-white/15 text-amber-300">
+                Tự hiện UI sau {zenCountdown}s
+              </span>
+            )}
+
+            {zenCountdown !== null && (
+              <button
+                type="button"
+                onClick={() => setZenCountdown(null)}
+                className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-white/15 hover:bg-white/25 text-white transition cursor-pointer"
+                title="Giữ chế độ toàn màn hình không giới hạn thời gian"
+              >
+                Giữ Zen Mode
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={handleNextSlideshowWallpaper}
+              className="px-3 py-1 rounded-full text-[11px] font-bold bg-indigo-600/90 hover:bg-indigo-500 text-white transition cursor-pointer flex items-center gap-1"
+            >
+              <span>Đổi nền kế tiếp</span>
+              <WebIcon name="chevron-right" className="w-3 h-3" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                SoundEngine.playTap();
+                setIsZenMode(false);
+                setZenCountdown(null);
+              }}
+              className="px-3.5 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-fuchsia-600 to-rose-600 hover:from-fuchsia-500 hover:to-rose-500 text-white shadow-sm transition cursor-pointer flex items-center gap-1"
+            >
+              <WebIcon name="eye" className="w-3.5 h-3.5" />
+              <span>Hiện lại Giao diện (ESC)</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Main UI Root Layout (Header, Center Card, Footer) */}
-      <div id="app-root-layout" className="w-full h-full flex flex-col justify-between items-center relative z-10 overflow-hidden">
+      <div
+        id="app-root-layout"
+        className={`w-full h-full flex flex-col justify-between items-center relative z-10 overflow-hidden transition-all duration-500 ${
+          isZenMode ? 'opacity-0 scale-[0.985] pointer-events-none select-none' : 'opacity-100 scale-100'
+        }`}
+      >
         {/* 
           HEADER:
           - Chiều dài: 1200px (căn giữa mx-auto, giới hạn max-w-[calc(100%-50px)])
@@ -402,20 +660,37 @@ export default function HomePage() {
             });
           }}
           onMouseLeave={() => setCardMousePos((prev) => ({ ...prev, active: false }))}
+          style={
+            wallpaperSettings.autoAccentGlow
+              ? {
+                  boxShadow: `0 20px 50px -12px rgba(${activeAccent.rgb}, 0.22), 0 0 0 1px rgba(${activeAccent.rgb}, 0.28)`,
+                }
+              : undefined
+          }
           className="w-[1200px] max-w-[calc(100%-40px)] mx-auto my-[15px] flex-1 min-h-0 glass-panel rounded-[20px] overflow-hidden flex flex-col relative z-20 transition-all duration-500 elevated-float-card group/main"
         >
-          {/* Interactive Mouseover Radial Glow Spotlight */}
+          {/* Interactive Mouseover Radial Glow Spotlight (Synchronized with Wallpaper Dominant Color when autoAccentGlow is active) */}
           <div
             className="glass-spotlight"
             style={{
               opacity: cardMousePos.active ? 1 : 0,
-              background: `radial-gradient(600px circle at ${cardMousePos.x}px ${cardMousePos.y}px, rgba(99, 102, 241, 0.12), transparent 70%)`,
+              background: `radial-gradient(620px circle at ${cardMousePos.x}px ${cardMousePos.y}px, rgba(${
+                wallpaperSettings.autoAccentGlow ? activeAccent.rgb : '99, 102, 241'
+              }, 0.18), transparent 70%)`,
             }}
           />
 
           {/* Dynamic Page Transition Beam Indicator */}
           <div
             key={`beam-${currentPage}`}
+            style={
+              wallpaperSettings.autoAccentGlow
+                ? {
+                    background: `linear-gradient(90deg, transparent, ${activeAccent.hex}, transparent)`,
+                    boxShadow: `0 0 14px rgba(${activeAccent.rgb}, 0.85)`,
+                  }
+                : undefined
+            }
             className="absolute top-0 h-[2px] w-52 bg-gradient-to-r from-transparent via-cyan-400 to-indigo-500 rounded-full animate-page-beam pointer-events-none z-30 opacity-90 shadow-[0_0_12px_rgba(56,189,248,0.8)]"
           />
 
@@ -467,6 +742,20 @@ export default function HomePage() {
                 wallpaperSettings={wallpaperSettings}
                 onUpdateWallpaperSettings={handleUpdateWallpaperSettings}
                 onNextSlideshow={handleNextSlideshowWallpaper}
+                onTriggerZenMode={handleTriggerZenMode}
+                currentWeather={currentWeather}
+                weatherIdx={weatherIdx}
+                onSelectWeather={(idx) => {
+                  SoundEngine.playTap();
+                  setWeatherIdx(idx);
+                }}
+                activeAccent={activeAccent}
+                resolvedAmbientTrack={resolvedAmbientTrack}
+                pomodoroRunning={pomodoroRunning}
+                pomodoroPhase={pomodoroPhase}
+                pomodoroSecondsLeft={pomodoroSecondsLeft}
+                onTogglePomodoro={handleTogglePomodoro}
+                onResetPomodoro={handleResetPomodoro}
               />
             )}
           </div>

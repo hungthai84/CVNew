@@ -206,9 +206,7 @@ export const ProjectsView: React.FC = () => {
 
   return (
     <div
-      className={`w-full h-full flex-1 flex flex-col lg:flex-row-reverse gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 ${
-        selectedGroup || selectedArticle ? 'overflow-y-auto pb-16' : 'overflow-hidden'
-      }`}
+      className="w-full h-full flex-1 min-h-0 flex flex-col lg:flex-row-reverse gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 overflow-hidden"
     >
       {/* 1. VERTICAL HERO BANNER BÊN PHẢI (300PX) */}
       <aside className="w-full lg:w-[300px] min-w-[300px] max-w-[300px] shrink-0 h-full flex flex-col overflow-hidden">
@@ -308,11 +306,11 @@ export const ProjectsView: React.FC = () => {
       </aside>
 
       {/* 2. MAIN RIGHT AREA: 21 THẺ DỰ ÁN VỚI HÌNH BANNER LẮP ĐẦY THẺ */}
-      <div className="flex-1 min-w-0 h-full flex flex-col gap-2 overflow-hidden">
+      <div className="flex-1 min-w-0 h-full min-h-0 flex flex-col gap-2 overflow-hidden">
         {/* Responsive Grid Card View Container */}
         <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
         {!selectedGroup && !selectedArticle ? (
-          <div className="relative w-full h-full flex-1 min-h-0 overflow-y-auto no-scrollbar py-0.5">
+          <div className="relative w-full h-full flex-1 min-h-0 overflow-y-auto glass-scrollbar pr-1 py-0.5">
             {/* 21 THẺ DỰ ÁN ĐỘC LẬP - HÌNH BANNER LẮP ĐẦY THẺ DỰ ÁN 100% */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-3.5 auto-rows-[200px] sm:auto-rows-[215px] pb-4">
               {filteredProjects.map((proj) => {
@@ -432,11 +430,11 @@ export const ProjectsView: React.FC = () => {
             </div>
           </div>
         ) : (
-          /* Detail View cho nhóm dự án & Case Study STAR đang chọn (Bố cục thẻ xếp chồng Sticky Stacking Cards) */
+          /* Detail View cho nhóm dự án & Case Study STAR đang chọn */
           selectedArticle && (
-            <div className="w-full relative flex flex-col gap-4 pb-24 text-left">
-              {/* Thẻ 1 (Sticky Card 1): Header & Tổng Quan Dự Án */}
-              <div className="sticky top-0 z-10 w-full p-4 sm:p-5 rounded-[22px] bg-white/95 dark:bg-slate-900/95 border border-purple-200/90 dark:border-purple-500/30 shadow-[0_10px_30px_rgba(0,0,0,0.12)] space-y-3.5 transition-all duration-300 backdrop-blur-2xl">
+            <div className="w-full h-full flex-1 min-h-0 relative overflow-y-auto glass-scrollbar pr-1.5 pb-8 flex flex-col gap-4 text-left">
+              {/* Thẻ 1: Header & Tổng Quan Dự Án */}
+              <div className="w-full p-4 sm:p-5 rounded-[22px] bg-white/95 dark:bg-slate-900/95 border border-purple-200/90 dark:border-purple-500/30 shadow-[0_10px_30px_rgba(0,0,0,0.12)] space-y-3.5 transition-all duration-300 backdrop-blur-2xl shrink-0">
                 {/* Top Back Bar & Sub-Project Selector Tabs */}
                 <div className="flex flex-col gap-3 pb-3 border-b border-slate-200 dark:border-white/10">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
@@ -586,8 +584,8 @@ export const ProjectsView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Thẻ 2 (Sticky Card 2): 1. Bối cảnh & Thách thức (Situation & Task) */}
-              <div className="sticky top-6 sm:top-8 z-20 w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-amber-50/98 via-orange-50/95 to-amber-100/90 dark:from-slate-900/98 dark:via-amber-950/40 dark:to-slate-900/95 border-2 border-amber-300/90 dark:border-amber-500/40 shadow-[0_12px_32px_rgba(217,119,6,0.18)] space-y-3 transition-all duration-300 backdrop-blur-2xl">
+              {/* Thẻ 2: 1. Bối cảnh & Thách thức (Situation & Task) */}
+              <div className="w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-amber-50/98 via-orange-50/95 to-amber-100/90 dark:from-slate-900/98 dark:via-amber-950/40 dark:to-slate-900/95 border-2 border-amber-300/90 dark:border-amber-500/40 shadow-[0_12px_32px_rgba(217,119,6,0.18)] space-y-3 transition-all duration-300 backdrop-blur-2xl shrink-0">
                 <div className="flex items-center justify-between pb-2 border-b border-amber-200/80 dark:border-amber-500/30">
                   <div className="flex items-center gap-2.5">
                     <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white font-mono font-black text-sm flex items-center justify-center shadow-md">
@@ -606,8 +604,8 @@ export const ProjectsView: React.FC = () => {
                 </p>
               </div>
 
-              {/* Thẻ 3 (Sticky Card 3): 2. Phương pháp tiếp cận chiến lược (Approach) */}
-              <div className="sticky top-12 sm:top-16 z-30 w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-blue-50/98 via-sky-50/95 to-indigo-100/90 dark:from-slate-900/98 dark:via-blue-950/40 dark:to-slate-900/95 border-2 border-blue-300/90 dark:border-blue-500/40 shadow-[0_14px_36px_rgba(2,132,199,0.18)] space-y-3 transition-all duration-300 backdrop-blur-2xl">
+              {/* Thẻ 3: 2. Phương pháp tiếp cận chiến lược (Approach) */}
+              <div className="w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-blue-50/98 via-sky-50/95 to-indigo-100/90 dark:from-slate-900/98 dark:via-blue-950/40 dark:to-slate-900/95 border-2 border-blue-300/90 dark:border-blue-500/40 shadow-[0_14px_36px_rgba(2,132,199,0.18)] space-y-3 transition-all duration-300 backdrop-blur-2xl shrink-0">
                 <div className="flex items-center justify-between pb-2 border-b border-blue-200/80 dark:border-blue-500/30">
                   <div className="flex items-center gap-2.5">
                     <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-600 text-white font-mono font-black text-sm flex items-center justify-center shadow-md">
@@ -626,8 +624,8 @@ export const ProjectsView: React.FC = () => {
                 </p>
               </div>
 
-              {/* Thẻ 4 (Sticky Card 4): 3. Hành động triển khai thực tế (Action Steps) */}
-              <div className="sticky top-18 sm:top-24 z-40 w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-purple-50/98 via-fuchsia-50/95 to-violet-100/90 dark:from-slate-900/98 dark:via-purple-950/40 dark:to-slate-900/95 border-2 border-purple-300/90 dark:border-purple-500/40 shadow-[0_16px_40px_rgba(124,58,237,0.2)] space-y-3.5 transition-all duration-300 backdrop-blur-2xl">
+              {/* Thẻ 4: 3. Hành động triển khai thực tế (Action Steps) */}
+              <div className="w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-purple-50/98 via-fuchsia-50/95 to-violet-100/90 dark:from-slate-900/98 dark:via-purple-950/40 dark:to-slate-900/95 border-2 border-purple-300/90 dark:border-purple-500/40 shadow-[0_16px_40px_rgba(124,58,237,0.2)] space-y-3.5 transition-all duration-300 backdrop-blur-2xl shrink-0">
                 <div className="flex items-center justify-between pb-2 border-b border-purple-200/80 dark:border-purple-500/30">
                   <div className="flex items-center gap-2.5">
                     <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-600 to-fuchsia-600 text-white font-mono font-black text-sm flex items-center justify-center shadow-md">
@@ -662,8 +660,8 @@ export const ProjectsView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Thẻ 5 (Sticky Card 5): 4. Kết quả định lượng & ROI (Quantifiable Results) */}
-              <div className="sticky top-24 sm:top-32 z-50 w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-emerald-50/98 via-teal-50/95 to-green-100/90 dark:from-slate-900/98 dark:via-emerald-950/40 dark:to-slate-900/95 border-2 border-emerald-300/90 dark:border-emerald-500/40 shadow-[0_20px_48px_rgba(5,150,105,0.22)] space-y-3.5 transition-all duration-300 backdrop-blur-2xl">
+              {/* Thẻ 5: 4. Kết quả định lượng & ROI (Quantifiable Results) */}
+              <div className="w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-emerald-50/98 via-teal-50/95 to-green-100/90 dark:from-slate-900/98 dark:via-emerald-950/40 dark:to-slate-900/95 border-2 border-emerald-300/90 dark:border-emerald-500/40 shadow-[0_20px_48px_rgba(5,150,105,0.22)] space-y-3.5 transition-all duration-300 backdrop-blur-2xl shrink-0">
                 <div className="flex items-center justify-between pb-2 border-b border-emerald-200/80 dark:border-emerald-500/30">
                   <div className="flex items-center gap-2.5">
                     <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white font-mono font-black text-sm flex items-center justify-center shadow-md">

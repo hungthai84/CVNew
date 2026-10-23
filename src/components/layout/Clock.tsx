@@ -48,9 +48,14 @@ export const Clock: React.FC<ClockProps> = ({ isLight = true, currentTheme = 'li
           width: 210px;
           margin: 0 auto;
           padding: 4px;
-          background-color: rgba(0, 0, 0, 0.4);
+          background-color: ${isLight ? 'rgba(255, 255, 255, 0.92)' : 'rgba(0, 0, 0, 0.4)'};
+          border: ${isLight ? '1px solid rgba(226, 232, 240, 0.95)' : 'none'};
           border-radius: 8px;
-          box-shadow: inset 0px 1px 8px rgba(0, 0, 0, 0.6);
+          box-shadow: ${
+            isLight
+              ? 'inset 0px 1px 6px rgba(15, 23, 42, 0.08), 0px 2px 8px rgba(15, 23, 42, 0.08)'
+              : 'inset 0px 1px 8px rgba(0, 0, 0, 0.6)'
+          };
           display: flex;
           align-items: center;
           justify-content: center;
@@ -75,15 +80,24 @@ export const Clock: React.FC<ClockProps> = ({ isLight = true, currentTheme = 'li
           height: 46px;
           position: absolute;
           overflow: hidden;
-          color: #fff;
+          color: ${isLight ? '#0f172a' : '#fff'};
           text-align: center;
           font-size: 72px;
           font-weight: 700;
           line-height: 92px;
-          text-shadow: 1px 1px 1px #000;
-          box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.6);
+          text-shadow: ${isLight ? '0px 1px 1px rgba(255, 255, 255, 0.9)' : '1px 1px 1px #000'};
+          box-shadow: ${
+            isLight
+              ? '0px 1px 3px rgba(15, 23, 42, 0.14)'
+              : '0px 1px 3px rgba(0, 0, 0, 0.6)'
+          };
+          border: ${isLight ? '1px solid rgba(226, 232, 240, 0.9)' : 'none'};
           transition: transform 600ms ease;
-          background-image: linear-gradient(to top, #111111 0%, #222222 100%);
+          background-image: ${
+            isLight
+              ? 'linear-gradient(to top, #f8fafc 0%, #ffffff 100%)'
+              : 'linear-gradient(to top, #111111 0%, #222222 100%)'
+          };
         }
         .clock-wrap .front {
           z-index: 30;
@@ -104,7 +118,7 @@ export const Clock: React.FC<ClockProps> = ({ isLight = true, currentTheme = 'li
         }
         .digit-bottom {
           top: 49px;
-          background-color: #222;
+          background-color: ${isLight ? '#ffffff' : '#222'};
           border-radius: 1px 1px 4px 4px;
           z-index: 5;
         }
@@ -118,6 +132,7 @@ export const Clock: React.FC<ClockProps> = ({ isLight = true, currentTheme = 'li
           left: 8px;
           top: 12px;
           line-height: 1;
+          color: ${isLight ? '#0284c7' : '#fff'};
         }
       `}</style>
 

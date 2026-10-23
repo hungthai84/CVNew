@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { HeroIntroButton } from "@/components/ui/HeroIntroButton";
-import { PageCardHeader } from "@/components/ui/PageCardHeader";
+import { HeroBanner } from "@/components/ui/HeroBanner";
 import { DynamicVideoStoryOverlay } from "@/components/ui/DynamicVideoStoryOverlay";
 import { cn } from "@/lib/utils";
 import { 
@@ -150,12 +150,22 @@ export function AboutView() {
   return (
     <section 
       id="about" 
-      className="relative w-full h-full flex-1 flex flex-col justify-between items-stretch p-[12px] sm:p-[15px] font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-y-auto no-scrollbar"
+      className="relative w-full h-full flex-1 flex flex-col justify-between items-stretch p-[12px] sm:p-[15px] font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-y-auto glass-scrollbar"
     >
-      <div className="w-full h-full flex-1 flex flex-col gap-3.5 max-w-7xl mx-auto justify-between pb-4">
-        {/* Header Card */}
-        <PageCardHeader pageId="about" className="w-full shadow-sm" />
+      <div className="w-full h-full flex-1 flex flex-col gap-[15px] max-w-7xl mx-auto justify-between pb-4">
+        {/* Top Hero Banner - Trang Giới Thiệu */}
+        <HeroBanner
+          badgeText="Giới thiệu"
+          title="Hồ Sơ Chuyên Gia & Thông Tin Cá Nhân"
+          subtitle="Hành trình hơn 22 năm điều hành Dịch vụ Khách hàng đa ngành"
+          titleIcon="users"
+          badgeColor="text-purple-300"
+          titleColor="text-purple-300"
+          quote="“Tận tâm phụng sự – Chuẩn hóa quy trình – Kiến tạo trải nghiệm khách hàng vượt trội.”"
+          quoteAuthor="— Nguyễn Hùng Thái"
+        />
 
+        <div className="flex-1 min-w-0 w-full flex flex-col gap-[15px]">
         {/* BENTO GRID LAYOUT - RESPONSIVE & SPACE OPTIMIZED */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch w-full">
           
@@ -496,6 +506,7 @@ export function AboutView() {
             <span>Kết nối ngay</span>
             <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />
           </button>
+        </div>
         </div>
 
       </div>

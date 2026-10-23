@@ -83,7 +83,7 @@ export const Modal: React.FC<ModalProps> = ({
             )}
           </div>
         )}
-        <div className="overflow-y-auto no-scrollbar flex-1">{children}</div>
+        <div className="overflow-y-auto glass-scrollbar flex-1">{children}</div>
       </div>
     </div>
   );

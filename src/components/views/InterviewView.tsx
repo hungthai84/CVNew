@@ -204,12 +204,12 @@ export const InterviewView: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. VÙNG CHÍNH GIỮA: BANNER THEO CHIỀU DỌC 360PX */}
+      {/* 2. VÙNG CHÍNH GIỮA: BANNER THEO CHIỀU DỌC 300PX */}
       <aside
         className={`shrink-0 h-full flex flex-col transition-all duration-500 ease-in-out overflow-hidden ${
           isVideoPlaying
             ? 'w-0 lg:w-0 opacity-0 pointer-events-none max-w-0 p-0 m-0 border-none scale-95'
-            : 'w-full lg:w-[300px] min-w-[300px] max-w-[300px] opacity-100 scale-100'
+            : 'w-full lg:w-[300px] lg:min-w-[300px] lg:max-w-[300px] opacity-100 scale-100'
         }`}
       >
         <HeroBanner

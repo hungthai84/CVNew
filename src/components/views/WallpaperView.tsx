@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { WALLPAPER_OPTIONS } from '@/data/wallpapers';
-import { WallpaperOption } from '@/types';
+import { WEATHER_PRESETS } from '@/data/weather';
+import { WallpaperOption, WeatherPreset } from '@/types';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { HeroBanner } from '@/components/ui/HeroBanner';
@@ -13,15 +14,24 @@ import {
   setDefaultWallpaperId,
   loadDeletedWallpaperIds,
   saveDeletedWallpaperIds,
+  loadFavoriteWallpaperIds,
+  saveFavoriteWallpaperIds,
   detectWallpaperType,
   exportWallpapersToJsonFile,
   parseWallpapersJson,
   sanitizeWallpaperStyle,
   parseCssToReactStyle,
   formatWallpaperCssSnippet,
+  extractWallpaperAccentColor,
+  encodeStudioPresetCode,
+  decodeStudioPresetCode,
+  generateQrMatrix,
+  exportGradientStudioToPng,
+  CINEMATIC_LUT_PRESETS,
   DEFAULT_WALLPAPER_SETTINGS,
   WallpaperAdvancedSettings,
 } from '@/utils/wallpaperStorage';
+import { AMBIENT_TRACKS, AmbientTrackId } from '@/utils/ambientSoundEngine';
 
 export interface WallpaperViewProps {
   onSelectWallpaper: (option: WallpaperOption) => void;
@@ -29,9 +39,19 @@ export interface WallpaperViewProps {
   defaultWallpaperId?: string;
   onSetDefaultWallpaper?: (option: WallpaperOption) => void;
   onSelectWeather?: (idx: number) => void;
+  weatherIdx?: number;
+  currentWeather?: WeatherPreset;
   wallpaperSettings?: WallpaperAdvancedSettings;
   onUpdateWallpaperSettings?: (partial: Partial<WallpaperAdvancedSettings>) => void;
   onNextSlideshow?: () => void;
+  onTriggerZenMode?: (durationSeconds?: number) => void;
+  activeAccent?: { hex: string; rgb: string; label: string };
+  resolvedAmbientTrack?: AmbientTrackId;
+  pomodoroRunning?: boolean;
+  pomodoroPhase?: 'focus' | 'break';
+  pomodoroSecondsLeft?: number;
+  onTogglePomodoro?: (nextRunning?: boolean, forcePhase?: 'focus' | 'break') => void;
+  onResetPomodoro?: () => void;
 }
 
 interface GradientColorStop {
@@ -133,17 +153,37 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
   activeWallpaperId = 'aurora',
   defaultWallpaperId: propDefaultId,
   onSetDefaultWallpaper,
+  onSelectWeather,
+  weatherIdx = 0,
+  currentWeather,
   wallpaperSettings: propSettings,
   onUpdateWallpaperSettings,
   onNextSlideshow,
+  onTriggerZenMode,
+  activeAccent: propAccent,
+  resolvedAmbientTrack = 'cosmos',
+  pomodoroRunning = false,
+  pomodoroPhase = 'focus',
+  pomodoroSecondsLeft = 25 * 60,
+  onTogglePomodoro,
+  onResetPomodoro,
 }) => {
   const { showToast } = useToast();
 
   const [customList, setCustomList] = useState<WallpaperOption[]>([]);
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([
+    'aurora',
+    'css-aurora-borealis',
+    'css-sunset-mesh',
+    'css-deep-space',
+  ]);
   const [defaultId, setDefaultId] = useState<string>(propDefaultId || 'aurora');
   const [isAddingOpen, setIsAddingOpen] = useState<boolean>(false);
   const [isStudioOpen, setIsStudioOpen] = useState<boolean>(false);
+  const [isSharePresetOpen, setIsSharePresetOpen] = useState<boolean>(false);
+  const [isExportingPng, setIsExportingPng] = useState<boolean>(false);
+  const [presetImportText, setPresetImportText] = useState<string>('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Local settings fallback if not controlled from parent
@@ -183,16 +223,18 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const jsonInputRef = useRef<HTMLInputElement>(null);
 
-  // Load custom wallpapers, deleted IDs and default wallpaper from persistent storage on mount
+  // Load custom wallpapers, deleted IDs, favorite IDs and default wallpaper from persistent storage on mount
   useEffect(() => {
     let mounted = true;
     (async () => {
       const stored = await loadCustomWallpapers();
       const defId = await getDefaultWallpaperId();
       const delIds = await loadDeletedWallpaperIds();
+      const favIds = await loadFavoriteWallpaperIds();
       if (mounted) {
         setCustomList(stored);
         setDeletedIds(delIds);
+        setFavoriteIds(favIds);
         if (defId) setDefaultId(defId);
       }
     })();
@@ -336,6 +378,146 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
     }
   };
 
+  // Encode current Studio state into compact preset string & JSON + QR Matrix
+  const currentStudioPresetPayload = useMemo(
+    () => ({
+      name: studioName.trim() || `Gradient ${studioMode.toUpperCase()}`,
+      mode: studioMode,
+      angle: studioAngle,
+      baseColor: studioBaseColor,
+      stops: studioStops.map((s) => ({
+        color: s.color,
+        position: s.position,
+        x: s.x,
+        y: s.y,
+      })),
+    }),
+    [studioName, studioMode, studioAngle, studioBaseColor, studioStops]
+  );
+
+  const studioPresetCode = useMemo(
+    () => encodeStudioPresetCode(currentStudioPresetPayload),
+    [currentStudioPresetPayload]
+  );
+
+  const studioPresetJson = useMemo(
+    () => JSON.stringify(currentStudioPresetPayload),
+    [currentStudioPresetPayload]
+  );
+
+  const studioQrMatrix = useMemo(
+    () => generateQrMatrix(studioPresetCode, 25),
+    [studioPresetCode]
+  );
+
+  const handleCopyPresetCode = async (type: 'code' | 'json') => {
+    const text = type === 'code' ? studioPresetCode : studioPresetJson;
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast(
+        type === 'code'
+          ? 'Đã sao chép Mã Preset rút gọn (HTG1) vào bộ nhớ tạm!'
+          : 'Đã sao chép chuỗi JSON Preset vào bộ nhớ tạm!'
+      );
+    } catch {
+      showToast('Không thể sao chép tự động trên trình duyệt này.');
+    }
+  };
+
+  const handleDownloadPresetQrSvg = () => {
+    const size = studioQrMatrix.length;
+    const cellSize = 8;
+    const padding = 16;
+    const total = size * cellSize + padding * 2;
+    let rects = '';
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        if (studioQrMatrix[r][c]) {
+          rects += `<rect x="${padding + c * cellSize}" y="${padding + r * cellSize}" width="${cellSize}" height="${cellSize}" rx="1.5" fill="#1e1b4b"/>`;
+        }
+      }
+    }
+    const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${total} ${total}" width="${total}" height="${total}">
+      <rect width="100%" height="100%" rx="16" fill="#ffffff"/>
+      ${rects}
+    </svg>`;
+    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `gradient-preset-qr-${Date.now()}.svg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast('Đã tải xuống mã QR Preset (.svg)!');
+  };
+
+  const handleImportStudioPreset = () => {
+    const decoded = decodeStudioPresetCode(presetImportText);
+    if (!decoded) {
+      showToast('Mã Preset hoặc chuỗi JSON không hợp lệ. Vui lòng kiểm tra lại!');
+      return;
+    }
+    setStudioMode(decoded.mode);
+    setStudioAngle(decoded.angle);
+    setStudioBaseColor(decoded.baseColor);
+    setStudioName(decoded.name);
+    setStudioStops(
+      decoded.stops.map((s, idx) => ({
+        id: `imported-${Date.now()}-${idx}`,
+        color: s.color,
+        position: s.position,
+        x: s.x,
+        y: s.y,
+      }))
+    );
+    setPresetImportText('');
+    showToast(`Đã nạp thành công Preset: "${decoded.name}"!`);
+  };
+
+  // Export Gradient Studio canvas to 4K UHD (3840x2160) or Full HD (1920x1080) .PNG file
+  const handleExportStudio4kPng = async (width = 3840, height = 2160) => {
+    try {
+      setIsExportingPng(true);
+      await exportGradientStudioToPng(currentStudioPresetPayload, width, height);
+      showToast(
+        `Đã kết xuất & tải xuống ảnh nền ${width === 3840 ? '4K UHD' : 'Full HD'} (${width}×${height} .PNG)!`
+      );
+    } catch {
+      showToast('Không thể kết xuất ảnh PNG trên trình duyệt này.');
+    } finally {
+      setIsExportingPng(false);
+    }
+  };
+
+  const formattedPomodoroTime = useMemo(() => {
+    const mins = Math.floor(Math.max(0, pomodoroSecondsLeft) / 60);
+    const secs = Math.max(0, pomodoroSecondsLeft) % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }, [pomodoroSecondsLeft]);
+
+  const activeAmbientTrackMeta = useMemo(
+    () => AMBIENT_TRACKS.find((t) => t.id === resolvedAmbientTrack) || AMBIENT_TRACKS[3],
+    [resolvedAmbientTrack]
+  );
+
+  // Toggle favorite status for any wallpaper card
+  const handleToggleFavorite = async (e: React.MouseEvent, wp: WallpaperOption) => {
+    e.stopPropagation();
+    const isFav = favoriteIds.includes(wp.id);
+    const updated = isFav
+      ? favoriteIds.filter((id) => id !== wp.id)
+      : [wp.id, ...favoriteIds];
+    setFavoriteIds(updated);
+    await saveFavoriteWallpaperIds(updated);
+    showToast(
+      isFav
+        ? `Đã bỏ "${wp.name}" khỏi Bộ sưu tập Yêu thích.`
+        : `Đã thêm "${wp.name}" vào Bộ sưu tập Yêu thích!`
+    );
+  };
+
   // One-Click Copy CSS Snippet for any CSS/Gradient card
   const handleCopyCardCss = async (e: React.MouseEvent, wp: WallpaperOption) => {
     e.stopPropagation();
@@ -359,7 +541,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
   // Real-time detection from single input
   const detection = detectWallpaperType(inputValue);
 
-  const [filterType, setFilterType] = useState<'all' | 'image' | 'video' | 'gradient' | 'css'>('all');
+  const [filterType, setFilterType] = useState<'all' | 'favorites' | 'image' | 'video' | 'gradient' | 'css'>('all');
 
   // Combined wallpapers: Custom first, then built-in (excluding deleted IDs & deduplicating)
   const combinedWallpapers: WallpaperOption[] = React.useMemo(() => {
@@ -382,8 +564,19 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
     return unique;
   }, [customList, deletedIds]);
 
+  const activeWallpaperObj = useMemo(
+    () => combinedWallpapers.find((w) => w.id === activeWallpaperId) || combinedWallpapers[0],
+    [combinedWallpapers, activeWallpaperId]
+  );
+
+  const computedAccent = useMemo(
+    () => propAccent || extractWallpaperAccentColor(activeWallpaperObj),
+    [propAccent, activeWallpaperObj]
+  );
+
   const allWallpapers: WallpaperOption[] = combinedWallpapers.filter((wp) => {
     if (filterType === 'all') return true;
+    if (filterType === 'favorites') return favoriteIds.includes(wp.id);
     if (filterType === 'image') return wp.type === 'image';
     if (filterType === 'video') return wp.type === 'video';
     if (filterType === 'gradient') return wp.type === 'gradient' || wp.type === 'color';
@@ -576,11 +769,12 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
         videoSrc="https://cdn.scena.ai/project/10223/85c60f965c31d8901995509ba70ec1c48bc618b045821510b3dee9f89646a8d1.mp4"
         bottomControls={
           <div className="w-full flex flex-wrap items-center justify-between gap-2.5 pt-1 px-1">
-            {/* BÊN TRÁI: Nút nhóm lọc hình nền */}
+            {/* BÊN TRÁI: Nút nhóm lọc hình nền (kèm Bộ sưu tập Yêu thích) */}
             <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex items-center gap-1.5 p-1 rounded-[999px] bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/20 shadow-xs backdrop-blur-md">
+              <div className="flex items-center gap-1.5 p-1 rounded-[999px] bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/20 shadow-xs backdrop-blur-md flex-wrap">
                 {[
                   { id: 'all', label: 'Tất cả' },
+                  { id: 'favorites', label: `♥ Yêu thích (${favoriteIds.length})` },
                   { id: 'image', label: 'Hình ảnh' },
                   { id: 'video', label: 'Video động' },
                   { id: 'gradient', label: 'Gradient' },
@@ -592,7 +786,9 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                     onClick={() => setFilterType(tab.id as typeof filterType)}
                     className={`px-2.5 py-1 rounded-[999px] text-[11px] font-bold transition-all cursor-pointer ${
                       filterType === tab.id
-                        ? 'bg-fuchsia-600 text-white shadow-xs'
+                        ? tab.id === 'favorites'
+                          ? 'bg-rose-600 text-white shadow-xs'
+                          : 'bg-fuchsia-600 text-white shadow-xs'
                         : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 hover:bg-white/60 dark:hover:bg-white/20'
                     }`}
                   >
@@ -615,8 +811,24 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
               )}
             </div>
 
-            {/* BÊN PHẢI: Gradient Studio, Thêm hình nền, Nhập/Xuất JSON */}
+            {/* BÊN PHẢI: Zen Mode, Gradient Studio, Thêm hình nền, Nhập/Xuất JSON */}
             <div className="flex items-center gap-2 flex-wrap">
+              {/* Nút Chế độ Xem trước Toàn màn hình (Zen Mode / Hide UI Preview) */}
+              {onTriggerZenMode && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onTriggerZenMode(8);
+                    showToast('Đã bật Zen Mode (Ẩn UI 8 giây để ngắm trọn hình nền – Nhấn ESC để thoát sớm)');
+                  }}
+                  title="Ẩn tạm thời Header, Footer và Thẻ chính để thưởng thức trọn vẹn hình nền toàn màn hình"
+                  className="px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 bg-slate-900/90 hover:bg-slate-800 text-cyan-300 border border-cyan-400/40 shadow-sm active:scale-95 transition-all cursor-pointer"
+                >
+                  <WebIcon name="maximize" className="w-3.5 h-3.5" />
+                  <span>Zen Mode (8s)</span>
+                </button>
+              )}
+
               {/* Nút bật/tắt Bộ tạo Gradient & Mesh CSS trực quan */}
               <button
                 type="button"
@@ -692,8 +904,9 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
         }
       />
 
-      {/* 2. BẢNG ĐIỀU KHIỂN HIỆU ỨNG NỀN & TỰ ĐỘNG HÓA (Dimmer/Blur, Parallax 3D, Ngày/Đêm, Trình chiếu) */}
-      <div className="w-full p-3.5 sm:p-4 rounded-2xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/90 dark:border-white/15 shadow-sm backdrop-blur-xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3.5 items-stretch">
+      <div className="flex-1 min-w-0 w-full flex flex-col gap-4">
+      {/* 2. BẢNG ĐIỀU KHIỂN HIỆU ỨNG NỀN & TỰ ĐỘNG HÓA (6 tính năng thông minh) */}
+      <div className="w-full p-3.5 sm:p-4 rounded-2xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/90 dark:border-white/15 shadow-sm backdrop-blur-xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5 items-stretch">
         {/* Khối 1: Bộ lọc Độ tối & Độ mờ Hình nền (Wallpaper Dimmer & Blur Slider) */}
         <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2.5">
           <div className="flex items-center justify-between gap-2">
@@ -872,7 +1085,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
           </div>
         </div>
 
-        {/* Khối 4: Chế độ Trình chiếu Hình nền tự động (Wallpaper Slideshow Mode) */}
+        {/* Khối 4: Chế độ Trình chiếu Hình nền tự động & Danh sách Yêu thích */}
         <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">
@@ -928,9 +1141,28 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
           </div>
 
           <div className="flex items-center justify-between gap-2 pt-0.5">
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">
-              Luân chuyển mượt mà
-            </span>
+            <button
+              type="button"
+              onClick={() => {
+                const nextFavOnly = !settings.slideshowFavoritesOnly;
+                updateSettings({ slideshowFavoritesOnly: nextFavOnly });
+                showToast(
+                  nextFavOnly
+                    ? `Trình chiếu chỉ luân chuyển trong ${favoriteIds.length} hình nền Yêu thích!`
+                    : 'Trình chiếu luân chuyển toàn bộ Kho hình nền.'
+                );
+              }}
+              className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition cursor-pointer flex items-center gap-1 ${
+                settings.slideshowFavoritesOnly
+                  ? 'bg-rose-600 text-white border-rose-500 shadow-2xs'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-rose-400'
+              }`}
+              title="Chỉ luân chuyển trong danh sách hình nền bạn đã thả tim Yêu thích"
+            >
+              <WebIcon name="heart" className="w-2.5 h-2.5" />
+              <span>Chỉ Yêu thích ({favoriteIds.length})</span>
+            </button>
+
             <button
               type="button"
               onClick={() => {
@@ -948,6 +1180,453 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
               <span>Đổi nền kế tiếp</span>
               <WebIcon name="chevron-right" className="w-3 h-3" />
             </button>
+          </div>
+        </div>
+
+        {/* Khối 5: Đồng bộ Hình nền theo Thời tiết (Weather-Synced Ambient Wallpaper) */}
+        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <WebIcon name="cloud-rain" className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                Đồng Bộ Thời Tiết
+              </span>
+            </div>
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={settings.weatherSyncEnabled}
+              onClick={() => {
+                const next = !settings.weatherSyncEnabled;
+                updateSettings({ weatherSyncEnabled: next });
+                showToast(
+                  next
+                    ? `Đã bật hiệu ứng nền đồng bộ thời tiết (${currentWeather?.conditionVi || 'Nắng đẹp'})!`
+                    : 'Đã tắt hiệu ứng nền đồng bộ thời tiết.'
+                );
+              }}
+              className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold transition cursor-pointer border ${
+                settings.weatherSyncEnabled
+                  ? 'bg-sky-600 text-white border-sky-500 shadow-2xs'
+                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
+              }`}
+            >
+              {settings.weatherSyncEnabled ? 'Đang Bật' : 'Đang Tắt'}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-3 gap-1">
+            {WEATHER_PRESETS.map((wpPreset, idx) => (
+              <button
+                key={wpPreset.condition}
+                type="button"
+                onClick={() => {
+                  if (onSelectWeather) onSelectWeather(idx);
+                  if (!settings.weatherSyncEnabled) {
+                    updateSettings({ weatherSyncEnabled: true });
+                  }
+                  showToast(`Thời tiết: ${wpPreset.conditionVi} (${wpPreset.temp}°C)`);
+                }}
+                className={`px-1.5 py-1 rounded-lg text-[9.5px] font-bold truncate border transition cursor-pointer ${
+                  weatherIdx === idx
+                    ? 'bg-sky-600 text-white border-sky-500 shadow-2xs'
+                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-sky-400'
+                }`}
+                title={`${wpPreset.conditionVi} - ${wpPreset.temp}°C`}
+              >
+                {wpPreset.badge}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-0.5">
+            <span>Footer hiện tại:</span>
+            <span className="font-bold text-sky-600 dark:text-sky-400">
+              {currentWeather?.conditionVi || 'Nắng đẹp rực rỡ'} ({currentWeather?.temp || '32'}°C)
+            </span>
+          </div>
+        </div>
+
+        {/* Khối 6: Trích xuất Màu Nhấn Tự động (Auto Accent Glow Extractor) & Zen Mode */}
+        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <WebIcon name="palette" className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                Màu Nhấn Tự Động (Glow)
+              </span>
+            </div>
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={settings.autoAccentGlow}
+              onClick={() => {
+                const next = !settings.autoAccentGlow;
+                updateSettings({ autoAccentGlow: next });
+                showToast(
+                  next
+                    ? `Đã đồng bộ viền phát sáng (Spotlight Glow) theo màu chủ đạo ${computedAccent.hex}!`
+                    : 'Đã tắt trích xuất màu nhấn tự động.'
+                );
+              }}
+              className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold transition cursor-pointer border ${
+                settings.autoAccentGlow
+                  ? 'bg-indigo-600 text-white border-indigo-500 shadow-2xs'
+                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
+              }`}
+            >
+              {settings.autoAccentGlow ? 'Đang Bật' : 'Đang Tắt'}
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between gap-2 p-1.5 rounded-lg bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-700">
+            <div className="flex items-center gap-2 min-w-0">
+              <span
+                className="w-5 h-5 rounded-md border border-white shadow-xs shrink-0"
+                style={{
+                  backgroundColor: computedAccent.hex,
+                  boxShadow: `0 0 10px rgba(${computedAccent.rgb}, 0.65)`,
+                }}
+              />
+              <div className="flex flex-col min-w-0">
+                <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 truncate">
+                  Tông màu: {computedAccent.label}
+                </span>
+                <span className="text-[9.5px] font-mono text-slate-500 dark:text-slate-400">
+                  HEX: {computedAccent.hex.toUpperCase()}
+                </span>
+              </div>
+            </div>
+
+            {onTriggerZenMode && (
+              <button
+                type="button"
+                onClick={() => onTriggerZenMode(8)}
+                className="px-2 py-1 rounded-md text-[10px] font-bold bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-500/30 transition cursor-pointer flex items-center gap-1 shrink-0"
+                title="Ẩn giao diện 8 giây để xem trước toàn màn hình"
+              >
+                <WebIcon name="maximize" className="w-2.5 h-2.5" />
+                <span>Zen Mode</span>
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-0.5">
+            <span>Đồng bộ Spotlight & Viền thẻ chính</span>
+            <span className="font-semibold text-indigo-600 dark:text-indigo-400">Auto RGB Sync</span>
+          </div>
+        </div>
+
+        {/* Khối 7: Nhạc nền Không gian Đồng bộ Hình nền (Ambient Soundscape Mixer) */}
+        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <WebIcon
+                name={settings.ambientSoundEnabled ? 'waveform' : 'headphones'}
+                className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400"
+              />
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                Nhạc Nền Không Gian
+              </span>
+            </div>
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={settings.ambientSoundEnabled}
+              onClick={() => {
+                const next = !settings.ambientSoundEnabled;
+                updateSettings({ ambientSoundEnabled: next });
+                showToast(
+                  next
+                    ? `Đã bật Nhạc nền Không gian: ${activeAmbientTrackMeta.name}!`
+                    : 'Đã tắt Nhạc nền Không gian.'
+                );
+              }}
+              className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold transition cursor-pointer border ${
+                settings.ambientSoundEnabled
+                  ? 'bg-teal-600 text-white border-teal-500 shadow-2xs'
+                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
+              }`}
+            >
+              {settings.ambientSoundEnabled ? 'Đang Phát' : 'Đang Tắt'}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-5 gap-1">
+            <button
+              type="button"
+              onClick={() => {
+                updateSettings({ ambientSoundMode: 'auto', ambientSoundEnabled: true });
+                showToast('Đã bật chế độ Tự động hòa âm theo Hình nền & Thời tiết!');
+              }}
+              className={`px-1 py-1 rounded-lg text-[9.5px] font-bold truncate border transition cursor-pointer ${
+                settings.ambientSoundMode === 'auto'
+                  ? 'bg-teal-600 text-white border-teal-500 shadow-2xs'
+                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-teal-400'
+              }`}
+              title="Tự động đồng bộ âm thanh theo Hình nền & Thời tiết"
+            >
+              Tự động
+            </button>
+            {AMBIENT_TRACKS.map((track) => (
+              <button
+                key={track.id}
+                type="button"
+                onClick={() => {
+                  updateSettings({ ambientSoundMode: track.id, ambientSoundEnabled: true });
+                  showToast(`Đang phát không gian âm thanh: ${track.name}`);
+                }}
+                className={`px-1 py-1 rounded-lg text-[9.5px] font-bold truncate border transition cursor-pointer ${
+                  settings.ambientSoundMode === track.id
+                    ? 'bg-teal-600 text-white border-teal-500 shadow-2xs'
+                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-teal-400'
+                }`}
+                title={`${track.name} — ${track.subtitle}`}
+              >
+                {track.id === 'rain'
+                  ? 'Mưa Kính'
+                  : track.id === 'ocean'
+                  ? 'Sóng Biển'
+                  : track.id === 'forest'
+                  ? 'Gió Rừng'
+                  : 'Vũ Trụ'}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 pt-0.5">
+            <WebIcon name="volume-2" className="w-3 h-3 text-slate-500 dark:text-slate-400 shrink-0" />
+            <input
+              type="range"
+              min={5}
+              max={100}
+              step={5}
+              value={settings.ambientSoundVolume}
+              onChange={(e) => updateSettings({ ambientSoundVolume: Number(e.target.value) })}
+              className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-teal-600"
+              title={`Âm lượng nhạc nền: ${settings.ambientSoundVolume}%`}
+            />
+            <span className="text-[10px] font-mono font-bold text-teal-600 dark:text-teal-400 w-8 text-right">
+              {settings.ambientSoundVolume}%
+            </span>
+          </div>
+        </div>
+
+        {/* Khối 8: Bộ lọc Màu Điện ảnh (Cinematic LUTs) & Chuyển động Gradient Động (Living Mesh CSS) */}
+        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <WebIcon name="camera" className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                Màu Điện Ảnh & Living Mesh
+              </span>
+            </div>
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={settings.livingMeshEnabled}
+              onClick={() => {
+                const next = !settings.livingMeshEnabled;
+                updateSettings({ livingMeshEnabled: next });
+                showToast(
+                  next
+                    ? 'Đã bật hiệu ứng Chuyển động Gradient Động (Living Mesh CSS)!'
+                    : 'Đã tắt hiệu ứng Living Mesh CSS.'
+                );
+              }}
+              className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition cursor-pointer border ${
+                settings.livingMeshEnabled
+                  ? 'bg-rose-600 text-white border-rose-500 shadow-2xs'
+                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
+              }`}
+              title="Bật/Tắt hiệu ứng trôi nổi vòng lặp @keyframes cho các hình nền CSS & Gradient"
+            >
+              {settings.livingMeshEnabled ? 'Mesh Động: Bật' : 'Mesh Động: Tắt'}
+            </button>
+          </div>
+
+          {/* 6 Preset LUT Điện Ảnh */}
+          <div className="grid grid-cols-3 gap-1">
+            {CINEMATIC_LUT_PRESETS.map((lut) => (
+              <button
+                key={lut.id}
+                type="button"
+                onClick={() => {
+                  updateSettings({ cinematicLut: lut.id });
+                  showToast(`Đã áp dụng bộ lọc màu điện ảnh: ${lut.name}`);
+                }}
+                className={`px-1.5 py-1 rounded-lg text-[9.5px] font-bold truncate border transition cursor-pointer ${
+                  settings.cinematicLut === lut.id
+                    ? 'bg-rose-600 text-white border-rose-500 shadow-2xs'
+                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-rose-400'
+                }`}
+                title={lut.name}
+              >
+                {lut.shortLabel}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-0.5">
+            <span>Tốc độ trôi Mesh CSS:</span>
+            <div className="flex items-center gap-1">
+              {(
+                [
+                  { id: 'slow', label: 'Chậm' },
+                  { id: 'normal', label: 'Vừa' },
+                  { id: 'fast', label: 'Nhanh' },
+                ] as const
+              ).map((sp) => (
+                <button
+                  key={sp.id}
+                  type="button"
+                  onClick={() => updateSettings({ livingMeshSpeed: sp.id, livingMeshEnabled: true })}
+                  className={`px-1.5 py-0.2 rounded text-[9.5px] font-bold border transition cursor-pointer ${
+                    settings.livingMeshSpeed === sp.id
+                      ? 'bg-rose-600 text-white border-rose-600'
+                      : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                  }`}
+                >
+                  {sp.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Khối 9: Lịch trình Hình nền theo Mục tiêu Công việc (Focus / Pomodoro Wallpaper Sync) */}
+        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <WebIcon name="clock" className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                Pomodoro Đồng Bộ Nền
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <span
+                className={`px-2 py-0.5 rounded-md font-mono text-[10.5px] font-black border ${
+                  pomodoroRunning
+                    ? pomodoroPhase === 'focus'
+                      ? 'bg-violet-600 text-white border-violet-500 animate-pulse'
+                      : 'bg-emerald-600 text-white border-emerald-500 animate-pulse'
+                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700'
+                }`}
+              >
+                {formattedPomodoroTime}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const nextRun = !pomodoroRunning;
+                  if (onTogglePomodoro) onTogglePomodoro(nextRun);
+                  showToast(
+                    nextRun
+                      ? `Bắt đầu phiên ${
+                          pomodoroPhase === 'focus' ? 'Tập Trung (Focus)' : 'Giải Lao (Break)'
+                        } – Đã đồng bộ hình nền!`
+                      : 'Đã tạm dừng đồng hồ Pomodoro.'
+                  );
+                }}
+                className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition cursor-pointer border ${
+                  pomodoroRunning
+                    ? 'bg-amber-500 text-white border-amber-400'
+                    : 'bg-violet-600 text-white border-violet-500 hover:bg-violet-700'
+                }`}
+              >
+                {pomodoroRunning ? 'Dừng' : 'Chạy'}
+              </button>
+
+              {onResetPomodoro && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onResetPomodoro();
+                    showToast('Đã đặt lại đồng hồ Pomodoro.');
+                  }}
+                  title="Đặt lại thời gian Pomodoro"
+                  className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 transition cursor-pointer"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+            <div className="flex flex-col gap-0.5">
+              <button
+                type="button"
+                onClick={() => {
+                  if (onTogglePomodoro) onTogglePomodoro(true, 'focus');
+                  showToast('Đã chuyển sang chế độ Tập Trung (Focus) & áp dụng hình nền tĩnh dịu mắt!');
+                }}
+                className={`text-left font-bold flex items-center justify-between px-1.5 py-0.5 rounded cursor-pointer transition ${
+                  pomodoroPhase === 'focus'
+                    ? 'bg-violet-100 dark:bg-violet-950/80 text-violet-700 dark:text-violet-300'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-violet-600'
+                }`}
+              >
+                <span>🎯 Tập trung ({settings.pomodoroFocusMinutes}p)</span>
+              </button>
+              <select
+                value={settings.pomodoroFocusWallpaperId}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  updateSettings({ pomodoroFocusWallpaperId: id });
+                  if (pomodoroRunning && pomodoroPhase === 'focus') {
+                    const wp = combinedWallpapers.find((w) => w.id === id);
+                    if (wp) onSelectWallpaper(wp);
+                  }
+                }}
+                className="px-1.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[10px] font-semibold focus:outline-none"
+              >
+                <option value="css-deep-space">Vũ Trụ Tĩnh (Deep Focus)</option>
+                <option value="css-emerald-matrix">Ngọc Lục Bảo Dịu Mắt</option>
+                <option value="night">Bầu Trời Đêm Tĩnh</option>
+                <option value="pure-white">Sáng Tối Giản</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-0.5">
+              <button
+                type="button"
+                onClick={() => {
+                  if (onTogglePomodoro) onTogglePomodoro(true, 'break');
+                  showToast('Đã chuyển sang giờ Giải Lao (Break) & bật hình nền thư giãn!');
+                }}
+                className={`text-left font-bold flex items-center justify-between px-1.5 py-0.5 rounded cursor-pointer transition ${
+                  pomodoroPhase === 'break'
+                    ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-emerald-600'
+                }`}
+              >
+                <span>☕ Giải lao ({settings.pomodoroBreakMinutes}p)</span>
+              </button>
+              <select
+                value={settings.pomodoroBreakWallpaperId}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  updateSettings({ pomodoroBreakWallpaperId: id });
+                  if (pomodoroRunning && pomodoroPhase === 'break') {
+                    const wp = combinedWallpapers.find((w) => w.id === id);
+                    if (wp) onSelectWallpaper(wp);
+                  }
+                }}
+                className="px-1.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[10px] font-semibold focus:outline-none"
+              >
+                <option value="aurora">Cực Quang Aurora</option>
+                <option value="ocean">Đại Dương Xanh Mát</option>
+                <option value="rainforest">Rừng Nhiệt Đới Xanh</option>
+                <option value="css-sunset-mesh">Hoàng Hôn Nhiệt Đới</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -1207,9 +1886,26 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200">
                   Canvas Tương Tác (Kéo thả trực tiếp các điểm màu):
                 </span>
-                <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
-                  Live Mesh Preview
-                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = !settings.livingMeshEnabled;
+                    updateSettings({ livingMeshEnabled: next });
+                    showToast(
+                      next
+                        ? 'Đã bật chuyển động Living Mesh @keyframes trên Canvas!'
+                        : 'Đã chuyển Canvas về chế độ tĩnh.'
+                    );
+                  }}
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold border transition cursor-pointer flex items-center gap-1 ${
+                    settings.livingMeshEnabled
+                      ? 'bg-rose-600 text-white border-rose-500'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-700'
+                  }`}
+                >
+                  <WebIcon name="sparkles" className="w-2.5 h-2.5" />
+                  <span>{settings.livingMeshEnabled ? 'Living Mesh: Động' : 'Living Mesh: Tĩnh'}</span>
+                </button>
               </div>
 
               <div
@@ -1217,7 +1913,9 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 onPointerMove={handleCanvasPointerMove}
                 onPointerUp={() => setDraggingStopId(null)}
                 onPointerLeave={() => setDraggingStopId(null)}
-                className="w-full h-[185px] rounded-2xl border-2 border-slate-300 dark:border-slate-700 overflow-hidden relative shadow-inner select-none touch-none"
+                className={`w-full h-[185px] rounded-2xl border-2 border-slate-300 dark:border-slate-700 overflow-hidden relative shadow-inner select-none touch-none ${
+                  settings.livingMeshEnabled ? 'living-mesh-normal' : ''
+                }`}
                 style={generatedStudioStyle}
               >
                 {/* Draggable handles for color stops */}
@@ -1248,12 +1946,12 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                     Kéo các điểm số 1–{studioStops.length} để phối màu
                   </span>
                   <span className="px-2 py-0.5 rounded-full text-[9.5px] font-mono bg-black/55 text-cyan-300 backdrop-blur-xs">
-                    {studioMode.toUpperCase()}
+                    {studioMode.toUpperCase()} • 4K READY
                   </span>
                 </div>
               </div>
 
-              {/* Đặt tên & Nút Lưu / Áp dụng */}
+              {/* Đặt tên & Nút Lưu / Áp dụng / Xuất Ảnh 4K PNG / Chia sẻ QR Preset */}
               <input
                 type="text"
                 value={studioName}
@@ -1262,20 +1960,44 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 className="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               />
 
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <button
                   type="button"
                   onClick={handlePreviewStudioOnSite}
-                  className="py-2 px-3 rounded-[999px] text-xs font-bold text-indigo-700 dark:text-indigo-200 bg-indigo-50 dark:bg-indigo-950/80 hover:bg-indigo-100 border border-indigo-200 dark:border-indigo-700 transition cursor-pointer flex items-center justify-center gap-1.5"
+                  className="py-2 px-2.5 rounded-[999px] text-xs font-bold text-indigo-700 dark:text-indigo-200 bg-indigo-50 dark:bg-indigo-950/80 hover:bg-indigo-100 border border-indigo-200 dark:border-indigo-700 transition cursor-pointer flex items-center justify-center gap-1"
                 >
                   <WebIcon name="eye" className="w-3.5 h-3.5" />
-                  <span>Xem Thử Trên Nền</span>
+                  <span>Xem Thử</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isExportingPng}
+                  onClick={() => handleExportStudio4kPng(3840, 2160)}
+                  title="Kết xuất bảng phối màu hiện tại thành ảnh .PNG độ phân giải 4K UHD (3840×2160)"
+                  className="py-2 px-2.5 rounded-[999px] text-xs font-bold text-emerald-700 dark:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 border border-emerald-300 dark:border-emerald-700 transition cursor-pointer flex items-center justify-center gap-1"
+                >
+                  <WebIcon name="download" className="w-3.5 h-3.5" />
+                  <span>{isExportingPng ? 'Đang xuất...' : 'Ảnh 4K .PNG'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsSharePresetOpen(!isSharePresetOpen)}
+                  className={`py-2 px-2.5 rounded-[999px] text-xs font-bold border transition cursor-pointer flex items-center justify-center gap-1 ${
+                    isSharePresetOpen
+                      ? 'bg-fuchsia-600 text-white border-fuchsia-600'
+                      : 'bg-fuchsia-50 dark:bg-fuchsia-950/60 text-fuchsia-700 dark:text-fuchsia-300 border-fuchsia-200 dark:border-fuchsia-700 hover:bg-fuchsia-100'
+                  }`}
+                >
+                  <WebIcon name="qr-code" className="w-3.5 h-3.5" />
+                  <span>QR / Chia Sẻ</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleSaveStudioWallpaper}
-                  className="py-2 px-3 rounded-[999px] text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:from-indigo-700 hover:to-fuchsia-700 shadow-md shadow-indigo-500/20 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1.5"
+                  className="py-2 px-3 rounded-[999px] text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:from-indigo-700 hover:to-fuchsia-700 shadow-md shadow-indigo-500/20 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1"
                 >
                   <WebIcon name="sparkles" className="w-3.5 h-3.5" />
                   <span>Lưu & Áp Dụng</span>
@@ -1283,6 +2005,101 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
               </div>
             </div>
           </div>
+
+          {/* KHỐI XUẤT / CHIA SẺ & NHẬP PRESET TỪ GRADIENT STUDIO (QR Code + Mã HTG1 + Chuỗi JSON) */}
+          {isSharePresetOpen && (
+            <div className="mt-1 p-3.5 sm:p-4 rounded-2xl bg-slate-50/95 dark:bg-slate-800/85 border border-fuchsia-200 dark:border-fuchsia-500/30 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              {/* Cột QR Code trực quan */}
+              <div className="md:col-span-4 flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xs">
+                <div className="p-2 bg-white rounded-xl border border-slate-200 shadow-xs">
+                  <svg
+                    viewBox={`0 0 ${studioQrMatrix.length} ${studioQrMatrix.length}`}
+                    className="w-28 h-28"
+                    shapeRendering="crispEdges"
+                  >
+                    {studioQrMatrix.map((row, rIdx) =>
+                      row.map((cell, cIdx) =>
+                        cell ? (
+                          <rect
+                            key={`${rIdx}-${cIdx}`}
+                            x={cIdx}
+                            y={rIdx}
+                            width={1}
+                            height={1}
+                            fill="#1e1b4b"
+                          />
+                        ) : null
+                      )
+                    )}
+                  </svg>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleDownloadPresetQrSvg}
+                    className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition cursor-pointer flex items-center gap-1"
+                  >
+                    <WebIcon name="download" className="w-3 h-3" />
+                    <span>Tải mã QR (.svg)</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Cột Sao chép & Nhập nhanh Preset giữa các thiết bị */}
+              <div className="md:col-span-8 flex flex-col gap-3">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200">
+                      Mã Preset Rút Gọn (Chia sẻ nhanh giữa các thiết bị):
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleCopyPresetCode('code')}
+                        className="px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition cursor-pointer flex items-center gap-1"
+                      >
+                        <WebIcon name="copy" className="w-3 h-3" />
+                        <span>Chép Mã Rút Gọn</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyPresetCode('json')}
+                        className="px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-fuchsia-600 hover:bg-fuchsia-700 text-white transition cursor-pointer flex items-center gap-1"
+                      >
+                        <WebIcon name="copy" className="w-3 h-3" />
+                        <span>Chép JSON</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-900 text-cyan-300 font-mono text-[10.5px] overflow-x-auto whitespace-nowrap border border-slate-700">
+                    {studioPresetCode}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5 pt-1 border-t border-slate-200/80 dark:border-slate-700">
+                  <label className="text-[11px] font-bold text-slate-700 dark:text-slate-200">
+                    Nhập Preset Từ Thiết Bị Khác (Dán mã HTG1:... hoặc chuỗi JSON):
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={presetImportText}
+                      onChange={(e) => setPresetImportText(e.target.value)}
+                      placeholder="Dán mã HTG1:M:135:... hoặc chuỗi JSON vào đây..."
+                      className="flex-1 px-3 py-1.5 rounded-xl text-xs font-mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/40"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleImportStudioPreset}
+                      className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer shrink-0"
+                    >
+                      Nạp Preset
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -1447,6 +2264,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
         {allWallpapers.map((wp) => {
           const isDefault = defaultId === wp.id;
           const isActive = activeWallpaperId === wp.id;
+          const isFavorite = favoriteIds.includes(wp.id);
           const isCssCopyable =
             wp.type === 'css' || wp.type === 'gradient' || wp.type === 'color' || wp.type === 'class';
           const isCopied = copiedId === wp.id;
@@ -1481,8 +2299,25 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 )}
               </div>
 
-              {/* Action buttons top-right: Copy CSS (for CSS/Gradient cards) & Delete */}
+              {/* Action buttons top-right: Favorite Heart, Copy CSS (for CSS/Gradient cards) & Delete */}
               <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={(e) => handleToggleFavorite(e, wp)}
+                  title={
+                    isFavorite
+                      ? `Bỏ "${wp.name}" khỏi danh sách Yêu thích`
+                      : `Thêm "${wp.name}" vào danh sách Yêu thích`
+                  }
+                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm ${
+                    isFavorite
+                      ? 'bg-rose-600 text-white opacity-100 scale-105'
+                      : 'bg-black/50 hover:bg-rose-500 text-white opacity-0 group-hover:opacity-100'
+                  }`}
+                >
+                  <WebIcon name="heart" className="w-3 h-3" />
+                </button>
+
                 {isCssCopyable && (
                   <button
                     type="button"
@@ -1597,6 +2432,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );
