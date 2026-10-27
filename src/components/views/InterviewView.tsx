@@ -9,9 +9,13 @@ import {
 } from '@/data/interview';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
-import { HeroBanner } from '@/components/ui/HeroBanner';
+import { formatCardTitle } from '@/lib/utils';
 
-export const InterviewView: React.FC = () => {
+export interface InterviewViewProps {
+  currentTheme?: string;
+}
+
+export const InterviewView: React.FC<InterviewViewProps> = ({ currentTheme = 'light-glass' }) => {
   const { showToast } = useToast();
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -111,47 +115,90 @@ export const InterviewView: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[12px] sm:gap-[15px] max-w-7xl mx-auto justify-start select-none relative text-slate-800 overflow-hidden text-left">
-      {/* 1. VÙNG BÊN TRÁI: VIDEO PHỎNG VẤN TRỰC TIẾP (MỞ RỘNG KHI PHÁT VIDEO) */}
-      <div className="flex-1 min-w-0 flex flex-col h-full min-h-[340px] lg:min-h-0 transition-all duration-500 ease-in-out">
-        <div className="relative w-full h-full rounded-2xl overflow-hidden border border-slate-200/90 shadow-md bg-slate-950 flex flex-col flex-1 group">
-          <video
-            ref={videoRef}
-            autoPlay
-            loop={!isVideoPlaying}
-            muted={!isAudioOn}
-            playsInline
-            src={isVideoPlaying ? INTERVIEW_VIDEO_2_URL : INTERVIEW_VIDEO_1_URL}
-            onTimeUpdate={handleTimeUpdate}
-            onEnded={handleEnded}
-            className="h-full w-full object-cover transition-all duration-700 brightness-105 contrast-100 flex-1 min-h-0"
-          />
+    <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[12px] sm:gap-[15px] max-w-7xl mx-auto justify-start select-none relative text-slate-800 dark:text-slate-100 overflow-hidden text-left">
+      {/* 1. VÙNG BÊN TRÁI: BANNER PHỎNG VẤN HỢP NHẤT VIDEO (GỘP KÍCH THƯỚC VIDEO VÀ BANNER) */}
+      <div className="flex-1 min-w-0 flex flex-col h-full min-h-[380px] lg:min-h-0 relative rounded-2xl overflow-hidden border border-slate-200/90 dark:border-white/10 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.12)] dark:shadow-[0_18px_40px_-6px_rgba(0,0,0,0.85),0_0_24px_-2px_rgba(78,86,246,0.3)] bg-slate-950 group">
+        {/* Nền Video phỏng vấn trực tiếp */}
+        <video
+          ref={videoRef}
+          autoPlay
+          loop={!isVideoPlaying}
+          muted={!isAudioOn}
+          playsInline
+          src={isVideoPlaying ? INTERVIEW_VIDEO_2_URL : INTERVIEW_VIDEO_1_URL}
+          onTimeUpdate={handleTimeUpdate}
+          onEnded={handleEnded}
+          className="absolute inset-0 h-full w-full object-cover transition-all duration-700 opacity-100 brightness-[1.15] contrast-[1.1] select-none pointer-events-none"
+        />
 
-          {/* Gradient vignette */}
-          <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-950/85 via-transparent to-slate-950/45" />
+        {/* Lớp phủ chuyển sắc trong suốt siêu nhẹ, giúp nền video hiển thị sáng rõ nét 100% */}
+        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/25 via-transparent to-black/10 dark:from-black/35 dark:via-transparent dark:to-black/15" />
 
-          {/* Top Left: Active Question Badge & Timecode */}
-          <div className="pointer-events-none absolute left-3.5 top-3.5 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-white/20 backdrop-blur-md text-xs font-bold text-white shadow-md truncate max-w-[calc(100%-80px)]">
-            <span
-              className={`w-2 h-2 rounded-full shrink-0 ${
-                isVideoPlaying ? 'bg-emerald-400 animate-ping' : 'bg-cyan-400'
-              }`}
-            />
-            <span className="font-mono text-cyan-300 tracking-wide">
-              {isVideoPlaying ? `Đang phát câu 0${currentQ.stt}` : 'Sẵn sàng phỏng vấn'}
-            </span>
-            <span className="text-white/40">·</span>
-            <span className="text-slate-300 font-mono text-[11px] truncate">
-              {currentQ.timestamp}
-            </span>
-          </div>
+        {/* Nội dung Banner Phỏng Vấn (Controls) */}
+        <div className="relative z-20 w-full h-full p-3.5 sm:p-4 lg:p-5 flex flex-col justify-end pointer-events-none">
+          {/* DÒNG DƯỚI CÙNG: DROPDOWN LỌC DANH MỤC + CỤM NÚT ĐIỀU KHIỂN LASER BEAM */}
+          <div className="w-full flex items-center justify-between gap-3 pointer-events-auto pt-2 flex-wrap sm:flex-nowrap">
+            {/* Cụm trái: Dropdown chọn danh mục 14 câu hỏi */}
+            <div className="relative z-50">
+              <button
+                type="button"
+                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                className="px-3.5 py-2 rounded-xl text-xs font-bold font-play tracking-wide transition-all border cursor-pointer flex items-center gap-2 bg-slate-900/80 hover:bg-slate-900 text-white border-white/30 shadow-md backdrop-blur-md active:scale-95"
+              >
+                <WebIcon name="filter" className="w-3.5 h-3.5 text-pink-300 shrink-0" />
+                <span className="truncate max-w-[170px] sm:max-w-[200px]">
+                  Danh mục: {
+                    INTERVIEW_TABS.find((t) => t.key === activeFilter)?.labelVi || 'Tất cả (14)'
+                  }
+                </span>
+                <svg
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                    isFilterDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
 
-          {/* Bottom Right: Rotating Glowing Laser Beam Capsule Button */}
-          <div className="pointer-events-auto absolute right-3.5 bottom-3.5 z-20">
-            <div className="relative inline-flex items-center justify-between rounded-full p-[2px] select-none group/container transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] w-auto max-w-fit h-[42px] sm:h-[46px] overflow-hidden shadow-[0_0_20px_rgba(78,86,246,0.5)] ring-2 ring-indigo-400/50">
+              {isFilterDropdownOpen && (
+                <div className="absolute bottom-full left-0 mb-2 w-56 p-1.5 rounded-2xl bg-slate-900/95 backdrop-blur-2xl border border-white/20 shadow-2xl z-50 flex flex-col gap-1">
+                  {INTERVIEW_TABS.map((tab) => {
+                    const isActive = activeFilter === tab.key;
+                    return (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        onClick={() => {
+                          setActiveFilter(tab.key);
+                          setIsFilterDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-2 rounded-xl text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center justify-between gap-2 ${
+                          isActive
+                            ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white border-pink-300 shadow-md'
+                            : 'bg-white/5 hover:bg-white/15 text-white/90 border-white/10'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 truncate">
+                          <WebIcon name="compass" className="w-3.5 h-3.5 shrink-0 text-pink-300" />
+                          <span className="truncate">{tab.labelVi}</span>
+                        </div>
+                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Cụm phải: Laser Beam Capsule Button (Loa Bật/Tắt + Nút Phát/Dừng) */}
+            <div className="relative inline-flex items-center justify-between rounded-full p-[2px] select-none group/container transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] h-[44px] overflow-hidden shadow-[0_0_20px_rgba(78,86,246,0.5)] ring-2 ring-indigo-400/50">
               <div className="absolute -inset-[220%] animate-[spin_4s_linear_infinite] pointer-events-none bg-[conic-gradient(from_0deg,transparent_0_200deg,#4E56F6_250deg,#F125D6_300deg,#ffffff_340deg,#4E56F6_360deg)] opacity-100" />
 
-              <div className="relative z-10 inline-flex items-center justify-between w-auto max-w-fit h-full rounded-full bg-gradient-to-r from-[#4E56F6] via-[#8938F8] to-[#F125D6] px-2.5 py-1 gap-2 shadow-inner backdrop-blur-md">
+              <div className="relative z-10 inline-flex items-center justify-between w-auto h-full rounded-full bg-gradient-to-r from-[#4E56F6] via-[#8938F8] to-[#F125D6] px-2.5 py-1 gap-2 shadow-inner backdrop-blur-md">
                 {/* Speaker Toggle Button */}
                 <button
                   type="button"
@@ -204,174 +251,22 @@ export const InterviewView: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. VÙNG CHÍNH GIỮA: BANNER THEO CHIỀU DỌC 300PX */}
-      <aside
-        className={`shrink-0 h-full flex flex-col transition-all duration-500 ease-in-out overflow-hidden ${
-          isVideoPlaying
-            ? 'w-0 lg:w-0 opacity-0 pointer-events-none max-w-0 p-0 m-0 border-none scale-95'
-            : 'w-full lg:w-[300px] lg:min-w-[300px] lg:max-w-[300px] opacity-100 scale-100'
-        }`}
-      >
-        <HeroBanner
-          badgeText="Đối thoại"
-          title="Phỏng vấn thực chiến"
-          titleIcon="chat"
-          badgeColor="text-pink-400"
-          titleColor="text-pink-300"
-          quote="“Đối thoại chân thực khẳng định bản lĩnh và năng lực quản trị.”"
-          quoteAuthor="— Nguyễn Hùng Thái"
-          orientation="vertical"
-          className="h-full rounded-2xl"
-        >
-          {/* PROFILE CANDIDATE ROW */}
-          <div className="relative z-10 my-1.5 flex flex-col gap-1.5 shrink-0 pointer-events-auto">
-            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/10 border border-white/10 backdrop-blur-sm">
-              <div className="relative w-10 h-10 rounded-xl overflow-hidden ring-1 ring-pink-300/50 shadow-md shrink-0 bg-slate-900">
-                <img
-                  src="https://i.ibb.co/RT3jX4Mv/H-ng-Th-i-Avata-Gif.gif"
-                  alt="Nguyễn Hùng Thái"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-xs font-black font-play text-white truncate tracking-wide">
-                  Nguyễn Hùng Thái
-                </span>
-                <span className="text-[10px] font-bold text-pink-200 truncate">
-                  Trưởng Phòng CSKH
-                </span>
-                <span className="text-[9px] text-slate-300 truncate">
-                  22+ Năm Kinh Nghiệm CX
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* NHÓM NÚT LỌC DANH MỤC CÂU HỎI TRONG BANNER (DROPDOWN MENU LIST) */}
-          <div className="relative z-50 flex flex-col gap-1 w-full shrink-0 pointer-events-auto">
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                className="w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold font-play tracking-wide transition-all border cursor-pointer flex items-center justify-between gap-2 bg-white/20 hover:bg-white/30 text-white border-white/30 shadow-md backdrop-blur-md"
-              >
-                <div className="flex items-center gap-2 truncate">
-                  <WebIcon name="filter" className="w-4 h-4 text-pink-300 shrink-0" />
-                  <span className="truncate">
-                    Danh mục: {
-                      INTERVIEW_TABS.find(t => t.key === activeFilter)?.labelVi || 'Tất cả (14)'
-                    }
-                  </span>
-                </div>
-                <svg className={`w-3.5 h-3.5 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {isFilterDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1.5 p-1 rounded-2xl bg-slate-900/95 backdrop-blur-2xl border border-white/20 shadow-2xl z-50 flex flex-col gap-1">
-                  {INTERVIEW_TABS.map((tab) => {
-                    const isActive = activeFilter === tab.key;
-                    return (
-                      <button
-                        key={tab.key}
-                        type="button"
-                        onClick={() => {
-                          setActiveFilter(tab.key);
-                          setIsFilterDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-3 py-2 rounded-xl text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center justify-between gap-2 ${
-                          isActive
-                            ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white border-pink-300 shadow-md'
-                            : 'bg-white/5 hover:bg-white/15 text-white/90 border-white/10'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 truncate">
-                          <WebIcon name="compass" className="w-3.5 h-3.5 shrink-0 text-pink-300" />
-                          <span className="truncate">{tab.labelVi}</span>
-                        </div>
-                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* THỐNG KÊ VÀ HÀNH ĐỘNG TƯƠNG TÁC */}
-          <div className="relative z-10 pt-2 border-t border-white/15 flex flex-col gap-1.5 shrink-0 pointer-events-auto">
-            <div className="grid grid-cols-2 gap-1.5">
-              <button
-                type="button"
-                onClick={togglePlay}
-                className="px-2 py-1.5 rounded-lg bg-pink-600 hover:bg-pink-500 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 shadow-md shadow-pink-500/30 transition cursor-pointer active:scale-95"
-              >
-                <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
-                  {isVideoPlaying ? (
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                  ) : (
-                    <polygon points="5 3 19 12 5 21 5 3" />
-                  )}
-                </svg>
-                <span>{isVideoPlaying ? 'Tạm Dừng' : 'Phát Video'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={toggleAudio}
-                className="px-2 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 text-white text-[10.5px] font-bold flex items-center justify-center gap-1 transition cursor-pointer active:scale-95"
-              >
-                <WebIcon name={isAudioOn ? 'volume' : 'volume-x'} className="w-2.5 h-2.5" />
-                <span>{isAudioOn ? 'Tắt Tiếng' : 'Bật Tiếng'}</span>
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between text-[9px] text-slate-400 font-medium px-0.5">
-              <span>Trực tiếp HD 1080p</span>
-              <span className="text-pink-400 font-bold">14 Phân Cảnh</span>
-            </div>
-          </div>
-        </HeroBanner>
-      </aside>
-
       {/* 3. VÙNG BÊN PHẢI: THẺ CHI TIẾT CÂU TRẢ LỜI */}
-      <div className="w-full lg:w-[350px] xl:w-[380px] shrink-0 flex flex-col h-full overflow-hidden">
-        <div className="w-full h-full flex-1 rounded-2xl border border-white/70 dark:border-white/10 bg-white/80 dark:bg-slate-900/90 p-4 sm:p-5 backdrop-blur-2xl shadow-md transition-all duration-300 text-left flex flex-col justify-between gap-3 relative overflow-hidden">
+      <div className="w-full lg:w-[350px] xl:w-[380px] shrink-0 flex flex-col h-auto lg:h-full overflow-hidden">
+        <div className="w-full h-full flex-1 rounded-2xl border border-white/70 dark:border-white/10 bg-white/80 dark:bg-slate-900/90 p-4 sm:p-5 backdrop-blur-2xl shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(244,114,182,0.25)] transition-all duration-300 text-left flex flex-col justify-between gap-3 relative overflow-hidden">
           <div className="space-y-2.5 flex-1 flex flex-col min-h-0 relative z-10">
             {/* Header Tiêu đề thẻ */}
             <div className="space-y-2 shrink-0">
               <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-pink-100 dark:bg-pink-950/60 text-pink-600 dark:text-pink-400 flex items-center justify-center shrink-0">
-                    <svg className="w-4 h-4 stroke-[2.3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                    </svg>
-                  </div>
-                  <h4 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
-                    Chi Tiết Câu Trả Lời
+                <div
+                  className="flex items-center gap-2 text-pink-600 dark:text-pink-400"
+                >
+                  <svg className="w-4 h-4 stroke-[2.3] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  </svg>
+                  <h4 className="text-xs sm:text-sm font-black font-play tracking-tight leading-none text-pink-600 dark:text-pink-400">
+                    {formatCardTitle('Chi Tiết Trả Lời')}
                   </h4>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  <span className="px-2 py-0.5 rounded-md bg-indigo-600 text-white text-[10px] font-mono font-black shadow-xs tracking-wide">
-                    CÂU 0{currentQ.stt}
-                  </span>
-                  <div className="flex items-center gap-0.5 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-bold text-slate-700 dark:text-slate-300">
-                    <span
-                      className={`w-1 rounded-full ${
-                        isVideoPlaying ? 'bg-cyan-500 h-3 animate-pulse' : 'bg-slate-400 h-1.5'
-                      }`}
-                    />
-                    <span
-                      className={`w-1 rounded-full ${
-                        isVideoPlaying ? 'bg-pink-500 h-4 animate-bounce' : 'bg-slate-400 h-2.5'
-                      }`}
-                    />
-                    <span className="ml-1 text-[9px]">
-                      {isVideoPlaying ? 'Đang phát' : 'Sẵn sàng'}
-                    </span>
-                  </div>
                 </div>
               </div>
 

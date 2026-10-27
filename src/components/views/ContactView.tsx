@@ -1,11 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
-import { HeroBanner } from '@/components/ui/HeroBanner';
+import { ExecutiveCard3D } from '@/components/ui/ExecutiveCard3D';
+import { LucianAccordion } from '@/components/ui/LucianAccordion';
+import { formatCardTitle } from '@/lib/utils';
 
-export const ContactView: React.FC = () => {
+export interface ContactViewProps {
+  currentTheme?: string;
+}
+
+export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-glass' }) => {
   const { showToast } = useToast();
   const [topic, setTopic] = useState<string>('CX & CS Advisory');
   const [name, setName] = useState<string>('');
@@ -14,8 +20,133 @@ export const ContactView: React.FC = () => {
   const [company, setCompany] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'message' | 'faq'>('message');
+  const [activeTab, setActiveTab] = useState<'message' | 'schedule' | 'faq' | 'card'>('message');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  // Appointment Scheduling State (Tính năng chọn lịch & thời gian)
+  const [selectedDate, setSelectedDate] = useState<string>(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+  });
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('09:30 - 10:15');
+  const [meetingMode, setMeetingMode] = useState<'meet' | 'teams' | 'in-person' | 'call'>('meet');
+  const [consultTopic, setConsultTopic] = useState<string>('Chiến lược Vận hành CSKH');
+  const [scheduleName, setScheduleName] = useState<string>('');
+  const [scheduleEmail, setScheduleEmail] = useState<string>('');
+  const [schedulePhone, setSchedulePhone] = useState<string>('');
+  const [scheduleNotes, setScheduleNotes] = useState<string>('');
+  const [isBooked, setIsBooked] = useState<boolean>(false);
+
+  // Sinh danh sách 14 ngày làm việc tiếp theo
+  const availableDays = useMemo(() => {
+    const days: Array<{ dateStr: string; dayName: string; formattedDate: string; isWeekend: boolean }> = [];
+    const today = new Date();
+    const dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+
+    for (let i = 1; i <= 14; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      const isWeekend = d.getDay() === 0;
+      const dateStr = d.toISOString().split('T')[0];
+      const dayName = i === 1 ? 'Ngày mai' : dayNames[d.getDay()];
+      const formattedDate = `${d.getDate()}/${d.getMonth() + 1}`;
+      days.push({ dateStr, dayName, formattedDate, isWeekend });
+    }
+    return days;
+  }, []);
+
+  const timeSlots = [
+    { time: '09:00 - 09:45', label: '09:00 - 09:45', period: 'Sáng' },
+    { time: '10:00 - 10:45', label: '10:00 - 10:45', period: 'Sáng' },
+    { time: '11:00 - 11:45', label: '11:00 - 11:45', period: 'Sáng' },
+    { time: '14:00 - 14:45', label: '14:00 - 14:45', period: 'Chiều' },
+    { time: '15:15 - 16:00', label: '15:15 - 16:00', period: 'Chiều' },
+    { time: '16:30 - 17:15', label: '16:30 - 17:15', period: 'Chiều' },
+  ];
+
+  const generateGoogleCalendarUrl = () => {
+    const attendee = scheduleName || name || 'Đối tác';
+    const title = encodeURIComponent(`[Lịch hẹn Cố vấn CX] Nguyễn Hùng Thái & ${attendee}`);
+    const details = encodeURIComponent(
+      `Cuộc hẹn cố vấn chiến lược CSKH & Vận hành Contact Center với Nguyễn Hùng Thái.\n\n` +
+      `Chủ đề: ${consultTopic}\n` +
+      `Hình thức: ${meetingMode === 'meet' ? 'Google Meet' : meetingMode === 'teams' ? 'Microsoft Teams / Zoom' : meetingMode === 'in-person' ? 'Trực tiếp (TP.HCM)' : 'Cuộc gọi điện thoại'}\n` +
+      `Người tham gia: ${attendee} (${scheduleEmail || email || 'N/A'})\n` +
+      `SĐT/Zalo: ${schedulePhone || phone || 'N/A'}\n` +
+      `Ghi chú: ${scheduleNotes || 'Không có'}\n\n` +
+      `Gửi từ Hung Thai Executive Portfolio & Contact Hub`
+    );
+
+    const startTimeStr = selectedTimeSlot.split(' - ')[0] || '09:00';
+    const endTimeStr = selectedTimeSlot.split(' - ')[1] || '09:45';
+    const [startH, startM] = startTimeStr.split(':').map(Number);
+    const [endH, endM] = endTimeStr.split(':').map(Number);
+
+    const [y, m, d] = selectedDate.split('-').map(Number);
+    const startIso = new Date(Date.UTC(y, m - 1, d, startH - 7, startM)).toISOString().replace(/-|:|\.\d\d\d/g, '');
+    const endIso = new Date(Date.UTC(y, m - 1, d, endH - 7, endM)).toISOString().replace(/-|:|\.\d\d\d/g, '');
+
+    const location = encodeURIComponent(
+      meetingMode === 'in-person'
+        ? 'TP. Hồ Chí Minh, Việt Nam'
+        : meetingMode === 'call'
+        ? `Số điện thoại: ${schedulePhone || phone || '090 123 4567'}`
+        : 'Google Meet'
+    );
+
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startIso}/${endIso}&details=${details}&location=${location}`;
+  };
+
+  const handleDownloadIcs = () => {
+    const startTimeStr = selectedTimeSlot.split(' - ')[0] || '09:00';
+    const endTimeStr = selectedTimeSlot.split(' - ')[1] || '09:45';
+    const [startH, startM] = startTimeStr.split(':').map(Number);
+    const [endH, endM] = endTimeStr.split(':').map(Number);
+    const [y, m, d] = selectedDate.split('-').map(Number);
+
+    const pad = (n: number) => (n < 10 ? '0' + n : '' + n);
+    const dtStart = `${y}${pad(m)}${pad(d)}T${pad(startH)}${pad(startM)}00`;
+    const dtEnd = `${y}${pad(m)}${pad(d)}T${pad(endH)}${pad(endM)}00`;
+
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Hung Thai Executive Portal//VN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:REQUEST',
+      'BEGIN:VEVENT',
+      `UID:${Date.now()}@hungthai.dev`,
+      `DTSTAMP:${dtStart}Z`,
+      `DTSTART;TZID=Asia/Ho_Chi_Minh:${dtStart}`,
+      `DTEND;TZID=Asia/Ho_Chi_Minh:${dtEnd}`,
+      `SUMMARY:[Lịch hẹn Cố vấn CX] Nguyễn Hùng Thái & ${scheduleName || name || 'Đối tác'}`,
+      `DESCRIPTION:Chủ đề: ${consultTopic}\\nNgười đặt: ${scheduleName || name}\\nEmail: ${scheduleEmail || email}\\nSĐT: ${schedulePhone || phone}`,
+      `LOCATION:${meetingMode === 'in-person' ? 'TP. Hồ Chí Minh' : 'Google Meet'}`,
+      'STATUS:CONFIRMED',
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ].join('\r\n');
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Lich-Hen-Hung-Thai-${selectedDate}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Đã tải xuống tệp lịch .ics cho Outlook / Apple Calendar!');
+  };
+
+  const handleBookAppointment = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsBooked(true);
+    showToast(`Đã ghi nhận lịch hẹn vào ngày ${selectedDate} lúc ${selectedTimeSlot}!`);
+    const gCalUrl = generateGoogleCalendarUrl();
+    window.open(gCalUrl, '_blank');
+  };
 
   const handleCopyEmail = () => {
     const targetEmail = 'hungthai84@gmail.com';
@@ -59,28 +190,17 @@ export const ContactView: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-[15px] max-w-7xl mx-auto justify-start select-none relative text-slate-800 text-left overflow-hidden">
-      {/* 1. TOP HERO BANNER (ĐỒNG BỘ CHUẨN FORM TRANG LĨNH VỰC) */}
-      <HeroBanner
-        badgeText="Liên hệ"
-        title="Kết Nối Hợp Tác"
-        subtitle="Sẵn sàng đồng hành cùng Doanh nghiệp nâng tầm Dịch vụ Khách hàng"
-        quote="“Sẵn sàng kết nối – Kiến tạo tương lai dịch vụ xuất sắc.”"
-        quoteAuthor="— Nguyễn Hùng Thái"
-        badgeColor="text-teal-600"
-        videoSrc="https://cdn.scena.ai/project/10223/04736de7d6f897113c708e6f5ef4a3fdb18e7ca16a35113744667f1adcd6142b.mp4"
-      />
-
+    <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-[15px] max-w-7xl mx-auto justify-start select-none relative text-slate-800 dark:text-slate-100 text-left overflow-hidden">
       {/* 2. Hai Thẻ Liên Hệ Side-by-Side (5 cols & 7 cols) - Căn chỉnh chiều cao nằm gọn trong thẻ chính */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-[15px] items-stretch flex-1 min-h-0 overflow-hidden">
         {/* CARD 1: Contact Hub, Direct Channels & Trust Badges */}
-        <div className="lg:col-span-5 relative overflow-hidden rounded-2xl border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-md flex flex-col justify-between p-3.5 sm:p-4 gap-2.5 text-left backdrop-blur-xl h-full">
+        <div className="lg:col-span-5 relative overflow-hidden rounded-[14px] border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(99,102,241,0.2)] flex flex-col justify-between p-3.5 sm:p-4 gap-2.5 text-left backdrop-blur-xl h-full">
           {/* Header Card 1 */}
           <div className="space-y-1 relative z-10 shrink-0 bg-transparent border-0 shadow-none backdrop-blur-none p-0">
-            <div className="flex items-center gap-2">
-              <WebIcon name="chat" className="w-[25px] h-[25px] text-indigo-600 dark:text-indigo-400 animate-[icon-floating_3s_ease-in-out_infinite] shrink-0 inline-block card-title-icon" />
-              <h2 className="text-xs sm:text-sm lg:text-[14.5px] font-bold text-indigo-600 dark:text-indigo-400 tracking-tight font-play">
-                Kết nối chuyên gia
+            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+              <WebIcon name="chat" className="w-[20px] h-[20px] text-indigo-600 dark:text-indigo-400 animate-[icon-floating_3s_ease-in-out_infinite] shrink-0 inline-block card-title-icon" />
+              <h2 className="text-xs sm:text-sm lg:text-[14.5px] font-black font-play text-indigo-600 dark:text-indigo-400 tracking-tight">
+                {formatCardTitle("Kết Nối Chuyên Gia")}
               </h2>
             </div>
             <p className="text-[11px] sm:text-xs font-medium leading-relaxed text-slate-600 dark:text-slate-300">
@@ -212,16 +332,34 @@ export const ContactView: React.FC = () => {
                 <WebIcon name="bolt" className="w-3 h-3 text-sky-500" />
                 <span>Phản hồi &lt;24h</span>
               </div>
+              <button
+                type="button"
+                onClick={() => setActiveTab('schedule')}
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/30 text-emerald-700 dark:text-emerald-300 font-bold text-[10px] transition cursor-pointer"
+                title="Đặt lịch hẹn trao đổi trực tuyến"
+              >
+                <WebIcon name="calendar" className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                <span>Đặt lịch</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('card')}
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-400/30 text-indigo-600 dark:text-cyan-300 font-bold text-[10px] transition cursor-pointer"
+                title="Mở Thẻ Danh Thiếp Điện Tử 3D (Lucian UX/UI #052)"
+              >
+                <WebIcon name="layers" className="w-3 h-3" />
+                <span>Thẻ 3D</span>
+              </button>
             </div>
           </div>
         </div>
 
         {/* CARD 2: Tabbed Interface - Gửi Thông Điệp Trực Tiếp & Câu Hỏi Thường Gặp */}
-        <div className="lg:col-span-7 relative overflow-hidden rounded-2xl border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-md flex flex-col justify-between p-3.5 sm:p-4 gap-2.5 text-left backdrop-blur-xl h-full">
+        <div className="lg:col-span-7 relative overflow-hidden rounded-[14px] border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(99,102,241,0.2)] flex flex-col justify-between p-3.5 sm:p-4 gap-2.5 text-left backdrop-blur-xl h-full">
           {/* Tab Selector Header */}
           <div className="flex items-center justify-between gap-2 relative z-10 pb-2 border-b border-slate-200/80 dark:border-slate-800 shrink-0">
             {/* Pill Tabs */}
-            <div className="flex items-center p-0.5 bg-slate-100/90 dark:bg-slate-800/90 rounded-[999px] border border-slate-200/90 dark:border-slate-700/90">
+            <div className="flex items-center p-0.5 bg-slate-100/90 dark:bg-slate-800/90 rounded-[999px] border border-slate-200/90 dark:border-slate-700/90 flex-wrap">
               <button
                 type="button"
                 onClick={() => setActiveTab('message')}
@@ -232,7 +370,19 @@ export const ContactView: React.FC = () => {
                 }`}
               >
                 <WebIcon name="sparkles" className="w-3 h-3 text-indigo-600 dark:text-indigo-400 animate-[icon-floating_3s_ease-in-out_infinite]" />
-                <span>Gửi tin nhắn nhanh</span>
+                <span>Gửi tin nhắn</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('schedule')}
+                className={`px-3 py-1 rounded-[999px] text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
+                  activeTab === 'schedule'
+                    ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-300 shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <WebIcon name="calendar" className="w-3 h-3 text-emerald-600 dark:text-emerald-400 animate-pulse" />
+                <span>Đặt lịch hẹn</span>
               </button>
               <button
                 type="button"
@@ -244,13 +394,21 @@ export const ContactView: React.FC = () => {
                 }`}
               >
                 <WebIcon name="bulb" className="w-3 h-3 text-amber-500" />
-                <span>Câu hỏi thường gặp</span>
+                <span>Hỏi đáp</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('card')}
+                className={`px-3 py-1 rounded-[999px] text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
+                  activeTab === 'card'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-700 dark:text-indigo-300 shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <WebIcon name="layers" className="w-3 h-3 text-cyan-500" />
+                <span>Danh thiếp 3D</span>
               </button>
             </div>
-
-            <span className="text-[10.5px] font-bold text-slate-400 dark:text-slate-500 font-mono hidden sm:inline-block">
-              {activeTab === 'message' ? 'Tư vấn chuyên sâu & Phản hồi nhanh' : 'Giải đáp 5 câu hỏi cốt lõi'}
-            </span>
           </div>
 
           {/* TAB 1: Gửi Thông Điệp Trực Tiếp */}
@@ -260,7 +418,7 @@ export const ContactView: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 shrink-0">
                 <div className="space-y-0.5">
                   <label className="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
-                    1. Chủ đề trao đổi
+                    Chủ Đề Trao Đổi
                   </label>
                   <div className="relative">
                     <select
@@ -281,7 +439,7 @@ export const ContactView: React.FC = () => {
 
                 <div className="space-y-0.5">
                   <label className="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
-                    2. Mẫu tin nhắn nhanh
+                    Mẫu Tin Nhắn Gợi Ý
                   </label>
                   <div className="relative">
                     <select
@@ -403,6 +561,238 @@ export const ContactView: React.FC = () => {
             </div>
           )}
 
+          {/* TAB 2: Đặt Lịch Hẹn & Chọn Thời Gian Trực Tuyến */}
+          {activeTab === 'schedule' && (
+            <div className="flex-1 flex flex-col justify-between gap-2.5 relative z-10 min-h-0 overflow-y-auto no-scrollbar pr-0.5">
+              {/* Callout Header */}
+              <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-sky-50 dark:from-emerald-950/60 dark:via-teal-950/50 dark:to-slate-900 border border-emerald-200/80 dark:border-emerald-700/60 flex items-center justify-between gap-2 shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                  <span className="text-xs font-bold text-emerald-900 dark:text-emerald-200 font-play">
+                    Chọn lịch & khung giờ trao đổi trực tiếp với Nguyễn Hùng Thái
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
+                  GMT+7 (Giờ VN)
+                </span>
+              </div>
+
+              {/* 1. Chọn Dịch vụ tư vấn & Hình thức gặp */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 shrink-0">
+                <div className="space-y-1">
+                  <label className="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+                    1. Mục đích cuộc hẹn
+                  </label>
+                  <select
+                    value={consultTopic}
+                    onChange={(e) => setConsultTopic(e.target.value)}
+                    className="w-full rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white appearance-none cursor-pointer focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 shadow-2xs"
+                  >
+                    <option value="Chiến lược Vận hành CSKH">Tư vấn Chiến lược CSKH (45 phút)</option>
+                    <option value="Tối ưu Chi phí & Quy trình CX">Đánh giá & Tối ưu Chi phí CX (30 phút)</option>
+                    <option value="Phỏng vấn & Tuyển dụng C-Level">Phỏng vấn Quản lý C-Level (60 phút)</option>
+                    <option value="Chuyển đổi số & AI Omnichannel">Chuyển đổi số & AI AICC (45 phút)</option>
+                    <option value="Hợp tác Đào tạo & Huấn luyện">Hợp tác Huấn luyện Đội ngũ (45 phút)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="block text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+                    2. Hình thức gặp
+                  </label>
+                  <div className="grid grid-cols-4 gap-1 p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                    {[
+                      { key: 'meet', label: 'Meet' },
+                      { key: 'teams', label: 'Teams' },
+                      { key: 'in-person', label: 'Trực tiếp' },
+                      { key: 'call', label: 'Gọi thoại' },
+                    ].map((m) => (
+                      <button
+                        key={m.key}
+                        type="button"
+                        onClick={() => setMeetingMode(m.key as any)}
+                        className={`py-1 rounded-lg text-[10px] font-bold transition cursor-pointer text-center ${
+                          meetingMode === m.key
+                            ? 'bg-emerald-600 text-white shadow-2xs'
+                            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
+                        }`}
+                      >
+                        {m.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Chọn Ngày (Date Chips Carousel / Slider) */}
+              <div className="space-y-1 shrink-0">
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+                    3. Chọn ngày hẹn khả dụng
+                  </span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                    Đang chọn: {selectedDate}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1.5 overflow-x-auto glass-scrollbar pb-1">
+                  {availableDays.map((day) => {
+                    const isSelected = selectedDate === day.dateStr;
+                    return (
+                      <button
+                        key={day.dateStr}
+                        type="button"
+                        disabled={day.isWeekend}
+                        onClick={() => setSelectedDate(day.dateStr)}
+                        className={`px-3 py-1.5 rounded-xl border transition-all duration-200 flex flex-col items-center justify-center shrink-0 min-w-[62px] cursor-pointer ${
+                          day.isWeekend
+                            ? 'opacity-40 bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 cursor-not-allowed'
+                            : isSelected
+                            ? 'bg-emerald-600 text-white border-emerald-500 shadow-md ring-2 ring-emerald-300 dark:ring-emerald-500/50 scale-105'
+                            : 'bg-white dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-emerald-400 shadow-2xs'
+                        }`}
+                      >
+                        <span className={`text-[9px] font-mono font-bold ${isSelected ? 'text-emerald-100' : 'text-slate-400 dark:text-slate-500'}`}>
+                          {day.dayName}
+                        </span>
+                        <span className="text-xs font-black font-play">
+                          {day.formattedDate}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 3. Chọn Khung Giờ (Time Slots) */}
+              <div className="space-y-1 shrink-0">
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+                    4. Khung giờ hẹn (45 phút/phiên)
+                  </span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                    Đã chọn: {selectedTimeSlot}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
+                  {timeSlots.map((slot) => {
+                    const isSelected = selectedTimeSlot === slot.time;
+                    return (
+                      <button
+                        key={slot.time}
+                        type="button"
+                        onClick={() => setSelectedTimeSlot(slot.time)}
+                        className={`py-1.5 px-1 rounded-xl text-[10.5px] font-bold border transition-all cursor-pointer text-center truncate ${
+                          isSelected
+                            ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-500 shadow-sm scale-102 ring-1 ring-emerald-300'
+                            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-teal-400 shadow-2xs'
+                        }`}
+                      >
+                        {slot.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 4. Thông tin liên hệ & Xác nhận */}
+              <form onSubmit={handleBookAppointment} className="flex-1 flex flex-col justify-between gap-2 min-h-0 pt-1 border-t border-slate-200/80 dark:border-slate-800">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 shrink-0">
+                  <div className="space-y-0.5">
+                    <label className="block text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+                      Họ và tên *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={scheduleName || name}
+                      onChange={(e) => setScheduleName(e.target.value)}
+                      placeholder="Nguyễn Văn A"
+                      className="w-full rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 shadow-2xs"
+                    />
+                  </div>
+                  <div className="space-y-0.5">
+                    <label className="block text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+                      Địa chỉ Email *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={scheduleEmail || email}
+                      onChange={(e) => setScheduleEmail(e.target.value)}
+                      placeholder="name@company.com"
+                      className="w-full rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 shadow-2xs"
+                    />
+                  </div>
+                  <div className="space-y-0.5">
+                    <label className="block text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+                      Số điện thoại / Zalo
+                    </label>
+                    <input
+                      type="tel"
+                      value={schedulePhone || phone}
+                      onChange={(e) => setSchedulePhone(e.target.value)}
+                      placeholder="090 123 4567"
+                      className="w-full rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 shadow-2xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-0.5 shrink-0">
+                  <label className="block text-[9.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono">
+                    Ghi chú / Câu hỏi trước buổi hẹn (tùy chọn)
+                  </label>
+                  <input
+                    type="text"
+                    value={scheduleNotes}
+                    onChange={(e) => setScheduleNotes(e.target.value)}
+                    placeholder="Mục tiêu hoặc tài liệu muốn cùng thảo luận..."
+                    className="w-full rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2.5 py-1 text-xs font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 shadow-2xs"
+                  />
+                </div>
+
+                {/* Nút hành động */}
+                <div className="flex flex-col sm:flex-row items-center gap-2 pt-1 shrink-0">
+                  <button
+                    type="submit"
+                    className="flex-1 w-full py-2 px-4 rounded-[999px] bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 hover:brightness-105 active:scale-[0.99] text-white font-black text-xs sm:text-[12.5px] flex items-center justify-center gap-2 shadow-md shadow-emerald-500/25 transition cursor-pointer"
+                  >
+                    <WebIcon name="calendar" className="w-3.5 h-3.5" />
+                    <span>Xác Nhận & Thêm Vào Google Calendar</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleDownloadIcs}
+                    className="px-3.5 py-2 rounded-[999px] bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shrink-0"
+                    title="Tải tệp lịch .ics dùng cho Apple Calendar, Outlook, Thunderbird"
+                  >
+                    <WebIcon name="download" className="w-3.5 h-3.5" />
+                    <span>Tải tệp .ics</span>
+                  </button>
+                </div>
+
+                {isBooked && (
+                  <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-between gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-200 shrink-0">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                      <span>Đã lên lịch thành công: Ngày {selectedDate} lúc {selectedTimeSlot}!</span>
+                    </div>
+                    <a
+                      href={generateGoogleCalendarUrl()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline text-emerald-700 dark:text-emerald-300 font-extrabold hover:text-emerald-800"
+                    >
+                      Mở lại Lịch
+                    </a>
+                  </div>
+                )}
+              </form>
+            </div>
+          )}
+
           {/* TAB 2: Câu Hỏi Thường Gặp (FAQ) */}
           {activeTab === 'faq' && (
             <div className="flex-1 flex flex-col justify-between gap-2 relative z-10 min-h-0 overflow-hidden">
@@ -411,55 +801,42 @@ export const ContactView: React.FC = () => {
                 <span>Các câu hỏi phổ biến từ đối tác & doanh nghiệp:</span>
               </div>
 
-              <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar space-y-1.5 pr-0.5">
-                {[
-                  {
-                    q: 'Thời gian phản hồi sau khi gửi yêu cầu liên hệ là bao lâu?',
-                    a: 'Tôi luôn ưu tiên phản hồi trong vòng 24 giờ làm việc. Với các đề xuất khẩn cấp hoặc dự án chiến lược, thời gian phản hồi thường trong vòng 2–4 giờ làm việc.',
-                  },
-                  {
-                    q: 'Anh Thái có nhận tư vấn dự án ngắn hạn hoặc đào tạo doanh nghiệp không?',
-                    a: 'Có. Tôi nhận tư vấn chiến lược CX/CSKH, thẩm định hệ thống Contact Center, xây dựng bộ tiêu chuẩn QA Scorecard và đào tạo nâng cao kỹ năng cho đội ngũ lãnh đạo & nhân sự CSKH.',
-                  },
-                  {
-                    q: 'Thông tin dự án và ý tưởng trao đổi có được cam kết bảo mật không?',
-                    a: 'Cam kết bảo mật 100%. Mọi dữ liệu trao đổi, số liệu vận hành và ý tưởng chiến lược của doanh nghiệp đều được bảo mật tuyệt đối. Sẵn sàng ký kết thỏa thuận NDA trước khi đi vào chi tiết.',
-                  },
-                  {
-                    q: 'Phương thức hợp tác và các bước triển khai dự án như thế nào?',
-                    a: 'Quy trình gồm 4 bước chuẩn: 1. Khảo sát hiện trạng & nhu cầu; 2. Đề xuất giải pháp và lộ trình; 3. Đồng hành đào tạo, thiết lập SOP & hệ thống; 4. Đánh giá KPI và nghiệm thu chuyển giao.',
-                  },
-                  {
-                    q: 'Có thể kết nối trực tiếp qua Zalo hoặc hẹn gặp tại TP.HCM không?',
-                    a: 'Hoàn toàn sẵn sàng! Bạn có thể nhắn tin qua Zalo số 0903.011.699 hoặc đặt lịch hẹn gặp trực tiếp tại TP. Hồ Chí Minh để cùng thảo luận chi tiết.',
-                  },
-                ].map((item, idx) => (
-                  <div key={idx} className="rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 overflow-hidden transition-all shadow-2xs">
-                    <button
-                      type="button"
-                      onClick={() => toggleFaq(idx)}
-                      className="w-full px-3 py-2 text-left flex items-center justify-between gap-2.5 text-xs font-extrabold text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition cursor-pointer"
-                    >
-                      <span className="flex items-center gap-1.5">
-                        <span className="w-4.5 h-4.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center text-[9.5px] shrink-0 font-mono">
-                          0{idx + 1}
-                        </span>
-                        <span className="truncate">{item.q}</span>
-                      </span>
-                      <span
-                        className="text-[10px] text-slate-400 transition-transform duration-300 shrink-0"
-                        style={{ transform: openFaq === idx ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                      >
-                        ▼
-                      </span>
-                    </button>
-                    {openFaq === idx && (
-                      <div className="px-3 pb-2.5 text-[11.5px] font-medium leading-relaxed text-slate-600 dark:text-slate-300 border-t border-slate-100 dark:border-slate-700/70 pt-2">
-                        {item.a}
-                      </div>
-                    )}
-                  </div>
-                ))}
+              <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar pr-0.5">
+                <LucianAccordion
+                  items={[
+                    {
+                      question: 'Thời gian phản hồi sau khi gửi yêu cầu liên hệ là bao lâu?',
+                      answer: 'Tôi luôn ưu tiên phản hồi trong vòng 24 giờ làm việc. Với các đề xuất khẩn cấp hoặc dự án chiến lược, thời gian phản hồi thường trong vòng 2–4 giờ làm việc.',
+                      linkText: 'Gửi tin nhắn ưu tiên ngay',
+                    },
+                    {
+                      question: 'Anh Thái có nhận tư vấn dự án ngắn hạn hoặc đào tạo doanh nghiệp không?',
+                      answer: 'Có. Tôi nhận tư vấn chiến lược CX/CSKH, thẩm định hệ thống Contact Center, xây dựng bộ tiêu chuẩn QA Scorecard và đào tạo nâng cao kỹ năng cho đội ngũ lãnh đạo & nhân sự CSKH.',
+                      linkText: 'Đặt lịch trao đổi chi tiết',
+                    },
+                    {
+                      question: 'Thông tin dự án và ý tưởng trao đổi có được cam kết bảo mật không?',
+                      answer: 'Cam kết bảo mật 100%. Mọi dữ liệu trao đổi, số liệu vận hành và ý tưởng chiến lược của doanh nghiệp đều được bảo mật tuyệt đối. Sẵn sàng ký kết thỏa thuận NDA trước khi đi vào chi tiết.',
+                    },
+                    {
+                      question: 'Phương thức hợp tác và các bước triển khai dự án như thế nào?',
+                      answer: 'Quy trình gồm 4 bước chuẩn: 1. Khảo sát hiện trạng & nhu cầu; 2. Đề xuất giải pháp và lộ trình; 3. Đồng hành đào tạo, thiết lập SOP & hệ thống; 4. Đánh giá KPI và nghiệm thu chuyển giao.',
+                      linkText: 'Xem quy trình triển khai',
+                    },
+                    {
+                      question: 'Có thể kết nối trực tiếp qua Zalo hoặc hẹn gặp tại TP.HCM không?',
+                      answer: 'Hoàn toàn sẵn sàng! Bạn có thể nhắn tin qua Zalo số 0903.011.699 hoặc đặt lịch hẹn gặp trực tiếp tại TP. Hồ Chí Minh để cùng thảo luận chi tiết.',
+                      linkText: 'Mở tab đặt lịch hẹn',
+                    },
+                  ]}
+                  onSelectAction={(_item, idx) => {
+                    if (idx === 1 || idx === 4) {
+                      setActiveTab('schedule');
+                    } else {
+                      setActiveTab('message');
+                    }
+                  }}
+                />
               </div>
 
               {/* Nút chuyển nhanh sang gửi tin nhắn */}
@@ -471,6 +848,55 @@ export const ContactView: React.FC = () => {
                 >
                   <span>Gửi tin nhắn trao đổi ngay</span>
                   <span>→</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: Thẻ Danh Thiếp Điện Tử Tương Tác 3D (Lucian UX/UI Prompt #052) */}
+          {activeTab === 'card' && (
+            <div className="flex-1 flex flex-col items-center justify-between gap-2.5 relative z-10 min-h-0 py-1 overflow-y-auto no-scrollbar">
+              <div className="text-center space-y-1 shrink-0">
+                <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-600 dark:text-cyan-300 text-[10px] font-mono font-bold tracking-wider uppercase">
+                  <WebIcon name="layers" className="w-3 h-3 animate-pulse" />
+                  <span>Executive Credential Card · Lucian UX/UI #052</span>
+                </div>
+                <h3 className="text-sm sm:text-base font-black font-play text-slate-900 dark:text-white">
+                  Danh Thiếp Lãnh Đạo CSKH 3D
+                </h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
+                  Rê chuột hoặc vuốt chạm để xoay 3D, kéo ngang để lật thẻ, hoặc bấm Khóa thẻ bảo mật.
+                </p>
+              </div>
+
+              {/* Component ExecutiveCard3D từ Lucian UX/UI */}
+              <div className="w-full flex-1 flex items-center justify-center my-auto min-h-0 py-1">
+                <ExecutiveCard3D />
+              </div>
+
+              {/* Quick Actions */}
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-2 border-t border-slate-200/80 dark:border-slate-800 w-full shrink-0">
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  className="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer"
+                >
+                  <WebIcon name="mail" className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Sao chép Email</span>
+                </button>
+                <a
+                  href="tel:0908559884"
+                  className="px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer"
+                >
+                  <WebIcon name="phone" className="w-3.5 h-3.5" />
+                  <span>Gọi 0908 559 884</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('message')}
+                  className="px-3 py-1.5 rounded-full border border-indigo-400/40 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-[11px] font-bold flex items-center gap-1.5 transition cursor-pointer"
+                >
+                  <span>Gửi tin nhắn ngay →</span>
                 </button>
               </div>
             </div>

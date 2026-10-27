@@ -3,10 +3,14 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { WALLPAPER_OPTIONS } from '@/data/wallpapers';
 import { WEATHER_PRESETS } from '@/data/weather';
-import { WallpaperOption, WeatherPreset } from '@/types';
+import { WallpaperOption, WeatherPreset, SiteTheme } from '@/types';
+import { THEME_LIST } from '@/data/themes';
+import { Clock, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
-import { HeroBanner } from '@/components/ui/HeroBanner';
+import { SoundEngine } from '@/components/ui/SoundEngine';
+import { LiveDisplaySettings } from '@/components/ui/LiveDisplaySettings';
+import { formatCardTitle } from '@/lib/utils';
 import {
   loadCustomWallpapers,
   saveCustomWallpapers,
@@ -17,7 +21,10 @@ import {
   loadFavoriteWallpaperIds,
   saveFavoriteWallpaperIds,
   detectWallpaperType,
+  normalizeCodepenUrl,
+  generateAutoWallpaperName,
   exportWallpapersToJsonFile,
+  exportWallpapersToJsonString,
   parseWallpapersJson,
   sanitizeWallpaperStyle,
   parseCssToReactStyle,
@@ -30,10 +37,18 @@ import {
   CINEMATIC_LUT_PRESETS,
   DEFAULT_WALLPAPER_SETTINGS,
   WallpaperAdvancedSettings,
+  getWallpaperTone,
+  isBlurredWallpaper,
+  SlideshowThemeFilter,
+  SlideshowTransitionEffect,
 } from '@/utils/wallpaperStorage';
 import { AMBIENT_TRACKS, AmbientTrackId } from '@/utils/ambientSoundEngine';
 
 export interface WallpaperViewProps {
+  currentTheme?: SiteTheme;
+  onSelectTheme?: (theme: SiteTheme) => void;
+  onOpenThemeModal?: () => void;
+  onNavigatePage?: (pageIndex: number) => void;
   onSelectWallpaper: (option: WallpaperOption) => void;
   activeWallpaperId?: string;
   defaultWallpaperId?: string;
@@ -149,6 +164,10 @@ const STUDIO_PRESETS: StudioPreset[] = [
 ];
 
 export const WallpaperView: React.FC<WallpaperViewProps> = ({
+  currentTheme = 'light-glass',
+  onSelectTheme,
+  onOpenThemeModal,
+  onNavigatePage,
   onSelectWallpaper,
   activeWallpaperId = 'aurora',
   defaultWallpaperId: propDefaultId,
@@ -170,6 +189,67 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
 }) => {
   const { showToast } = useToast();
 
+  // Dynamic Dark/Light mode tracking for pure glassmorphism compatibility
+  const [isDark, setIsDark] = useState<boolean>(currentTheme === 'dark-neon');
+  const [isRightDisplaySettingsOpen, setIsRightDisplaySettingsOpen] = useState<boolean>(false);
+  const [isRightThemeMenuOpen, setIsRightThemeMenuOpen] = useState<boolean>(false);
+  const [isRightContactOpen, setIsRightContactOpen] = useState<boolean>(false);
+  const [isRightLanguageOpen, setIsRightLanguageOpen] = useState<boolean>(false);
+  const [isRightDockCollapsed, setIsRightDockCollapsed] = useState<boolean>(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<'vi' | 'en'>('vi');
+  const [currentFontScalePercent, setCurrentFontScalePercent] = useState<number>(100);
+
+  const rightDockRef = useRef<HTMLElement>(null);
+  const rightThemeContainerRef = useRef<HTMLDivElement>(null);
+  const rightDisplayContainerRef = useRef<HTMLDivElement>(null);
+  const rightContactContainerRef = useRef<HTMLDivElement>(null);
+  const rightLanguageContainerRef = useRef<HTMLDivElement>(null);
+
+  // Đọc mức zoom chữ hiện tại từ html tag
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const fs = document.documentElement.getAttribute('data-font-scale') || 'md';
+      const map: Record<string, number> = { sm: 90, md: 100, lg: 110, '2xl': 130 };
+      setCurrentFontScalePercent(map[fs] || 100);
+    }
+  }, []);
+
+  // Đóng các popup khi click bên ngoài
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (rightThemeContainerRef.current && !rightThemeContainerRef.current.contains(target)) {
+        setIsRightThemeMenuOpen(false);
+      }
+      if (rightDisplayContainerRef.current && !rightDisplayContainerRef.current.contains(target)) {
+        setIsRightDisplaySettingsOpen(false);
+      }
+      if (rightContactContainerRef.current && !rightContactContainerRef.current.contains(target)) {
+        setIsRightContactOpen(false);
+      }
+      if (rightLanguageContainerRef.current && !rightLanguageContainerRef.current.contains(target)) {
+        setIsRightLanguageOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  useEffect(() => {
+    const update = () => {
+      if (typeof document !== 'undefined') {
+        const dark =
+          document.documentElement.classList.contains('dark') ||
+          document.documentElement.getAttribute('data-theme') === 'dark-neon';
+        setIsDark(dark);
+      }
+    };
+    update();
+    const obs = new MutationObserver(update);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+    return () => obs.disconnect();
+  }, []);
+
+  const [toneFilter, setToneFilter] = useState<'all' | 'light' | 'dark' | 'favorites'>('all');
   const [customList, setCustomList] = useState<WallpaperOption[]>([]);
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const [favoriteIds, setFavoriteIds] = useState<string[]>([
@@ -180,7 +260,14 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
   ]);
   const [defaultId, setDefaultId] = useState<string>(propDefaultId || 'aurora');
   const [isAddingOpen, setIsAddingOpen] = useState<boolean>(false);
+  const [addModalTab, setAddModalTab] = useState<'url' | 'gradient' | 'json'>('url');
+  const [jsonTextInput, setJsonTextInput] = useState<string>('');
+  const [jsonExportScope, setJsonExportScope] = useState<'custom' | 'active' | 'all'>('custom');
+  const [isCustomizerOpen, setIsCustomizerOpen] = useState<boolean>(false);
+  const [customizerTab, setCustomizerTab] = useState<'slideshow' | 'dimmer' | 'zen'>('slideshow');
+  const [zenDuration, setZenDuration] = useState<number>(8);
   const [isStudioOpen, setIsStudioOpen] = useState<boolean>(false);
+  const [isSlideshowOpen, setIsSlideshowOpen] = useState<boolean>(false);
   const [isSharePresetOpen, setIsSharePresetOpen] = useState<boolean>(false);
   const [isExportingPng, setIsExportingPng] = useState<boolean>(false);
   const [presetImportText, setPresetImportText] = useState<string>('');
@@ -339,7 +426,6 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
       isCustom: true,
     };
     onSelectWallpaper(tempWp);
-    showToast('Đã áp dụng xem thử hình nền từ Gradient Studio!');
   };
 
   const handleSaveStudioWallpaper = async () => {
@@ -541,7 +627,9 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
   // Real-time detection from single input
   const detection = detectWallpaperType(inputValue);
 
-  const [filterType, setFilterType] = useState<'all' | 'favorites' | 'image' | 'video' | 'gradient' | 'css'>('all');
+  const [filterType, setFilterType] = useState<
+    'all' | 'favorites' | 'light' | 'dark' | 'blurred' | 'image' | 'video' | 'gradient' | 'css' | 'codepen'
+  >('all');
 
   // Combined wallpapers: Custom first, then built-in (excluding deleted IDs & deduplicating)
   const combinedWallpapers: WallpaperOption[] = React.useMemo(() => {
@@ -577,28 +665,37 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
   const allWallpapers: WallpaperOption[] = combinedWallpapers.filter((wp) => {
     if (filterType === 'all') return true;
     if (filterType === 'favorites') return favoriteIds.includes(wp.id);
+    if (filterType === 'light') return getWallpaperTone(wp) === 'light';
+    if (filterType === 'dark') return getWallpaperTone(wp) === 'dark';
+    if (filterType === 'blurred') return isBlurredWallpaper(wp);
     if (filterType === 'image') return wp.type === 'image';
     if (filterType === 'video') return wp.type === 'video';
     if (filterType === 'gradient') return wp.type === 'gradient' || wp.type === 'color';
     if (filterType === 'css') return wp.type === 'css' || wp.type === 'class' || wp.type === 'gradient' || wp.type === 'color';
+    if (filterType === 'codepen') return wp.type === 'codepen' || wp.value.includes('codepen.io') || wp.id.includes('codepen');
     return true;
   });
 
-  // 1. Single click: Apply wallpaper for preview
+  // 1. Single click: Apply wallpaper to preview & active view (Đã tắt toast thông báo theo yêu cầu)
   const handleSingleClick = (wp: WallpaperOption) => {
     onSelectWallpaper(wp);
-    showToast(`Đã áp dụng: ${wp.name} (Nhấp 2 lần để lưu làm Mặc Định)`);
   };
 
-  // 2. Double click: Apply AND set as default wallpaper
-  const handleDoubleClick = async (wp: WallpaperOption) => {
+  // 2. Set as Default wallpaper: Save permanently to localStorage and IndexedDB
+  const handleSetDefault = async (wp: WallpaperOption, e?: React.MouseEvent | null) => {
+    if (e) e.stopPropagation();
     onSelectWallpaper(wp);
     setDefaultId(wp.id);
     await setDefaultWallpaperId(wp.id);
     if (onSetDefaultWallpaper) {
       onSetDefaultWallpaper(wp);
     }
-    showToast(`Đã đặt "${wp.name}" làm hình nền mặc định!`);
+    showToast(`⭐ Đã lưu "${wp.name}" làm hình nền mặc định thành công! Khi tải lại website sẽ tự động áp dụng hình nền này.`);
+  };
+
+  // 3. Double click: Apply AND confirm set as default wallpaper
+  const handleDoubleClick = async (wp: WallpaperOption) => {
+    await handleSetDefault(wp);
   };
 
   // Handle local file read into Data URL
@@ -628,6 +725,22 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
     reader.readAsDataURL(file);
   };
 
+  // Tự động đặt tên thông minh cho hình nền mới
+  useEffect(() => {
+    if (detection && detection.type) {
+      if (!customName || customName.startsWith('Hình Nền') || customName.startsWith('Mã CSS') || customName.startsWith('Nền CodePen')) {
+        const auto = generateAutoWallpaperName(detection.type, customList.length + 1);
+        setCustomName(auto);
+      }
+    }
+  }, [detection.type, customList.length]);
+
+  useEffect(() => {
+    if (!studioName || studioName.startsWith('Hình Nền Gradient')) {
+      setStudioName(`Hình Nền Gradient #${customList.length + 1}`);
+    }
+  }, [customList.length]);
+
   // Add custom wallpaper
   const handleAddWallpaper = async () => {
     if (!inputValue.trim()) {
@@ -636,7 +749,8 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
     }
 
     const newId = `custom-${Date.now()}`;
-    const finalName = customName.trim() || `Hình nền ${detection.label} #${customList.length + 1}`;
+    const autoFallback = generateAutoWallpaperName(detection.type, customList.length + 1);
+    const finalName = customName.trim() || autoFallback;
 
     const newOption: WallpaperOption = {
       id: newId,
@@ -705,6 +819,81 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
     }
   };
 
+  // Danh sách hình nền xuất theo phạm vi chọn trong Tab JSON
+  const jsonExportList = useMemo(() => {
+    if (jsonExportScope === 'active') {
+      const active =
+        customList.find((w) => w.id === activeWallpaperId) ||
+        WALLPAPER_OPTIONS.find((w) => w.id === activeWallpaperId);
+      return active ? [active] : customList;
+    }
+    if (jsonExportScope === 'all') {
+      return [...customList, ...WALLPAPER_OPTIONS];
+    }
+    return customList;
+  }, [jsonExportScope, customList, activeWallpaperId]);
+
+  const jsonExportPreview = useMemo(() => {
+    return exportWallpapersToJsonString(jsonExportList);
+  }, [jsonExportList]);
+
+  const handleCopyJsonExport = async () => {
+    try {
+      await navigator.clipboard.writeText(jsonExportPreview);
+      showToast('Đã sao chép chuỗi JSON hình nền vào bộ nhớ tạm!');
+    } catch {
+      showToast('Không thể sao chép tự động, vui lòng bôi đen để chép.');
+    }
+  };
+
+  const handleDownloadScopedJson = () => {
+    try {
+      const filename = `hung-thai-wallpapers-${jsonExportScope}.json`;
+      exportWallpapersToJsonFile(jsonExportList, filename);
+      showToast(`Đã tải xuống tệp ${filename} thành công!`);
+    } catch {
+      showToast('Lỗi khi xuất tệp JSON.');
+    }
+  };
+
+  const handleImportJsonFromText = async () => {
+    if (!jsonTextInput.trim()) {
+      showToast('Vui lòng dán nội dung JSON vào ô nhập liệu trước khi nạp.');
+      return;
+    }
+    try {
+      const { wallpapers: importedWallpapers, selectedId } = parseWallpapersJson(jsonTextInput);
+      if (importedWallpapers.length === 0) {
+        showToast('Chuỗi JSON không chứa hình nền hợp lệ.');
+        return;
+      }
+      const existingIds = new Set(customList.map((w) => w.id));
+      const newItems = importedWallpapers.filter((w) => !existingIds.has(w.id));
+      const merged = [...newItems, ...customList];
+
+      setCustomList(merged);
+      await saveCustomWallpapers(merged);
+
+      if (selectedId) {
+        const selectedOption =
+          merged.find((w) => w.id === selectedId) ||
+          WALLPAPER_OPTIONS.find((w) => w.id === selectedId);
+        if (selectedOption) {
+          onSelectWallpaper(selectedOption);
+          setDefaultId(selectedOption.id);
+          await setDefaultWallpaperId(selectedOption.id);
+          if (onSetDefaultWallpaper) onSetDefaultWallpaper(selectedOption);
+        }
+      }
+
+      setJsonTextInput('');
+      showToast(`Đã nhập thành công ${importedWallpapers.length} hình nền từ mã JSON!`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Lỗi khi nhập mã JSON';
+      showToast(message);
+    }
+  };
+
   // Import JSON
   const handleImportJsonFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -758,887 +947,849 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
 
   return (
     <div className="w-full flex-grow flex flex-col gap-4 max-w-7xl mx-auto justify-start select-none relative text-slate-800 dark:text-slate-100 pb-10 text-left p-0">
-      {/* 1. TOP HERO BANNER (ĐỒNG BỘ CHUẨN FORM TRANG LĨNH VỰC) */}
-      <HeroBanner
-        badgeText="Hình nền"
-        title="Tùy Biến Giao Diện"
-        subtitle="Tùy biến phong cách đa dạng – Video động, Ảnh chất lượng cao & Gradient nghệ thuật"
-        quote="“Nhấp 1 lần xem thử • Nhấp đúp lưu làm Mặc Định lâu dài.”"
-        quoteAuthor="— Nguyễn Hùng Thái"
-        badgeColor="text-fuchsia-600"
-        videoSrc="https://cdn.scena.ai/project/10223/85c60f965c31d8901995509ba70ec1c48bc618b045821510b3dee9f89646a8d1.mp4"
-        bottomControls={
-          <div className="w-full flex flex-wrap items-center justify-between gap-2.5 pt-1 px-1">
-            {/* BÊN TRÁI: Nút nhóm lọc hình nền (kèm Bộ sưu tập Yêu thích) */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <div className="flex items-center gap-1.5 p-1 rounded-[999px] bg-white/80 dark:bg-black/40 border border-slate-200/80 dark:border-white/20 shadow-xs backdrop-blur-md flex-wrap">
-                {[
-                  { id: 'all', label: 'Tất cả' },
-                  { id: 'favorites', label: `♥ Yêu thích (${favoriteIds.length})` },
-                  { id: 'image', label: 'Hình ảnh' },
-                  { id: 'video', label: 'Video động' },
-                  { id: 'gradient', label: 'Gradient' },
-                  { id: 'css', label: 'Mã CSS' },
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => setFilterType(tab.id as typeof filterType)}
-                    className={`px-2.5 py-1 rounded-[999px] text-[11px] font-bold transition-all cursor-pointer ${
-                      filterType === tab.id
-                        ? tab.id === 'favorites'
-                          ? 'bg-rose-600 text-white shadow-xs'
-                          : 'bg-fuchsia-600 text-white shadow-xs'
-                        : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 hover:bg-white/60 dark:hover:bg-white/20'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
+      {/* THANH TOOLBAR ĐIỀU KHIỂN & LỌC HÌNH NỀN (THAY THẾ BANNER) */}
+      <div className="w-full p-2.5 sm:p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 backdrop-blur-xl shadow-xs flex flex-wrap items-center justify-between gap-2.5 shrink-0">
+        <div className="flex items-center gap-2">
+          <WebIcon name="palette" className="w-4 h-4 text-fuchsia-600 dark:text-fuchsia-400" />
+          <h2 className="text-xs sm:text-sm font-black font-play text-fuchsia-600 dark:text-fuchsia-400">
+            {formatCardTitle("Tùy Biến Giao Diện")}
+          </h2>
+        </div>
 
-              {/* Restore button if any are deleted */}
-              {deletedIds.length > 0 && (
+        <div className="flex flex-wrap items-center justify-end gap-2.5 pt-1 px-1 relative z-10 pointer-events-auto ml-auto">
+          {/* Nhóm nút lọc hình nền nằm góc dưới bên phải (kèm Bộ sưu tập Yêu thích) */}
+          <div className="flex items-center gap-2 flex-wrap justify-end ml-auto">
+            <div className="flex items-center gap-1.5 p-1 rounded-[999px] bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/15 shadow-2xs backdrop-blur-md flex-wrap">
+              {[
+                { id: 'all', label: 'Tất cả' },
+                { id: 'favorites', label: `♥ Yêu thích (${favoriteIds.length})` },
+                { id: 'light', label: '☀️ Nền Sáng' },
+                { id: 'dark', label: '🌙 Nền Tối' },
+                { id: 'blurred', label: '🌫️ Nền Mờ' },
+                { id: 'image', label: 'Hình ảnh' },
+                { id: 'video', label: 'Video động' },
+                { id: 'gradient', label: 'Gradient' },
+                { id: 'css', label: 'Mã CSS' },
+                { id: 'codepen', label: '⚡ Nền CodePen' },
+              ].map((tab) => (
                 <button
+                  key={tab.id}
                   type="button"
-                  onClick={handleRestoreDeleted}
-                  className="px-2.5 py-1 rounded-[999px] text-[11px] font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-300 transition cursor-pointer flex items-center gap-1 shadow-2xs"
-                  title="Khôi phục các hình nền đã xóa"
-                >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" /></svg>
-                  <span>Khôi phục ({deletedIds.length})</span>
-                </button>
-              )}
-            </div>
-
-            {/* BÊN PHẢI: Zen Mode, Gradient Studio, Thêm hình nền, Nhập/Xuất JSON */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {/* Nút Chế độ Xem trước Toàn màn hình (Zen Mode / Hide UI Preview) */}
-              {onTriggerZenMode && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    onTriggerZenMode(8);
-                    showToast('Đã bật Zen Mode (Ẩn UI 8 giây để ngắm trọn hình nền – Nhấn ESC để thoát sớm)');
-                  }}
-                  title="Ẩn tạm thời Header, Footer và Thẻ chính để thưởng thức trọn vẹn hình nền toàn màn hình"
-                  className="px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 bg-slate-900/90 hover:bg-slate-800 text-cyan-300 border border-cyan-400/40 shadow-sm active:scale-95 transition-all cursor-pointer"
-                >
-                  <WebIcon name="maximize" className="w-3.5 h-3.5" />
-                  <span>Zen Mode (8s)</span>
-                </button>
-              )}
-
-              {/* Nút bật/tắt Bộ tạo Gradient & Mesh CSS trực quan */}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsStudioOpen(!isStudioOpen);
-                  if (!isStudioOpen) setIsAddingOpen(false);
-                }}
-                className={`px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer ${
-                  isStudioOpen
-                    ? 'bg-indigo-600 text-white ring-2 ring-indigo-300'
-                    : 'bg-white/95 hover:bg-indigo-50 text-indigo-700 border border-indigo-200/90 shadow-2xs active:scale-95'
-                }`}
-              >
-                <WebIcon name="palette" className="w-3.5 h-3.5" />
-                <span>{isStudioOpen ? 'Đóng Gradient Studio' : 'Gradient Studio'}</span>
-              </button>
-
-              {/* Nút bật/tắt ô thêm hình nền */}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsAddingOpen(!isAddingOpen);
-                  if (!isAddingOpen) setIsStudioOpen(false);
-                }}
-                className={`px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer ${
-                  isAddingOpen
-                    ? 'bg-fuchsia-600 text-white shadow-fuchsia-500/25'
-                    : 'bg-gradient-to-r from-fuchsia-600 to-indigo-600 hover:from-fuchsia-700 hover:to-indigo-700 text-white shadow-indigo-500/20 active:scale-95'
-                }`}
-              >
-                {isAddingOpen ? (
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" /></svg>
-                ) : (
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5v14" /></svg>
-                )}
-                <span>{isAddingOpen ? 'Đóng ô thêm' : 'Thêm hình nền'}</span>
-              </button>
-
-              {/* Nút Nhập JSON */}
-              <button
-                type="button"
-                onClick={() => jsonInputRef.current?.click()}
-                title="Nhập danh sách hình nền từ tệp .json"
-                className="px-3 py-1.5 rounded-[999px] text-xs font-semibold bg-white/90 hover:bg-indigo-50 text-slate-800 hover:text-indigo-600 border border-slate-300/80 shadow-2xs flex items-center gap-1.5 transition cursor-pointer"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
-                <span>Nhập JSON</span>
-              </button>
-              <input
-                ref={jsonInputRef}
-                type="file"
-                accept=".json,application/json"
-                className="hidden"
-                onChange={handleImportJsonFile}
-              />
-
-              {/* Nút Xuất JSON */}
-              <button
-                type="button"
-                onClick={handleExportJson}
-                title="Tải về tệp sao lưu .json tất cả hình nền tùy chỉnh"
-                className="px-3 py-1.5 rounded-[999px] text-xs font-semibold bg-white/90 hover:bg-fuchsia-50 text-slate-800 hover:text-fuchsia-600 border border-slate-300/80 shadow-2xs flex items-center gap-1.5 transition cursor-pointer"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                <span>Xuất JSON</span>
-              </button>
-            </div>
-          </div>
-        }
-      />
-
-      <div className="flex-1 min-w-0 w-full flex flex-col gap-4">
-      {/* 2. BẢNG ĐIỀU KHIỂN HIỆU ỨNG NỀN & TỰ ĐỘNG HÓA (6 tính năng thông minh) */}
-      <div className="w-full p-3.5 sm:p-4 rounded-2xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/90 dark:border-white/15 shadow-sm backdrop-blur-xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5 items-stretch">
-        {/* Khối 1: Bộ lọc Độ tối & Độ mờ Hình nền (Wallpaper Dimmer & Blur Slider) */}
-        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2.5">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <WebIcon name="sliders" className="w-3.5 h-3.5 text-fuchsia-600 dark:text-fuchsia-400" />
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                Độ Tối & Độ Mờ Nền
-              </span>
-            </div>
-            {(settings.dimmerOpacity > 0 || settings.blurAmount > 0) && (
-              <button
-                type="button"
-                onClick={() => updateSettings({ dimmerOpacity: 0, blurAmount: 0 })}
-                className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-200/80 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-rose-100 hover:text-rose-700 transition cursor-pointer"
-              >
-                Đặt lại (0)
-              </button>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-slate-600 dark:text-slate-300 font-medium">Lớp phủ tối (Dimmer):</span>
-                <span className="font-mono font-bold text-fuchsia-600 dark:text-fuchsia-400">
-                  {settings.dimmerOpacity}%
-                </span>
-              </div>
-              <input
-                type="range"
-                min={0}
-                max={80}
-                step={2}
-                value={settings.dimmerOpacity}
-                onChange={(e) => updateSettings({ dimmerOpacity: Number(e.target.value) })}
-                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-fuchsia-600"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-slate-600 dark:text-slate-300 font-medium">Độ mờ kính (Blur):</span>
-                <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                  {settings.blurAmount}px
-                </span>
-              </div>
-              <input
-                type="range"
-                min={0}
-                max={24}
-                step={1}
-                value={settings.blurAmount}
-                onChange={(e) => updateSettings({ blurAmount: Number(e.target.value) })}
-                className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Khối 2: Hiệu ứng Parallax nhẹ theo chuột (Subtle Mouse Parallax Background) */}
-        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2.5">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <WebIcon name="sparkles" className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                Chiều Sâu 3D Parallax
-              </span>
-            </div>
-
-            <button
-              type="button"
-              role="switch"
-              aria-checked={settings.parallaxEnabled}
-              onClick={() => {
-                const next = !settings.parallaxEnabled;
-                updateSettings({ parallaxEnabled: next });
-                showToast(
-                  next
-                    ? 'Đã bật hiệu ứng chiều sâu Parallax 3D theo chuột!'
-                    : 'Đã tắt hiệu ứng Parallax 3D.'
-                );
-              }}
-              className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold transition cursor-pointer border ${
-                settings.parallaxEnabled
-                  ? 'bg-cyan-600 text-white border-cyan-500 shadow-2xs'
-                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
-              }`}
-            >
-              {settings.parallaxEnabled ? 'Đang Bật' : 'Đang Tắt'}
-            </button>
-          </div>
-
-          <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-            Tạo chuyển động chiều sâu 3D cực nhẹ cho lớp hình nền khi di chuyển chuột trên màn hình Desktop.
-          </p>
-
-          <div className="flex items-center justify-between text-[10.5px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200/60 dark:border-white/10">
-            <span>Biên độ: ±14px (Scale 1.045x)</span>
-            <span className="font-semibold text-cyan-600 dark:text-cyan-400">60 FPS Smooth</span>
-          </div>
-        </div>
-
-        {/* Khối 3: Tự động đổi Hình nền Ngày / Đêm (Day/Night Dynamic Wallpaper) */}
-        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <WebIcon name="sun" className="w-3.5 h-3.5 text-amber-500" />
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                Tự Động Ngày / Đêm
-              </span>
-            </div>
-
-            <button
-              type="button"
-              role="switch"
-              aria-checked={settings.dayNightEnabled}
-              onClick={() => {
-                const next = !settings.dayNightEnabled;
-                updateSettings({ dayNightEnabled: next });
-                showToast(
-                  next
-                    ? 'Đã bật chế độ Tự động đổi Hình nền theo Thời gian thực!'
-                    : 'Đã tắt chế độ Tự động đổi Hình nền Ngày/Đêm.'
-                );
-              }}
-              className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold transition cursor-pointer border ${
-                settings.dayNightEnabled
-                  ? 'bg-amber-500 text-white border-amber-400 shadow-2xs'
-                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
-              }`}
-            >
-              {settings.dayNightEnabled ? 'Đang Bật' : 'Đang Tắt'}
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-1.5 text-[10.5px]">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-slate-500 dark:text-slate-400 font-semibold">
-                Ban ngày (06h–18h):
-              </span>
-              <select
-                value={settings.dayWallpaperId}
-                onChange={(e) => updateSettings({ dayWallpaperId: e.target.value })}
-                className="px-1.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[10.5px] font-semibold focus:outline-none"
-              >
-                <option value="aurora">Aurora Đa Sắc (Sáng)</option>
-                <option value="ocean">Đại Dương Xanh</option>
-                <option value="pure-white">Sáng Thuần Khiết</option>
-                <option value="rainforest">Rừng Nhiệt Đới</option>
-                <option value="autumn">Cát Vàng Mùa Thu</option>
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-0.5">
-              <span className="text-slate-500 dark:text-slate-400 font-semibold">
-                Ban đêm (18h–06h):
-              </span>
-              <select
-                value={settings.nightWallpaperId}
-                onChange={(e) => updateSettings({ nightWallpaperId: e.target.value })}
-                className="px-1.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[10.5px] font-semibold focus:outline-none"
-              >
-                <option value="css-aurora-borealis">Cực Quang Aurora</option>
-                <option value="css-deep-space">Vũ Trụ Sao Cosmic</option>
-                <option value="css-cyber-grid">Lưới Neon 3D</option>
-                <option value="night">Bầu Trời Đêm</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-0.5">
-            <span>Hiện tại ({currentHour}:00):</span>
-            <span className="font-bold text-amber-600 dark:text-amber-400">
-              {isDaytimeNow ? 'Khung giờ Ban Ngày' : 'Khung giờ Ban Đêm'}
-            </span>
-          </div>
-        </div>
-
-        {/* Khối 4: Chế độ Trình chiếu Hình nền tự động & Danh sách Yêu thích */}
-        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <WebIcon name="play" className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                Trình Chiếu Tự Động
-              </span>
-            </div>
-
-            <button
-              type="button"
-              role="switch"
-              aria-checked={settings.slideshowEnabled}
-              onClick={() => {
-                const next = !settings.slideshowEnabled;
-                updateSettings({ slideshowEnabled: next });
-                showToast(
-                  next
-                    ? `Đã bật Trình chiếu hình nền tự động (${settings.slideshowIntervalMinutes} phút/lần)!`
-                    : 'Đã tắt chế độ Trình chiếu hình nền tự động.'
-                );
-              }}
-              className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold transition cursor-pointer border ${
-                settings.slideshowEnabled
-                  ? 'bg-emerald-600 text-white border-emerald-500 shadow-2xs'
-                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
-              }`}
-            >
-              {settings.slideshowEnabled ? 'Đang Chạy' : 'Đang Tắt'}
-            </button>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            {[
-              { val: 0.5, label: '30 giây' },
-              { val: 1, label: '1 phút' },
-              { val: 3, label: '3 phút' },
-              { val: 5, label: '5 phút' },
-            ].map((item) => (
-              <button
-                key={item.val}
-                type="button"
-                onClick={() => updateSettings({ slideshowIntervalMinutes: item.val })}
-                className={`flex-1 py-1 rounded-lg text-[10.5px] font-bold border transition cursor-pointer ${
-                  settings.slideshowIntervalMinutes === item.val
-                    ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
-                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-between gap-2 pt-0.5">
-            <button
-              type="button"
-              onClick={() => {
-                const nextFavOnly = !settings.slideshowFavoritesOnly;
-                updateSettings({ slideshowFavoritesOnly: nextFavOnly });
-                showToast(
-                  nextFavOnly
-                    ? `Trình chiếu chỉ luân chuyển trong ${favoriteIds.length} hình nền Yêu thích!`
-                    : 'Trình chiếu luân chuyển toàn bộ Kho hình nền.'
-                );
-              }}
-              className={`px-2 py-0.5 rounded-lg text-[10px] font-bold border transition cursor-pointer flex items-center gap-1 ${
-                settings.slideshowFavoritesOnly
-                  ? 'bg-rose-600 text-white border-rose-500 shadow-2xs'
-                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-rose-400'
-              }`}
-              title="Chỉ luân chuyển trong danh sách hình nền bạn đã thả tim Yêu thích"
-            >
-              <WebIcon name="heart" className="w-2.5 h-2.5" />
-              <span>Chỉ Yêu thích ({favoriteIds.length})</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                if (onNextSlideshow) {
-                  onNextSlideshow();
-                } else if (allWallpapers.length > 0) {
-                  const idx = allWallpapers.findIndex((w) => w.id === activeWallpaperId);
-                  const nextWp = allWallpapers[(idx + 1) % allWallpapers.length];
-                  onSelectWallpaper(nextWp);
-                }
-                showToast('Đã chuyển sang hình nền kế tiếp!');
-              }}
-              className="px-2.5 py-0.5 rounded-lg text-[10.5px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-700 hover:bg-emerald-100 transition cursor-pointer flex items-center gap-1"
-            >
-              <span>Đổi nền kế tiếp</span>
-              <WebIcon name="chevron-right" className="w-3 h-3" />
-            </button>
-          </div>
-        </div>
-
-        {/* Khối 5: Đồng bộ Hình nền theo Thời tiết (Weather-Synced Ambient Wallpaper) */}
-        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <WebIcon name="cloud-rain" className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                Đồng Bộ Thời Tiết
-              </span>
-            </div>
-
-            <button
-              type="button"
-              role="switch"
-              aria-checked={settings.weatherSyncEnabled}
-              onClick={() => {
-                const next = !settings.weatherSyncEnabled;
-                updateSettings({ weatherSyncEnabled: next });
-                showToast(
-                  next
-                    ? `Đã bật hiệu ứng nền đồng bộ thời tiết (${currentWeather?.conditionVi || 'Nắng đẹp'})!`
-                    : 'Đã tắt hiệu ứng nền đồng bộ thời tiết.'
-                );
-              }}
-              className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold transition cursor-pointer border ${
-                settings.weatherSyncEnabled
-                  ? 'bg-sky-600 text-white border-sky-500 shadow-2xs'
-                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
-              }`}
-            >
-              {settings.weatherSyncEnabled ? 'Đang Bật' : 'Đang Tắt'}
-            </button>
-          </div>
-
-          <div className="grid grid-cols-3 gap-1">
-            {WEATHER_PRESETS.map((wpPreset, idx) => (
-              <button
-                key={wpPreset.condition}
-                type="button"
-                onClick={() => {
-                  if (onSelectWeather) onSelectWeather(idx);
-                  if (!settings.weatherSyncEnabled) {
-                    updateSettings({ weatherSyncEnabled: true });
-                  }
-                  showToast(`Thời tiết: ${wpPreset.conditionVi} (${wpPreset.temp}°C)`);
-                }}
-                className={`px-1.5 py-1 rounded-lg text-[9.5px] font-bold truncate border transition cursor-pointer ${
-                  weatherIdx === idx
-                    ? 'bg-sky-600 text-white border-sky-500 shadow-2xs'
-                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-sky-400'
-                }`}
-                title={`${wpPreset.conditionVi} - ${wpPreset.temp}°C`}
-              >
-                {wpPreset.badge}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-0.5">
-            <span>Footer hiện tại:</span>
-            <span className="font-bold text-sky-600 dark:text-sky-400">
-              {currentWeather?.conditionVi || 'Nắng đẹp rực rỡ'} ({currentWeather?.temp || '32'}°C)
-            </span>
-          </div>
-        </div>
-
-        {/* Khối 6: Trích xuất Màu Nhấn Tự động (Auto Accent Glow Extractor) & Zen Mode */}
-        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <WebIcon name="palette" className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                Màu Nhấn Tự Động (Glow)
-              </span>
-            </div>
-
-            <button
-              type="button"
-              role="switch"
-              aria-checked={settings.autoAccentGlow}
-              onClick={() => {
-                const next = !settings.autoAccentGlow;
-                updateSettings({ autoAccentGlow: next });
-                showToast(
-                  next
-                    ? `Đã đồng bộ viền phát sáng (Spotlight Glow) theo màu chủ đạo ${computedAccent.hex}!`
-                    : 'Đã tắt trích xuất màu nhấn tự động.'
-                );
-              }}
-              className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold transition cursor-pointer border ${
-                settings.autoAccentGlow
-                  ? 'bg-indigo-600 text-white border-indigo-500 shadow-2xs'
-                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
-              }`}
-            >
-              {settings.autoAccentGlow ? 'Đang Bật' : 'Đang Tắt'}
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between gap-2 p-1.5 rounded-lg bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-700">
-            <div className="flex items-center gap-2 min-w-0">
-              <span
-                className="w-5 h-5 rounded-md border border-white shadow-xs shrink-0"
-                style={{
-                  backgroundColor: computedAccent.hex,
-                  boxShadow: `0 0 10px rgba(${computedAccent.rgb}, 0.65)`,
-                }}
-              />
-              <div className="flex flex-col min-w-0">
-                <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 truncate">
-                  Tông màu: {computedAccent.label}
-                </span>
-                <span className="text-[9.5px] font-mono text-slate-500 dark:text-slate-400">
-                  HEX: {computedAccent.hex.toUpperCase()}
-                </span>
-              </div>
-            </div>
-
-            {onTriggerZenMode && (
-              <button
-                type="button"
-                onClick={() => onTriggerZenMode(8)}
-                className="px-2 py-1 rounded-md text-[10px] font-bold bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-500/30 transition cursor-pointer flex items-center gap-1 shrink-0"
-                title="Ẩn giao diện 8 giây để xem trước toàn màn hình"
-              >
-                <WebIcon name="maximize" className="w-2.5 h-2.5" />
-                <span>Zen Mode</span>
-              </button>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-0.5">
-            <span>Đồng bộ Spotlight & Viền thẻ chính</span>
-            <span className="font-semibold text-indigo-600 dark:text-indigo-400">Auto RGB Sync</span>
-          </div>
-        </div>
-
-        {/* Khối 7: Nhạc nền Không gian Đồng bộ Hình nền (Ambient Soundscape Mixer) */}
-        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <WebIcon
-                name={settings.ambientSoundEnabled ? 'waveform' : 'headphones'}
-                className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400"
-              />
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                Nhạc Nền Không Gian
-              </span>
-            </div>
-
-            <button
-              type="button"
-              role="switch"
-              aria-checked={settings.ambientSoundEnabled}
-              onClick={() => {
-                const next = !settings.ambientSoundEnabled;
-                updateSettings({ ambientSoundEnabled: next });
-                showToast(
-                  next
-                    ? `Đã bật Nhạc nền Không gian: ${activeAmbientTrackMeta.name}!`
-                    : 'Đã tắt Nhạc nền Không gian.'
-                );
-              }}
-              className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold transition cursor-pointer border ${
-                settings.ambientSoundEnabled
-                  ? 'bg-teal-600 text-white border-teal-500 shadow-2xs'
-                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
-              }`}
-            >
-              {settings.ambientSoundEnabled ? 'Đang Phát' : 'Đang Tắt'}
-            </button>
-          </div>
-
-          <div className="grid grid-cols-5 gap-1">
-            <button
-              type="button"
-              onClick={() => {
-                updateSettings({ ambientSoundMode: 'auto', ambientSoundEnabled: true });
-                showToast('Đã bật chế độ Tự động hòa âm theo Hình nền & Thời tiết!');
-              }}
-              className={`px-1 py-1 rounded-lg text-[9.5px] font-bold truncate border transition cursor-pointer ${
-                settings.ambientSoundMode === 'auto'
-                  ? 'bg-teal-600 text-white border-teal-500 shadow-2xs'
-                  : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-teal-400'
-              }`}
-              title="Tự động đồng bộ âm thanh theo Hình nền & Thời tiết"
-            >
-              Tự động
-            </button>
-            {AMBIENT_TRACKS.map((track) => (
-              <button
-                key={track.id}
-                type="button"
-                onClick={() => {
-                  updateSettings({ ambientSoundMode: track.id, ambientSoundEnabled: true });
-                  showToast(`Đang phát không gian âm thanh: ${track.name}`);
-                }}
-                className={`px-1 py-1 rounded-lg text-[9.5px] font-bold truncate border transition cursor-pointer ${
-                  settings.ambientSoundMode === track.id
-                    ? 'bg-teal-600 text-white border-teal-500 shadow-2xs'
-                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-teal-400'
-                }`}
-                title={`${track.name} — ${track.subtitle}`}
-              >
-                {track.id === 'rain'
-                  ? 'Mưa Kính'
-                  : track.id === 'ocean'
-                  ? 'Sóng Biển'
-                  : track.id === 'forest'
-                  ? 'Gió Rừng'
-                  : 'Vũ Trụ'}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-2 pt-0.5">
-            <WebIcon name="volume-2" className="w-3 h-3 text-slate-500 dark:text-slate-400 shrink-0" />
-            <input
-              type="range"
-              min={5}
-              max={100}
-              step={5}
-              value={settings.ambientSoundVolume}
-              onChange={(e) => updateSettings({ ambientSoundVolume: Number(e.target.value) })}
-              className="flex-1 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-teal-600"
-              title={`Âm lượng nhạc nền: ${settings.ambientSoundVolume}%`}
-            />
-            <span className="text-[10px] font-mono font-bold text-teal-600 dark:text-teal-400 w-8 text-right">
-              {settings.ambientSoundVolume}%
-            </span>
-          </div>
-        </div>
-
-        {/* Khối 8: Bộ lọc Màu Điện ảnh (Cinematic LUTs) & Chuyển động Gradient Động (Living Mesh CSS) */}
-        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <WebIcon name="camera" className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                Màu Điện Ảnh & Living Mesh
-              </span>
-            </div>
-
-            <button
-              type="button"
-              role="switch"
-              aria-checked={settings.livingMeshEnabled}
-              onClick={() => {
-                const next = !settings.livingMeshEnabled;
-                updateSettings({ livingMeshEnabled: next });
-                showToast(
-                  next
-                    ? 'Đã bật hiệu ứng Chuyển động Gradient Động (Living Mesh CSS)!'
-                    : 'Đã tắt hiệu ứng Living Mesh CSS.'
-                );
-              }}
-              className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition cursor-pointer border ${
-                settings.livingMeshEnabled
-                  ? 'bg-rose-600 text-white border-rose-500 shadow-2xs'
-                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-slate-600'
-              }`}
-              title="Bật/Tắt hiệu ứng trôi nổi vòng lặp @keyframes cho các hình nền CSS & Gradient"
-            >
-              {settings.livingMeshEnabled ? 'Mesh Động: Bật' : 'Mesh Động: Tắt'}
-            </button>
-          </div>
-
-          {/* 6 Preset LUT Điện Ảnh */}
-          <div className="grid grid-cols-3 gap-1">
-            {CINEMATIC_LUT_PRESETS.map((lut) => (
-              <button
-                key={lut.id}
-                type="button"
-                onClick={() => {
-                  updateSettings({ cinematicLut: lut.id });
-                  showToast(`Đã áp dụng bộ lọc màu điện ảnh: ${lut.name}`);
-                }}
-                className={`px-1.5 py-1 rounded-lg text-[9.5px] font-bold truncate border transition cursor-pointer ${
-                  settings.cinematicLut === lut.id
-                    ? 'bg-rose-600 text-white border-rose-500 shadow-2xs'
-                    : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-rose-400'
-                }`}
-                title={lut.name}
-              >
-                {lut.shortLabel}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 pt-0.5">
-            <span>Tốc độ trôi Mesh CSS:</span>
-            <div className="flex items-center gap-1">
-              {(
-                [
-                  { id: 'slow', label: 'Chậm' },
-                  { id: 'normal', label: 'Vừa' },
-                  { id: 'fast', label: 'Nhanh' },
-                ] as const
-              ).map((sp) => (
-                <button
-                  key={sp.id}
-                  type="button"
-                  onClick={() => updateSettings({ livingMeshSpeed: sp.id, livingMeshEnabled: true })}
-                  className={`px-1.5 py-0.2 rounded text-[9.5px] font-bold border transition cursor-pointer ${
-                    settings.livingMeshSpeed === sp.id
-                      ? 'bg-rose-600 text-white border-rose-600'
-                      : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                  onClick={() => setFilterType(tab.id as typeof filterType)}
+                  className={`px-2.5 py-1 rounded-[999px] text-[11px] font-bold transition-all cursor-pointer ${
+                    filterType === tab.id
+                      ? tab.id === 'favorites'
+                        ? 'bg-rose-600 text-white shadow-xs'
+                        : 'bg-fuchsia-600 text-white shadow-xs'
+                      : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-800'
                   }`}
                 >
-                  {sp.label}
+                  {tab.label}
                 </button>
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* Khối 9: Lịch trình Hình nền theo Mục tiêu Công việc (Focus / Pomodoro Wallpaper Sync) */}
-        <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex flex-col justify-between gap-2">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <WebIcon name="clock" className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
-                Pomodoro Đồng Bộ Nền
-              </span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <span
-                className={`px-2 py-0.5 rounded-md font-mono text-[10.5px] font-black border ${
-                  pomodoroRunning
-                    ? pomodoroPhase === 'focus'
-                      ? 'bg-violet-600 text-white border-violet-500 animate-pulse'
-                      : 'bg-emerald-600 text-white border-emerald-500 animate-pulse'
-                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700'
-                }`}
-              >
-                {formattedPomodoroTime}
-              </span>
-
+            {/* Restore button if any are deleted */}
+            {deletedIds.length > 0 && (
               <button
                 type="button"
-                onClick={() => {
-                  const nextRun = !pomodoroRunning;
-                  if (onTogglePomodoro) onTogglePomodoro(nextRun);
-                  showToast(
-                    nextRun
-                      ? `Bắt đầu phiên ${
-                          pomodoroPhase === 'focus' ? 'Tập Trung (Focus)' : 'Giải Lao (Break)'
-                        } – Đã đồng bộ hình nền!`
-                      : 'Đã tạm dừng đồng hồ Pomodoro.'
-                  );
-                }}
-                className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition cursor-pointer border ${
-                  pomodoroRunning
-                    ? 'bg-amber-500 text-white border-amber-400'
-                    : 'bg-violet-600 text-white border-violet-500 hover:bg-violet-700'
-                }`}
+                onClick={handleRestoreDeleted}
+                className="px-2.5 py-1 rounded-[999px] text-[11px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-300/80 dark:border-amber-600/50 transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                title="Khôi phục các hình nền đã xóa"
               >
-                {pomodoroRunning ? 'Dừng' : 'Chạy'}
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" /></svg>
+                <span>Khôi phục ({deletedIds.length})</span>
               </button>
+            )}
+          </div>
 
-              {onResetPomodoro && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    onResetPomodoro();
-                    showToast('Đã đặt lại đồng hồ Pomodoro.');
-                  }}
-                  title="Đặt lại thời gian Pomodoro"
-                  className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 transition cursor-pointer"
-                >
-                  Reset
-                </button>
+          {/* BÊN PHẢI: Nút Tùy Chỉnh Hình Nền (Gom Trình Chiếu, Độ Tối Mờ, Zen Mode), Thêm hình nền (Tích hợp Gradient), Nhập/Xuất JSON */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* NÚT DUY NHẤT: TÙY CHỈNH HÌNH NỀN (Bấm vào xổ ra: Trình Chiếu Tự Động, Độ Tối Mờ Nền, Zen Mode) */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsCustomizerOpen(!isCustomizerOpen);
+                if (!isCustomizerOpen) {
+                  setIsAddingOpen(false);
+                }
+              }}
+              className={`px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer ${
+                isCustomizerOpen
+                  ? 'bg-gradient-to-r from-cyan-600 to-indigo-600 text-white ring-2 ring-cyan-300 shadow-md'
+                  : (settings.slideshowEnabled || settings.dimmerOpacity > 0 || settings.blurAmount > 0)
+                  ? 'bg-cyan-50 dark:bg-cyan-950/80 text-cyan-700 dark:text-cyan-300 border border-cyan-400/80 dark:border-cyan-500/50 shadow-2xs'
+                  : 'bg-white/95 dark:bg-slate-900/80 hover:bg-cyan-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200/90 dark:border-white/10 shadow-2xs active:scale-95'
+              }`}
+              title="Tùy chỉnh Trình Chiếu Tự Động, Độ Tối Mờ Nền và Zen Mode"
+            >
+              <WebIcon name="sliders" className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+              <span>{isCustomizerOpen ? 'Đóng Tùy Chỉnh' : 'Tùy Chỉnh Hình Nền'}</span>
+              {(settings.slideshowEnabled || settings.dimmerOpacity > 0 || settings.blurAmount > 0) && (
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" title="Đang kích hoạt hiệu ứng" />
               )}
-            </div>
-          </div>
+            </button>
 
-          <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-            <div className="flex flex-col gap-0.5">
+            {/* NÚT THÊM HÌNH NỀN: Tích hợp Dán Link, Tải Tệp và Tạo Nền Gradient */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsAddingOpen(!isAddingOpen);
+                if (!isAddingOpen) {
+                  setIsCustomizerOpen(false);
+                }
+              }}
+              className={`px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer ${
+                isAddingOpen
+                  ? 'bg-fuchsia-600 text-white shadow-fuchsia-500/25'
+                  : 'bg-gradient-to-r from-fuchsia-600 to-indigo-600 hover:from-fuchsia-700 hover:to-indigo-700 text-white shadow-indigo-500/20 active:scale-95'
+              }`}
+            >
+              {isAddingOpen ? (
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" /></svg>
+              ) : (
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5v14" /></svg>
+              )}
+              <span>{isAddingOpen ? 'Đóng ô thêm' : '+ Thêm hình nền'}</span>
+            </button>
+
+            {/* NÚT LƯU LÀM MẶC ĐỊNH: Hiển thị nổi bật khi hình nền đang xem thử khác với hình nền mặc định */}
+            {activeWallpaperObj && activeWallpaperObj.id !== defaultId && (
               <button
                 type="button"
-                onClick={() => {
-                  if (onTogglePomodoro) onTogglePomodoro(true, 'focus');
-                  showToast('Đã chuyển sang chế độ Tập Trung (Focus) & áp dụng hình nền tĩnh dịu mắt!');
-                }}
-                className={`text-left font-bold flex items-center justify-between px-1.5 py-0.5 rounded cursor-pointer transition ${
-                  pomodoroPhase === 'focus'
-                    ? 'bg-violet-100 dark:bg-violet-950/80 text-violet-700 dark:text-violet-300'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-violet-600'
-                }`}
+                onClick={() => handleSetDefault(activeWallpaperObj)}
+                className="px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-amber-500/30 active:scale-95 animate-pulse"
+                title={`Lưu vĩnh viễn hình nền "${activeWallpaperObj.name}" làm mặc định khi tải trang`}
               >
-                <span>🎯 Tập trung ({settings.pomodoroFocusMinutes}p)</span>
+                <WebIcon name="star" className="w-3.5 h-3.5 fill-current text-white" />
+                <span>Đặt &quot;{activeWallpaperObj.name}&quot; làm mặc định</span>
               </button>
-              <select
-                value={settings.pomodoroFocusWallpaperId}
-                onChange={(e) => {
-                  const id = e.target.value;
-                  updateSettings({ pomodoroFocusWallpaperId: id });
-                  if (pomodoroRunning && pomodoroPhase === 'focus') {
-                    const wp = combinedWallpapers.find((w) => w.id === id);
-                    if (wp) onSelectWallpaper(wp);
-                  }
-                }}
-                className="px-1.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[10px] font-semibold focus:outline-none"
-              >
-                <option value="css-deep-space">Vũ Trụ Tĩnh (Deep Focus)</option>
-                <option value="css-emerald-matrix">Ngọc Lục Bảo Dịu Mắt</option>
-                <option value="night">Bầu Trời Đêm Tĩnh</option>
-                <option value="pure-white">Sáng Tối Giản</option>
-              </select>
-            </div>
+            )}
 
-            <div className="flex flex-col gap-0.5">
-              <button
-                type="button"
-                onClick={() => {
-                  if (onTogglePomodoro) onTogglePomodoro(true, 'break');
-                  showToast('Đã chuyển sang giờ Giải Lao (Break) & bật hình nền thư giãn!');
-                }}
-                className={`text-left font-bold flex items-center justify-between px-1.5 py-0.5 rounded cursor-pointer transition ${
-                  pomodoroPhase === 'break'
-                    ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-emerald-600'
-                }`}
-              >
-                <span>☕ Giải lao ({settings.pomodoroBreakMinutes}p)</span>
-              </button>
-              <select
-                value={settings.pomodoroBreakWallpaperId}
-                onChange={(e) => {
-                  const id = e.target.value;
-                  updateSettings({ pomodoroBreakWallpaperId: id });
-                  if (pomodoroRunning && pomodoroPhase === 'break') {
-                    const wp = combinedWallpapers.find((w) => w.id === id);
-                    if (wp) onSelectWallpaper(wp);
-                  }
-                }}
-                className="px-1.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-[10px] font-semibold focus:outline-none"
-              >
-                <option value="aurora">Cực Quang Aurora</option>
-                <option value="ocean">Đại Dương Xanh Mát</option>
-                <option value="rainforest">Rừng Nhiệt Đới Xanh</option>
-                <option value="css-sunset-mesh">Hoàng Hôn Nhiệt Đới</option>
-              </select>
-            </div>
+            {/* Nút Nhập JSON */}
+            <button
+              type="button"
+              onClick={() => jsonInputRef.current?.click()}
+              title="Nhập danh sách hình nền từ tệp .json"
+              className="px-3 py-1.5 rounded-[999px] text-xs font-semibold bg-white/90 dark:bg-slate-900/80 hover:bg-indigo-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-300 border border-slate-300/80 dark:border-white/15 shadow-2xs flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              <span>Nhập JSON</span>
+            </button>
+            <input
+              ref={jsonInputRef}
+              type="file"
+              accept=".json,application/json"
+              className="hidden"
+              onChange={handleImportJsonFile}
+            />
+
+            {/* Nút Xuất JSON */}
+            <button
+              type="button"
+              onClick={handleExportJson}
+              title="Tải về tệp sao lưu .json tất cả hình nền tùy chỉnh"
+              className="px-3 py-1.5 rounded-[999px] text-xs font-semibold bg-white/90 dark:bg-slate-900/80 hover:bg-fuchsia-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 hover:text-fuchsia-600 dark:hover:text-fuchsia-300 border border-slate-300/80 dark:border-white/15 shadow-2xs flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span>Xuất JSON</span>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* 3. BỘ TẠO GRADIENT & MESH CSS TRỰC QUAN (Interactive CSS Gradient Studio) */}
-      {isStudioOpen && (
-        <div className="w-full p-4 sm:p-5 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-indigo-200 dark:border-indigo-500/30 shadow-lg backdrop-blur-xl flex flex-col gap-4 text-left transition-all duration-300">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 dark:border-white/10 pb-3">
+      <div className="flex-1 min-w-0 w-full flex flex-col gap-4">
+      {/* 2. BẢNG TÙY CHỈNH HÌNH NỀN (GOM 3 MỤC: TRÌNH CHIẾU TỰ ĐỘNG, ĐỘ TỐI MỜ NỀN, ZEN MODE) */}
+      {isCustomizerOpen && (
+        <div className="w-full p-4 sm:p-5 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-cyan-400/50 dark:border-cyan-500/40 shadow-xl backdrop-blur-xl animate-fade-in flex flex-col gap-4 text-left transition-all duration-300">
+          {/* Header & Bộ 3 Tabs Chuyển Đổi */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-white/10 pb-3">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-ping" />
-              <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white tracking-tight">
-                Bộ Tạo Gradient & Mesh CSS Trực Quan (Interactive CSS Gradient Studio)
+              <WebIcon name="sliders" className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
+              <h4 className="text-xs sm:text-sm font-black font-play text-slate-900 dark:text-white tracking-tight">
+                {formatCardTitle("Tùy Chỉnh Hình Nền")}
+              </h4>
+            </div>
+
+            {/* 3 Nút Chọn Mục: Trình Chiếu, Độ Tối Mờ, Zen Mode */}
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 flex-wrap">
+              <button
+                type="button"
+                onClick={() => setCustomizerTab('slideshow')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  customizerTab === 'slideshow'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400'
+                }`}
+              >
+                <WebIcon name="play" className="w-3.5 h-3.5" />
+                <span>Trình Chiếu Tự Động</span>
+                {settings.slideshowEnabled && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" />
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCustomizerTab('dimmer')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  customizerTab === 'dimmer'
+                    ? 'bg-fuchsia-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-fuchsia-600 dark:hover:text-fuchsia-400'
+                }`}
+              >
+                <WebIcon name="sliders" className="w-3.5 h-3.5" />
+                <span>Độ Tối Mờ Nền</span>
+                {(settings.dimmerOpacity > 0 || settings.blurAmount > 0) && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-300" />
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setCustomizerTab('zen')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  customizerTab === 'zen'
+                    ? 'bg-cyan-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400'
+                }`}
+              >
+                <WebIcon name="maximize" className="w-3.5 h-3.5" />
+                <span>Zen Mode</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsCustomizerOpen(false)}
+                className="ml-auto p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                title="Đóng bảng tùy chỉnh"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" /></svg>
+              </button>
+            </div>
+          </div>
+
+          {/* TAB 1: TRÌNH CHIẾU TỰ ĐỘNG */}
+          {customizerTab === 'slideshow' && (
+            <div className="flex flex-col gap-3.5 animate-fadeIn">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">
+                      Chế Độ Luân Chuyển Hình Nền Tự Động
+                    </span>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      settings.slideshowEnabled
+                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-400/30'
+                        : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                    }`}>
+                      {settings.slideshowEnabled ? `Đang chạy (${settings.slideshowIntervalMinutes} phút/lần)` : 'Đang tắt'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Tự động đổi hình nền theo tần suất bạn chọn và đồng bộ theo giao diện Sáng / Tối.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = !settings.slideshowEnabled;
+                      updateSettings({ slideshowEnabled: next });
+                      showToast(
+                        next
+                          ? `Đã bật Trình chiếu hình nền tự động (${settings.slideshowIntervalMinutes} phút/lần)!`
+                          : 'Đã tắt chế độ Trình chiếu hình nền tự động.'
+                      );
+                    }}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold border transition cursor-pointer flex items-center gap-1.5 ${
+                      settings.slideshowEnabled
+                        ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
+                        : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 hover:border-emerald-400'
+                    }`}
+                  >
+                    <WebIcon name={settings.slideshowEnabled ? "pause" : "play"} className="w-3.5 h-3.5" />
+                    <span>{settings.slideshowEnabled ? 'Tạm dừng trình chiếu' : 'Bật trình chiếu'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onNextSlideshow) {
+                        onNextSlideshow();
+                      } else if (allWallpapers.length > 0) {
+                        const idx = allWallpapers.findIndex((w) => w.id === activeWallpaperId);
+                        const nextWp = allWallpapers[(idx + 1) % allWallpapers.length];
+                        onSelectWallpaper(nextWp);
+                      }
+                      showToast('Đã chuyển sang hình nền kế tiếp!');
+                    }}
+                    className="px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-700/80 hover:bg-emerald-100 transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                  >
+                    <span>Đổi nền kế tiếp</span>
+                    <WebIcon name="chevron-right" className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Tần suất lặp */}
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
+                  Tần suất chuyển hình nền:
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { val: 0.5, label: '30 giây' },
+                    { val: 1, label: '1 phút' },
+                    { val: 3, label: '3 phút' },
+                    { val: 5, label: '5 phút' },
+                  ].map((item) => (
+                    <button
+                      key={item.val}
+                      type="button"
+                      onClick={() => updateSettings({ slideshowIntervalMinutes: item.val })}
+                      className={`py-1.5 px-2 rounded-xl text-xs font-bold border transition cursor-pointer text-center ${
+                        settings.slideshowIntervalMinutes === item.val
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                          : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Lọc theo giao diện */}
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
+                  Phân loại hình nền luân chuyển:
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+                  {[
+                    { key: 'auto', label: 'Tự động ☀️🌙' },
+                    { key: 'time-of-day', label: 'Theo giờ thực ⏰' },
+                    { key: 'light-only', label: 'Chỉ nền Sáng ☀️' },
+                    { key: 'dark-only', label: 'Chỉ nền Tối 🌙' },
+                    { key: 'all', label: 'Tất cả kho nền' },
+                  ].map((m) => {
+                    const currentMode = settings.slideshowThemeMode || 'auto';
+                    const isSelected = currentMode === m.key;
+                    return (
+                      <button
+                        key={m.key}
+                        type="button"
+                        onClick={() => {
+                          updateSettings({ slideshowThemeMode: m.key as SlideshowThemeFilter });
+                          showToast(`Trình chiếu: ${m.label}`);
+                        }}
+                        className={`py-1.5 px-1 rounded-xl text-[10.5px] font-bold border transition truncate cursor-pointer text-center ${
+                          isSelected
+                            ? 'bg-indigo-600 text-white border-indigo-500 shadow-xs'
+                            : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                        }`}
+                      >
+                        {m.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Hiệu ứng chuyển cảnh Cross-Fade & Lựa chọn phụ */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
+                    Hiệu ứng chuyển cảnh (Cross-Fade):
+                  </span>
+                  <div className="grid grid-cols-3 gap-1">
+                    {[
+                      { key: 'dissolve', label: 'Hòa tan' },
+                      { key: 'blur-dissolve', label: 'Mờ ảo' },
+                      { key: 'zoom-out', label: 'Thu nhỏ' },
+                    ].map((eff) => {
+                      const isSelected = (settings.slideshowTransitionEffect || 'dissolve') === eff.key;
+                      return (
+                        <button
+                          key={eff.key}
+                          type="button"
+                          onClick={() => updateSettings({ slideshowTransitionEffect: eff.key as SlideshowTransitionEffect })}
+                          className={`py-1 px-1 rounded-lg text-[10px] font-bold border transition text-center cursor-pointer ${
+                            isSelected
+                              ? 'bg-fuchsia-600 text-white border-fuchsia-500 shadow-2xs'
+                              : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700'
+                          }`}
+                        >
+                          {eff.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
+                    Tùy chọn hiển thị:
+                  </span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextVal = !(settings.slideshowShowCountdown ?? true);
+                        updateSettings({ slideshowShowCountdown: nextVal });
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold border transition cursor-pointer flex items-center gap-1 ${
+                        (settings.slideshowShowCountdown ?? true)
+                          ? 'bg-cyan-600 text-white border-cyan-500 shadow-2xs'
+                          : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                      }`}
+                    >
+                      <WebIcon name="clock" className="w-3 h-3" />
+                      <span>Thanh đếm ngược</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextFav = !settings.slideshowFavoritesOnly;
+                        updateSettings({ slideshowFavoritesOnly: nextFav });
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold border transition cursor-pointer flex items-center gap-1 ${
+                        settings.slideshowFavoritesOnly
+                          ? 'bg-rose-600 text-white border-rose-500 shadow-2xs'
+                          : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                      }`}
+                    >
+                      <WebIcon name="heart" className="w-3 h-3" />
+                      <span>Chỉ Yêu thích ({favoriteIds.length})</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: ĐỘ TỐI MỜ NỀN */}
+          {customizerTab === 'dimmer' && (
+            <div className="flex flex-col gap-4 animate-fadeIn">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-xs font-black text-fuchsia-600 dark:text-fuchsia-400">
+                    Bộ Lọc Lớp Phủ Tối & Độ Mờ Kính Hình Nền
+                  </span>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Điều chỉnh độ tối và độ mờ để chữ và các thẻ nội dung hiển thị sắc nét nhất trên nền ảnh/video.
+                  </p>
+                </div>
+
+                {(settings.dimmerOpacity > 0 || settings.blurAmount > 0) && (
+                  <button
+                    type="button"
+                    onClick={() => updateSettings({ dimmerOpacity: 0, blurAmount: 0 })}
+                    className="self-start sm:self-auto text-xs font-bold px-3 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-700 hover:bg-rose-100 transition cursor-pointer flex items-center gap-1"
+                  >
+                    <span>Đặt lại về gốc (0%)</span>
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Thanh trượt Độ Tối */}
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-xs font-bold">
+                    <span className="text-slate-700 dark:text-slate-200">Lớp phủ tối (Dimmer):</span>
+                    <span className="font-mono text-fuchsia-600 dark:text-fuchsia-400 text-sm">
+                      {settings.dimmerOpacity}%
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={80}
+                    step={2}
+                    value={settings.dimmerOpacity}
+                    onChange={(e) => updateSettings({ dimmerOpacity: Number(e.target.value) })}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-fuchsia-600"
+                  />
+                  <div className="flex items-center justify-between text-[10px] text-slate-400">
+                    <span>0% (Sáng nguyên bản)</span>
+                    <span>40% (Cân bằng)</span>
+                    <span>80% (Tối sâu)</span>
+                  </div>
+                </div>
+
+                {/* Thanh trượt Độ Mờ */}
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-xs font-bold">
+                    <span className="text-slate-700 dark:text-slate-200">Độ mờ kính (Blur):</span>
+                    <span className="font-mono text-indigo-600 dark:text-indigo-400 text-sm">
+                      {settings.blurAmount}px
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={24}
+                    step={1}
+                    value={settings.blurAmount}
+                    onChange={(e) => updateSettings({ blurAmount: Number(e.target.value) })}
+                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                  />
+                  <div className="flex items-center justify-between text-[10px] text-slate-400">
+                    <span>0px (Rõ nét)</span>
+                    <span>8px (Kính mờ)</span>
+                    <span>24px (Siêu mờ)</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Các mốc chỉnh nhanh */}
+              <div className="flex items-center gap-2 flex-wrap pt-1">
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 mr-1">
+                  Chỉnh nhanh:
+                </span>
+                {[
+                  { label: 'Nguyên Bản (0%)', dim: 0, blur: 0 },
+                  { label: 'Dịu Mắt (15% tối, 2px mờ)', dim: 15, blur: 2 },
+                  { label: 'Rạp Phim (35% tối, 4px mờ)', dim: 35, blur: 4 },
+                  { label: 'Kính Mờ Cao Cấp (20% tối, 10px mờ)', dim: 20, blur: 10 },
+                  { label: 'Đọc Sách Đêm (55% tối, 1px mờ)', dim: 55, blur: 1 },
+                ].map((preset, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      updateSettings({ dimmerOpacity: preset.dim, blurAmount: preset.blur });
+                      showToast(`Đã áp dụng mốc: ${preset.label}`);
+                    }}
+                    className="px-2.5 py-1 rounded-lg text-[10.5px] font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 cursor-pointer transition"
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: ZEN MODE */}
+          {customizerTab === 'zen' && (
+            <div className="flex flex-col gap-4 animate-fadeIn">
+              <div className="flex flex-col gap-1">
+                <span className="text-xs font-black text-cyan-600 dark:text-cyan-400">
+                  Zen Mode — Chiêm Ngưỡng Hình Nền Toàn Cảnh
+                </span>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Khi kích hoạt Zen Mode, hệ thống sẽ ẩn tạm thời Header, Footer và Thẻ chính để bạn thưởng thức trọn vẹn vẻ đẹp của hình nền hoặc video nền toàn màn hình.
+                </p>
+              </div>
+
+              {/* Chọn thời gian Zen Mode */}
+              <div className="flex flex-col gap-2 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200">
+                  Thời lượng tự động hiện lại giao diện:
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { val: 8, label: '8 giây (Nhanh)' },
+                    { val: 15, label: '15 giây (Vừa)' },
+                    { val: 30, label: '30 giây (Sâu)' },
+                    { val: 0, label: 'Vô hạn (Nhấn ESC để thoát)' },
+                  ].map((dur) => (
+                    <button
+                      key={dur.val}
+                      type="button"
+                      onClick={() => setZenDuration(dur.val)}
+                      className={`py-2 px-2 rounded-xl text-xs font-bold border transition text-center cursor-pointer ${
+                        zenDuration === dur.val
+                          ? 'bg-cyan-600 text-white border-cyan-500 shadow-xs'
+                          : 'bg-white dark:bg-slate-700/80 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:border-cyan-400'
+                      }`}
+                    >
+                      {dur.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Nút Kích Hoạt Zen Mode */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onTriggerZenMode) {
+                      onTriggerZenMode(zenDuration > 0 ? zenDuration : undefined);
+                      showToast(`Đã bật Zen Mode (${zenDuration > 0 ? `${zenDuration} giây` : 'Vô hạn'} – Nhấn phím ESC để thoát sớm)`);
+                    }
+                  }}
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-full text-xs font-black text-white bg-gradient-to-r from-cyan-600 via-indigo-600 to-fuchsia-600 hover:from-cyan-700 hover:to-fuchsia-700 shadow-md shadow-cyan-500/25 active:scale-95 transition cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <WebIcon name="maximize" className="w-4 h-4" />
+                  <span>KÍCH HOẠT ZEN MODE NGAY</span>
+                </button>
+
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 italic">
+                  💡 Mẹo: Nhấn phím <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 font-mono text-[10px] font-bold">ESC</kbd> hoặc nhấp chuột bất kỳ đâu để thoát Zen Mode bất cứ lúc nào.
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 3. KHUNG THÊM HÌNH NỀN HỢP NHẤT (DÁN LINK / TỆP VÀ TẠO NỀN GRADIENT STUDIO) */}
+      {isAddingOpen && (
+        <div
+          className={`w-full p-4 sm:p-5 rounded-2xl bg-white/95 dark:bg-slate-900/95 border shadow-xl backdrop-blur-xl transition-all duration-300 flex flex-col gap-4 text-left ${
+            isDragging
+              ? 'border-fuchsia-500 ring-2 ring-fuchsia-400/40'
+              : 'border-fuchsia-300 dark:border-fuchsia-500/40'
+          }`}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setIsDragging(false);
+            const file = e.dataTransfer.files?.[0];
+            if (file) handleFileChosen(file);
+          }}
+        >
+          {/* Header & Tab Switcher: Tab 1 (Link/File/CodePen/CSS), Tab 2 (Gradient Studio) & Tab 3 (Nhập & Xuất JSON) */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-white/10 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-fuchsia-600 animate-ping" />
+              <h4 className="text-xs sm:text-sm font-black font-play text-slate-900 dark:text-white tracking-tight">
+                {addModalTab === 'url'
+                  ? 'Thêm Hình Nền Mới (Link / Tệp / CodePen / CSS)'
+                  : addModalTab === 'gradient'
+                  ? 'Tạo Nền Gradient & Mesh CSS Trực Quan'
+                  : 'Nhập & Xuất Dữ Liệu Hình Nền JSON'}
+              </h4>
+            </div>
+
+            {/* 3 Tabs: Dán Link / Tải Tệp, Tạo Nền Gradient và Nhập & Xuất JSON */}
+            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 flex-wrap">
+              <button
+                type="button"
+                onClick={() => setAddModalTab('url')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  addModalTab === 'url'
+                    ? 'bg-fuchsia-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-fuchsia-600 dark:hover:text-fuchsia-400'
+                }`}
+              >
+                <WebIcon name="link" className="w-3.5 h-3.5" />
+                <span>Dán Link / Tải Tệp</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setAddModalTab('gradient')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  addModalTab === 'gradient'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400'
+                }`}
+              >
+                <WebIcon name="palette" className="w-3.5 h-3.5" />
+                <span>Tạo Nền Gradient</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setAddModalTab('json')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  addModalTab === 'json'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400'
+                }`}
+              >
+                <WebIcon name="file-code" className="w-3.5 h-3.5" />
+                <span>Nhập & Xuất JSON</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsAddingOpen(false)}
+                className="ml-auto p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                title="Đóng ô thêm hình nền"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" /></svg>
+              </button>
+            </div>
+          </div>
+
+          {/* TAB 1: DÁN LINK / TẢI TỆP */}
+          {addModalTab === 'url' && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start animate-fadeIn">
+              {/* Cột 1 & 2: Ô Nhập & Tên tự động */}
+              <div className="md:col-span-2 flex flex-col gap-2.5">
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-[11px] font-bold tracking-wider text-slate-600 dark:text-slate-300 block">
+                    Dán URL hình ảnh, video, CodePen, mã CSS hoặc kéo thả tệp:
+                  </label>
+                  {inputValue.trim() && (
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shadow-2xs ${detection.badgeColor}`}>
+                      Auto nhận diện: {detection.label}
+                    </span>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <textarea
+                    rows={3}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Ví dụ:&#10;• Link hình: https://images.unsplash.com/...&#10;• Link video: https://cdn.site.com/nature.mp4&#10;• Link CodePen: https://codepen.io/user/pen/...&#10;• Mã CSS: linear-gradient(135deg, #667eea 0%, #764ba2 100%)&#10;• Hoặc bấm nút 'Chọn tệp từ máy' bên dưới..."
+                    className="w-full p-3 rounded-xl text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 shadow-inner resize-none"
+                  />
+
+                  {inputValue && (
+                    <button
+                      type="button"
+                      onClick={() => setInputValue('')}
+                      className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xs px-1.5 py-0.5 rounded bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 cursor-pointer"
+                    >
+                      Xóa
+                    </button>
+                  )}
+                </div>
+
+                {/* Tên hình nền (TỰ ĐỘNG ĐẶT TÊN) & Nút duyệt tệp Local */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                  <div className="flex-1 flex items-center gap-1.5">
+                    <input
+                      type="text"
+                      value={customName}
+                      onChange={(e) => setCustomName(e.target.value)}
+                      placeholder="Hệ thống tự động đặt tên..."
+                      className="flex-1 px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 font-medium"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const autoName = generateAutoWallpaperName(detection.type, customList.length + 1);
+                        setCustomName(autoName);
+                        showToast(`Tên tự động: "${autoName}"`);
+                      }}
+                      title="Tự động đặt lại tên khác"
+                      className="px-2.5 py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 cursor-pointer flex items-center gap-1 shrink-0"
+                    >
+                      <WebIcon name="sparkles" className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Tên Auto</span>
+                    </button>
+                  </div>
+
+                  {/* Nút chọn tệp từ máy */}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-3.5 py-2 rounded-[999px] text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center justify-center gap-1.5 transition cursor-pointer whitespace-nowrap shadow-2xs"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                    </svg>
+                    <span>Chọn tệp Local (Ảnh / Video)</span>
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*,video/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileChosen(file);
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Cột 3: Khung xem trước (Live Preview) & Nút Lưu */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] font-bold tracking-wider text-slate-600 dark:text-slate-300 block">
+                  Xem trước (Preview):
+                </label>
+
+                <div className="w-full h-[115px] rounded-xl border-2 border-slate-300 dark:border-slate-700 overflow-hidden relative flex items-center justify-center bg-slate-100 dark:bg-slate-800 shadow-inner">
+                  {detection.type === 'video' && detection.cleanedValue ? (
+                    <video
+                      src={detection.cleanedValue}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  ) : detection.type === 'codepen' && detection.cleanedValue ? (
+                    <div className="relative w-full h-full overflow-hidden bg-slate-950">
+                      <iframe
+                        src={detection.cleanedValue}
+                        title="CodePen Preview"
+                        className="w-[200%] h-[200%] -top-[50%] -left-[50%] absolute border-0 pointer-events-none origin-center scale-50"
+                        sandbox="allow-scripts allow-same-origin"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-transparent pointer-events-none" />
+                      <div className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-black/70 text-cyan-300 backdrop-blur-xs pointer-events-none">
+                        Live Preview
+                      </div>
+                    </div>
+                  ) : detection.type === 'image' && detection.cleanedValue ? (
+                    <img
+                      src={detection.cleanedValue}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : detection.previewStyle ? (
+                    <div className="w-full h-full" style={sanitizeWallpaperStyle(detection.previewStyle, detection.cleanedValue)} />
+                  ) : (
+                    <div className="text-center p-3 text-[11px] text-slate-400 dark:text-slate-500">
+                      Chưa có nội dung xem trước
+                    </div>
+                  )}
+
+                  {detection.type === 'video' && (
+                    <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/60 text-white backdrop-blur-xs flex items-center gap-1">
+                      <WebIcon name="video" className="w-2.5 h-2.5" />
+                      <span>Video</span>
+                    </span>
+                  )}
+                  {detection.type === 'codepen' && (
+                    <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-600 text-white backdrop-blur-xs flex items-center gap-1">
+                      <WebIcon name="code" className="w-2.5 h-2.5" />
+                      <span>CodePen</span>
+                    </span>
+                  )}
+                </div>
+
+                {/* Nút lưu */}
+                <button
+                  type="button"
+                  onClick={handleAddWallpaper}
+                  className="w-full mt-1 py-2 px-4 rounded-[999px] text-xs font-bold text-white bg-gradient-to-r from-fuchsia-600 to-indigo-600 hover:from-fuchsia-700 hover:to-indigo-700 shadow-md shadow-fuchsia-500/20 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M20 6 9 17l-5-5" /></svg>
+                  <span>Lưu & Áp Dụng Ngay</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: TẠO NỀN GRADIENT STUDIO */}
+          {addModalTab === 'gradient' && (
+            <div className="flex flex-col gap-4 animate-fadeIn">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 dark:border-white/10 pb-3">
+            <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+              <WebIcon name="brush" className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+              <h4 className="text-xs sm:text-sm font-black font-play text-indigo-600 dark:text-indigo-400 tracking-tight">
+                {formatCardTitle("Bộ Tạo Màu Nền")}
               </h4>
             </div>
 
@@ -2103,148 +2254,123 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
         </div>
       )}
 
-      {/* 4. Ô THÊM DUY NHẤT VỚI AUTO NHẬN DIỆN (Single Smart Auto-detect Box) */}
-      {isAddingOpen && (
-        <div
-          className={`w-full p-4 sm:p-5 rounded-2xl bg-white/95 border shadow-lg backdrop-blur-xl transition-all duration-300 flex flex-col gap-4 text-left ${
-            isDragging ? 'border-fuchsia-500 ring-2 ring-fuchsia-400/40' : 'border-slate-200'
-          }`}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setIsDragging(true);
-          }}
-          onDragLeave={() => setIsDragging(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setIsDragging(false);
-            const file = e.dataTransfer.files?.[0];
-            if (file) handleFileChosen(file);
-          }}
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-2.5">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-fuchsia-600 animate-ping" />
-              <h4 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">
-                Thêm Hình Nền Mới (Ô Nhận Diện Tự Động Duy Nhất)
-              </h4>
-            </div>
+          {/* TAB 3: NHẬP & XUẤT DỮ LIỆU HÌNH NỀN JSON */}
+          {addModalTab === 'json' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch animate-fadeIn">
+              {/* Cột Trái: Nhập Dữ Liệu JSON */}
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/75 border border-slate-200 dark:border-slate-700 flex flex-col justify-between gap-3">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                      <WebIcon name="upload" className="w-4 h-4 shrink-0" />
+                      <h5 className="text-xs sm:text-sm font-black font-play">
+                        {formatCardTitle('Nhập dữ liệu JSON')}
+                      </h5>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-400/30">
+                      Hỗ trợ Mảng & Object
+                    </span>
+                  </div>
 
-            {/* Badge nhận diện loại tự động */}
-            {inputValue.trim() && (
-              <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border shadow-2xs ${detection.badgeColor}`}>
-                Auto nhận diện: {detection.label}
-              </span>
-            )}
-          </div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Dán cấu trúc JSON hình nền vào khung bên dưới hoặc tải trực tiếp tệp <code className="font-mono font-bold text-emerald-600 dark:text-emerald-400">.json</code> từ máy tính của bạn để khôi phục kho hình nền.
+                  </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-            {/* Cột 1 & 2: Ô Nhập Duy Nhất */}
-            <div className="md:col-span-2 flex flex-col gap-2.5">
-              <label className="text-[11px] font-bold tracking-wider text-slate-600 block">
-                Dán URL hình ảnh, video, mã CSS hoặc kéo thả tệp từ máy:
-              </label>
+                  <textarea
+                    rows={6}
+                    value={jsonTextInput}
+                    onChange={(e) => setJsonTextInput(e.target.value)}
+                    placeholder={`[\n  {\n    "name": "Hình nền Aurora",\n    "type": "image",\n    "value": "https://images.unsplash.com/..."\n  }\n]`}
+                    className="w-full p-3 rounded-xl text-xs font-mono bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-emerald-300 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 resize-none"
+                  />
+                </div>
 
-              <div className="relative">
-                <textarea
-                  rows={3}
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Ví dụ:
-• Link hình: https://images.unsplash.com/...
-• Link video: https://cdn.site.com/nature.mp4
-• Mã CSS: linear-gradient(135deg, #667eea 0%, #764ba2 100%)
-• Hoặc bấm nút 'Chọn tệp từ máy' bên dưới..."
-                  className="w-full p-3 rounded-xl text-xs font-mono bg-slate-50 border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50 shadow-inner resize-none"
-                />
-
-                {inputValue && (
+                <div className="flex flex-wrap items-center gap-2 pt-1">
                   <button
                     type="button"
-                    onClick={() => setInputValue('')}
-                    className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-700 text-xs px-1.5 py-0.5 rounded bg-white border border-slate-200 cursor-pointer"
+                    onClick={() => jsonInputRef.current?.click()}
+                    className="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 transition cursor-pointer flex items-center justify-center gap-1.5"
                   >
-                    Xóa
+                    <WebIcon name="folder-open" className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <span>Chọn tệp .json từ máy</span>
                   </button>
-                )}
+
+                  <button
+                    type="button"
+                    onClick={handleImportJsonFromText}
+                    className="flex-1 py-2 px-3 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-md shadow-emerald-500/20 transition cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <WebIcon name="check" className="w-3.5 h-3.5" />
+                    <span>Nạp dữ liệu JSON</span>
+                  </button>
+                </div>
               </div>
 
-              {/* Tên hình nền & Nút duyệt tệp Local */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                <input
-                  type="text"
-                  value={customName}
-                  onChange={(e) => setCustomName(e.target.value)}
-                  placeholder="Tên hình nền (tùy chọn)..."
-                  className="flex-1 px-3 py-2 rounded-xl text-xs bg-slate-50 border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/50"
-                />
+              {/* Cột Phải: Xuất & Sao Lưu JSON */}
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/75 border border-slate-200 dark:border-slate-700 flex flex-col justify-between gap-3">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
+                      <WebIcon name="download" className="w-4 h-4 shrink-0" />
+                      <h5 className="text-xs sm:text-sm font-black font-play">
+                        {formatCardTitle('Xuất dữ liệu JSON')}
+                      </h5>
+                    </div>
 
-                {/* Nút chọn tệp từ máy */}
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-3.5 py-2 rounded-[999px] text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 flex items-center justify-center gap-1.5 transition cursor-pointer whitespace-nowrap shadow-2xs"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                  </svg>
-                  <span>Chọn tệp Local (Ảnh / Video)</span>
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*,video/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleFileChosen(file);
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Cột 3: Khung xem trước (Live Preview) */}
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-bold tracking-wider text-slate-600 block">
-                Xem trước (Preview):
-              </label>
-
-              <div className="w-full h-[115px] rounded-xl border-2 border-slate-300 overflow-hidden relative flex items-center justify-center bg-slate-100 shadow-inner">
-                {detection.type === 'video' && detection.cleanedValue ? (
-                  <video
-                    src={detection.cleanedValue}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                  />
-                ) : detection.previewStyle ? (
-                  <div className="w-full h-full" style={sanitizeWallpaperStyle(detection.previewStyle, detection.cleanedValue)} />
-                ) : (
-                  <div className="text-center p-3 text-[11px] text-slate-400">
-                    Chưa có nội dung xem trước
+                    {/* Chọn phạm vi xuất */}
+                    <div className="flex items-center gap-1 bg-slate-200/80 dark:bg-slate-900 p-0.5 rounded-lg border border-slate-300/70 dark:border-slate-700">
+                      {[
+                        { id: 'custom', label: `Tùy chỉnh (${customList.length})` },
+                        { id: 'active', label: 'Đang dùng (1)' },
+                        { id: 'all', label: `Tất cả (${customList.length + WALLPAPER_OPTIONS.length})` },
+                      ].map((sc) => (
+                        <button
+                          key={sc.id}
+                          type="button"
+                          onClick={() => setJsonExportScope(sc.id as 'custom' | 'active' | 'all')}
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition cursor-pointer ${
+                            jsonExportScope === sc.id
+                              ? 'bg-indigo-600 text-white shadow-2xs'
+                              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                          }`}
+                        >
+                          {sc.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                )}
 
-                {detection.type === 'video' && (
-                  <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/60 text-white backdrop-blur-xs flex items-center gap-1">
-                    <WebIcon name="video" className="w-2.5 h-2.5" />
-                    <span>Video</span>
-                  </span>
-                )}
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Xem trước cấu trúc dữ liệu JSON chuẩn hoặc tải xuống tệp sao lưu để chia sẻ và đồng bộ sang thiết bị khác.
+                  </p>
+
+                  <pre className="w-full h-[132px] p-3 rounded-xl text-[11px] font-mono bg-slate-900 text-cyan-300 border border-slate-700 overflow-auto leading-relaxed select-all">
+                    {jsonExportPreview}
+                  </pre>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleCopyJsonExport}
+                    className="flex-1 py-2 px-3 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 hover:bg-indigo-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 transition cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <WebIcon name="copy" className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                    <span>Sao chép mã JSON</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleDownloadScopedJson}
+                    className="flex-1 py-2 px-3 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:from-indigo-700 hover:to-fuchsia-700 shadow-md shadow-indigo-500/20 transition cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <WebIcon name="download" className="w-3.5 h-3.5" />
+                    <span>Tải tệp .json về máy</span>
+                  </button>
+                </div>
               </div>
-
-              {/* Nút lưu */}
-              <button
-                type="button"
-                onClick={handleAddWallpaper}
-                className="w-full mt-1 py-2 px-4 rounded-[999px] text-xs font-bold text-white bg-gradient-to-r from-fuchsia-600 to-indigo-600 hover:from-fuchsia-700 hover:to-indigo-700 shadow-md shadow-fuchsia-500/20 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M20 6 9 17l-5-5" /></svg>
-                <span>Lưu & Áp Dụng Ngay</span>
-              </button>
             </div>
-          </div>
+          )}
         </div>
       )}
 
@@ -2268,23 +2394,24 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
           const isCssCopyable =
             wp.type === 'css' || wp.type === 'gradient' || wp.type === 'color' || wp.type === 'class';
           const isCopied = copiedId === wp.id;
+          const wpTone = getWallpaperTone(wp);
 
           return (
             <div
               key={wp.id}
               onClick={() => handleSingleClick(wp)}
               onDoubleClick={() => handleDoubleClick(wp)}
-              className={`p-2.5 rounded-2xl border transition-all duration-300 cursor-pointer group flex flex-col gap-2 select-none relative ${
+              className={`p-2.5 rounded-2xl border transition-all duration-300 cursor-pointer group flex flex-col gap-2 select-none relative hover:-translate-y-1.5 hover:scale-[1.02] hover:shadow-xl hover:border-fuchsia-400 dark:hover:border-cyan-400/60 ${
                 isDefault
                   ? 'bg-amber-50/80 dark:bg-amber-950/30 border-amber-400 ring-2 ring-amber-300 shadow-md'
                   : isActive
                   ? 'bg-white dark:bg-slate-900 border-fuchsia-500 ring-2 ring-fuchsia-200 shadow-md'
-                  : 'bg-white/75 dark:bg-slate-900/70 border-slate-200/90 dark:border-white/10 shadow-2xs hover:bg-white dark:hover:bg-slate-900 hover:border-fuchsia-300 hover:shadow-md'
+                  : 'bg-white/75 dark:bg-slate-900/70 border-slate-200/90 dark:border-white/10 shadow-2xs hover:bg-white dark:hover:bg-slate-900'
               }`}
               title="Nhấp 1 lần: Xem thử • Nhấp 2 lần (double-click): Đặt làm mặc định"
             >
-              {/* Badges: Default or Active */}
-              <div className="absolute top-3.5 left-3.5 z-10 flex flex-col gap-1 items-start">
+              {/* Badges: Default, Active, Tone (Sáng / Tối) */}
+              <div className="absolute top-3.5 left-3.5 z-10 flex flex-col gap-1 items-start pointer-events-none">
                 {isDefault && (
                   <span className="px-2 py-0.5 rounded-full text-[9.5px] font-black bg-amber-500 text-white shadow-xs flex items-center gap-1 animate-pulse">
                     <WebIcon name="sparkles" className="w-3 h-3" />
@@ -2297,10 +2424,43 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                     <span>Đang chọn</span>
                   </span>
                 )}
+                <span className={`px-1.5 py-0.2 rounded-full text-[8.5px] font-extrabold backdrop-blur-sm border shadow-2xs flex items-center gap-0.5 ${
+                  wpTone === 'light'
+                    ? 'bg-amber-100/90 text-amber-900 border-amber-300/80'
+                    : 'bg-slate-900/85 text-cyan-300 border-cyan-500/40'
+                }`}>
+                  <span>{wpTone === 'light' ? '☀️ Sáng' : '🌙 Tối'}</span>
+                </span>
+                {isBlurredWallpaper(wp) && (
+                  <span className="px-1.5 py-0.2 rounded-full text-[8.5px] font-extrabold bg-indigo-600/90 text-white border border-indigo-300/50 backdrop-blur-sm shadow-2xs flex items-center gap-0.5">
+                    <span>🌫️ Nền Mờ</span>
+                  </span>
+                )}
               </div>
 
-              {/* Action buttons top-right: Favorite Heart, Copy CSS (for CSS/Gradient cards) & Delete */}
+              {/* Action buttons top-right: Set Default Star, Favorite Heart, Copy CSS & Delete */}
               <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1">
+                {/* Nút đặt mặc định dạng ngôi sao */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSetDefault(wp);
+                  }}
+                  title={
+                    isDefault
+                      ? `"${wp.name}" đang là hình nền mặc định của bạn`
+                      : `Đặt "${wp.name}" làm hình nền mặc định vĩnh viễn`
+                  }
+                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm ${
+                    isDefault
+                      ? 'bg-amber-500 text-white opacity-100 scale-105 shadow-amber-500/50'
+                      : 'bg-black/50 hover:bg-amber-500 text-white opacity-0 group-hover:opacity-100 hover:scale-105'
+                  }`}
+                >
+                  <WebIcon name="star" className="w-3 h-3 fill-current" />
+                </button>
+
                 <button
                   type="button"
                   onClick={(e) => handleToggleFavorite(e, wp)}
@@ -2349,10 +2509,14 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 className={`w-full h-24 rounded-xl border border-black/10 overflow-hidden relative transition-transform duration-300 group-hover:scale-102 flex items-center justify-center bg-slate-100 dark:bg-slate-800 ${
                   wp.className || ''
                 }`}
-                style={sanitizeWallpaperStyle(
-                  wp.previewStyle,
-                  wp.type === 'css' || wp.type === 'gradient' || wp.type === 'color' ? wp.value : undefined
-                )}
+                style={
+                  wp.type !== 'video' && wp.type !== 'codepen'
+                    ? sanitizeWallpaperStyle(
+                        wp.previewStyle,
+                        wp.type === 'css' || wp.type === 'gradient' || wp.type === 'color' ? wp.value : undefined
+                      )
+                    : undefined
+                }
               >
                 {/* 1. Video Thumbnail: Preload metadata and video loop muted */}
                 {wp.type === 'video' && (
@@ -2363,8 +2527,8 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                       loop
                       muted
                       playsInline
-                      preload="auto"
-                      className="w-full h-full object-cover"
+                      preload="metadata"
+                      className="w-full h-full object-cover absolute inset-0 pointer-events-none"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                     <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/60 text-white backdrop-blur-xs flex items-center gap-1 shadow-xs">
@@ -2374,38 +2538,93 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                   </>
                 )}
 
-                {/* 2. Image Thumbnail */}
-                {wp.type === 'image' && (
-                  <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/60 text-white backdrop-blur-xs shadow-xs">
-                    Ảnh
-                  </span>
+                {/* 2. CodePen Thumbnail & Live Animation Preview */}
+                {wp.type === 'codepen' && (
+                  <div className="absolute inset-0 bg-slate-950 overflow-hidden pointer-events-none">
+                    {wp.previewStyle?.backgroundImage ? (
+                      <div
+                        className="w-full h-full bg-cover bg-center"
+                        style={{ backgroundImage: wp.previewStyle.backgroundImage }}
+                      />
+                    ) : (
+                      <iframe
+                        src={normalizeCodepenUrl(wp.value)}
+                        title={wp.name}
+                        className="w-[200%] h-[200%] -top-[50%] -left-[50%] absolute border-0 pointer-events-none origin-center scale-50"
+                        sandbox="allow-scripts allow-same-origin"
+                        loading="lazy"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 pointer-events-none" />
+                    <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-600/95 text-white backdrop-blur-xs shadow-xs flex items-center gap-1 border border-emerald-400/40">
+                      <WebIcon name="code" className="w-2.5 h-2.5" />
+                      <span>CodePen Live</span>
+                    </span>
+                  </div>
                 )}
 
-                {/* 3. CSS / Gradient Thumbnail */}
+                {/* 3. Image Thumbnail */}
+                {wp.type === 'image' && (
+                  <>
+                    {wp.value && (wp.value.startsWith('http') || wp.value.startsWith('data:')) && (
+                      <img
+                        src={wp.value}
+                        alt={wp.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover absolute inset-0 pointer-events-none"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
+                    <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/60 text-white backdrop-blur-xs shadow-xs">
+                      Ảnh
+                    </span>
+                  </>
+                )}
+
+                {/* 4. CSS / Gradient Thumbnail */}
                 {(wp.type === 'css' || wp.type === 'gradient' || wp.type === 'color') && (
                   <>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
                     <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/60 text-white backdrop-blur-xs flex items-center gap-1 shadow-xs">
                       <WebIcon name="palette" className="w-2.5 h-2.5 text-fuchsia-400" />
-                      <span>CSS</span>
+                      <span>{wp.type === 'gradient' ? 'Gradient' : 'CSS'}</span>
                     </span>
                   </>
                 )}
               </div>
 
-              {/* Tên hình nền & nút Copy CSS nhanh */}
+              {/* Tên hình nền & Icon đồng màu, kích thước bằng nhau, không đóng khung thẻ */}
               <div className="flex items-center justify-between gap-1 mt-0.5">
-                <span
-                  className={`text-xs font-bold truncate flex-1 ${
-                    isDefault
-                      ? 'text-amber-800 dark:text-amber-300 font-black'
-                      : isActive
-                      ? 'text-fuchsia-700 dark:text-fuchsia-300'
-                      : 'text-slate-700 dark:text-slate-200 group-hover:text-fuchsia-600'
-                  }`}
-                >
-                  {wp.name}
-                </span>
+                <div className="flex items-center gap-1.5 truncate flex-1 min-w-0">
+                  <span
+                    className={`shrink-0 flex items-center ${
+                      isDefault
+                        ? 'text-amber-800 dark:text-amber-300'
+                        : isActive
+                        ? 'text-fuchsia-700 dark:text-fuchsia-300'
+                        : 'text-slate-600 dark:text-slate-300 group-hover:text-fuchsia-600 dark:group-hover:text-fuchsia-400'
+                    }`}
+                  >
+                    <WebIcon
+                      name={wp.type === 'video' ? 'video' : wp.type === 'image' ? 'image' : wp.type === 'codepen' ? 'code' : 'palette'}
+                      className="w-3.5 h-3.5"
+                    />
+                  </span>
+                  <span
+                    className={`text-xs font-bold truncate ${
+                      isDefault
+                        ? 'text-amber-800 dark:text-amber-300 font-black'
+                        : isActive
+                        ? 'text-fuchsia-700 dark:text-fuchsia-300'
+                        : 'text-slate-700 dark:text-slate-200 group-hover:text-fuchsia-600 dark:group-hover:text-fuchsia-400'
+                    }`}
+                  >
+                    {wp.name}
+                  </span>
+                </div>
 
                 {isCssCopyable && (
                   <button
@@ -2428,12 +2647,35 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                     Tự tạo
                   </span>
                 )}
+
+                {/* Nút / Nhãn Đặt mặc định ở chân thẻ */}
+                {isDefault ? (
+                  <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-600 flex items-center gap-0.5 shrink-0">
+                    <WebIcon name="star" className="w-2.5 h-2.5 fill-current text-amber-500" />
+                    <span>Mặc định</span>
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSetDefault(wp);
+                    }}
+                    title={`Đặt "${wp.name}" làm hình nền mặc định khi truy cập website`}
+                    className="text-[9.5px] font-semibold px-1.5 py-0.5 rounded-full border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-300 hover:border-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition cursor-pointer flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100"
+                  >
+                    <WebIcon name="star" className="w-2.5 h-2.5" />
+                    <span>Đặt mặc định</span>
+                  </button>
+                )}
               </div>
             </div>
           );
         })}
       </div>
       </div>
+
+      
     </div>
   );
 };

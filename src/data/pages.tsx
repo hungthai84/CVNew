@@ -5,7 +5,9 @@ export const PAGES: PageMeta[] = [
   {
     id: 0,
     shortTitle: 'Trang Chủ',
+    shortTitleEn: 'Home',
     fullName: 'Trang Chủ Hùng Thái - Giới Thiệu, Năng Lực & Thành Tựu',
+    fullNameEn: 'Hung Thai Executive Portal - Profile, Leadership & Achievements',
     theme: '#0284c7',
     bgLight: 'rgba(224, 242, 254, 0.85)',
     bgNormal: 'rgba(224, 242, 254, 0.55)',
@@ -19,7 +21,9 @@ export const PAGES: PageMeta[] = [
   {
     id: 1,
     shortTitle: 'Thư Ngỏ',
+    shortTitleEn: 'Letter',
     fullName: 'Thư Ngỏ Gửi Quý Đối Tác & Khách Quý',
+    fullNameEn: 'Executive Welcome Letter to Valued Partners & Guests',
     theme: '#e11d48',
     bgLight: 'rgba(255, 228, 230, 0.85)',
     bgNormal: 'rgba(255, 228, 230, 0.55)',
@@ -33,7 +37,9 @@ export const PAGES: PageMeta[] = [
   {
     id: 2,
     shortTitle: 'Giới Thiệu',
+    shortTitleEn: 'About',
     fullName: 'Hồ Sơ Chuyên Gia & Thông Tin Cá Nhân',
+    fullNameEn: 'Executive Profile & Personal Overview',
     theme: '#8b5cf6',
     bgLight: 'rgba(243, 232, 255, 0.85)',
     bgNormal: 'rgba(243, 232, 255, 0.55)',
@@ -47,21 +53,27 @@ export const PAGES: PageMeta[] = [
   {
     id: 3,
     shortTitle: 'Học Vấn',
-    fullName: 'Học Vấn & Chứng Chỉ Chuyên Ngành (14 Khóa Học)',
+    shortTitleEn: 'Education',
+    fullName: 'Học Vấn & Chứng Chỉ Chuyên Ngành',
+    fullNameEn: 'Education & Professional Certifications',
     theme: '#059669',
     bgLight: 'rgba(209, 250, 229, 0.85)',
     bgNormal: 'rgba(209, 250, 229, 0.55)',
     borderColor: 'rgba(52, 211, 153, 0.7)',
     iconSvg: (
       <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14v7" />
       </svg>
     ),
   },
   {
     id: 4,
     shortTitle: 'Lĩnh Vực',
+    shortTitleEn: 'Domains',
     fullName: 'Lĩnh Vực Hoạt Động Chuyên Môn (6 Lĩnh Vực)',
+    fullNameEn: 'Strategic Operational Domains (6 Core Fields)',
     theme: '#f59e0b',
     bgLight: 'rgba(254, 243, 199, 0.85)',
     bgNormal: 'rgba(254, 243, 199, 0.55)',
@@ -76,22 +88,10 @@ export const PAGES: PageMeta[] = [
   },
   {
     id: 5,
-    shortTitle: 'Kinh Nghiệm',
-    fullName: 'Kinh Nghiệm Thực Chiến & Cột Mốc Quản Trị (2003 - 2026+)',
-    theme: '#4f46e5',
-    bgLight: 'rgba(224, 231, 255, 0.85)',
-    bgNormal: 'rgba(224, 231, 255, 0.55)',
-    borderColor: 'rgba(129, 140, 248, 0.7)',
-    iconSvg: (
-      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-    ),
-  },
-  {
-    id: 6,
     shortTitle: 'Kỹ Năng',
-    fullName: 'Bộ Kỹ Năng & Ma Trận SWOT Quản Trị',
+    shortTitleEn: 'Skills',
+    fullName: 'Kỹ Năng Chuyên Môn & Ma Trận Quản Trị',
+    fullNameEn: 'Core Competencies & Leadership Matrix',
     theme: '#0891b2',
     bgLight: 'rgba(207, 250, 254, 0.85)',
     bgNormal: 'rgba(207, 250, 254, 0.55)',
@@ -103,9 +103,27 @@ export const PAGES: PageMeta[] = [
     ),
   },
   {
+    id: 6,
+    shortTitle: 'Kinh Nghiệm',
+    shortTitleEn: 'Experience',
+    fullName: 'Kinh Nghiệm Thực Chiến & Cột Mốc Quản Trị (2003 - 2026+)',
+    fullNameEn: 'Leadership Career Journey & Milestones (2003 - 2026+)',
+    theme: '#4f46e5',
+    bgLight: 'rgba(224, 231, 255, 0.85)',
+    bgNormal: 'rgba(224, 231, 255, 0.55)',
+    borderColor: 'rgba(129, 140, 248, 0.7)',
+    iconSvg: (
+      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    ),
+  },
+  {
     id: 7,
     shortTitle: 'Dự Án',
+    shortTitleEn: 'Projects',
     fullName: 'Kho 21 Dự Án & Sáng Kiến Vận Hành Trọng Điểm',
+    fullNameEn: 'Portfolio of 21 Strategic Projects & Operational Initiatives',
     theme: '#9333ea',
     bgLight: 'rgba(245, 232, 255, 0.85)',
     bgNormal: 'rgba(245, 232, 255, 0.55)',
@@ -121,7 +139,9 @@ export const PAGES: PageMeta[] = [
   {
     id: 8,
     shortTitle: 'Hệ Thống',
+    shortTitleEn: 'Systems',
     fullName: 'Cổng Bento Hệ Thống CSKH (12 Hệ Thống C-Level)',
+    fullNameEn: 'C-Level CSKH Systems Bento Hub (12 Core Platforms)',
     theme: '#ea580c',
     bgLight: 'rgba(255, 237, 213, 0.85)',
     bgNormal: 'rgba(255, 237, 213, 0.55)',
@@ -137,7 +157,9 @@ export const PAGES: PageMeta[] = [
   {
     id: 9,
     shortTitle: 'Phỏng Vấn',
+    shortTitleEn: 'Interview',
     fullName: 'Đối Thoại Mô Phỏng AI & Q&A Tuyển Dụng',
+    fullNameEn: 'AI Simulated Executive Interview & Q&A',
     theme: '#ec4899',
     bgLight: 'rgba(253, 242, 248, 0.85)',
     bgNormal: 'rgba(253, 242, 248, 0.55)',
@@ -151,7 +173,9 @@ export const PAGES: PageMeta[] = [
   {
     id: 10,
     shortTitle: 'Tử Vi',
+    shortTitleEn: 'Horoscope',
     fullName: 'Bản Đồ Tử Vi, Bát Trạch & Phong Thủy Quản Trị',
+    fullNameEn: 'Feng Shui, Astrology & Leadership Compass',
     theme: '#c026d3',
     bgLight: 'rgba(250, 232, 255, 0.85)',
     bgNormal: 'rgba(250, 232, 255, 0.55)',
@@ -165,7 +189,9 @@ export const PAGES: PageMeta[] = [
   {
     id: 11,
     shortTitle: 'Kỷ Niệm',
+    shortTitleEn: 'Memories',
     fullName: 'Khoảnh Khắc Hành Trình & Kỷ Niệm Đáng Nhớ',
+    fullNameEn: 'Cherished Career Memories & Milestones',
     theme: '#16a34a',
     bgLight: 'rgba(220, 252, 231, 0.85)',
     bgNormal: 'rgba(220, 252, 231, 0.55)',
@@ -179,7 +205,9 @@ export const PAGES: PageMeta[] = [
   {
     id: 12,
     shortTitle: 'Liên Hệ',
+    shortTitleEn: 'Contact',
     fullName: 'Kênh Kết Nối & Hợp Tác Với Hùng Thái',
+    fullNameEn: 'Direct Connection & Strategic Partnership',
     theme: '#0d9488',
     bgLight: 'rgba(204, 251, 241, 0.85)',
     bgNormal: 'rgba(204, 251, 241, 0.55)',
@@ -193,7 +221,9 @@ export const PAGES: PageMeta[] = [
   {
     id: 13,
     shortTitle: 'Hình Nền',
+    shortTitleEn: 'Wallpaper',
     fullName: 'Tùy Chỉnh Hình Nền & Giao Diện',
+    fullNameEn: 'Live Wallpaper & Custom UI Backgrounds',
     theme: '#d946ef',
     bgLight: 'rgba(253, 228, 255, 0.85)',
     bgNormal: 'rgba(253, 228, 255, 0.55)',

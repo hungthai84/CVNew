@@ -4,6 +4,8 @@ export interface PageMeta {
   id: number;
   shortTitle: string;
   fullName: string;
+  shortTitleEn?: string;
+  fullNameEn?: string;
   theme: string;
   bgLight: string;
   bgNormal: string;
@@ -22,31 +24,6 @@ export interface WeatherPreset {
   time?: string;
 }
 
-export interface EducationBook {
-  id: number;
-  code: string;
-  title: string;
-  year: string;
-  org: string;
-  format: string;
-  focus: string;
-  desc: string;
-  orientation?: string;
-  modules: string[];
-  practice?: string[];
-  competencies?: string[];
-  careerValue?: string;
-  intersectionSkills?: string;
-  proof?: string;
-  courseImg?: string;
-  outcome: string;
-  bannerImg: string;
-  certImg: string;
-  theme: {
-    color: string;
-    gradient: string;
-  };
-}
 
 export interface DomainLogo {
   src: string;
@@ -78,6 +55,7 @@ export interface DomainData {
   partnersVi: string;
   partnersEn: string;
   logos: DomainLogo[];
+  illustrationSrc?: string;
   colorTheme: {
     primary: string;
     border: string;
@@ -104,6 +82,7 @@ export interface MilestonePhoto {
 export interface MilestoneKpi {
   label: string;
   percent: number;
+  displayValue?: string;
 }
 
 export interface ExperienceMilestone {
@@ -155,11 +134,61 @@ export interface ProjectStarAction {
   desc: string;
 }
 
+export interface ProjectWorkItem {
+  code: string;
+  title: string;
+  intro: string;
+  tasks: string[];
+  note?: string;
+  deliverable: string;
+}
+
+export interface ProjectDetailedSpec {
+  subtitleEn: string;
+  tagline: string;
+  overview: string[];
+  context: {
+    intro: string;
+    challenges: string[];
+    conclusion: string;
+  };
+  objectives: {
+    title: string;
+    items: string[];
+  }[];
+  scopeItems: ProjectWorkItem[];
+  methodology: {
+    intro: string;
+    phases: { stage: string; title: string; desc: string }[];
+    outro: string;
+  };
+  metrics: {
+    intro: string;
+    table: { category: string; indicators: string }[];
+    outro: string;
+  };
+  pmRoles: {
+    intro: string;
+    items: { role: string; desc: string }[];
+  };
+  expectedOutcomes: {
+    intro: string;
+    items: { dimension: string; desc: string }[];
+    outro: string;
+  };
+  philosophy: {
+    paragraphs: string[];
+    coreMessage: string;
+  };
+}
+
 export interface ProjectData {
   id: string;
   code: string;
   number: string;
   title: string;
+  subtitleEn?: string;
+  tagline?: string;
   groupTitle: string;
   groupKey: 'strategy' | 'cx' | 'sop' | 'tech' | 'learning';
   description: string;
@@ -177,6 +206,7 @@ export interface ProjectData {
     actions: ProjectStarAction[];
     results: string[];
   };
+  detailedSpec?: ProjectDetailedSpec;
 }
 
 export interface SystemData {
@@ -195,6 +225,8 @@ export interface SystemData {
   waveGlow: string;
   gradient: string;
   iconSvg?: string;
+  videoUrl?: string;
+  imageUrl?: string;
 }
 
 export interface InterviewQuestion {
@@ -240,7 +272,7 @@ export interface MemoryPhoto {
   teamSize?: string;
 }
 
-export type WallpaperType = 'class' | 'color' | 'gradient' | 'image' | 'video' | 'css';
+export type WallpaperType = 'class' | 'color' | 'gradient' | 'image' | 'video' | 'css' | 'codepen';
 
 export interface WallpaperOption {
   id: string;
@@ -253,7 +285,10 @@ export interface WallpaperOption {
   createdAt?: number;
 }
 
-export type SiteTheme = 'light-glass' | 'dark-neon' | 'flat-rainbow' | (string & {});
+export type SiteTheme =
+  | 'light-glass'
+  | 'dark-neon'
+  | 'luminous-glass';
 
 export interface ThemeOption {
   id: SiteTheme;

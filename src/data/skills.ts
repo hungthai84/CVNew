@@ -542,7 +542,7 @@ export const LANGUAGES_DATA: LanguageProficiencyItem[] = [
   },
   {
     id: 'ai',
-    nameVi: 'Ứng dụng AI Đa Ngôn Ngữ',
+    nameVi: 'Ứng dụng AI',
     nameEn: 'Multilingual AI Workflows',
     roleVi: 'Dịch thuật & Trợ lý AI thời gian thực hỗ trợ trao đổi đa quốc gia',
     roleEn: 'Real-time AI translation & global cross-border collaboration',

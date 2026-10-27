@@ -10,26 +10,36 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
     code: '4.1',
     company: 'Sẵn sàng cho thử thách mới',
     logo: 'https://i.ibb.co/G4QnNzWb/Power-Service.png',
-    bannerUrl: 'https://i.ibb.co/SDs4tGj7/1-1-X-y-d-ng-Ph-ng-CSKH.jpg',
+    bannerUrl: 'https://i.ibb.co/WWNJ329X',
     memoryImg: 'https://i.ibb.co/fYVwSxRW/T-m-C-h-i.png',
     period: '2026+ đến hiện tại',
     cardYearLabel: '2026+ - Hiện tại',
-    roleTitle: 'Head of CX / CS Director / Trưởng Phòng CSKH',
+    roleTitle: 'Head of CX / CS Director / Trưởng Phòng Dịch vụ Khách hàng',
     headcount: 150,
     scaleDesc: 'Lãnh đạo cấp phòng ban (> 100 – 150+ nhân sự điều hành đa ca, đa kênh)',
     industry: 'Công nghệ / FinTech / Bảo hiểm / Bưu chính / Game & eSports / Viễn thông / CRM & Chuyển đổi số',
     intro: [
-      { title: 'Hoạch Định & Thực Thi Strategy', desc: 'Hoạch định & thực thi CX Strategy 2026+; tích hợp Generative AI, RAG & Automation CRM thế hệ mới.' },
-      { title: 'Chuẩn Hóa Contact Center', desc: 'Chuẩn hóa và tối ưu hóa vận hành Contact Center đa kênh; kiến tạo bộ chỉ số KPI, CSAT, NPS, FCR, SLA chuẩn quốc tế COPC.' },
-      { title: 'Đào Tạo Lãnh Đạo Kế Thừa', desc: 'Chú trọng đào tạo và phát triển đội ngũ lãnh đạo kế thừa.' },
+      {
+        title: 'Hoạch Định & Thực Thi Strategy',
+        desc: 'Hoạch định & thực thi CX Strategy 2026+; tích hợp Generative AI, RAG & Automation CRM thế hệ mới.',
+      },
+      {
+        title: 'Chuẩn Hóa Contact Center',
+        desc: 'Chuẩn hóa và tối ưu hóa vận hành Contact Center đa kênh; kiến tạo bộ chỉ số KPI, CSAT, NPS, FCR, SLA chuẩn quốc tế COPC.',
+      },
+      {
+        title: 'Đào Tạo Lãnh Đạo Kế Thừa',
+        desc: 'Chú trọng đào tạo và phát triển đội ngũ lãnh đạo kế thừa.',
+      },
     ],
-    philosophy: 'Đảm bảo tính liên tục của dịch vụ 24/7, duy trì tiêu chuẩn CSAT/NPS tối thiểu 95% - 98%, chuẩn hóa 100% tài liệu quy trình vận hành SOP.',
+    philosophy:
+      'Đảm bảo tính liên tục của dịch vụ 24/7, duy trì tiêu chuẩn CSAT/NPS tối thiểu 95% - 98%, chuẩn hóa 100% tài liệu quy trình vận hành SOP.',
     tasks: [
-      'Hoạch định và thực thi chiến lược CX Strategy 2026+',
-      'Tích hợp Generative AI, RAG & Automation CRM thế hệ mới',
-      'Chuẩn hóa và tối ưu hóa vận hành Contact Center đa kênh',
-      'Kiến tạo bộ chỉ số KPI, CSAT, NPS, FCR, SLA chuẩn quốc tế COPC',
-      'Đào tạo phát triển lãnh đạo kế thừa',
+      'Hoạch định và thực thi chiến lược CX Strategy 2026+;',
+      'tích hợp Generative AI, RAG & Automation CRM thế hệ mới;',
+      'chuẩn hóa và tối ưu hóa vận hành Contact Center đa kênh;',
+      'kiến tạo bộ chỉ số KPI, CSAT, NPS, FCR, SLA chuẩn quốc tế COPC;',
+      'đào tạo phát triển lãnh đạo kế thừa.',
     ],
     projects: [
       'Triển khai Hệ sinh thái AI Agent Copilot',
@@ -41,14 +51,14 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
       'Duy trì tiêu chuẩn CSAT/NPS tối thiểu 95% - 98%, chuẩn hóa 100% tài liệu quy trình vận hành SOP.',
     ],
     kpis: [
-      { label: 'Sẵn sàng vận hành 24/7', percent: 100 },
-      { label: 'Ứng dụng AI Chatbot & Automation', percent: 98 },
-      { label: 'Tối ưu hóa chỉ số CSAT/NPS (> 95%)', percent: 95 },
-      { label: 'Chuẩn hóa quy trình SOP 2026', percent: 100 },
+      { label: 'Sẵn sàng vận hành 24/7', percent: 100, displayValue: '100%' },
+      { label: 'Ứng dụng AI Chatbot & Automation', percent: 98, displayValue: '98%' },
+      { label: 'Tối ưu hóa chỉ số CSAT/NPS', percent: 95, displayValue: '> 95%' },
+      { label: 'Chuẩn hóa quy trình SOP 2026', percent: 100, displayValue: '100%' },
     ],
   },
 
-  /* 4.2. Finviet (Ví điện tử ECO) (2023 – 2024) */
+  /* 4.2. Công ty Cổ phần Công nghệ Finviet (Ví điện tử ECO) (2023 – 2024) */
   '2023': {
     code: '4.2',
     company: 'Công ty Cổ phần Công nghệ Finviet (Ví điện tử ECO)',
@@ -56,24 +66,34 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
     bannerUrl: 'https://i.ibb.co/rRfg2BGL',
     memoryImg: 'https://i.ibb.co/cSXPhWcp/Finviet.png',
     period: 'Từ năm 2023 đến năm 2024',
-    roleTitle: 'Trưởng Phòng CSKH',
+    roleTitle: 'Trưởng Phòng Dịch vụ Khách hàng',
     headcount: 17,
     scaleDesc: '17 nhân sự trực tiếp',
     industry: 'FinTech / Ví điện tử / Công nghệ tài chính',
     intro: [
-      { title: 'Mở Rộng Hệ Sinh Thái & Dịch Vụ', desc: 'Trực tiếp tham gia thiết lập và tối ưu hóa hệ thống CSKH từ giai đoạn đầu cho nhiều dịch vụ FinTech và Ví điện tử ECO. Xây dựng mô hình hỗ trợ linh hoạt, phù hợp với hành vi tiêu dùng và đặc thù giao dịch tài chính số của từng nhóm khách hàng.' },
-      { title: 'Chuyển Đổi Số TMĐT & FinTech', desc: 'Ứng dụng tư duy quản trị tài chính số hiện đại; số hóa hành trình trải nghiệm người dùng, triển khai hỗ trợ đa kênh (Omnichannel) và khai thác dữ liệu giao dịch để kiểm soát rủi ro, phòng chống gian lận và tối ưu hiệu quả vận hành.' },
-      { title: 'Quản Trị Nguồn Lực & Đội Ngũ', desc: 'Trực tiếp điều hành và phát triển bộ máy CSKH, xây dựng cơ cấu tổ chức, chuẩn hóa quy trình SOP, thiết lập hệ thống KPI/SLA và đào tạo nguồn nhân lực kế thừa đáp ứng tốc độ tăng trưởng của công ty.' },
+      {
+        title: 'Mở Rộng Hệ Sinh Thái & Dịch Vụ',
+        desc: 'Trực tiếp tham gia thiết lập và tối ưu hóa hệ thống CSKH từ giai đoạn đầu cho nhiều dịch vụ FinTech và Ví điện tử ECO. Xây dựng mô hình hỗ trợ linh hoạt, phù hợp với hành vi tiêu dùng và đặc thù giao dịch tài chính số của từng nhóm khách hàng.',
+      },
+      {
+        title: 'Chuyển Đổi Số TMĐT & FinTech',
+        desc: 'Ứng dụng tư duy quản trị tài chính số hiện đại; số hóa hành trình trải nghiệm người dùng, triển khai hỗ trợ đa kênh (Omnichannel) và khai thác dữ liệu giao dịch để kiểm soát rủi ro, phòng chống gian lận và tối ưu hiệu quả vận hành.',
+      },
+      {
+        title: 'Quản Trị Nguồn Lực & Đội Ngũ',
+        desc: 'Trực tiếp điều hành và phát triển bộ máy CSKH, xây dựng cơ cấu tổ chức, chuẩn hóa quy trình SOP, thiết lập hệ thống KPI/SLA và đào tạo nguồn nhân lực kế thừa đáp ứng tốc độ tăng trưởng của công ty.',
+      },
     ],
-    philosophy: 'Kiên định với nguyên tắc xây dựng hệ thống nền tảng vững chắc trước khi mở rộng quy mô, kết hợp giữa quy trình, công nghệ tự động hóa và phát triển con người, luôn lấy sự tin cậy của khách hàng làm trung tâm.',
+    philosophy:
+      'Kiên định với nguyên tắc xây dựng hệ thống nền tảng vững chắc trước khi mở rộng quy mô, kết hợp giữa quy trình, công nghệ tự động hóa và phát triển con người, luôn lấy sự tin cậy của khách hàng làm trung tâm.',
     tasks: [
-      'Quản lý và điều hành toàn diện phòng CSKH đa kênh (Phone, Chat, Email, Social)',
-      'Xây dựng cơ cấu tổ chức và mục tiêu phòng ban',
-      'Thiết lập hệ thống tự động hóa xử lý ticket',
-      'Chuẩn hóa quy trình tra soát giao dịch ví',
-      'Kiểm soát rủi ro gian lận',
-      'Phân tích dữ liệu nghe ghi âm phục vụ đào tạo',
-      'Triển khai AI Bot hỗ trợ 24/7',
+      'Quản lý và điều hành toàn diện phòng CSKH đa kênh (Phone, Chat, Email, Social);',
+      'xây dựng cơ cấu tổ chức và mục tiêu phòng ban;',
+      'thiết lập hệ thống tự động hóa xử lý ticket;',
+      'chuẩn hóa quy trình tra soát giao dịch ví;',
+      'kiểm soát rủi ro gian lận;',
+      'phân tích dữ liệu nghe ghi âm phục vụ đào tạo;',
+      'triển khai AI Bot hỗ trợ 24/7.',
     ],
     projects: [
       '1.1 · Xây dựng và vận hành Phòng Dịch vụ Khách hàng',
@@ -93,14 +113,14 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
       'Nâng cao tỷ lệ giải quyết triệt để và minh bạch giao dịch ví điện tử.',
     ],
     kpis: [
-      { label: 'Chuẩn hóa quy trình', percent: 100 },
-      { label: 'Phản hồi & Hỗ trợ', percent: 80 },
-      { label: 'Hỗ trợ sự kiện lớn', percent: 70 },
-      { label: 'Hoàn thành dự án', percent: 80 },
+      { label: 'Chuẩn hóa quy trình', percent: 100, displayValue: '100%' },
+      { label: 'Phản hồi & Hỗ trợ', percent: 80, displayValue: '80%' },
+      { label: 'Hỗ trợ sự kiện lớn', percent: 70, displayValue: '70%' },
+      { label: 'Hoàn thành dự án', percent: 80, displayValue: '80%' },
     ],
   },
 
-  /* 4.3. Mservice (Ví điện tử MoMo) (2018 – 2021) */
+  /* 4.3. Công ty Cổ phần Mservice (Ví điện tử MoMo) (2018 – 2021) */
   '2018': {
     code: '4.3',
     company: 'Công ty Cổ phần Mservice (Ví điện tử MoMo)',
@@ -108,23 +128,33 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
     bannerUrl: 'https://i.ibb.co/KxkWBZ8Z',
     memoryImg: 'https://i.ibb.co/GQLRGwrw/Momo.png',
     period: 'Từ năm 2018 đến năm 2021',
-    roleTitle: 'Trưởng Phòng CSKH',
+    roleTitle: 'Trưởng Phòng Dịch vụ Khách hàng',
     headcount: 60,
     scaleDesc: '60 nhân sự nội bộ + Hàng trăm nhân sự BPO (Mắt Bảo,...)',
     industry: 'FinTech / Ví điện tử / Thanh toán số',
     intro: [
-      { title: 'Vận Hành Tối Ưu', desc: 'Quản lý điều hành phòng CSKH đa kênh trong giai đoạn người dùng bùng nổ mạnh mẽ; kiến trúc hệ thống CRM MoMo Admin tích hợp Core Banking.' },
-      { title: 'Xử Lý Sự Cố', desc: 'Phối hợp phòng Sản phẩm & Pháp lý thiết lập quy trình xử lý sự cố công nghệ mới; giám sát tiêu chuẩn SLA đối tác BPO Mắt Bảo.' },
-      { title: 'Xây Dựng Hệ Thống', desc: 'Thành lập Trung tâm Hỗ trợ Khách hàng (Helpdesk/FAQ) và quản trị toàn bộ KPIs phòng ban.' },
+      {
+        title: 'Vận Hành Tối Ưu',
+        desc: 'Quản lý điều hành phòng CSKH đa kênh trong giai đoạn người dùng bùng nổ mạnh mẽ; kiến trúc hệ thống CRM MoMo Admin tích hợp Core Banking.',
+      },
+      {
+        title: 'Xử Lý Sự Cố',
+        desc: 'Phối hợp phòng Sản phẩm & Pháp lý thiết lập quy trình xử lý sự cố công nghệ mới; giám sát tiêu chuẩn SLA đối tác BPO Mắt Bảo.',
+      },
+      {
+        title: 'Xây Dựng Hệ Thống',
+        desc: 'Thành lập Trung tâm Hỗ trợ Khách hàng (Helpdesk/FAQ) và quản trị toàn bộ KPIs phòng ban.',
+      },
     ],
-    philosophy: 'Đảm bảo SLA tiếp nhận cuộc gọi > 98%, duy trì trải nghiệm liền mạch không ma sát cho hàng triệu người dùng ví ngay cả trong các đợt cao điểm Lễ/Tết & chiến dịch Mega-sale.',
+    philosophy:
+      'Đảm bảo SLA tiếp nhận cuộc gọi > 98%, duy trì trải nghiệm liền mạch không ma sát cho hàng triệu người dùng ví ngay cả trong các đợt cao điểm Lễ/Tết & chiến dịch Mega-sale.',
     tasks: [
-      'Quản lý điều hành phòng CSKH đa kênh trong giai đoạn người dùng bùng nổ mạnh mẽ',
-      'Kiến trúc hệ thống CRM MoMo Admin tích hợp Core Banking',
-      'Phối hợp phòng Sản phẩm & Pháp lý thiết lập quy trình xử lý sự cố công nghệ mới',
-      'Quản trị toàn bộ KPIs phòng ban',
-      'Thành lập Trung tâm Hỗ trợ Khách hàng (Helpdesk/FAQ)',
-      'Giám sát tiêu chuẩn SLA đối tác BPO Mắt Bảo',
+      'Quản lý điều hành phòng CSKH đa kênh trong giai đoạn người dùng bùng nổ mạnh mẽ;',
+      'kiến trúc hệ thống CRM MoMo Admin tích hợp Core Banking;',
+      'phối hợp phòng Sản phẩm & Pháp lý thiết lập quy trình xử lý sự cố công nghệ mới;',
+      'quản trị toàn bộ KPIs phòng ban;',
+      'thành lập Trung tâm Hỗ trợ Khách hàng (Helpdesk/FAQ);',
+      'giám sát tiêu chuẩn SLA đối tác BPO Mắt Bảo.',
     ],
     projects: [
       '1.1 · Xây dựng và vận hành Phòng Dịch vụ Khách hàng',
@@ -141,14 +171,14 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
       'Duy trì trải nghiệm liền mạch không ma sát cho hàng triệu người dùng ví ngay cả trong các đợt cao điểm Lễ/Tết & chiến dịch Mega-sale.',
     ],
     kpis: [
-      { label: 'Chuẩn hóa quy trình SOP', percent: 100 },
-      { label: 'Điểm CSAT/NPS (98.2%)', percent: 98.2 },
-      { label: 'Tỷ lệ giải quyết sự cố công nghệ', percent: 95 },
-      { label: 'Quản lý đối tác BPO SLA (98.6%)', percent: 98.6 },
+      { label: 'Chuẩn hóa quy trình SOP', percent: 100, displayValue: '100%' },
+      { label: 'Điểm CSAT/NPS', percent: 98.2, displayValue: '98.2%' },
+      { label: 'Tỷ lệ giải quyết sự cố công nghệ', percent: 95, displayValue: '95%' },
+      { label: 'Quản lý đối tác BPO SLA', percent: 98.6, displayValue: '98.6%' },
     ],
   },
 
-  /* 4.4. Prudential Vietnam (2016 – 2018) */
+  /* 4.4. Công ty Bảo hiểm Nhân thọ Prudential Vietnam (2016 – 2018) */
   '2016': {
     code: '4.4',
     company: 'Công ty Bảo hiểm Nhân thọ Prudential Vietnam',
@@ -161,18 +191,28 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
     scaleDesc: '12 nhân sự trực tiếp + 40+ Chuyên viên tư vấn',
     industry: 'Bảo hiểm nhân thọ / Tài chính cao cấp',
     intro: [
-      { title: 'Vận Hành Hệ Thống', desc: 'Quản lý hệ thống Call Center cao cấp trên nền tảng AS400 & CRM Prudential Life; sắp xếp nhân sự vận hành hệ thống mới.' },
-      { title: 'Đổi Mới Kênh Hỗ Trợ', desc: 'Kết nối E-Commerce với Call Center; xây dựng quy trình tư vấn VideoCall tiên phong.' },
-      { title: 'An Toàn Vận Hành', desc: 'Hiệu chỉnh hệ thống kế hoạch liên tục kinh doanh (BCP); phối hợp giải quyết quyền lợi bảo hiểm và đáo hạn hợp đồng.' },
+      {
+        title: 'Vận Hành Hệ Thống',
+        desc: 'Quản lý hệ thống Call Center cao cấp trên nền tảng AS400 & CRM Prudential Life; sắp xếp nhân sự vận hành hệ thống mới.',
+      },
+      {
+        title: 'Đổi Mới Kênh Hỗ Trợ',
+        desc: 'Kết nối E-Commerce với Call Center; xây dựng quy trình tư vấn VideoCall tiên phong.',
+      },
+      {
+        title: 'An Toàn Vận Hành',
+        desc: 'Hiệu chỉnh hệ thống kế hoạch liên tục kinh doanh (BCP); phối hợp giải quyết quyền lợi bảo hiểm và đáo hạn hợp đồng.',
+      },
     ],
-    philosophy: 'Đảm bảo tính chính xác tuyệt đối trong tư vấn hợp đồng bảo hiểm; kiến tạo trải nghiệm khách hàng 5 sao; đạt tỷ lệ FCR giải quyết từ cuộc gọi đầu tiên > 92%.',
+    philosophy:
+      'Đảm bảo tính chính xác tuyệt đối trong tư vấn hợp đồng bảo hiểm; kiến tạo trải nghiệm khách hàng 5 sao; đạt tỷ lệ FCR giải quyết từ cuộc gọi đầu tiên > 92%.',
     tasks: [
-      'Quản lý hệ thống Call Center cao cấp trên nền tảng AS400 & CRM Prudential Life',
-      'Sắp xếp nhân sự vận hành hệ thống mới',
-      'Kết nối E-Commerce với Call Center',
-      'Xây dựng quy trình tư vấn VideoCall tiên phong',
-      'Hiệu chỉnh hệ thống kế hoạch liên tục kinh doanh (BCP)',
-      'Phối hợp giải quyết quyền lợi bảo hiểm và đáo hạn hợp đồng',
+      'Quản lý hệ thống Call Center cao cấp trên nền tảng AS400 & CRM Prudential Life;',
+      'sắp xếp nhân sự vận hành hệ thống mới;',
+      'kết nối E-Commerce với Call Center;',
+      'xây dựng quy trình tư vấn VideoCall tiên phong;',
+      'hiệu chỉnh hệ thống kế hoạch liên tục kinh doanh (BCP);',
+      'phối hợp giải quyết quyền lợi bảo hiểm và đáo hạn hợp đồng.',
     ],
     projects: [
       '3.2 · Quản lý dự án CSKH',
@@ -186,15 +226,15 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
       'Kiến tạo trải nghiệm khách hàng 5 sao và đạt tỷ lệ FCR > 92%.',
     ],
     kpis: [
-      { label: 'Quản lý Call Center SLA', percent: 95 },
-      { label: 'Giảm 45% thời gian xử lý yêu cầu hợp đồng', percent: 45 },
-      { label: 'Tỷ lệ FCR (> 92%)', percent: 92 },
-      { label: 'Thương mại điện tử bảo hiểm', percent: 85 },
-      { label: 'Chuẩn hóa quy trình BCP', percent: 100 },
+      { label: 'Quản lý Call Center SLA', percent: 95, displayValue: '95%' },
+      { label: 'Giảm 45% thời gian xử lý yêu cầu hợp đồng', percent: 45, displayValue: '45%' },
+      { label: 'Tỷ lệ FCR', percent: 92, displayValue: '> 92%' },
+      { label: 'Thương mại điện tử bảo hiểm', percent: 85, displayValue: '85%' },
+      { label: 'Chuẩn hóa quy trình BCP', percent: 100, displayValue: '100%' },
     ],
   },
 
-  /* 4.5. Việt Nam eSport (VED, Shopee, Garena, ShopeePay) (2013 – 2016) */
+  /* 4.5. Công ty Cổ phần Việt Nam eSport (VED, Shopee, Garena, ShopeePay) (2013 – 2016) */
   '2013': {
     code: '4.5',
     company: 'Công ty Cổ phần Việt Nam eSport (VED, Shopee, Garena, ShopeePay)',
@@ -202,30 +242,40 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
     bannerUrl: 'https://i.ibb.co/qYT35B2m',
     memoryImg: 'https://i.ibb.co/jknPRhj3/VED.png',
     period: 'Từ năm 2013 đến năm 2016',
-    roleTitle: 'Trưởng Phòng CSKH',
+    roleTitle: 'Trưởng Phòng Dịch vụ Khách hàng',
     headcount: 130,
     scaleDesc: '130 nhân sự trực tiếp (80+ Game Supporter, CSKH, Fraud)',
     industry: 'eSports / Game Online / E-commerce (Shopee) / Ví điện tử (ShopeePay/AirPay) / GCafe',
     products: [
       { src: 'https://i.ibb.co/BKHcWL5R/Logo-VED.gif', alt: 'Logo-VED' },
       { src: 'https://i.ibb.co/h1Md65yV/Garena.png', alt: 'Garena' },
+      { src: 'https://i.ibb.co/BSVS4xf/Shopee.png', alt: 'Shopee' },
+      { src: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png', alt: 'ShopeePay' },
       { src: 'https://i.ibb.co/FkWk3s4W/GCafe.png', alt: 'GCafe' },
-      { src: 'https://i.ibb.co/QvtbdnfP/V247.png', alt: 'V247' },
-      { src: 'https://i.ibb.co/fYPJLfbw/VED.png', alt: 'VED' },
     ],
     intro: [
-      { title: 'Khởi Tạo Sản Phẩm', desc: 'Tham gia xây dựng hệ thống CSKH cho các sản phẩm mới từ giai đoạn khởi tạo (Shopee, AirPay, Liên Quân Mobile, LMHT).' },
-      { title: 'Tổ Chức & Chuẩn Hóa', desc: 'Quản lý tổ chức bộ máy 130 nhân sự; chuẩn hóa Visual SOP; kiến trúc CRM nội bộ Garena Customer Desk; đào tạo đội ngũ quản lý cấp trung.' },
-      { title: 'Hỗ Trợ Sự Kiện', desc: 'Giải quyết khiếu nại đơn hàng TMĐT & sự cố tài khoản game lượng truy cập khủng; phối hợp CSKH tại các giải đấu eSports lớn.' },
+      {
+        title: 'Khởi Tạo Sản Phẩm',
+        desc: 'Tham gia xây dựng hệ thống CSKH cho các sản phẩm mới từ giai đoạn khởi tạo (Shopee, AirPay, Liên Quân Mobile, LMHT).',
+      },
+      {
+        title: 'Tổ Chức & Chuẩn Hóa',
+        desc: 'Quản lý tổ chức bộ máy 130 nhân sự; chuẩn hóa Visual SOP; kiến trúc CRM nội bộ Garena Customer Desk; đào tạo đội ngũ quản lý cấp trung.',
+      },
+      {
+        title: 'Hỗ Trợ Sự Kiện',
+        desc: 'Giải quyết khiếu nại đơn hàng TMĐT & sự cố tài khoản game lượng truy cập khủng; phối hợp CSKH tại các giải đấu eSports lớn.',
+      },
     ],
-    philosophy: 'Đảm bảo tốc độ phản hồi Ticket/Chat cực nhanh (> 50,000 ticket/ngày), bảo mật tài khoản người dùng và khả năng chịu tải siêu cao trong các sự kiện game & Mega-sale.',
+    philosophy:
+      'Đảm bảo tốc độ phản hồi Ticket/Chat cực nhanh (> 50,000 ticket/ngày), bảo mật tài khoản người dùng và khả năng chịu tải siêu cao trong các sự kiện game & Mega-sale.',
     tasks: [
-      'Tham gia xây dựng hệ thống CSKH cho các sản phẩm mới từ giai đoạn khởi tạo (Shopee, AirPay, Liên Quân Mobile, LMHT)',
-      'Quản lý tổ chức bộ máy 130 nhân sự',
-      'Chuẩn hóa Visual SOP',
-      'Kiến trúc CRM nội bộ Garena Customer Desk',
-      'Đào tạo đội ngũ quản lý cấp trung',
-      'Giải quyết khiếu nại đơn hàng TMĐT & sự cố tài khoản game lượng truy cập khủng; phối hợp CSKH tại các giải đấu eSports lớn',
+      'Tham gia xây dựng hệ thống CSKH cho các sản phẩm mới từ giai đoạn khởi tạo (Shopee, AirPay, Liên Quân Mobile, LMHT);',
+      'quản lý tổ chức bộ máy 130 nhân sự;',
+      'chuẩn hóa Visual SOP;',
+      'kiến trúc CRM nội bộ Garena Customer Desk;',
+      'đào tạo đội ngũ quản lý cấp trung;',
+      'giải quyết khiếu nại đơn hàng TMĐT & sự cố tài khoản game lượng truy cập khủng; phối hợp CSKH tại các giải đấu eSports lớn.',
     ],
     projects: [
       '1.1 · Xây dựng và vận hành Phòng Dịch vụ Khách hàng',
@@ -240,14 +290,14 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
       'Bảo mật tài khoản người dùng và khả năng chịu tải siêu cao trong các sự kiện game & Mega-sale.',
     ],
     kpis: [
-      { label: 'Chuẩn hóa quy trình SOP', percent: 100 },
-      { label: 'Tốc độ phản hồi Chat/Ticket (< 30 giây)', percent: 100 },
-      { label: 'Điểm CSAT', percent: 96 },
-      { label: 'Hoàn thành dự án Onboarding & Đào tạo nội bộ', percent: 100 },
+      { label: 'Chuẩn hóa quy trình SOP', percent: 100, displayValue: '100%' },
+      { label: 'Tốc độ phản hồi Chat/Ticket', percent: 100, displayValue: '< 30 giây' },
+      { label: 'Điểm CSAT', percent: 96, displayValue: '96%' },
+      { label: 'Hoàn thành dự án Onboarding & Đào tạo nội bộ', percent: 100, displayValue: '100%' },
     ],
   },
 
-  /* 4.6. LBC HTVC (2011 – 2013) */
+  /* 4.6. Công ty CPTT Băng Rộng Cuộc Sống - LBC HTVC (2011 – 2013) */
   '2011': {
     code: '4.6',
     company: 'Công ty CPTT Băng Rộng Cuộc Sống - LBC HTVC',
@@ -255,24 +305,34 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
     bannerUrl: 'https://i.ibb.co/KcxptYYt',
     memoryImg: 'https://i.ibb.co/Mykxzbbz/LBC.png',
     period: 'Từ năm 2011 đến năm 2013',
-    roleTitle: 'Trưởng Phòng CSKH',
+    roleTitle: 'Trưởng Phòng Dịch vụ Khách hàng',
     headcount: 12,
     scaleDesc: '12 nhân sự trực tiếp',
     industry: 'Truyền thông / Truyền hình cáp HTVC / Internet Băng rộng',
     products: [{ src: 'https://i.ibb.co/1fNw0hBq/HTVC.png', alt: 'HTVC' }],
     intro: [
-      { title: 'Điều Hành Toàn Diện', desc: 'Quản lý điều hành toàn diện phòng CSKH; cải thiện sản phẩm dịch vụ; thực hiện khảo sát độ hài lòng khách hàng.' },
-      { title: 'Phối Hợp MKT', desc: 'Phối hợp phòng Marketing triển khai chương trình khuyến mãi; phân tích đối thủ cạnh tranh; lập kế hoạch và trực tiếp thăm hỏi khách hàng VIP.' },
-      { title: 'Quản Lý Ngân Sách', desc: 'Xây dựng và kiểm soát ngân sách CSKH hàng năm.' },
+      {
+        title: 'Điều Hành Toàn Diện',
+        desc: 'Quản lý điều hành toàn diện phòng CSKH; cải thiện sản phẩm dịch vụ; thực hiện khảo sát độ hài lòng khách hàng.',
+      },
+      {
+        title: 'Phối Hợp MKT',
+        desc: 'Phối hợp phòng Marketing triển khai chương trình khuyến mãi; phân tích đối thủ cạnh tranh; lập kế hoạch và trực tiếp thăm hỏi khách hàng VIP.',
+      },
+      {
+        title: 'Quản Lý Ngân Sách',
+        desc: 'Xây dựng và kiểm soát ngân sách CSKH hàng năm.',
+      },
     ],
-    philosophy: 'Đảm bảo quy trình xử lý sự cố tín hiệu truyền hình & internet nhanh chóng; gia tăng chỉ số giữ chân khách hàng (Retention Rate) và sự gắn kết thương hiệu.',
+    philosophy:
+      'Đảm bảo quy trình xử lý sự cố tín hiệu truyền hình & internet nhanh chóng; gia tăng chỉ số giữ chân khách hàng (Retention Rate) và sự gắn kết thương hiệu.',
     tasks: [
-      'Quản lý điều hành toàn diện phòng CSKH',
-      'Cải thiện sản phẩm dịch vụ',
-      'Thực hiện khảo sát độ hài lòng khách hàng',
-      'Phối hợp phòng Marketing triển khai chương trình khuyến mãi',
-      'Phân tích đối thủ cạnh tranh, lập kế hoạch và trực tiếp thăm hỏi khách hàng VIP',
-      'Xây dựng và kiểm soát ngân sách CSKH hàng năm',
+      'Quản lý điều hành toàn diện phòng CSKH;',
+      'cải thiện sản phẩm dịch vụ;',
+      'thực hiện khảo sát độ hài lòng khách hàng;',
+      'phối hợp phòng Marketing triển khai chương trình khuyến mãi;',
+      'phân tích đối thủ cạnh tranh, lập kế hoạch và trực tiếp thăm hỏi khách hàng VIP;',
+      'xây dựng và kiểm soát ngân sách CSKH hàng năm.',
     ],
     projects: [
       '1.1 · Xây dựng và vận hành Phòng Dịch vụ Khách hàng',
@@ -287,14 +347,14 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
       'Gia tăng chỉ số giữ chân khách hàng (Retention Rate) và sự gắn kết thương hiệu.',
     ],
     kpis: [
-      { label: 'Chuẩn hóa quy trình SOP', percent: 100 },
-      { label: 'Phản hồi & Hỗ trợ sự cố', percent: 95 },
-      { label: 'Khảo sát sự hài lòng CSAT', percent: 92 },
-      { label: 'Hoàn thành kế hoạch ngân sách', percent: 100 },
+      { label: 'Chuẩn hóa quy trình SOP', percent: 100, displayValue: '100%' },
+      { label: 'Phản hồi & Hỗ trợ sự cố', percent: 95, displayValue: '95%' },
+      { label: 'Khảo sát sự hài lòng CSAT', percent: 92, displayValue: '92%' },
+      { label: 'Hoàn thành kế hoạch ngân sách', percent: 100, displayValue: '100%' },
     ],
   },
 
-  /* 4.7. Viễn Liên V247 (2007 – 2011) */
+  /* 4.7. Công ty Viễn Liên V247 (2007 – 2011) */
   '2007': {
     code: '4.7',
     company: 'Công ty Viễn Liên V247',
@@ -307,18 +367,28 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
     scaleDesc: '12 nhân sự trực tiếp',
     industry: 'Viễn thông quốc tế / Contact Center 24/7',
     intro: [
-      { title: 'Giám Sát Đa Kênh', desc: 'Quản lý và giám sát vận hành đội ngũ CSKH đa kênh (Email, Fax, Phone, Live Chat); phân bổ cuộc gọi theo lưu lượng thực tế.' },
-      { title: 'Đánh Giá Chất Lượng', desc: 'Đánh giá chất lượng cuộc gọi (QA Call Scoring); huấn luyện kỹ năng cho nhân viên; lập lịch trực ca 24/7.' },
-      { title: 'Xử Lý Khiếu Nại', desc: 'Giải quyết khiếu nại cước viễn thông quốc tế.' },
+      {
+        title: 'Giám Sát Đa Kênh',
+        desc: 'Quản lý và giám sát vận hành đội ngũ CSKH đa kênh (Email, Fax, Phone, Live Chat); phân bổ cuộc gọi theo lưu lượng thực tế.',
+      },
+      {
+        title: 'Đánh Giá Chất Lượng',
+        desc: 'Đánh giá chất lượng cuộc gọi (QA Call Scoring); huấn luyện kỹ năng cho nhân viên; lập lịch trực ca 24/7.',
+      },
+      {
+        title: 'Xử Lý Khiếu Nại',
+        desc: 'Giải quyết khiếu nại cước viễn thông quốc tế.',
+      },
     ],
-    philosophy: 'Đảm bảo chất lượng thoại và thời gian kết nối thông suốt 24/7, hỗ trợ kịp thời cho kiều bào và khách hàng quốc tế.',
+    philosophy:
+      'Đảm bảo chất lượng thoại và thời gian kết nối thông suốt 24/7, hỗ trợ kịp thời cho kiều bào và khách hàng quốc tế.',
     tasks: [
-      'Quản lý và giám sát vận hành đội ngũ CSKH đa kênh (Email, Fax, Phone, Live Chat)',
-      'Phân bổ cuộc gọi theo lưu lượng thực tế',
-      'Đánh giá chất lượng cuộc gọi (QA Call Scoring)',
-      'Huấn luyện kỹ năng cho nhân viên',
-      'Lập lịch trực ca 24/7',
-      'Giải quyết khiếu nại cước viễn thông quốc tế',
+      'Quản lý và giám sát vận hành đội ngũ CSKH đa kênh (Email, Fax, Phone, Live Chat);',
+      'phân bổ cuộc gọi theo lưu lượng thực tế;',
+      'đánh giá chất lượng cuộc gọi (QA Call Scoring);',
+      'huấn luyện kỹ năng cho nhân viên;',
+      'lập lịch trực ca 24/7;',
+      'giải quyết khiếu nại cước viễn thông quốc tế.',
     ],
     projects: [
       '5.1 · Phát triển đào tạo trực tuyến',
@@ -330,13 +400,13 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
       'Hỗ trợ kịp thời cho kiều bào và khách hàng quốc tế.',
     ],
     kpis: [
-      { label: 'Đào tạo Onboarding nhân viên mới', percent: 96 },
-      { label: 'Biên soạn tài liệu nghiệp vụ', percent: 100 },
-      { label: 'Chỉ số giải quyết cuộc gọi SLA', percent: 95 },
+      { label: 'Đào tạo Onboarding nhân viên mới', percent: 96, displayValue: '96%' },
+      { label: 'Biên soạn tài liệu nghiệp vụ', percent: 100, displayValue: '100%' },
+      { label: 'Chỉ số giải quyết cuộc gọi SLA', percent: 95, displayValue: '95%' },
     ],
   },
 
-  /* 4.8. Viễn thông MobiFone (2003 – 2007) */
+  /* 4.8. Công ty Viễn thông Mobifone (2003 – 2007) */
   '2003': {
     code: '4.8',
     company: 'Công ty Viễn thông Mobifone',
@@ -349,17 +419,27 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
     scaleDesc: '12 nhân sự nhóm',
     industry: 'Viễn thông di động / Call Center tập đoàn',
     intro: [
-      { title: 'Tư Vấn Nghiệp Vụ', desc: 'Tiếp nhận và tư vấn cước, dịch vụ viễn thông di động MobiFone; xử lý các khiếu nại phức tạp.' },
-      { title: 'Khảo Sát & Hướng Dẫn', desc: 'Thực hiện cuộc gọi Outbound khảo sát chất lượng dịch vụ; hỗ trợ hướng dẫn nghiệp vụ cho nhân viên mới.' },
-      { title: 'Quản Lý Khẩn Cấp', desc: 'Xử lý các tình huống cuộc gọi quấy rối khẩn cấp.' },
+      {
+        title: 'Tư Vấn Nghiệp Vụ',
+        desc: 'Tiếp nhận và tư vấn cước, dịch vụ viễn thông di động MobiFone; xử lý các khiếu nại phức tạp.',
+      },
+      {
+        title: 'Khảo Sát & Hướng Dẫn',
+        desc: 'Thực hiện cuộc gọi Outbound khảo sát chất lượng dịch vụ; hỗ trợ hướng dẫn nghiệp vụ cho nhân viên mới.',
+      },
+      {
+        title: 'Quản Lý Khẩn Cấp',
+        desc: 'Xử lý các tình huống cuộc gọi quấy rối khẩn cấp.',
+      },
     ],
-    philosophy: 'Tuân thủ nghiêm ngặt chuẩn mực tác phong tư vấn và quy trình chăm sóc khách hàng tiêu chuẩn tập đoàn viễn thông hàng đầu.',
+    philosophy:
+      'Tuân thủ nghiêm ngặt chuẩn mực tác phong tư vấn và quy trình chăm sóc khách hàng tiêu chuẩn tập đoàn viễn thông hàng đầu.',
     tasks: [
-      'Tiếp nhận và tư vấn cước, dịch vụ viễn thông di động MobiFone',
-      'Xử lý các khiếu nại phức tạp',
-      'Thực hiện cuộc gọi Outbound khảo sát chất lượng dịch vụ',
-      'Hỗ trợ hướng dẫn nghiệp vụ cho nhân viên mới',
-      'Xử lý các tình huống cuộc gọi quấy rối khẩn cấp',
+      'Tiếp nhận và tư vấn cước, dịch vụ viễn thông di động MobiFone;',
+      'xử lý các khiếu nại phức tạp;',
+      'thực hiện cuộc gọi Outbound khảo sát chất lượng dịch vụ;',
+      'hỗ trợ hướng dẫn nghiệp vụ cho nhân viên mới;',
+      'xử lý các tình huống cuộc gọi quấy rối khẩn cấp.',
     ],
     projects: [
       '5.1 · Phát triển đào tạo trực tuyến',
@@ -371,9 +451,9 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
       'Quy trình chăm sóc khách hàng tiêu chuẩn tập đoàn viễn thông hàng đầu.',
     ],
     kpis: [
-      { label: 'Hoàn thành nhiệm vụ tư vấn', percent: 100 },
-      { label: 'Phản hồi & Xử lý khiếu nại', percent: 95 },
-      { label: 'Đạt Chứng nhận Tổng đài viên xuất sắc MobiFone', percent: 100 },
+      { label: 'Hoàn thành nhiệm vụ tư vấn', percent: 100, displayValue: '100%' },
+      { label: 'Phản hồi & Xử lý khiếu nại', percent: 95, displayValue: '95%' },
+      { label: 'Đạt Chứng nhận Tổng đài viên xuất sắc MobiFone.', percent: 100, displayValue: '100%' },
     ],
   },
 };

@@ -144,7 +144,7 @@ const BASE_MILESTONES: Record<string, ExperienceMilestone> = {
   },
   "2013": {
     key: "2013", year: "2013", cardYearLabel: "2013 - 2016", cardYearColor: "text-slate-600",
-    period: "Từ Năm 2013 đến Năm 2016 (3 năm)", company: "Vietnam Esports (VED, Shopee, Garena, AirPay)",
+    period: "Từ Năm 2013 đến Năm 2016 (3 năm)", company: "Vietnam Esports (VED)",
     subCompanies: "(VED, Shopee, Garena, AirPay, Gcafe)", tag: "eSport, Game & TMĐT", tagCategory: "gaming",
     hexColor: "#ED1C24",
     logo: "https://i.ibb.co/BKHcWL5R/Logo-VED.gif",

@@ -1,22 +1,86 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  ChevronLeft,
+  ChevronRight,
+  Video,
+} from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
-import { WebIcon } from '@/components/ui/WebIcon';
+import { SiteTheme } from '@/types';
+import { SoundEngine } from '@/components/ui/SoundEngine';
+import { HomeCardStacksLeft } from '@/components/ui/HomeCardStacksLeft';
 
 export interface HomeViewProps {
   slideIndex?: number;
+  currentTheme?: SiteTheme;
   onNavigateContact: () => void;
   onNavigatePage?: (pageIndex: number) => void;
+  onOpenPagesCarousel?: () => void;
 }
 
-export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContact, onNavigatePage }) => {
+export interface VideoScreenItem {
+  id: number;
+  label: string;
+  badge: string;
+  url: string;
+  introUrl?: string;
+  title: string;
+  description: string;
+}
+
+export const HomeView: React.FC<HomeViewProps> = ({
+  currentTheme = 'light-glass',
+  onNavigateContact,
+  onNavigatePage,
+  onOpenPagesCarousel,
+}) => {
   const { showToast } = useToast();
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const IDLE_URL = 'https://cdn.scena.ai/project/10169/eae59f7007421658e611c298c206755ca060c878d07087694c06935208b9d8f9.mp4';
-  const INTRO_URL = 'https://cdn.scena.ai/project/10169/0f6e39f01533134c70012f61be38d29126100c0300c9c0ea607adb305b5f7102.mp4';
+  const isDark = currentTheme === 'dark-neon';
 
+  // Video URLs cho 3 màn hình
+  const IDLE_URL =
+    'https://cdn.scena.ai/project/10169/eae59f7007421658e611c298c206755ca060c878d07087694c06935208b9d8f9.mp4';
+  const INTRO_URL =
+    'https://cdn.scena.ai/project/10169/0f6e39f01533134c70012f61be38d29126100c0300c9c0ea607adb305b5f7102.mp4';
+
+  const VIDEO_SCREENS: VideoScreenItem[] = [
+    {
+      id: 1,
+      label: 'Màn hình 1',
+      badge: 'Video 1',
+      url: 'https://cdn.scena.ai/project/8606/e48a67884f3a52e8a68cf06b97979f3b22835ec92bf466a058c0d78da97c83b0.mp4',
+      title: 'Phong Thái Lãnh Đạo & Tầm Nhìn',
+      description: 'Phong thái chuyên gia quản trị trải nghiệm khách hàng cao cấp',
+    },
+    {
+      id: 2,
+      label: 'Màn hình 2',
+      badge: 'Video 2 (Gốc)',
+      url: IDLE_URL,
+      introUrl: INTRO_URL,
+      title: 'Chân Dung Chuyên Gia & Lời Chào',
+      description: 'Chân dung điều hành dịch vụ khách hàng 22+ năm kinh nghiệm',
+    },
+    {
+      id: 3,
+      label: 'Màn hình 3',
+      badge: 'Video 3',
+      url: 'https://cdn.scena.ai/project/8606/581097478f9de72616d982e302e1c8d0aab6d66cbee040430c610424c0c72a44.mp4',
+      title: 'Không Gian Số Hóa & Hệ Sinh Thái',
+      description: 'Hạ tầng công nghệ tự động hóa và kiến trúc giải pháp hiện đại',
+    },
+  ];
+
+  // Màn hình video hiện tại mặc định là Màn hình Video 2
+  const [activeVideoScreen, setActiveVideoScreen] = useState<number>(2);
   const [isIntroMode, setIsIntroMode] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(true);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
@@ -24,67 +88,48 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
   const [duration, setDuration] = useState<string>('0:00');
   const [progressPct, setProgressPct] = useState<number>(0);
 
-  // Slide index state: 0 (Giới thiệu), 1 (Năng lực cốt lõi), 2 (Dấu ấn thành tựu)
-  const [currentSlide, setCurrentSlide] = useState<number>(slideIndex !== undefined ? slideIndex : 0);
-  const [isAutoPlay, setIsAutoPlay] = useState<boolean>(false);
-  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
-  const TOTAL_SLIDES = 3;
+  // Video URL đang active
+  const currentScreen = VIDEO_SCREENS[activeVideoScreen - 1];
+  const activeVideoUrl =
+    activeVideoScreen === 2 && isIntroMode ? INTRO_URL : currentScreen.url;
 
+  // Đồng bộ âm thanh và tự động phát khi đổi màn hình video
   useEffect(() => {
-    if (slideIndex !== undefined) {
-      setCurrentSlide(slideIndex);
+    const video = videoRef.current;
+    if (video) {
+      video.muted = isMuted;
+      video.currentTime = 0;
+      video.play().then(() => {
+        setIsPlaying(true);
+      }).catch(() => {
+        // Trình duyệt có thể chặn autoplay nếu có tiếng
+      });
     }
-  }, [slideIndex]);
+  }, [activeVideoScreen, activeVideoUrl, isMuted]);
 
-  const handlePrevSlide = useCallback(() => {
-    setSlideDirection('left');
-    setCurrentSlide((prev) => {
-      const nextIdx = prev > 0 ? prev - 1 : TOTAL_SLIDES - 1;
-      if (onNavigatePage) {
-        // Option to sync with parent if needed
-      }
-      return nextIdx;
+  // Điều hướng màn hình video qua trái (Prev)
+  const handlePrevVideoScreen = () => {
+    SoundEngine.playGlassChime();
+    setIsIntroMode(false);
+    setActiveVideoScreen((prev) => {
+      const next = prev === 1 ? 3 : prev - 1;
+      const target = VIDEO_SCREENS[next - 1];
+      showToast(`Đang phát ${target.label} · ${target.title}`);
+      return next;
     });
-  }, [onNavigatePage]);
-
-  const handleNextSlide = useCallback(() => {
-    setSlideDirection('right');
-    setCurrentSlide((prev) => {
-      const nextIdx = prev < TOTAL_SLIDES - 1 ? prev + 1 : 0;
-      if (onNavigatePage) {
-        // Option to sync with parent if needed
-      }
-      return nextIdx;
-    });
-  }, [onNavigatePage]);
-
-  const handleSelectDot = (idx: number) => {
-    setSlideDirection(idx > currentSlide ? 'right' : 'left');
-    setCurrentSlide(idx);
   };
 
-  // Auto-play timer for slides
-  useEffect(() => {
-    if (!isAutoPlay || isIntroMode) return;
-    const interval = setInterval(() => {
-      handleNextSlide();
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [isAutoPlay, isIntroMode, handleNextSlide]);
-
-  // Keyboard arrow keys navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isIntroMode) return;
-      if (e.key === 'ArrowLeft') {
-        handlePrevSlide();
-      } else if (e.key === 'ArrowRight') {
-        handleNextSlide();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isIntroMode, handlePrevSlide, handleNextSlide]);
+  // Điều hướng màn hình video qua phải (Next)
+  const handleNextVideoScreen = () => {
+    SoundEngine.playGlassChime();
+    setIsIntroMode(false);
+    setActiveVideoScreen((prev) => {
+      const next = prev === 3 ? 1 : prev + 1;
+      const target = VIDEO_SCREENS[next - 1];
+      showToast(`Đang phát ${target.label} · ${target.title}`);
+      return next;
+    });
+  };
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -111,6 +156,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
   const handlePlayIntro = () => {
     const video = videoRef.current;
     if (!video) return;
+    // Chuyển sang màn hình 2 nếu đang ở màn hình khác
+    if (activeVideoScreen !== 2) {
+      setActiveVideoScreen(2);
+    }
     setIsIntroMode(true);
     setIsMuted(false);
     setIsPlaying(true);
@@ -128,7 +177,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
     setIsIntroMode(false);
     setIsMuted(true);
     setIsPlaying(true);
-    video.src = IDLE_URL;
+    video.src = currentScreen.url;
     video.loop = true;
     video.muted = true;
     video.currentTime = 0;
@@ -165,349 +214,221 @@ export const HomeView: React.FC<HomeViewProps> = ({ slideIndex, onNavigateContac
     video.currentTime = pct * video.duration;
   };
 
-  const slidesData = [
-    {
-      id: 0,
-      badge: 'Giao diện Slide 01 / 03',
-      badgeColor: 'text-blue-600 dark:text-cyan-400',
-      icon: 'user',
-      title: 'Giới thiệu',
-      subtitle: 'Trưởng phòng Chăm sóc Khách hàng',
-      name: 'Nguyễn Hùng Thái',
-      description:
-        '22+ năm kinh nghiệm quản trị và vận hành hệ thống Contact Center & CX đa kênh quy mô lớn (MobiFone, Shopee, Garena, Viễn Liên...). Tiên phong tích hợp AI và tự động hóa quy trình CSKH.',
-      bullets: [
-        { icon: 'target', label: 'Lãnh đạo & Kiến trúc vận hành Contact Center' },
-        { icon: 'shield', label: 'Tối ưu hóa hành trình trải nghiệm khách hàng (CX)' },
-        { icon: 'bot', label: 'Chuyển đổi số & Ứng dụng AI Agent CSKH' },
-      ],
-      primaryBtnText: 'Xem giới thiệu',
-      primaryBtnAction: handlePlayIntro,
-      primaryBtnIcon: 'play',
-      secondaryBtnText: 'Liên hệ trực tiếp',
-      secondaryBtnAction: onNavigateContact,
-      cardThemeBg: 'from-blue-50/80 via-white/90 to-indigo-50/80 dark:from-slate-900/90 dark:via-slate-900/95 dark:to-blue-950/80',
-      borderColor: 'border-blue-200/80 dark:border-blue-800/60',
-      accentGlow: 'shadow-blue-500/20',
-    },
-    {
-      id: 1,
-      badge: 'Giao diện Slide 02 / 03',
-      badgeColor: 'text-purple-600 dark:text-purple-400',
-      icon: 'rocket',
-      title: 'Năng lực cốt lõi',
-      subtitle: 'Customer Centricity & Tech',
-      name: 'Vận hành & Trải nghiệm CX',
-      description:
-        'Chuyên môn chuyên sâu trong quản trị lực lượng CSKH quy mô 100+ nhân sự, xây dựng tiêu chuẩn SLA/KPI realtime và tự động hóa quy trình xử lý phản hồi đa kênh.',
-      bullets: [
-        { icon: 'target', label: 'Trải nghiệm KH chuẩn hóa (CSAT 98%)' },
-        { icon: 'phone', label: 'Contact Center 24/7 SLA/KPI realtime' },
-        { icon: 'bot', label: 'AI Agent Workflows & Tự động hóa' },
-      ],
-      primaryBtnText: 'Khám phá kỹ năng',
-      primaryBtnAction: () => (onNavigatePage ? onNavigatePage(6) : onNavigateContact()),
-      primaryBtnIcon: 'bolt',
-      secondaryBtnText: 'Liên hệ trực tiếp',
-      secondaryBtnAction: onNavigateContact,
-      cardThemeBg: 'from-purple-50/80 via-white/90 to-indigo-50/80 dark:from-slate-900/90 dark:via-slate-900/95 dark:to-purple-950/80',
-      borderColor: 'border-purple-200/80 dark:border-purple-800/60',
-      accentGlow: 'shadow-purple-500/20',
-    },
-    {
-      id: 2,
-      badge: 'Giao diện Slide 03 / 03',
-      badgeColor: 'text-amber-500 dark:text-amber-400',
-      icon: 'trophy',
-      title: 'Dấu ấn thành tựu',
-      subtitle: 'Hành trình 2003 - 2026+',
-      name: 'Dấu ấn vận hành bền vững',
-      description:
-        'Xây dựng bộ chỉ số đo lường hiệu quả (KPIs/OKRs), triển khai hệ thống báo cáo C-Level Power BI, giúp cắt giảm 25% chi phí vận hành mà vẫn nâng cao trải nghiệm hài lòng của khách hàng.',
-      bullets: [
-        { icon: 'users', label: 'Lãnh đạo & phát triển 100+ nhân sự' },
-        { icon: 'chart', label: 'Dashboard Power BI & Báo cáo C-Level' },
-        { icon: 'bolt', label: 'Giảm Cost-to-Serve 25% tối ưu chi phí' },
-      ],
-      primaryBtnText: 'Xem dự án',
-      primaryBtnAction: () => (onNavigatePage ? onNavigatePage(7) : onNavigateContact()),
-      primaryBtnIcon: 'target',
-      secondaryBtnText: 'Kinh nghiệm thực chiến',
-      secondaryBtnAction: () => (onNavigatePage ? onNavigatePage(5) : onNavigateContact()),
-      cardThemeBg: 'from-amber-50/80 via-white/90 to-orange-50/80 dark:from-slate-900/90 dark:via-slate-900/95 dark:to-amber-950/80',
-      borderColor: 'border-amber-200/80 dark:border-amber-800/60',
-      accentGlow: 'shadow-amber-500/20',
-    },
-  ];
-
-  const activeSlideData = slidesData[currentSlide] || slidesData[0];
-
   return (
-    <div className="relative w-full h-full flex-1 flex flex-col justify-between overflow-hidden select-none">
-      {/* 1. Main Background Video Player */}
+    <div className="relative w-full h-full flex flex-col justify-between overflow-hidden select-none p-4 sm:p-5 md:p-[24px] font-play">
+      {/* 1. Main Background Video - Hiển Thị Toàn Bộ Thẻ Chính Theo Màn Hình 1, 2, 3 */}
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
         <video
           ref={videoRef}
+          key={activeVideoUrl}
           autoPlay
           muted={isMuted}
           playsInline
           loop={!isIntroMode}
-          src={isIntroMode ? INTRO_URL : IDLE_URL}
+          src={activeVideoUrl}
           onTimeUpdate={handleTimeUpdate}
           onEnded={handleEnded}
-          className="w-full h-full min-w-full min-h-full object-cover object-center transition-all duration-700 brightness-105 contrast-102"
+          className="w-full h-full min-w-full min-h-full object-cover object-center transition-all duration-700 brightness-110 contrast-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/25 to-transparent pointer-events-none" />
+        {/* Lớp phủ chuyển sắc trong suốt nhẹ nhàng, làm nổi bật hình nền video rõ nét */}
+        <div
+          className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
+            isDark
+              ? 'bg-gradient-to-t from-[#070A14]/55 via-transparent to-[#11182B]/35'
+              : 'bg-gradient-to-t from-black/35 via-transparent to-black/15'
+          }`}
+        />
       </div>
 
-      {/* Top Floating Tag & Slide Selector Pills */}
-      <div className="relative z-10 p-3 sm:p-4 lg:p-5 flex items-center justify-between pointer-events-none flex-wrap gap-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/80 dark:border-white/20 shadow-sm pointer-events-auto">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Digital Identity • Trang Chủ Slide</span>
-        </div>
-
-        {/* Dynamic Slide Selector Buttons */}
-        <div className="hidden sm:flex items-center gap-1.5 p-1 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-white/80 dark:border-white/20 shadow-sm pointer-events-auto">
-          {slidesData.map((item) => {
-            const isSelected = currentSlide === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => handleSelectDot(item.id)}
-                className={`px-3 py-1 rounded-full text-xs font-bold transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
-                  isSelected
-                    ? 'bg-blue-600 text-white shadow-sm scale-105'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800/50'
-                }`}
-              >
-                <WebIcon name={item.icon} className="w-3.5 h-3.5" />
-                <span>0{item.id + 1}. {item.title}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {isIntroMode && (
-          <div className="px-2.5 py-1 rounded-full bg-rose-500/90 text-white text-[11px] font-bold shadow-md animate-pulse pointer-events-auto">
-            Đang phát Intro
-          </div>
-        )}
-      </div>
-
-      {/* 2. Slide Main Stage Container */}
-      {/* 2. Interactive Overlay Cards (Compact size, positioned bottom right) */}
-      <div className="relative z-20 w-full flex justify-end p-3 sm:p-4 lg:p-6 pointer-events-none mt-auto">
-        {isIntroMode ? (
-          /* Video Intro Playing Controller Bar */
-          <div className="w-full max-w-lg p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-2xl pointer-events-auto">
-            <div className="flex flex-col justify-between space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/10">
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-                  Đang phát: Lời Chào Giới Thiệu
-                </span>
-                <button
-                  type="button"
-                  onClick={handleCancelIntro}
-                  className="text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
-                >
-                  Đóng ✕
-                </button>
-              </div>
-
-              <div className="w-full space-y-1.5">
-                <div
-                  className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden cursor-pointer"
-                  onClick={handleSeek}
-                >
-                  <div
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 h-1.5 rounded-full transition-all duration-200"
-                    style={{ width: `${progressPct}%` }}
-                  />
-                </div>
-                <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                  <span>{currentTime}</span>
-                  <span>{duration}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between gap-2 pt-1 flex-wrap">
-                <button
-                  type="button"
-                  onClick={handleTogglePlay}
-                  className="px-3.5 py-1.5 rounded-xl bg-blue-600 text-white font-semibold text-xs flex items-center gap-1.5 shadow hover:bg-blue-700 transition cursor-pointer"
-                >
-                  {isPlaying ? (
-                    <>
-                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                      </svg>
-                      <span>Tạm dừng</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                      <span>Phát tiếp</span>
-                    </>
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleToggleMute}
-                  className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center gap-1.5 border border-slate-300 dark:border-white/10 shadow-sm transition cursor-pointer"
-                >
-                  <span>{isMuted ? 'Bật tiếng' : 'Tắt tiếng'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleCancelIntro}
-                  className="px-3.5 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 font-semibold text-xs transition cursor-pointer"
-                >
-                  Dừng lại
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          /* Single Compact Interactive Slide Display Card (Positioned Bottom Right) */
-          <div className="w-full max-w-xs sm:max-w-sm flex flex-col items-end pointer-events-auto">
-            {/* Slide Navigation Header Bar */}
-            <div className="w-full flex items-center justify-between mb-2 px-1">
-              {/* Left Arrow Button */}
-              <button
-                type="button"
-                onClick={handlePrevSlide}
-                title="Slide trước (Mũi tên trái)"
-                className="w-8 h-8 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-800 border border-white/90 dark:border-white/20 text-slate-800 dark:text-slate-100 flex items-center justify-center shadow-lg active:scale-95 transition cursor-pointer shrink-0"
-              >
-                <WebIcon name="arrow-left" className="w-3.5 h-3.5" />
-              </button>
-
-              {/* Slide Pagination Dots & Auto-slide Toggle */}
-              <div className="flex items-center gap-2 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/90 dark:border-white/20 px-3 py-1 rounded-full shadow-md">
-                <div className="flex items-center gap-1.5">
-                  {slidesData.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => handleSelectDot(item.id)}
-                      className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                        currentSlide === item.id
-                          ? 'w-6 bg-blue-600 dark:bg-cyan-400 shadow-xs'
-                          : 'w-2 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400 dark:hover:bg-slate-600'
-                      }`}
-                      title={`Đến Slide ${item.id + 1}: ${item.title}`}
-                    />
-                  ))}
-                </div>
-
-                <div className="h-3 w-[1px] bg-slate-300 dark:bg-slate-700 mx-0.5" />
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsAutoPlay((prev) => !prev);
-                    showToast(!isAutoPlay ? 'Đã bật tự động chuyển slide' : 'Đã tắt tự động chuyển slide');
-                  }}
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition cursor-pointer flex items-center gap-1 ${
-                    isAutoPlay
-                      ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-                  }`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full ${isAutoPlay ? 'bg-emerald-500 animate-ping' : 'bg-slate-400'}`} />
-                  <span>{isAutoPlay ? 'Tự động' : 'Thủ công'}</span>
-                </button>
-              </div>
-
-              {/* Right Arrow Button */}
-              <button
-                type="button"
-                onClick={handleNextSlide}
-                title="Slide tiếp theo (Mũi tên phải)"
-                className="w-8 h-8 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-800 border border-white/90 dark:border-white/20 text-slate-800 dark:text-slate-100 flex items-center justify-center shadow-lg active:scale-95 transition cursor-pointer shrink-0"
-              >
-                <WebIcon name="arrow-right" className="w-3.5 h-3.5" />
-              </button>
-            </div>
-
-            {/* Active Slide Card Container */}
-            <div
-              key={`slide-card-${currentSlide}`}
-              className={`w-full min-h-[180px] p-3 sm:p-4 rounded-2xl overflow-hidden flex flex-col justify-between bg-gradient-to-br ${activeSlideData.cardThemeBg} backdrop-blur-2xl border ${activeSlideData.borderColor} shadow-xl ${activeSlideData.accentGlow} transition-all duration-500 animate-page-enter text-left relative group`}
+      {/* 2. THANH CHỈ BÁO MÀN HÌNH VIDEO (1 • 2 • 3) NẰM TRÊN CÙNG GIỮA */}
+      <div className="absolute top-3 sm:top-4 left-1/2 -translate-x-1/2 z-30 pointer-events-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/45 dark:bg-slate-900/75 border border-white/20 dark:border-white/15 backdrop-blur-md shadow-lg transition-all duration-300">
+        <span className="flex items-center gap-1 text-[11px] font-bold text-white/80 pr-1 tracking-wide">
+          <Video className="w-3.5 h-3.5 text-cyan-400" />
+          <span>Màn hình</span>
+        </span>
+        {VIDEO_SCREENS.map((screen) => {
+          const isActive = activeVideoScreen === screen.id;
+          return (
+            <button
+              key={screen.id}
+              type="button"
+              onClick={() => {
+                SoundEngine.playGlassChime();
+                setIsIntroMode(false);
+                setActiveVideoScreen(screen.id);
+                showToast(`Đang phát ${screen.label} · ${screen.title}`);
+              }}
+              className={`px-2.5 py-0.5 rounded-full text-[11px] font-black transition-all cursor-pointer ${
+                isActive
+                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-[0_0_12px_rgba(99,102,241,0.85)] scale-105'
+                  : 'text-white/70 hover:text-white hover:bg-white/15'
+              }`}
+              title={`${screen.label}: ${screen.title}`}
             >
-              <div className="space-y-3">
-                {/* Slide Header: Icon trước tiêu đề không đóng khung icon, icon chuyển động tại chỗ, màu tiêu đề trùng màu icon */}
-                <div className="flex items-center justify-between gap-2 border-b border-slate-200/80 dark:border-white/10 pb-2.5">
-                  <h2 className={`text-base sm:text-lg font-bold ${activeSlideData.badgeColor} flex items-center gap-2 font-play`}>
-                    <WebIcon name={activeSlideData.icon} className={`w-4.5 h-4.5 ${activeSlideData.badgeColor} animate-pulse shrink-0 inline-block`} />
-                    <span>{activeSlideData.title}</span>
-                  </h2>
-                  <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-full bg-white/60 dark:bg-slate-800/60 border border-slate-200/60 dark:border-white/10 shadow-2xs">
-                    0{activeSlideData.id + 1} / 03
-                  </span>
-                </div>
+              {screen.id}
+            </button>
+          );
+        })}
+      </div>
 
-                {/* Subtitle & Title */}
-                <div>
-                  <span className={`text-xs font-bold ${activeSlideData.badgeColor} block tracking-wide uppercase`}>
-                    {activeSlideData.subtitle}
-                  </span>
-                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-slate-900 dark:text-white font-play leading-snug mt-0.5">
-                    {activeSlideData.name}
-                  </h3>
-                </div>
+      {/* 3. HAI NÚT NẰM CHÍNH GIỮA BÊN TRÁI VÀ BÊN PHẢI ĐỂ QUA CÁC MÀN HÌNH VIDEO */}
+      {/* Nút chính giữa bên trái (Prev Video Screen) */}
+      <button
+        type="button"
+        onClick={handlePrevVideoScreen}
+        className="absolute left-2.5 sm:left-4 md:left-5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-100 border border-white/70 dark:border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.3)] hover:shadow-[0_0_20px_rgba(78,86,246,0.7)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 cursor-pointer z-30 pointer-events-auto active:scale-90 group"
+        title={`Màn hình video trước (←) • Hiện tại: Màn hình ${activeVideoScreen}/3`}
+        aria-label="Màn hình video trước"
+      >
+        <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-cyan-400 group-hover:-translate-x-0.5 transition-transform" />
+      </button>
 
-                {/* Description Text */}
-                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium bg-white/60 dark:bg-slate-800/60 p-3 rounded-xl border border-white/80 dark:border-white/10 shadow-2xs">
-                  {activeSlideData.description}
-                </p>
+      {/* Nút chính giữa bên phải (Next Video Screen) */}
+      <button
+        type="button"
+        onClick={handleNextVideoScreen}
+        className="absolute right-2.5 sm:right-4 md:right-5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-100 border border-white/70 dark:border-white/20 shadow-[0_8px_24px_rgba(0,0,0,0.3)] hover:shadow-[0_0_20px_rgba(78,86,246,0.7)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 cursor-pointer z-30 pointer-events-auto active:scale-90 group"
+        title={`Màn hình video tiếp theo (→) • Hiện tại: Màn hình ${activeVideoScreen}/3`}
+        aria-label="Màn hình video tiếp theo"
+      >
+        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-cyan-400 group-hover:translate-x-0.5 transition-transform" />
+      </button>
 
-                {/* Bullets Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
-                  {activeSlideData.bullets.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-2 p-2 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-white/10 shadow-2xs"
-                    >
-                      <span className="w-6 h-6 rounded-lg bg-blue-50 dark:bg-slate-700 text-blue-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
-                        <WebIcon name={item.icon} className="w-3.5 h-3.5" />
-                      </span>
-                      <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 line-clamp-1">
-                        {item.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+      {/* Video Intro Controller Modal (When intro is active) */}
+      {isIntroMode && (
+        <div className="relative z-30 w-full max-w-md mx-auto my-auto p-3.5 rounded-2xl backdrop-blur-2xl shadow-2xl animate-fadeIn text-left bg-white/95 dark:bg-slate-900/95 border border-blue-200/90 dark:border-white/20 pointer-events-auto">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-white/10">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500" />
+              </span>
+              <span className="text-xs font-black font-play text-[#1E1B4B] dark:text-white">
+                Đang phát: Lời Chào Giới Thiệu Chuyên Gia
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={handleCancelIntro}
+              className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold transition cursor-pointer bg-slate-100 hover:bg-rose-50 hover:text-rose-600 dark:bg-slate-800 text-slate-500 dark:text-slate-300"
+            >
+              ✕
+            </button>
+          </div>
 
-              {/* Slide Action Buttons */}
-              <div className="flex items-center gap-3 pt-3 border-t border-slate-200/80 dark:border-white/10 mt-3 flex-wrap sm:flex-nowrap">
-                <button
-                  type="button"
-                  onClick={activeSlideData.primaryBtnAction}
-                  className="flex-1 min-h-[40px] px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-blue-500/25 active:scale-95 transition cursor-pointer"
-                >
-                  <WebIcon name={activeSlideData.primaryBtnIcon} className="w-4 h-4" />
-                  <span>{activeSlideData.primaryBtnText}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={activeSlideData.secondaryBtnAction}
-                  className="flex-1 min-h-[40px] px-4 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 border border-slate-300 dark:border-white/15 shadow-sm active:scale-95 transition cursor-pointer"
-                >
-                  <span>{activeSlideData.secondaryBtnText}</span>
-                </button>
-              </div>
+          <div className="w-full space-y-1 my-2">
+            <div
+              className="w-full rounded-full h-1.5 overflow-hidden cursor-pointer relative bg-slate-200 dark:bg-slate-700"
+              onClick={handleSeek}
+            >
+              <div
+                className="h-1.5 rounded-full transition-all duration-150 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
+              <span>{currentTime}</span>
+              <span>{duration}</span>
             </div>
           </div>
-        )}
+
+          <div className="flex items-center justify-between gap-1.5 pt-0.5">
+            <button
+              type="button"
+              onClick={handleTogglePlay}
+              className="px-2.5 py-1 rounded-lg font-bold text-[11px] flex items-center gap-1 shadow-xs transition cursor-pointer active:scale-95 bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              {isPlaying ? <Pause className="w-3 h-3 fill-current" /> : <Play className="w-3 h-3 fill-current" />}
+              <span>{isPlaying ? 'Tạm dừng' : 'Phát tiếp'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleToggleMute}
+              className="px-2.5 py-1 rounded-lg font-bold text-[11px] flex items-center gap-1 shadow-2xs transition cursor-pointer active:scale-95 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-200"
+            >
+              {isMuted ? <VolumeX className="w-3 h-3 text-rose-500" /> : <Volume2 className="w-3 h-3 text-emerald-500" />}
+              <span>{isMuted ? 'Bật tiếng' : 'Tắt tiếng'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCancelIntro}
+              className="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold text-[11px] transition cursor-pointer active:scale-95"
+            >
+              Thoát Intro
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Main Body: Card bên dưới góc trái & Nút Giới Thiệu bên dưới góc phải */}
+      <div className="relative z-20 w-full flex-1 min-h-0 flex items-end justify-between pointer-events-none px-2 sm:px-3 md:px-4 pb-2 sm:pb-3">
+        {/* Góc dưới bên trái (Bottom Left): Xấp Thẻ 14 Trang (Tắt auto change) */}
+        <div className="pointer-events-auto flex flex-col items-start">
+          <HomeCardStacksLeft
+            currentTheme={currentTheme}
+            onNavigatePage={onNavigatePage}
+            onOpenPagesCarousel={onOpenPagesCarousel}
+          />
+        </div>
+
+        {/* Góc dưới bên phải (Bottom Right): Nút Giới Thiệu (Laser Beam Capsule Button) */}
+        <div className="pointer-events-auto flex items-end justify-end mb-1">
+          <div className="relative inline-flex items-center justify-between rounded-full p-[2px] select-none group/container transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] h-[34px] sm:h-[38px] overflow-hidden shadow-[0_0_20px_rgba(78,86,246,0.5)] ring-2 ring-indigo-400/50 pointer-events-auto shrink-0">
+            <div className="absolute -inset-[220%] animate-[spin_4s_linear_infinite] pointer-events-none bg-[conic-gradient(from_0deg,transparent_0_200deg,#4E56F6_250deg,#F125D6_300deg,#ffffff_340deg,#4E56F6_360deg)] opacity-100" />
+
+            <div className="relative z-10 inline-flex items-center justify-between w-auto h-full rounded-full bg-gradient-to-r from-[#4E56F6] via-[#8938F8] to-[#F125D6] px-2.5 py-0.5 gap-2 shadow-inner backdrop-blur-md">
+              {/* Speaker Toggle Button */}
+              <button
+                type="button"
+                onClick={handleToggleMute}
+                className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shrink-0 p-0 transition-all duration-300 cursor-pointer active:scale-95 shadow-md ${
+                  !isMuted
+                    ? 'bg-[#4E56F6] hover:bg-[#3b43e3] text-white shadow-[0_0_12px_rgba(78,86,246,0.9)]'
+                    : 'bg-[#E60026] hover:bg-red-500 text-white shadow-[0_0_12px_rgba(230,0,38,0.9)]'
+                }`}
+                title={!isMuted ? 'Tắt tiếng video' : 'Bật âm thanh video'}
+              >
+                {!isMuted ? (
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  </svg>
+                ) : (
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                  </svg>
+                )}
+              </button>
+
+              <div className="w-[1px] h-3.5 bg-white/40 shrink-0 mx-0.5 rounded-full" />
+
+              {/* Play / Pause Toggle Button */}
+              <button
+                type="button"
+                onClick={isIntroMode ? handleCancelIntro : handlePlayIntro}
+                className="flex items-center justify-center gap-1.5 px-1 py-0.5 flex-1 min-w-0 text-white font-extrabold text-[11px] sm:text-xs tracking-wide transition-all duration-300 cursor-pointer hover:opacity-95 active:scale-98"
+                title={isIntroMode ? 'Dừng phát video giới thiệu' : 'Phát video giới thiệu chuyên gia'}
+              >
+                <span className="drop-shadow-sm font-black text-[11px] sm:text-xs text-white truncate">
+                  {isIntroMode ? 'Dừng phát' : 'Giới thiệu'}
+                </span>
+                <span>
+                  {isIntroMode ? (
+                    <svg className="w-3.5 h-3.5 shrink-0 fill-current text-white" viewBox="0 0 24 24">
+                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-3.5 h-3.5 shrink-0 fill-current text-white" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  )}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

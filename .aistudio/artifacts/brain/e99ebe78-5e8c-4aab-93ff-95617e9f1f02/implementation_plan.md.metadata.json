@@ -1,0 +1,6 @@
+{
+  "summary":  "Kế hoạch triển khai 3 tính năng tương tác cao cấp cho trang Kinh Nghiệm:\n1. Hiệu ứng Dòng Chảy Ánh Sáng Trên Trục Timeline (Animated Pulse Flow) chạy tuần tự từ 2003 đến 2026+.\n2. Thẻ nổi xem trước nhanh thành tựu (Quick KPI Popover) khi rê chuột vào huy hiệu Logo công ty.\n3. Chế độ trình chiếu hành trình sự nghiệp tự động (Auto-Play Career Story Mode) với thanh tiến trình, thanh thuyết minh nổi và giọng đọc tiếng Việt tùy chọn.",
+  "updatedAt":  "2026-10-23T11:33:14.451453458Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

@@ -14,24 +14,24 @@ import { WALLPAPER_OPTIONS } from '@/data/wallpapers';
 import {
   loadCustomWallpapers,
   getDefaultWallpaperId,
+  setDefaultWallpaperId as persistDefaultWallpaperId,
   findWallpaperById,
   parseCssToReactStyle,
   loadWallpaperSettings,
   saveWallpaperSettings,
   loadDeletedWallpaperIds,
   loadFavoriteWallpaperIds,
-  extractWallpaperAccentColor,
   DEFAULT_WALLPAPER_SETTINGS,
   WallpaperAdvancedSettings,
+  getWallpaperTone,
+  isBlurredWallpaper,
+  normalizeCodepenUrl,
 } from '@/utils/wallpaperStorage';
-import {
-  AmbientSoundEngine,
-  resolveAutoAmbientTrack,
-  AmbientTrackId,
-} from '@/utils/ambientSoundEngine';
 import { AiChatModal } from '@/components/ui/AiChatModal';
 import { ThemeSelectorModal } from '@/components/ui/ThemeSelectorModal';
+import { Pages3DCarouselModal } from '@/components/ui/Pages3DCarouselModal';
 import { XRayEditor } from '@/components/ui/XRayEditor';
+import { NetworkDebugModal } from '@/components/ui/NetworkDebugModal';
 
 // Views
 import { HomeView } from '@/components/views/HomeView';
@@ -55,14 +55,18 @@ export default function HomePage() {
   const [isThemeTransitioning, setIsThemeTransitioning] = useState<boolean>(false);
   const [isAiChatOpen, setIsAiChatOpen] = useState<boolean>(false);
   const [isThemeModalOpen, setIsThemeModalOpen] = useState<boolean>(false);
+  const [isPagesCarouselOpen, setIsPagesCarouselOpen] = useState<boolean>(false);
+  const [isNetworkDebugOpen, setIsNetworkDebugOpen] = useState<boolean>(false);
   const [wallpaperClass, setWallpaperClass] = useState<string>('prism-light-bg');
   const [wallpaperStyle, setWallpaperStyle] = useState<React.CSSProperties>({});
   const [wallpaperVideo, setWallpaperVideo] = useState<string>('');
+  const [wallpaperCodepen, setWallpaperCodepen] = useState<string>('');
+  const [wallpaperRawCss, setWallpaperRawCss] = useState<string>('');
   const [activeWallpaperId, setActiveWallpaperId] = useState<string>('prism');
   const [activeWallpaperOption, setActiveWallpaperOption] = useState<WallpaperOption | undefined>(
     WALLPAPER_OPTIONS[0]
   );
-  const [defaultWallpaperId, setDefaultWallpaperId] = useState<string>('prism');
+  const [defaultWallpaperId, setDefaultWallpaperId] = useState<string>('aurora');
   const [wallpaperSettings, setWallpaperSettings] = useState<WallpaperAdvancedSettings>(
     DEFAULT_WALLPAPER_SETTINGS
   );
@@ -70,6 +74,13 @@ export default function HomePage() {
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
   const [isZenMode, setIsZenMode] = useState<boolean>(false);
   const [zenCountdown, setZenCountdown] = useState<number | null>(null);
+
+  // Wallpaper Slideshow Live State & Dynamic Island Pill Toast
+  const [slideshowProgress, setSlideshowProgress] = useState<number>(0);
+  const [slideshowSecondsLeft, setSlideshowSecondsLeft] = useState<number>(30);
+  const [pillToast, setPillToast] = useState<{ name: string; tag: string; type: string } | null>(null);
+  const pillToastTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const slideshowStartTimeRef = useRef<number>(Date.now());
   const contentDisplayRef = useRef<HTMLDivElement | null>(null);
   const activeScrollTargetRef = useRef<HTMLElement | null>(null);
   const activeWallpaperIdRef = useRef<string>(activeWallpaperId);
@@ -81,57 +92,7 @@ export default function HomePage() {
     wallpaperSettingsRef.current = wallpaperSettings;
   }, [wallpaperSettings]);
 
-  const [cardMousePos, setCardMousePos] = useState<{ x: number; y: number; active: boolean }>({
-    x: 0,
-    y: 0,
-    active: false,
-  });
-
   const currentWeather = WEATHER_PRESETS[weatherIdx] || WEATHER_PRESETS[0];
-  const activeAccent = extractWallpaperAccentColor(activeWallpaperOption);
-
-  // Resolved Ambient Soundscape Track (auto-detects from weather & wallpaper or uses manual selection)
-  const resolvedAmbientTrack: AmbientTrackId =
-    wallpaperSettings.ambientSoundMode === 'auto'
-      ? resolveAutoAmbientTrack(
-          activeWallpaperOption,
-          currentWeather?.condition,
-          wallpaperSettings.weatherSyncEnabled
-        )
-      : wallpaperSettings.ambientSoundMode;
-
-  useEffect(() => {
-    if (wallpaperSettings.ambientSoundEnabled) {
-      AmbientSoundEngine.startTrack(resolvedAmbientTrack, wallpaperSettings.ambientSoundVolume);
-    } else {
-      AmbientSoundEngine.stop();
-    }
-  }, [
-    wallpaperSettings.ambientSoundEnabled,
-    wallpaperSettings.ambientSoundVolume,
-    resolvedAmbientTrack,
-  ]);
-
-  // Pomodoro Focus / Break Wallpaper Sync Timer state
-  const [pomodoroRunning, setPomodoroRunning] = useState<boolean>(false);
-  const [pomodoroPhase, setPomodoroPhase] = useState<'focus' | 'break'>('focus');
-  const [pomodoroSecondsLeft, setPomodoroSecondsLeft] = useState<number>(25 * 60);
-
-  // Keep Pomodoro seconds synced with configured duration when timer is paused at full duration
-  useEffect(() => {
-    if (!pomodoroRunning) {
-      const targetMins =
-        pomodoroPhase === 'focus'
-          ? wallpaperSettings.pomodoroFocusMinutes || 25
-          : wallpaperSettings.pomodoroBreakMinutes || 5;
-      setPomodoroSecondsLeft(targetMins * 60);
-    }
-  }, [
-    pomodoroRunning,
-    pomodoroPhase,
-    wallpaperSettings.pomodoroFocusMinutes,
-    wallpaperSettings.pomodoroBreakMinutes,
-  ]);
 
   // Trigger Zen Mode (Full-screen Wallpaper Preview by hiding Header, Footer & Center Card)
   const handleTriggerZenMode = useCallback((durationSeconds?: number) => {
@@ -223,17 +184,52 @@ export default function HomePage() {
     setWeatherIdx((prev) => (prev + 1) % WEATHER_PRESETS.length);
   };
 
-  // Apply a WallpaperOption to the background layer
-  const applyWallpaperOption = useCallback((wp: WallpaperOption) => {
+  // Apply a WallpaperOption to the background layer & persist long-term in localStorage (no cookies)
+  const applyWallpaperOption = useCallback((wp: WallpaperOption, persist: boolean = true) => {
     setActiveWallpaperId(wp.id);
     setActiveWallpaperOption(wp);
 
+    if (persist && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('hungthai_active_wallpaper_id', wp.id);
+      } catch (err) {
+        console.warn('Could not persist wallpaper to localStorage:', err);
+      }
+    }
+
+    // Reset countdown clock upon applying a wallpaper
+    slideshowStartTimeRef.current = Date.now();
+
+    // Subtle Dynamic Island Pill Toast trigger
+    if (wallpaperSettingsRef.current.slideshowPillToastEnabled ?? true) {
+      const isBlurred = isBlurredWallpaper(wp);
+      setPillToast({
+        name: wp.name,
+        tag: isBlurred ? '🌫️ Nền Mờ' : getWallpaperTone(wp) === 'light' ? 'Nền Sáng' : 'Nền Tối',
+        type: wp.type.toUpperCase(),
+      });
+      if (pillToastTimerRef.current) clearTimeout(pillToastTimerRef.current);
+      pillToastTimerRef.current = setTimeout(() => {
+        setPillToast(null);
+      }, 2400);
+    }
+
     if (wp.type === 'video') {
       setWallpaperVideo(wp.value);
+      setWallpaperCodepen('');
+      setWallpaperRawCss('');
+      setWallpaperClass('');
+      setWallpaperStyle({});
+    } else if (wp.type === 'codepen' || wp.value.includes('codepen.io')) {
+      setWallpaperVideo('');
+      setWallpaperCodepen(normalizeCodepenUrl(wp.value));
+      setWallpaperRawCss('');
       setWallpaperClass('');
       setWallpaperStyle({});
     } else if (wp.type === 'image') {
       setWallpaperVideo('');
+      setWallpaperCodepen('');
+      setWallpaperRawCss('');
       setWallpaperClass('');
       setWallpaperStyle({
         backgroundImage: `url('${wp.value}')`,
@@ -243,15 +239,26 @@ export default function HomePage() {
       });
     } else if (wp.type === 'class') {
       setWallpaperVideo('');
+      setWallpaperCodepen('');
+      setWallpaperRawCss('');
       setWallpaperClass(wp.value);
       setWallpaperStyle({});
     } else if (wp.type === 'color') {
       setWallpaperVideo('');
+      setWallpaperCodepen('');
+      setWallpaperRawCss('');
       setWallpaperClass('');
       setWallpaperStyle(parseCssToReactStyle(wp.value, wp.previewStyle));
     } else if (wp.type === 'gradient' || wp.type === 'css') {
       setWallpaperVideo('');
-      setWallpaperClass('');
+      setWallpaperCodepen('');
+      const hasKeyframesOrComplexCss = wp.value.includes('@keyframes') || wp.value.includes('&::before') || wp.value.includes('&::after');
+      if (hasKeyframesOrComplexCss) {
+        setWallpaperRawCss(wp.value);
+      } else {
+        setWallpaperRawCss('');
+      }
+      setWallpaperClass(wp.className || '');
       setWallpaperStyle(parseCssToReactStyle(wp.value, wp.previewStyle));
     }
   }, []);
@@ -294,195 +301,202 @@ export default function HomePage() {
         }
       }
 
+      // Phân loại và lọc hình nền phù hợp cho giao diện Tối (Dark Neon) hoặc Sáng (Light Glass) khi trình chiếu
+      const themeMode = wallpaperSettingsRef.current.slideshowThemeMode || 'auto';
+      if (themeMode === 'auto') {
+        const targetTone = currentTheme === 'dark-neon' ? 'dark' : 'light';
+        const toneFiltered = pool.filter((wp) => getWallpaperTone(wp) === targetTone);
+        if (toneFiltered.length > 0) {
+          pool = toneFiltered;
+        }
+      } else if (themeMode === 'light-only') {
+        const lightOnly = pool.filter((wp) => getWallpaperTone(wp) === 'light');
+        if (lightOnly.length > 0) {
+          pool = lightOnly;
+        }
+      } else if (themeMode === 'dark-only') {
+        const darkOnly = pool.filter((wp) => getWallpaperTone(wp) === 'dark');
+        if (darkOnly.length > 0) {
+          pool = darkOnly;
+        }
+      } else if (themeMode === 'time-of-day') {
+        // Trình Chiếu Theo Khung Giờ Thực: 6:00 - 18:00 tông sáng/pastel, 18:00 - 6:00 tông tối/neon
+        const hour = new Date().getHours();
+        const isDaytime = hour >= 6 && hour < 18;
+        const targetTone = isDaytime ? 'light' : 'dark';
+        const timeFiltered = pool.filter((wp) => getWallpaperTone(wp) === targetTone);
+        if (timeFiltered.length > 0) {
+          pool = timeFiltered;
+        }
+      }
+
       const currentIdx = pool.findIndex((w) => w.id === activeWallpaperIdRef.current);
       const nextIdx = (currentIdx + 1) % pool.length;
+      slideshowStartTimeRef.current = Date.now();
       applyWallpaperOption(pool[nextIdx]);
     } catch (e) {
       console.warn('Slideshow step error:', e);
     }
-  }, [applyWallpaperOption]);
+  }, [applyWallpaperOption, currentTheme]);
 
-  // Day/Night Dynamic Wallpaper auto-switcher (06:00-17:59 = Day, 18:00-05:59 = Night)
+  // Wallpaper Slideshow Mode timer with Live Countdown Progress Bar
   useEffect(() => {
-    if (!wallpaperSettings.dayNightEnabled) return;
-
-    const applyByCurrentHour = async () => {
-      const hour = new Date().getHours();
-      const isDaytime = hour >= 6 && hour < 18;
-      const targetId = isDaytime
-        ? wallpaperSettings.dayWallpaperId || 'aurora'
-        : wallpaperSettings.nightWallpaperId || 'css-aurora-borealis';
-
-      const customWallpapers = await loadCustomWallpapers();
-      const targetWp = findWallpaperById(targetId, customWallpapers);
-      if (targetWp && activeWallpaperIdRef.current !== targetWp.id) {
-        applyWallpaperOption(targetWp);
-      }
-    };
-
-    applyByCurrentHour();
-    const timer = window.setInterval(applyByCurrentHour, 60_000);
-    return () => window.clearInterval(timer);
-  }, [
-    wallpaperSettings.dayNightEnabled,
-    wallpaperSettings.dayWallpaperId,
-    wallpaperSettings.nightWallpaperId,
-    applyWallpaperOption,
-  ]);
-
-  // Helper to apply wallpaper by ID from custom + built-in list
-  const applyWallpaperById = useCallback(
-    async (targetId: string) => {
-      try {
-        const customWallpapers = await loadCustomWallpapers();
-        const found = findWallpaperById(targetId, customWallpapers);
-        if (found) {
-          applyWallpaperOption(found);
-        }
-      } catch {
-        // ignore
-      }
-    },
-    [applyWallpaperOption]
-  );
-
-  // Toggle or switch Pomodoro Focus / Break mode and sync wallpaper immediately
-  const handleTogglePomodoro = useCallback(
-    (nextRunning?: boolean, forcePhase?: 'focus' | 'break') => {
-      SoundEngine.playTap();
-      const targetPhase = forcePhase || pomodoroPhase;
-      const shouldRun = typeof nextRunning === 'boolean' ? nextRunning : !pomodoroRunning;
-
-      if (forcePhase && forcePhase !== pomodoroPhase) {
-        setPomodoroPhase(forcePhase);
-        const mins =
-          forcePhase === 'focus'
-            ? wallpaperSettingsRef.current.pomodoroFocusMinutes || 25
-            : wallpaperSettingsRef.current.pomodoroBreakMinutes || 5;
-        setPomodoroSecondsLeft(mins * 60);
-      }
-
-      setPomodoroRunning(shouldRun);
-
-      if (shouldRun) {
-        const targetWpId =
-          targetPhase === 'focus'
-            ? wallpaperSettingsRef.current.pomodoroFocusWallpaperId || 'css-deep-space'
-            : wallpaperSettingsRef.current.pomodoroBreakWallpaperId || 'aurora';
-        applyWallpaperById(targetWpId);
-      }
-    },
-    [pomodoroPhase, pomodoroRunning, applyWallpaperById]
-  );
-
-  const handleResetPomodoro = useCallback(() => {
-    SoundEngine.playTap();
-    setPomodoroRunning(false);
-    const mins =
-      pomodoroPhase === 'focus'
-        ? wallpaperSettingsRef.current.pomodoroFocusMinutes || 25
-        : wallpaperSettingsRef.current.pomodoroBreakMinutes || 5;
-    setPomodoroSecondsLeft(mins * 60);
-  }, [pomodoroPhase]);
-
-  // Pomodoro 1-second countdown & automatic phase transition (Focus <-> Break) with Wallpaper Sync
-  useEffect(() => {
-    if (!pomodoroRunning) return;
-
-    const timer = window.setInterval(() => {
-      setPomodoroSecondsLeft((prev) => {
-        if (prev > 1) return prev - 1;
-
-        // Phase finished -> switch between Focus and Break and apply corresponding wallpaper
-        const nextPhase: 'focus' | 'break' = pomodoroPhase === 'focus' ? 'break' : 'focus';
-        setPomodoroPhase(nextPhase);
-        SoundEngine.playPop();
-
-        const nextMins =
-          nextPhase === 'focus'
-            ? wallpaperSettingsRef.current.pomodoroFocusMinutes || 25
-            : wallpaperSettingsRef.current.pomodoroBreakMinutes || 5;
-        const targetWpId =
-          nextPhase === 'focus'
-            ? wallpaperSettingsRef.current.pomodoroFocusWallpaperId || 'css-deep-space'
-            : wallpaperSettingsRef.current.pomodoroBreakWallpaperId || 'aurora';
-
-        applyWallpaperById(targetWpId);
-        return nextMins * 60;
-      });
-    }, 1000);
-
-    return () => window.clearInterval(timer);
-  }, [pomodoroRunning, pomodoroPhase, applyWallpaperById]);
-
-  // Wallpaper Slideshow Mode timer
-  useEffect(() => {
-    if (!wallpaperSettings.slideshowEnabled) return;
+    if (!wallpaperSettings.slideshowEnabled) {
+      setSlideshowProgress(0);
+      return;
+    }
     const intervalMs = Math.max(15_000, wallpaperSettings.slideshowIntervalMinutes * 60_000);
-    const timer = window.setInterval(() => {
-      handleNextSlideshowWallpaper();
-    }, intervalMs);
+    slideshowStartTimeRef.current = Date.now();
 
-    return () => window.clearInterval(timer);
+    const ticker = window.setInterval(() => {
+      const elapsed = Date.now() - slideshowStartTimeRef.current;
+      const remainingMs = Math.max(0, intervalMs - elapsed);
+      const progress = Math.min(100, (elapsed / intervalMs) * 100);
+      setSlideshowProgress(progress);
+      setSlideshowSecondsLeft(Math.max(0, Math.ceil(remainingMs / 1000)));
+
+      if (elapsed >= intervalMs) {
+        slideshowStartTimeRef.current = Date.now();
+        handleNextSlideshowWallpaper();
+      }
+    }, 100);
+
+    return () => window.clearInterval(ticker);
   }, [
     wallpaperSettings.slideshowEnabled,
     wallpaperSettings.slideshowIntervalMinutes,
     handleNextSlideshowWallpaper,
   ]);
 
-  // On mount: Load theme, advanced wallpaper settings & default wallpaper from persistent storage
+  // Phím Tắt Toàn Cục Điều Khiển Trình Chiếu (Global Keyboard Shortcuts)
+  // Space hoặc P: Bật/Tạm dừng trình chiếu
+  // Mũi tên ->: Chuyển ngay sang hình nền kế tiếp
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.isContentEditable ||
+          target.closest('[role="dialog"]') ||
+          target.closest('#ai-chat-modal'))
+      ) {
+        return;
+      }
+
+      if (e.code === 'Space' || e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        setWallpaperSettings((prev) => {
+          const nextEnabled = !prev.slideshowEnabled;
+          const updated = { ...prev, slideshowEnabled: nextEnabled };
+          saveWallpaperSettings(updated);
+          setPillToast({
+            name: nextEnabled ? 'Đã bật Trình Chiếu Nền' : 'Đã tạm dừng Trình Chiếu',
+            tag: nextEnabled ? 'Phím tắt [P/Space]' : 'Tạm dừng',
+            type: 'SLIDESHOW',
+          });
+          if (pillToastTimerRef.current) clearTimeout(pillToastTimerRef.current);
+          pillToastTimerRef.current = setTimeout(() => setPillToast(null), 2400);
+          return updated;
+        });
+      } else if (e.key === 'ArrowRight' && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        slideshowStartTimeRef.current = Date.now();
+        handleNextSlideshowWallpaper();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleNextSlideshowWallpaper]);
+
+  // On mount: Default to light-glass (Glass UI Light Multicolor), clear legacy theme cache
   useEffect(() => {
     (async () => {
       try {
-        // 1. Load persistent theme (prioritize portfolio-theme per Master Prompt, fallback to hungthai_site_theme)
-        const rawTheme = localStorage.getItem('portfolio-theme') || localStorage.getItem('hungthai_site_theme');
-        const storedTheme: SiteTheme =
-          rawTheme === 'dark-neon'
-            ? 'dark-neon'
-            : rawTheme === 'flat-rainbow'
-            ? 'flat-rainbow'
-            : 'light-glass';
+        // 1. Load persistent theme from localStorage
+        let storedTheme: SiteTheme = 'light-glass';
+        try {
+          const saved = localStorage.getItem('hungthai_site_theme') as SiteTheme | null;
+          if (saved === 'dark-neon' || saved === 'light-glass' || saved === 'luminous-glass') {
+            storedTheme = saved;
+          }
+        } catch {}
+
         setCurrentTheme(storedTheme);
         document.documentElement.setAttribute('data-theme', storedTheme);
-        document.documentElement.classList.toggle('dark', storedTheme === 'dark-neon');
+        if (storedTheme === 'dark-neon') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+
+        // 1.1 Khôi phục persistent Display settings làm mặc định
+        try {
+          const savedPercent = localStorage.getItem('hungthai_font_scale_percent');
+          let scaleVal = 100;
+          if (savedPercent) {
+            const parsed = parseInt(savedPercent, 10);
+            if (!isNaN(parsed) && parsed >= 70 && parsed <= 160) {
+              scaleVal = parsed;
+            }
+          }
+          const scaleRatio = scaleVal / 100;
+          let scaleKey: 'sm' | 'md' | 'lg' | '2xl' = 'md';
+          if (scaleVal <= 85) scaleKey = 'sm';
+          else if (scaleVal >= 125) scaleKey = '2xl';
+          else if (scaleVal >= 110) scaleKey = 'lg';
+
+          document.documentElement.style.fontSize = `${(16 * scaleRatio).toFixed(1)}px`;
+          document.documentElement.style.setProperty('--a11y-fs', scaleRatio.toFixed(2));
+          document.documentElement.setAttribute('data-font-scale', scaleKey);
+
+          // A11y accessibility flags
+          if (localStorage.getItem('hungthai_a11y_high_contrast') === '1') {
+            document.documentElement.classList.add('a11y-high-contrast');
+          }
+          if (localStorage.getItem('hungthai_a11y_highlight_links') === '1') {
+            document.documentElement.classList.add('a11y-highlight-links');
+          }
+          if (localStorage.getItem('hungthai_a11y_wide_lines') === '1') {
+            document.documentElement.classList.add('a11y-wide-line-height');
+          }
+        } catch {}
 
         // 2. Load advanced wallpaper settings
         const loadedSettings = await loadWallpaperSettings();
         setWallpaperSettings(loadedSettings);
 
-        // 3. Load custom wallpapers & default wallpaper
+        // 3. Load custom wallpapers & restore active wallpaper from localStorage (long-term, no cookies)
         const customWallpapers = await loadCustomWallpapers();
 
-        // If Day/Night Dynamic Mode is active, apply the time-appropriate wallpaper
-        if (loadedSettings.dayNightEnabled) {
-          const hour = new Date().getHours();
-          const isDaytime = hour >= 6 && hour < 18;
-          const targetId = isDaytime
-            ? loadedSettings.dayWallpaperId || 'aurora'
-            : loadedSettings.nightWallpaperId || 'css-aurora-borealis';
-          const targetWp = findWallpaperById(targetId, customWallpapers);
-          if (targetWp) {
-            applyWallpaperOption(targetWp);
-            return;
-          }
+        let persistentWpId = '';
+        if (typeof window !== 'undefined') {
+          persistentWpId =
+            localStorage.getItem('hungthai_default_wallpaper_id') ||
+            localStorage.getItem('hungthai_active_wallpaper_id') ||
+            '';
+        }
+        if (!persistentWpId) {
+          persistentWpId = await getDefaultWallpaperId();
         }
 
-        const defId = await getDefaultWallpaperId();
-        if (defId) {
-          setDefaultWallpaperId(defId);
-          const found = findWallpaperById(defId, customWallpapers);
+        if (persistentWpId) {
+          setDefaultWallpaperId(persistentWpId);
+          const found = findWallpaperById(persistentWpId, customWallpapers);
           if (found) {
-            applyWallpaperOption(found);
+            applyWallpaperOption(found, false);
             return;
           }
         }
 
-        // Default wallpaper based on theme if not custom set
+        // Default wallpaper for current theme
         if (storedTheme === 'dark-neon') {
           setWallpaperClass('dark-neon-bg');
-        } else if (storedTheme === 'flat-rainbow') {
-          setWallpaperClass('');
-          setWallpaperStyle({ backgroundColor: '#f8fafc' });
+        } else if (storedTheme === 'luminous-glass') {
+          setWallpaperClass('luminous-mesh-bg');
         } else {
           setWallpaperClass('prism-light-bg');
         }
@@ -492,13 +506,13 @@ export default function HomePage() {
     })();
   }, [applyWallpaperOption]);
 
-  // Handle changing system theme (instant switch, sync storage, DOM data-theme attribute, vivid animation)
-  const handleChangeTheme = (newTheme: SiteTheme) => {
+  // Handle changing system theme (persistent in localStorage)
+  const handleChangeTheme = (newTheme?: SiteTheme) => {
     const validTheme: SiteTheme =
       newTheme === 'dark-neon'
         ? 'dark-neon'
-        : newTheme === 'flat-rainbow'
-        ? 'flat-rainbow'
+        : newTheme === 'luminous-glass'
+        ? 'luminous-glass'
         : 'light-glass';
     
     // Trigger vivid dynamic transition wave
@@ -513,32 +527,41 @@ export default function HomePage() {
 
     setCurrentTheme(validTheme);
     try {
-      localStorage.setItem('portfolio-theme', validTheme);
       localStorage.setItem('hungthai_site_theme', validTheme);
       document.documentElement.setAttribute('data-theme', validTheme);
-      document.documentElement.classList.toggle('dark', validTheme === 'dark-neon');
+      if (validTheme === 'dark-neon') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     } catch {
       // ignore
     }
 
-    // If no active custom image/video wallpaper, adapt background to theme
     if (!wallpaperVideo && Object.keys(wallpaperStyle).length === 0) {
       if (validTheme === 'dark-neon') {
         setWallpaperClass('dark-neon-bg');
-        setWallpaperStyle({});
-      } else if (validTheme === 'flat-rainbow') {
-        setWallpaperClass('');
-        setWallpaperStyle({ backgroundColor: '#f8fafc' });
+      } else if (validTheme === 'luminous-glass') {
+        setWallpaperClass('luminous-mesh-bg');
       } else {
         setWallpaperClass('prism-light-bg');
-        setWallpaperStyle({});
       }
+      setWallpaperStyle({});
     }
   };
 
-  const handleToggleTheme = () => {
-    handleChangeTheme(currentTheme === 'dark-neon' ? 'light-glass' : 'dark-neon');
-  };
+  // Keyboard shortcut: Alt+Q mở nhanh mã QR Debug Mạng Wi-Fi
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.altKey && (e.key === 'q' || e.key === 'Q')) {
+        e.preventDefault();
+        SoundEngine.playTap();
+        setIsNetworkDebugOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, []);
 
   return (
     <>
@@ -555,26 +578,63 @@ export default function HomePage() {
         wallpaperClass={wallpaperClass}
         wallpaperStyle={wallpaperStyle}
         wallpaperVideo={wallpaperVideo}
+        wallpaperCodepen={wallpaperCodepen}
+        wallpaperRawCss={wallpaperRawCss}
         theme={currentTheme}
         currentPage={currentPage}
         dimmerOpacity={wallpaperSettings.dimmerOpacity}
         blurAmount={wallpaperSettings.blurAmount}
-        parallaxEnabled={wallpaperSettings.parallaxEnabled}
-        weatherSyncEnabled={wallpaperSettings.weatherSyncEnabled}
+        parallaxEnabled={false}
+        weatherSyncEnabled={false}
         weatherCondition={currentWeather?.condition}
-        cinematicLut={wallpaperSettings.cinematicLut}
-        livingMeshEnabled={wallpaperSettings.livingMeshEnabled}
-        livingMeshSpeed={wallpaperSettings.livingMeshSpeed}
+        cinematicLut="none"
+        livingMeshEnabled={false}
+        livingMeshSpeed="normal"
+        transitionEffect={wallpaperSettings.slideshowTransitionEffect}
       />
+
+      {/* Thông Báo Mini Khi Đổi Nền (Subtle Dynamic Island Pill Toast) */}
+      {pillToast && (wallpaperSettings.slideshowPillToastEnabled ?? true) && (
+        <div className="fixed top-3.5 sm:top-4 inset-x-0 z-50 flex justify-center pointer-events-none px-4 animate-fade-in transition-all duration-300">
+          <div className="pointer-events-auto flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/85 text-white border border-white/20 backdrop-blur-2xl shadow-[0_16px_40px_rgba(0,0,0,0.55)]">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse" />
+            <div className="flex items-center gap-2 text-xs">
+              <span className="font-bold tracking-wide text-white">{pillToast.name}</span>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/15 text-cyan-300">
+                {pillToast.tag}
+              </span>
+              <span className="px-1.5 py-0.5 rounded text-[9px] font-mono uppercase bg-cyan-500/20 text-cyan-200 border border-cyan-400/30">
+                {pillToast.type}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Thanh Tiến Trình Đếm Ngược Hình Nền (Live Countdown Progress Bar) */}
+      {wallpaperSettings.slideshowEnabled && (wallpaperSettings.slideshowShowCountdown ?? true) && (
+        <div
+          className="fixed bottom-0 inset-x-0 z-40 pointer-events-none group"
+          title={`Trình chiếu hình nền tự động: còn ${slideshowSecondsLeft}s`}
+        >
+          <div className="w-full h-[3px] bg-black/20 backdrop-blur-sm overflow-hidden relative">
+            <div
+              className="h-full bg-gradient-to-r from-cyan-400 via-indigo-500 to-fuchsia-500 transition-[width] duration-100 ease-linear shadow-[0_0_8px_rgba(34,211,238,0.7)]"
+              style={{ width: `${slideshowProgress}%` }}
+            />
+          </div>
+          <div className="absolute bottom-1.5 right-3 pointer-events-auto flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold backdrop-blur-xl bg-slate-900/70 text-slate-200 border border-white/15 shadow-md select-none transition-opacity duration-200 hover:opacity-100 opacity-75">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Nền kế tiếp: {slideshowSecondsLeft}s</span>
+          </div>
+        </div>
+      )}
 
       {/* Floating Zen Mode HUD Bar (Appears when Header, Footer & Center Card are hidden) */}
       {isZenMode && (
         <div className="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4 pointer-events-none animate-fade-in">
           <div className="pointer-events-auto flex flex-wrap items-center gap-2.5 px-4 py-2.5 rounded-full bg-slate-950/75 text-white border border-white/25 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.55)]">
-            <span
-              className="w-2.5 h-2.5 rounded-full shrink-0 shadow-[0_0_10px_currentColor]"
-              style={{ backgroundColor: activeAccent.hex, color: activeAccent.hex }}
-            />
+            <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-sky-400 shadow-[0_0_10px_#38bdf8]" />
             <span className="text-xs font-bold tracking-wide">
               Zen Mode: <span className="text-cyan-300">{activeWallpaperOption?.name || 'Hình nền hiện tại'}</span>
             </span>
@@ -621,19 +681,18 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Main UI Root Layout (Header, Center Card, Footer) */}
+      {/* Main UI Root Layout (Header bám sát mép trên, Footer bám sát mép dưới) */}
       <div
         id="app-root-layout"
-        className={`w-full h-full flex flex-col justify-between items-center relative z-10 overflow-hidden transition-all duration-500 ${
+        className={`w-full h-full h-[100dvh] max-h-[100dvh] flex flex-col justify-between items-center relative z-10 overflow-hidden transition-all duration-500 py-0 pt-0 pb-0 ${
           isZenMode ? 'opacity-0 scale-[0.985] pointer-events-none select-none' : 'opacity-100 scale-100'
         }`}
       >
         {/* 
           HEADER:
-          - Chiều dài: 1200px (căn giữa mx-auto, giới hạn max-w-[calc(100%-50px)])
-          - Bám sát mép trên website (top: 0)
-          - Không bo góc trên, chỉ bo cong góc dưới trái và phải (rounded-b-[24px])
-          - Chiều cao h-[72px] bằng Footer
+          - Chiều dài: 1200px (căn giữa mx-auto, giới hạn max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)])
+          - Bám sát mép trên cùng, không bo góc trên, chỉ bo cong 2 góc dưới (rounded-b-[20px])
+          - Chiều cao h-[64px]-h-[68px]
         */}
         <Header
           pages={PAGES}
@@ -645,57 +704,31 @@ export default function HomePage() {
 
         {/* 
           CENTER CARD:
-          - Chiều dài: 1200px đồng nhất với Header và Footer (mx-auto, max-w-[calc(100%-40px)])
-          - Khoảng cách với header & footer: 15px (my-[15px])
-          - Hiệu ứng nổi 3D, đổ bóng phân tầng, tương tác chuột (Mouseover Spotlight)
+          - Chiều dài: 1200px đồng nhất với Header và Footer (mx-auto, max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)])
+          - Khoảng cách với header & footer: my-[4px] sm:my-[8px] md:my-[10px]
+          - Bo cong cả 4 góc 14px (rounded-[14px])
+          - Hiệu ứng nổi 3D, đổ bóng phân tầng cao cấp
         */}
         <main
           id="center-card"
-          onMouseMove={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            setCardMousePos({
-              x: e.clientX - rect.left,
-              y: e.clientY - rect.top,
-              active: true,
-            });
-          }}
-          onMouseLeave={() => setCardMousePos((prev) => ({ ...prev, active: false }))}
-          style={
-            wallpaperSettings.autoAccentGlow
-              ? {
-                  boxShadow: `0 20px 50px -12px rgba(${activeAccent.rgb}, 0.22), 0 0 0 1px rgba(${activeAccent.rgb}, 0.28)`,
-                }
-              : undefined
-          }
-          className="w-[1200px] max-w-[calc(100%-40px)] mx-auto my-[15px] flex-1 min-h-0 glass-panel rounded-[20px] overflow-hidden flex flex-col relative z-20 transition-all duration-500 elevated-float-card group/main"
+          className={`w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto my-[4px] sm:my-[8px] md:my-[10px] flex-1 min-h-0 glass-panel overflow-hidden flex flex-col relative z-20 transition-all duration-500 elevated-float-card group/main ${
+            currentTheme === 'dark-neon'
+              ? 'rounded-[14px] border border-cyan-400/40 shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_24px_rgba(34,211,238,0.18)]'
+              : 'rounded-[14px] border border-white/90 shadow-xl'
+          }`}
         >
-          {/* Interactive Mouseover Radial Glow Spotlight (Synchronized with Wallpaper Dominant Color when autoAccentGlow is active) */}
-          <div
-            className="glass-spotlight"
-            style={{
-              opacity: cardMousePos.active ? 1 : 0,
-              background: `radial-gradient(620px circle at ${cardMousePos.x}px ${cardMousePos.y}px, rgba(${
-                wallpaperSettings.autoAccentGlow ? activeAccent.rgb : '99, 102, 241'
-              }, 0.18), transparent 70%)`,
-            }}
-          />
-
           {/* Dynamic Page Transition Beam Indicator */}
           <div
-            key={`beam-${currentPage}`}
-            style={
-              wallpaperSettings.autoAccentGlow
-                ? {
-                    background: `linear-gradient(90deg, transparent, ${activeAccent.hex}, transparent)`,
-                    boxShadow: `0 0 14px rgba(${activeAccent.rgb}, 0.85)`,
-                  }
-                : undefined
-            }
-            className="absolute top-0 h-[2px] w-52 bg-gradient-to-r from-transparent via-cyan-400 to-indigo-500 rounded-full animate-page-beam pointer-events-none z-30 opacity-90 shadow-[0_0_12px_rgba(56,189,248,0.8)]"
+            key={`beam-${currentPage}-${currentTheme}`}
+            className={`absolute top-0 h-[2px] w-52 rounded-full animate-page-beam pointer-events-none z-30 opacity-90 ${
+              currentTheme === 'dark-neon'
+                ? 'bg-gradient-to-r from-transparent via-cyan-400 to-fuchsia-500 shadow-[0_0_14px_rgba(34,211,238,0.9)]'
+                : 'bg-gradient-to-r from-transparent via-cyan-400 to-indigo-500 shadow-[0_0_12px_rgba(56,189,248,0.8)]'
+            }`}
           />
 
           {/* Top ambient highlight line */}
-          <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-white/80 dark:via-white/30 to-transparent pointer-events-none z-10" />
+          <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none z-10" />
 
           <div
             ref={contentDisplayRef}
@@ -703,40 +736,47 @@ export default function HomePage() {
             key={`content-${currentPage}`}
             id="content-display"
             className={`animate-page-enter ${
-              currentPage === 0
-                ? 'flex-1 p-0 overflow-hidden relative flex flex-col h-full w-full'
-                : (currentPage >= 1 && currentPage <= 7) || currentPage === 12
-                ? currentPage === 7
-                ? 'flex-1 p-[15px] overflow-y-auto snap-y snap-proximity scroll-pt-[15px] scroll-smooth glass-scrollbar relative flex flex-col gap-[15px] h-full w-full'
-                : 'flex-1 p-[15px] overflow-y-auto lg:overflow-hidden snap-y snap-proximity scroll-pt-[15px] scroll-smooth glass-scrollbar relative flex flex-col gap-[15px] h-full w-full'
-                : 'flex-1 p-[15px] overflow-y-auto snap-y snap-proximity scroll-pt-[15px] scroll-smooth glass-scrollbar flex flex-col gap-[15px]'
+              currentPage === 0 || currentPage === 1
+                ? 'flex-1 p-0 overflow-hidden relative flex flex-col h-full w-full min-w-0'
+                : 'flex-1 p-4 sm:p-5 md:p-[24px] overflow-y-auto snap-y snap-proximity scroll-pt-[24px] scroll-smooth glass-scrollbar relative flex flex-col gap-4 sm:gap-5 md:gap-[24px] h-full w-full min-w-0'
             }`}
           >
             {currentPage === 0 && (
               <HomeView
+                currentTheme={currentTheme}
                 onNavigateContact={() => setCurrentPage(12)}
                 onNavigatePage={setCurrentPage}
+                onOpenPagesCarousel={() => setIsPagesCarouselOpen(true)}
               />
             )}
-            {currentPage === 1 && <LetterView />}
-            {currentPage === 2 && <AboutView />}
-            {currentPage === 3 && <EducationView />}
-            {currentPage === 4 && <DomainsView />}
-            {currentPage === 5 && <ExperienceView />}
-            {currentPage === 6 && <SkillsView />}
-            {currentPage === 7 && <ProjectsView />}
-            {currentPage === 8 && <SystemsView />}
-            {currentPage === 9 && <InterviewView />}
-            {currentPage === 10 && <HoroscopeView />}
-            {currentPage === 11 && <MemoriesView />}
-            {currentPage === 12 && <ContactView />}
+            {currentPage === 1 && <LetterView currentTheme={currentTheme} />}
+            {currentPage === 2 && <AboutView currentTheme={currentTheme} onNavigatePage={setCurrentPage} />}
+            {currentPage === 3 && <EducationView currentTheme={currentTheme} />}
+            {currentPage === 4 && <DomainsView currentTheme={currentTheme} />}
+            {currentPage === 5 && <SkillsView currentTheme={currentTheme} onNavigatePage={setCurrentPage} />}
+            {currentPage === 6 && <ExperienceView currentTheme={currentTheme} />}
+            {currentPage === 7 && <ProjectsView currentTheme={currentTheme} />}
+            {currentPage === 8 && <SystemsView currentTheme={currentTheme} />}
+            {currentPage === 9 && <InterviewView currentTheme={currentTheme} />}
+            {currentPage === 10 && <HoroscopeView currentTheme={currentTheme} />}
+            {currentPage === 11 && <MemoriesView currentTheme={currentTheme} />}
+            {currentPage === 12 && <ContactView currentTheme={currentTheme} />}
             {currentPage === 13 && (
               <WallpaperView
+                currentTheme={currentTheme}
+                onSelectTheme={handleChangeTheme}
+                onOpenThemeModal={() => setIsThemeModalOpen(true)}
+                onNavigatePage={setCurrentPage}
                 onSelectWallpaper={applyWallpaperOption}
                 activeWallpaperId={activeWallpaperId}
                 defaultWallpaperId={defaultWallpaperId}
-                onSetDefaultWallpaper={(wp) => {
+                onSetDefaultWallpaper={async (wp) => {
                   setDefaultWallpaperId(wp.id);
+                  await persistDefaultWallpaperId(wp.id);
+                  if (typeof window !== 'undefined') {
+                    localStorage.setItem('hungthai_default_wallpaper_id', wp.id);
+                    localStorage.setItem('hungthai_active_wallpaper_id', wp.id);
+                  }
                   applyWallpaperOption(wp);
                 }}
                 wallpaperSettings={wallpaperSettings}
@@ -749,13 +789,6 @@ export default function HomePage() {
                   SoundEngine.playTap();
                   setWeatherIdx(idx);
                 }}
-                activeAccent={activeAccent}
-                resolvedAmbientTrack={resolvedAmbientTrack}
-                pomodoroRunning={pomodoroRunning}
-                pomodoroPhase={pomodoroPhase}
-                pomodoroSecondsLeft={pomodoroSecondsLeft}
-                onTogglePomodoro={handleTogglePomodoro}
-                onResetPomodoro={handleResetPomodoro}
               />
             )}
           </div>
@@ -766,13 +799,7 @@ export default function HomePage() {
             onClick={handleScrollToTop}
             aria-label="Cuộn lên đầu trang"
             title="Lên đầu trang"
-            className={`absolute bottom-4 right-4 z-40 w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-xl border transition-all duration-300 ease-out shadow-[0_8px_20px_-4px_rgba(37,99,235,0.28)] ${
-              currentTheme === 'dark-neon'
-                ? 'bg-slate-900/80 border-cyan-400/50 text-cyan-300 hover:bg-cyan-500/25 hover:border-cyan-300 hover:text-white hover:shadow-[0_0_18px_rgba(34,211,238,0.45)]'
-                : currentTheme === 'flat-rainbow'
-                ? 'bg-white/95 border-indigo-200 text-indigo-600 hover:bg-indigo-600 hover:border-indigo-600 hover:text-white'
-                : 'bg-white/80 border-white/90 text-blue-600 hover:bg-gradient-to-tr hover:from-blue-600 hover:to-cyan-500 hover:text-white hover:border-transparent'
-            } ${
+            className={`absolute bottom-4 right-4 z-40 w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-xl border transition-all duration-300 ease-out shadow-[0_8px_20px_-4px_rgba(37,99,235,0.28)] bg-white/80 border-white/90 text-blue-600 hover:bg-gradient-to-tr hover:from-blue-600 hover:to-cyan-500 hover:text-white hover:border-transparent ${
               showBackToTop
                 ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto hover:-translate-y-1 active:scale-95'
                 : 'opacity-0 translate-y-3 scale-90 pointer-events-none'
@@ -785,8 +812,7 @@ export default function HomePage() {
         {/* 
           FOOTER:
           - Chiều dài: 1200px đồng nhất với Header và Center Card
-          - Bám sát phía dưới website (bottom: 0)
-          - Không bo cong góc dưới, chỉ bo cong góc trên (rounded-t-[24px])
+          - Đồng bộ bo cong cả 4 góc 20px (rounded-[20px])
           - Chiều cao h-[72px]
         */}
         <Footer
@@ -801,6 +827,8 @@ export default function HomePage() {
           onSelectTheme={handleChangeTheme}
           onOpenThemeModal={() => setIsThemeModalOpen(true)}
           onOpenAiChat={() => setIsAiChatOpen(true)}
+          onOpenPagesCarousel={() => setIsPagesCarouselOpen(true)}
+          onOpenNetworkDebug={() => setIsNetworkDebugOpen(true)}
         />
       </div>
 
@@ -817,6 +845,20 @@ export default function HomePage() {
         isOpen={isAiChatOpen}
         onClose={() => setIsAiChatOpen(false)}
         onNavigatePage={setCurrentPage}
+      />
+
+      {/* 3D Page Cylindrical Carousel Showcase Modal (CodePen Team Carousel) */}
+      <Pages3DCarouselModal
+        isOpen={isPagesCarouselOpen}
+        onClose={() => setIsPagesCarouselOpen(false)}
+        onSelectPage={setCurrentPage}
+        currentTheme={currentTheme}
+      />
+
+      {/* Network Debug QR Code Modal */}
+      <NetworkDebugModal
+        isOpen={isNetworkDebugOpen}
+        onClose={() => setIsNetworkDebugOpen(false)}
       />
 
       {/* X-Ray Editor Component */}

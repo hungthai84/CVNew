@@ -1,0 +1,162 @@
+/* ==========================================================================
+   SIMPLIFY HANDY CURSORS DESIGN SYSTEM (LIGHT & DARK MODES)
+   Assets: public/cursors/light/ and public/cursors/dark/
+   Standard Windows 32x32 size with native pixel-exact hotspots
+   ========================================================================== */
+
+/* 1. Mặc định (Light Mode & System Preference Light) */
+:root,
+[data-theme="light-glass"] {
+  --cursor-default: url('/cursors/light/01_normal_select.cur') 2 2, auto;
+  --cursor-pointer: url('/cursors/light/15_link_select.cur') 7 3, pointer;
+  --cursor-text: url('/cursors/light/06_text_select.cur') 15 16, text;
+  --cursor-disabled: url('/cursors/light/08_unavailable.cur') 2 2, not-allowed;
+  --cursor-help: url('/cursors/light/02_help_select.cur') 2 2, help;
+  --cursor-move: url('/cursors/light/13_move.cur') 16 16, move;
+  --cursor-grab: url('/cursors/light/14_alternate_select.cur') 16 2, grab;
+  --cursor-crosshair: url('/cursors/light/05_precision_select.cur') 15 15, crosshair;
+  --cursor-pen: url('/cursors/light/07_handwriting.cur') 2 2, crosshair;
+  --cursor-ns-resize: url('/cursors/light/09_vertical_resize.cur') 8 19, ns-resize;
+  --cursor-ew-resize: url('/cursors/light/10_horizontal_resize.cur') 11 8, ew-resize;
+  --cursor-nwse-resize: url('/cursors/light/11_diagonal_resize_1.cur') 16 11, nwse-resize;
+  --cursor-nesw-resize: url('/cursors/light/12_diagonal_resize_2.cur') 11 12, nesw-resize;
+  --cursor-wait: url('/cursors/light/04_busy.cur') 9 9, wait;
+  --cursor-progress: url('/cursors/light/03_working_in_background.cur') 9 9, progress;
+}
+
+/* 2. System Mode (Tự động thích ứng khi hệ điều hành người dùng bật Dark Mode) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light-glass"]) {
+    --cursor-default: url('/cursors/dark/01_normal_select.cur') 2 2, auto;
+    --cursor-pointer: url('/cursors/dark/15_link_select.cur') 7 3, pointer;
+    --cursor-text: url('/cursors/dark/06_text_select.cur') 15 16, text;
+    --cursor-disabled: url('/cursors/dark/08_unavailable.cur') 2 2, not-allowed;
+    --cursor-help: url('/cursors/dark/02_help_select.cur') 2 2, help;
+    --cursor-move: url('/cursors/dark/13_move.cur') 16 16, move;
+    --cursor-grab: url('/cursors/dark/14_alternate_select.cur') 16 2, grab;
+    --cursor-crosshair: url('/cursors/dark/05_precision_select.cur') 15 15, crosshair;
+    --cursor-pen: url('/cursors/dark/07_handwriting.cur') 2 2, crosshair;
+    --cursor-ns-resize: url('/cursors/dark/09_vertical_resize.cur') 8 19, ns-resize;
+    --cursor-ew-resize: url('/cursors/dark/10_horizontal_resize.cur') 11 8, ew-resize;
+    --cursor-nwse-resize: url('/cursors/dark/11_diagonal_resize_1.cur') 16 11, nwse-resize;
+    --cursor-nesw-resize: url('/cursors/dark/12_diagonal_resize_2.cur') 11 12, nesw-resize;
+    --cursor-wait: url('/cursors/dark/04_busy.cur') 9 9, wait;
+    --cursor-progress: url('/cursors/dark/03_working_in_background.cur') 9 9, progress;
+  }
+}
+
+/* 3. Dark Mode tường minh (.dark hoặc data-theme="dark-neon") */
+.dark,
+[data-theme="dark-neon"] {
+  --cursor-default: url('/cursors/dark/01_normal_select.cur') 2 2, auto;
+  --cursor-pointer: url('/cursors/dark/15_link_select.cur') 7 3, pointer;
+  --cursor-text: url('/cursors/dark/06_text_select.cur') 15 16, text;
+  --cursor-disabled: url('/cursors/dark/08_unavailable.cur') 2 2, not-allowed;
+  --cursor-help: url('/cursors/dark/02_help_select.cur') 2 2, help;
+  --cursor-move: url('/cursors/dark/13_move.cur') 16 16, move;
+  --cursor-grab: url('/cursors/dark/14_alternate_select.cur') 16 2, grab;
+  --cursor-crosshair: url('/cursors/dark/05_precision_select.cur') 15 15, crosshair;
+  --cursor-pen: url('/cursors/dark/07_handwriting.cur') 2 2, crosshair;
+  --cursor-ns-resize: url('/cursors/dark/09_vertical_resize.cur') 8 19, ns-resize;
+  --cursor-ew-resize: url('/cursors/dark/10_horizontal_resize.cur') 11 8, ew-resize;
+  --cursor-nwse-resize: url('/cursors/dark/11_diagonal_resize_1.cur') 16 11, nwse-resize;
+  --cursor-nesw-resize: url('/cursors/dark/12_diagonal_resize_2.cur') 11 12, nesw-resize;
+  --cursor-wait: url('/cursors/dark/04_busy.cur') 9 9, wait;
+  --cursor-progress: url('/cursors/dark/03_working_in_background.cur') 9 9, progress;
+}
+
+/* ==========================================================================
+   ÁP DỤNG BỘ CON TRỎ CHUỘT CHO TỪNG THÀNH PHẦN GIAO DIỆN
+   ========================================================================== */
+
+/* 1. Toàn bộ ứng dụng (html, body, container) */
+html,
+body,
+#__next,
+main,
+section,
+article {
+  cursor: var(--cursor-default);
+}
+
+/* 2. Thao tác nhấp chuột (Interactive Elements: Button, Link, Dropdown, Menu, Filter pills) */
+a,
+button,
+[role="button"],
+[role="tab"],
+[role="menuitem"],
+[role="option"],
+select,
+summary,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+.cursor-pointer,
+.pointer {
+  cursor: var(--cursor-pointer);
+}
+
+/* 3. Form controls (Input, Textarea, Contenteditable) */
+input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea,
+[contenteditable="true"],
+.cursor-text {
+  cursor: var(--cursor-text);
+}
+
+/* 4. Trạng thái vô hiệu hóa (Disabled / Unavailable) */
+:disabled,
+[disabled],
+[aria-disabled="true"],
+.disabled,
+.cursor-not-allowed,
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+  cursor: var(--cursor-disabled) !important;
+}
+
+/* 5. Thẻ trợ giúp / Tooltip / Hướng dẫn */
+[data-tooltip],
+abbr,
+.cursor-help,
+.help-icon,
+.tooltip-trigger {
+  cursor: var(--cursor-help);
+}
+
+/* 6. Phần tử kéo thả / Di chuyển */
+.cursor-move,
+[data-draggable="true"],
+.draggable {
+  cursor: var(--cursor-move);
+}
+
+.cursor-grab {
+  cursor: var(--cursor-grab);
+}
+
+.cursor-grab:active,
+.cursor-grabbing {
+  cursor: var(--cursor-grab);
+}
+
+/* 7. Precision & Resize */
+.cursor-crosshair {
+  cursor: var(--cursor-crosshair);
+}
+
+.cursor-ns-resize {
+  cursor: var(--cursor-ns-resize);
+}
+
+.cursor-ew-resize {
+  cursor: var(--cursor-ew-resize);
+}
+
+.cursor-wait {
+  cursor: var(--cursor-wait);
+}

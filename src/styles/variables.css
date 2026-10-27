@@ -3,75 +3,427 @@
 [data-theme="light-glass"] {
   color-scheme: light;
 
-  /* Site Fonts */
-  --font-play: 'Play', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* ========================================================
+     MASTER TYPOGRAPHY DESIGN TOKENS (CHUẨN HÓA TOÀN WEBSITE)
+     Cùng đối tượng = Cùng cấp bậc = Cùng kích thước = Cùng độ đậm
+     ======================================================== */
+  --font-family-base: 'Play', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-play: var(--font-family-base);
+
+  /* A. Tiêu đề và nội dung chính (Fluid Clamp Typography: Responsive từ 375px đến 1440px+) */
+  --font-hero: clamp(1.75rem, 1.25rem + 2.5vw, 2.5rem);           /* 28px -> 40px */
+  --font-h1: clamp(1.5rem, 1.15rem + 1.75vw, 2.125rem);           /* 24px -> 34px */
+  --font-h2: clamp(1.25rem, 1rem + 1.25vw, 1.625rem);             /* 20px -> 26px */
+  --font-h3: clamp(1.1rem, 0.95rem + 0.75vw, 1.375rem);           /* 17.6px -> 22px */
+  --font-h4: clamp(0.95rem, 0.85rem + 0.5vw, 1.125rem);           /* 15.2px -> 18px */
+  --font-h5: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);             /* 14px -> 16px */
+  --font-h6: clamp(0.8125rem, 0.775rem + 0.2vw, 0.875rem);        /* 13px -> 14px */
+
+  --font-body: clamp(0.8125rem, 0.785rem + 0.15vw, 0.875rem);      /* 13px -> 14px (Đồng bộ font text giới thiệu chuẩn) */
+  --font-body-sm: clamp(0.75rem, 0.725rem + 0.15vw, 0.875rem);     /* 12px -> 14px */
+  --font-caption: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);     /* 11px -> 12px */
+  --font-overline: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);    /* 11px -> 12px */
+
+  /* B. Thành phần giao diện (Fluid Interface Tokens) */
+  --font-nav: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);            /* 12px -> 14px */
+  --font-button: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);         /* 12px -> 14px */
+  --font-label: clamp(0.75rem, 0.725rem + 0.15vw, 0.8125rem);      /* 12px -> 13px */
+  --font-input: clamp(0.875rem, 0.825rem + 0.25vw, 1rem);          /* 14px -> 16px - chống iOS auto-zoom */
+  --font-card: clamp(0.8125rem, 0.775rem + 0.2vw, 0.875rem);        /* 13px -> 14px */
+  --font-card-title: clamp(0.9375rem, 0.85rem + 0.45vw, 1.125rem);   /* 15px -> 18px */
+  --font-stat: clamp(1.5rem, 1.15rem + 1.8vw, 2.25rem);            /* 24px -> 36px */
+  --font-stat-label: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);   /* 11px -> 12px */
+  --font-breadcrumb: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);   /* 11px -> 12px */
+  --font-tooltip: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);      /* 11px -> 12px */
+  --font-table: clamp(0.75rem, 0.725rem + 0.15vw, 0.8125rem);      /* 12px -> 13px */
+  --font-code: clamp(0.75rem, 0.725rem + 0.15vw, 0.8125rem);       /* 12px -> 13px */
+
+  /* C. Quy chuẩn Font Weight (400 - 700, không tự ý dùng 800/900) */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* D. Quy chuẩn Line-Height (bảo vệ hiển thị đầy đủ dấu tiếng Việt: mũ, ngã, sắc, nặng) */
+  --line-heading: 1.28;
+  --line-subheading: 1.36;
+  --line-body: 1.62;
+  --line-body-sm: 1.52;
+  --line-compact: 1.42;
+
+  /* E. Quy chuẩn Letter-Spacing */
+  --tracking-heading: -0.015em;
+  --tracking-body: 0em;
+  --tracking-overline: 0.04em;
+
+  /* ========================================================
+     MASTER DESIGN TOKENS: GLASS UI LIGHT MULTICOLOR
+     ======================================================== */
+  
+  /* 3.1 Nền Chính (Main Backgrounds) */
+  --page-lavender: #F5F3FF;
+  --page-white: #FFFFFF;
+  --soft-blue: #EFF6FF;
+  --soft-green: #ECFDF5;
+  --soft-yellow: #FFFBEB;
+  --soft-coral: #FFF1F2;
+  --soft-purple: #F5F3FF;
+
+  /* 3.2 Màu Nhấn (Clay & Ink Accents) */
+  --clay-blue: #60A5FA;
+  --clay-green: #34D399;
+  --clay-yellow: #FCD34D;
+  --clay-coral: #FB7185;
+  --clay-purple: #A78BFA;
+  --ink: #1E1B4B;
+
+  /* 3.3 Text Colors (Ink & Slate Hierarchy) */
+  --text-primary: #1E1B4B;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+  --text-disabled: #94A3B8;
+  --text-on-dark: #FFFFFF;
+
+  /* 7.1 Glass Parent Card Surface Tokens */
+  --page-bg: #F5F3FF;
+  --surface-bg: rgba(255, 255, 255, 0.78);
+  --glass-bg: rgba(255, 255, 255, 0.78);
+  --glass-bg-hover: rgba(255, 255, 255, 0.90);
+  --glass-border: rgba(255, 255, 255, 0.88);
+  --glass-border-subtle: rgba(226, 232, 240, 0.85);
+  --glass-blur: 16px;
+  --glass-saturate: 180%;
+  --glass-shadow: 
+    0 10px 30px -5px rgba(30, 27, 75, 0.06), 
+    0 4px 12px -2px rgba(30, 27, 75, 0.04), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.95);
+  --glass-shadow-hover: 
+    0 16px 36px -6px rgba(30, 27, 75, 0.09), 
+    0 6px 16px -3px rgba(30, 27, 75, 0.05), 
+    inset 0 1px 1px rgba(255, 255, 255, 0.98);
+
+  /* 7.2 Sub-Cards: 5 Multicolor Pastel Glass Tokens */
+  --blue-glass-bg: rgba(239, 246, 255, 0.75);
+  --blue-glass-border: rgba(191, 219, 254, 0.75);
+  --green-glass-bg: rgba(236, 253, 245, 0.75);
+  --green-glass-border: rgba(167, 243, 208, 0.75);
+  --yellow-glass-bg: rgba(254, 252, 232, 0.75);
+  --yellow-glass-border: rgba(253, 230, 138, 0.75);
+  --coral-glass-bg: rgba(255, 241, 242, 0.75);
+  --coral-glass-border: rgba(254, 205, 211, 0.75);
+  --purple-glass-bg: rgba(245, 243, 255, 0.75);
+  --purple-glass-border: rgba(221, 214, 254, 0.75);
 
   /* 12+ Modern Colors Palette for Light Glass UI */
-  --color-sky: #0ea5e9;       /* 1. Electric Sky Blue */
-  --color-ocean: #2563eb;     /* 2. Ocean Royal Blue */
-  --color-teal: #14b8a6;      /* 3. Mint Teal */
-  --color-emerald: #10b981;   /* 4. Emerald Green */
-  --color-lime: #84cc16;      /* 5. Fresh Lime */
-  --color-amber: #f59e0b;     /* 6. Golden Honey / Amber */
-  --color-orange: #f97316;    /* 7. Sunset Orange */
-  --color-coral: #f43f5e;     /* 8. Coral Rose */
-  --color-pink: #ec4899;      /* 9. Hot Pink / Bright Magenta */
-  --color-violet: #8b5cf6;    /* 10. Rich Violet */
-  --color-indigo: #6366f1;    /* 11. Electric Indigo */
-  --color-fuchsia: #d946ef;   /* 12. Orchid Fuchsia */
-
-  /* Glass UI Light – Multicolor Standard Palette */
-  --page-bg: #f8fafc;
-  --surface-bg: rgba(255, 255, 255, 0.72);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --accent-blue: #0ea5e9;
-  --accent-green: #10b981;
-  --accent-yellow: #f59e0b;
-  --accent-coral: #f43f5e;
-  --accent-purple: #8b5cf6;
-  --glass-border: rgba(255, 255, 255, 0.88);
-  --glass-blur: 20px;
-  --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-saturate: 195%;
-  --glass-shadow: 
-    0 20px 50px -12px rgba(99, 102, 241, 0.14),
-    0 8px 24px -4px rgba(15, 23, 42, 0.08),
-    0 0 24px 0 rgba(236, 72, 153, 0.06),
-    inset 0 1.5px 2px rgba(255, 255, 255, 0.98);
-
-  /* Aurora Gradient Ambient Colors (12 Modern Colors Weave) */
-  --aurora-base: #f8fafc;
-  --aurora-radial-1: rgba(244, 63, 94, 0.25);   /* Coral Rose */
-  --aurora-radial-2: rgba(14, 165, 233, 0.26);  /* Electric Sky */
-  --aurora-radial-3: rgba(245, 158, 11, 0.22);  /* Golden Amber */
-  --aurora-radial-4: rgba(16, 185, 129, 0.24);  /* Emerald Green */
-  --aurora-radial-5: rgba(139, 92, 246, 0.26);  /* Rich Violet */
-  --aurora-radial-6: rgba(217, 70, 239, 0.22);  /* Orchid Fuchsia */
-  --aurora-radial-7: rgba(20, 184, 166, 0.22);  /* Mint Teal */
-  --aurora-radial-8: rgba(249, 115, 22, 0.20);  /* Sunset Orange */
-  --aurora-radial-9: rgba(99, 102, 241, 0.25);  /* Electric Indigo */
-  --aurora-radial-10: rgba(132, 204, 22, 0.18); /* Fresh Lime */
-  --aurora-radial-11: rgba(37, 99, 235, 0.22);  /* Ocean Blue */
-  --aurora-radial-12: rgba(236, 72, 153, 0.22); /* Hot Pink */
+  --color-sky: #0ea5e9;
+  --color-ocean: #2563eb;
+  --color-teal: #14b8a6;
+  --color-emerald: #10b981;
+  --color-lime: #84cc16;
+  --color-amber: #f59e0b;
+  --color-orange: #f97316;
+  --color-coral: #f43f5e;
+  --color-pink: #ec4899;
+  --color-violet: #8b5cf6;
+  --color-indigo: #6366f1;
+  --color-fuchsia: #d946ef;
 
   /* Primary Brand Colors */
-  --color-primary: #0284c7;
-  --color-secondary: #8b5cf6;
-  --color-accent: #f43f5e;
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-danger: #f43f5e;
+  --color-primary: #60A5FA;
+  --color-secondary: #A78BFA;
+  --color-accent: #FB7185;
+  --color-success: #34D399;
+  --color-warning: #FCD34D;
+  --color-danger: #FB7185;
+
+  /* Radius Tokens - Chuẩn hóa toàn bộ website card bo cong 14px */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 14px;
+  --radius-2xl: 14px;
+  --card-radius: 14px;
+  --radius-full: 9999px;
+
+  /* Focus & Interaction Tokens */
+  --focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.45);
+  --focus-ring-purple: 0 0 0 3px rgba(167, 139, 250, 0.45);
+
+  /* Aurora Gradient Ambient Colors */
+  --aurora-base: #F5F3FF;
+  --aurora-radial-1: rgba(251, 113, 133, 0.12);
+  --aurora-radial-2: rgba(96, 165, 250, 0.14);
+  --aurora-radial-3: rgba(252, 211, 77, 0.10);
+  --aurora-radial-4: rgba(52, 211, 153, 0.12);
+  --aurora-radial-5: rgba(167, 139, 250, 0.14);
+  --aurora-radial-6: rgba(217, 70, 239, 0.10);
+  --aurora-radial-7: rgba(20, 184, 166, 0.10);
+  --aurora-radial-8: rgba(249, 115, 22, 0.08);
+  --aurora-radial-9: rgba(99, 102, 241, 0.12);
+  --aurora-radial-10: rgba(132, 204, 22, 0.08);
+  --aurora-radial-11: rgba(37, 99, 235, 0.10);
+  --aurora-radial-12: rgba(236, 72, 153, 0.10);
 
   /* Book / 3D Card Defaults */
   --book-card-bg: rgba(255, 255, 255, 0.94);
   --book-border: rgba(255, 255, 255, 0.90);
 
   /* C-Level Bento Wave Cards */
-  --card-theme-color: #0284c7;
-  --card-wave-color: rgba(14, 165, 233, 0.28);
-  --card-wave-soft: rgba(14, 165, 233, 0.08);
-  --card-wave-glow: rgba(14, 165, 233, 0.38);
+  --card-theme-color: #60A5FA;
+  --card-wave-color: rgba(96, 165, 250, 0.22);
+  --card-wave-soft: rgba(96, 165, 250, 0.06);
+  --card-wave-glow: rgba(96, 165, 250, 0.32);
+}
+
+/* ========================================================
+   LIGHT GLASS MULTICOLOR DASHBOARD UI DESIGN SYSTEM
+   Theme: Light Glass Multicolor Dashboard (light-glass-dashboard)
+   ======================================================== */
+[data-theme="light-glass-dashboard"] {
+  color-scheme: light;
+
+  /* 1. Background Palette */
+  --page-bg: #EAF4FF;
+  --bg-main: #EAF4FF;
+  --bg-secondary: #F1F5FF;
+  --surface-bg: rgba(255, 255, 255, 0.76);
+  --surface-strong: rgba(255, 255, 255, 0.90);
+  --lavender-surface: #F5F3FF;
+  --white-surface: #FFFFFF;
+  --ice-blue: #DCEEFF;
+  --soft-blue: #EFF6FF;
+  --soft-green: #ECFDF5;
+  --soft-yellow: #FFFBEB;
+  --soft-coral: #FFF1F2;
+  --soft-purple: #F5F3FF;
+
+  /* Typography / Text Colors */
+  --primary-ink: #1E3A6D;
+  --secondary-text: #58749A;
+  --muted-text: #7890B0;
+  --text-primary: #1E3A6D;
+  --text-secondary: #58749A;
+  --text-muted: #7890B0;
+  --text-disabled: #94A3B8;
+  --text-on-dark: #FFFFFF;
+
+  /* 2. Accent Colors */
+  --color-blue: #3B82F6;
+  --color-cyan: #22C1DC;
+  --color-green: #34D399;
+  --color-yellow: #FCD34D;
+  --color-orange: #FB923C;
+  --color-coral: #FB7185;
+  --color-purple: #A78BFA;
+  --color-teal: #2DD4BF;
+  --color-primary: #3B82F6;
+  --color-secondary: #22C1DC;
+  --color-accent: #22C1DC;
+  --color-success: #34D399;
+  --color-warning: #FCD34D;
+  --color-danger: #FB7185;
+
+  /* 3. Glass Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.76);
+  --glass-bg-hover: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(255, 255, 255, 0.92);
+  --glass-border-subtle: rgba(96, 165, 250, 0.20);
+  --glass-blur: 16px;
+  --glass-saturate: 180%;
+  --glass-shadow: 0 8px 28px rgba(62, 115, 180, 0.10);
+  --glass-shadow-hover: 0 12px 32px rgba(62, 115, 180, 0.16);
+
+  /* 4. Sub-cards Glass Tokens */
+  --blue-glass-bg: rgba(220, 238, 255, 0.75);
+  --blue-glass-border: rgba(147, 197, 253, 0.65);
+  --green-glass-bg: rgba(236, 253, 245, 0.75);
+  --green-glass-border: rgba(167, 243, 208, 0.65);
+  --yellow-glass-bg: rgba(254, 252, 232, 0.75);
+  --yellow-glass-border: rgba(253, 230, 138, 0.65);
+  --coral-glass-bg: rgba(255, 241, 242, 0.75);
+  --coral-glass-border: rgba(254, 205, 211, 0.65);
+  --purple-glass-bg: rgba(245, 243, 255, 0.75);
+  --purple-glass-border: rgba(221, 214, 254, 0.65);
+
+  /* Focus & Motion */
+  --focus-ring: 0 0 0 3px rgba(34, 193, 220, 0.40);
+  --focus-ring-blue: 0 0 0 3px rgba(59, 130, 246, 0.40);
+
+  /* C-Level Bento Wave Cards */
+  --card-theme-color: #22C1DC;
+  --card-wave-color: rgba(34, 193, 220, 0.22);
+  --card-wave-soft: rgba(59, 130, 246, 0.08);
+  --card-wave-glow: rgba(34, 193, 220, 0.35);
+}
+
+/* Base Body & Layout Overrides for Light Glass Dashboard */
+[data-theme="light-glass-dashboard"] body {
+  background: linear-gradient(135deg, #EAF4FF 0%, #F1F5FF 40%, #F5F3FF 70%, #DCEEFF 100%) !important;
+  color: #1E3A6D;
+}
+
+[data-theme="light-glass-dashboard"] h1,
+[data-theme="light-glass-dashboard"] h2,
+[data-theme="light-glass-dashboard"] h3,
+[data-theme="light-glass-dashboard"] h4 {
+  color: #1E3A6D !important;
+}
+
+[data-theme="light-glass-dashboard"] .text-\[\#1E1B4B\],
+[data-theme="light-glass-dashboard"] .text-\[\#1e1b4b\] {
+  color: #1E3A6D !important;
+}
+
+[data-theme="light-glass-dashboard"] .text-slate-600,
+[data-theme="light-glass-dashboard"] .text-slate-500 {
+  color: #58749A !important;
+}
+
+[data-theme="light-glass-dashboard"] .glass-panel,
+[data-theme="light-glass-dashboard"] .card-system,
+[data-theme="light-glass-dashboard"] .theme-pastel-card {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 28px rgba(62, 115, 180, 0.10);
+}
+
+[data-theme="light-glass-dashboard"] .card-system:hover,
+[data-theme="light-glass-dashboard"] .theme-pastel-card:hover {
+  transform: translateY(-2.5px);
+  box-shadow: 0 12px 32px rgba(62, 115, 180, 0.16);
+  border-color: rgba(255, 255, 255, 0.98);
+}
+
+[data-theme="light-glass-dashboard"] .glass-scrollbar,
+[data-theme="light-glass-dashboard"] #content-display {
+  scrollbar-color: rgba(34, 193, 220, 0.6) rgba(234, 244, 255, 0.6);
+}
+
+[data-theme="light-glass-dashboard"] .glass-scrollbar::-webkit-scrollbar-track,
+[data-theme="light-glass-dashboard"] #content-display::-webkit-scrollbar-track {
+  background: rgba(234, 244, 255, 0.5);
+}
+
+[data-theme="light-glass-dashboard"] .glass-scrollbar::-webkit-scrollbar-thumb,
+[data-theme="light-glass-dashboard"] #content-display::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.65), rgba(34, 193, 220, 0.65));
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* ==========================================================================
+   THEME: SOFT MINIMAL MULTICOLOR DASHBOARD UI
+   Design System: Clean White Surface, Soft Shadows, Pastel Multi-color Accents
+   Palette: Background #E8EBF1, Surface #FFFFFF, Primary #4F6CE5, Text #26364F
+   ========================================================================== */
+[data-theme="soft-minimal"] {
+  color-scheme: light;
+
+  /* Background Colors */
+  --page-bg: #E8EBF1;
+  --bg-main: #E8EBF1;
+  --bg-secondary: #F7F8FB;
+  --bg-elevated: #FFFFFF;
+  --surface-bg: #FFFFFF;
+  --surface-secondary: #F7F8FB;
+
+  /* Surfaces & Borders */
+  --card-bg: #FFFFFF;
+  --card-border: #E7EAF1;
+  --card-shadow: 0 4px 16px rgba(38, 54, 79, 0.06);
+  --card-shadow-hover: 0 8px 24px rgba(38, 54, 79, 0.10);
+
+  /* Glass fallback */
+  --glass-bg: #FFFFFF;
+  --glass-border: #E7EAF1;
+  --glass-shadow: 0 4px 20px rgba(38, 54, 79, 0.06);
+
+  /* Primary Accent & Palette */
+  --color-primary: #4F6CE5;
+  --color-secondary: #6F91F7;
+  --color-accent: #4F6CE5;
+  --accent-orange: #FF9D45;
+  --accent-yellow: #F8D76B;
+  --accent-purple: #A99AF5;
+  --accent-teal: #43C5B7;
+  --accent-coral: #F58B9B;
+
+  /* Soft Pastel Backgrounds */
+  --soft-blue: #EEF3FF;
+  --soft-orange: #FFF1E3;
+  --soft-yellow: #FFF8DB;
+  --soft-purple: #F1EDFF;
+  --soft-teal: #E6F8F5;
+
+  /* Typography Colors */
+  --text-primary: #26364F;
+  --text-secondary: #65748B;
+  --text-muted: #94A0B3;
+  --border-color: #E7EAF1;
+  --divider-color: #E9ECF3;
+}
+
+[data-theme="soft-minimal"] body {
+  background: #E8EBF1 !important;
+  color: #26364F !important;
+}
+
+[data-theme="soft-minimal"] .glass-panel {
+  background: #FFFFFF !important;
+  border: 1px solid #E7EAF1 !important;
+  box-shadow: 0 4px 24px rgba(38, 54, 79, 0.06) !important;
+  color: #26364F !important;
+}
+
+[data-theme="soft-minimal"] .card-system,
+[data-theme="soft-minimal"] .theme-pastel-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E7EAF1 !important;
+  box-shadow: 0 2px 12px rgba(38, 54, 79, 0.04) !important;
+}
+
+[data-theme="soft-minimal"] .card-system:hover,
+[data-theme="soft-minimal"] .theme-pastel-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: #D3DAE6 !important;
+  box-shadow: 0 6px 20px rgba(38, 54, 79, 0.08) !important;
+}
+
+[data-theme="soft-minimal"] h1,
+[data-theme="soft-minimal"] h2,
+[data-theme="soft-minimal"] h3,
+[data-theme="soft-minimal"] h4,
+[data-theme="soft-minimal"] .font-play {
+  color: #26364F !important;
+}
+
+[data-theme="soft-minimal"] p,
+[data-theme="soft-minimal"] .text-slate-600,
+[data-theme="soft-minimal"] .text-slate-500 {
+  color: #65748B !important;
+}
+
+[data-theme="soft-minimal"] .text-muted,
+[data-theme="soft-minimal"] .text-slate-400 {
+  color: #94A0B3 !important;
+}
+
+/* Scrollbar */
+[data-theme="soft-minimal"] .glass-scrollbar,
+[data-theme="soft-minimal"] #content-display {
+  scrollbar-color: #6F91F7 #F7F8FB;
+}
+
+[data-theme="soft-minimal"] .glass-scrollbar::-webkit-scrollbar-track,
+[data-theme="soft-minimal"] #content-display::-webkit-scrollbar-track {
+  background: #F7F8FB;
+}
+
+[data-theme="soft-minimal"] .glass-scrollbar::-webkit-scrollbar-thumb,
+[data-theme="soft-minimal"] #content-display::-webkit-scrollbar-thumb {
+  background: #6F91F7;
+  border-radius: 999px;
 }
 
 /* ========================================================
@@ -380,28 +732,6 @@ body {
 
 .neonav-stacked:hover .neonav-item:not(:hover) {
   opacity: 0.9;
-}
-
-/* Header Floating Ambient Elements */
-.header-floating-elements {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.header-floating-circle {
-  position: absolute;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.04));
-  backdrop-filter: blur(4px);
-  animation: headerFloat 6s ease-in-out infinite;
-}
-
-@keyframes headerFloat {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-6px) rotate(180deg); }
 }
 
 /* Header Nav Item Default Theme-aware Styling (Nền trong suốt 30%, hiệu ứng đổ bóng nút) */
@@ -891,6 +1221,317 @@ body {
 }
 
 /* =========================================================================
+   THEME 1: GLASS UI LIGHT MULTICOLOR DESIGN SYSTEM (12 COMPONENT GROUPS)
+   ========================================================================= */
+
+/* COMPONENT 01: HEADER & NAVIGATION */
+[data-theme="light-glass"] header,
+[data-theme="light-glass"] .header-glass,
+[data-theme="light-glass"] .glass-nav {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.90) !important;
+  box-shadow: 0 8px 24px -4px rgba(30, 27, 75, 0.06), 0 2px 6px -1px rgba(30, 27, 75, 0.03) !important;
+}
+
+[data-theme="light-glass"] .nav-item-default {
+  color: #475569 !important;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="light-glass"] .nav-item-default:hover {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(96, 165, 250, 0.45) !important;
+  color: #1E1B4B !important;
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.15) !important;
+  transform: translateY(-1px);
+}
+
+[data-theme="light-glass"] .nav-item-default.is-active,
+[data-theme="light-glass"] .nav-item-active {
+  background: linear-gradient(135deg, rgba(245, 243, 255, 0.95) 0%, rgba(239, 246, 255, 0.95) 100%) !important;
+  border: 1.5px solid rgba(167, 139, 250, 0.6) !important;
+  color: #1E1B4B !important;
+  box-shadow: 0 4px 14px rgba(167, 139, 250, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.98) !important;
+  font-weight: 700;
+}
+
+[data-theme="light-glass"] .nav-icon-box {
+  background: rgba(245, 243, 255, 0.85) !important;
+  border: 1px solid rgba(221, 214, 254, 0.8) !important;
+  color: #7C3AED !important;
+}
+
+/* COMPONENT 02: HERO / BANNER - Light Glass Theme (Bảo tồn video nền & màu sắc nhận diện trang) */
+[data-theme="light-glass"] .theme-hero-banner,
+[data-theme="light-glass"] .hero-banner {
+  border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 12px 32px -6px rgba(30, 27, 75, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.65) !important;
+}
+
+/* COMPONENT 03: LAYOUT SYSTEM */
+[data-theme="light-glass"] body {
+  background-color: #F5F3FF !important;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(239, 246, 255, 0.75) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(245, 243, 255, 0.85) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(255, 255, 255, 0.70) 0px, transparent 60%),
+    radial-gradient(at 0% 100%, rgba(236, 253, 245, 0.65) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(255, 241, 242, 0.65) 0px, transparent 50%) !important;
+  color: #1E1B4B !important;
+}
+
+[data-theme="light-glass"] .glass-scrollbar::-webkit-scrollbar-track,
+[data-theme="light-glass"] #content-display::-webkit-scrollbar-track {
+  background: rgba(245, 243, 255, 0.5) !important;
+}
+
+[data-theme="light-glass"] .glass-scrollbar::-webkit-scrollbar-thumb,
+[data-theme="light-glass"] #content-display::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.35) !important;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+[data-theme="light-glass"] .glass-scrollbar::-webkit-scrollbar-thumb:hover,
+[data-theme="light-glass"] #content-display::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.65) !important;
+}
+
+/* COMPONENT 04: GLASS CARD SYSTEM */
+/* 7.1 Parent Glass Card */
+[data-theme="light-glass"] .card-system,
+[data-theme="light-glass"] .theme-pastel-card,
+[data-theme="light-glass"] .theme-kpi-box {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px) saturate(190%);
+  -webkit-backdrop-filter: blur(16px) saturate(190%);
+  border: 1.5px solid rgba(255, 255, 255, 0.82);
+  box-shadow: 
+    0 12px 32px -6px rgba(30, 27, 75, 0.07), 
+    0 4px 12px -2px rgba(30, 27, 75, 0.04), 
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.95);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+}
+
+[data-theme="light-glass"] .card-system:hover,
+[data-theme="light-glass"] .theme-pastel-card:hover,
+[data-theme="light-glass"] .theme-kpi-box:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.98);
+  box-shadow: 
+    0 18px 40px -6px rgba(30, 27, 75, 0.12), 
+    0 6px 16px -3px rgba(30, 27, 75, 0.06), 
+    inset 0 1.5px 2px rgba(255, 255, 255, 1);
+}
+
+/* 7.2 Sub-Cards: 5 Multicolor Pastel Glass Variations */
+[data-theme="light-glass"] .subcard-blue-glass,
+[data-theme="light-glass"] .glass-blue,
+[data-theme="light-glass"] .bg-blue-glass,
+[data-theme="light-glass-dashboard"] .subcard-blue-glass,
+[data-theme="light-glass-dashboard"] .glass-blue,
+[data-theme="light-glass-dashboard"] .bg-blue-glass {
+  background: rgba(239, 246, 255, 0.75) !important;
+  border: 1px solid rgba(191, 219, 254, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+[data-theme="light-glass"] .subcard-green-glass,
+[data-theme="light-glass"] .glass-green,
+[data-theme="light-glass"] .bg-green-glass,
+[data-theme="light-glass-dashboard"] .subcard-green-glass,
+[data-theme="light-glass-dashboard"] .glass-green,
+[data-theme="light-glass-dashboard"] .bg-green-glass {
+  background: rgba(236, 253, 245, 0.75) !important;
+  border: 1px solid rgba(167, 243, 208, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+[data-theme="light-glass"] .subcard-yellow-glass,
+[data-theme="light-glass"] .glass-yellow,
+[data-theme="light-glass"] .bg-yellow-glass,
+[data-theme="light-glass-dashboard"] .subcard-yellow-glass,
+[data-theme="light-glass-dashboard"] .glass-yellow,
+[data-theme="light-glass-dashboard"] .bg-yellow-glass {
+  background: rgba(254, 252, 232, 0.75) !important;
+  border: 1px solid rgba(253, 230, 138, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+[data-theme="light-glass"] .subcard-coral-glass,
+[data-theme="light-glass"] .glass-coral,
+[data-theme="light-glass"] .bg-coral-glass,
+[data-theme="light-glass-dashboard"] .subcard-coral-glass,
+[data-theme="light-glass-dashboard"] .glass-coral,
+[data-theme="light-glass-dashboard"] .bg-coral-glass {
+  background: rgba(255, 241, 242, 0.75) !important;
+  border: 1px solid rgba(254, 205, 211, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+[data-theme="light-glass"] .subcard-purple-glass,
+[data-theme="light-glass"] .glass-purple,
+[data-theme="light-glass"] .bg-purple-glass,
+[data-theme="light-glass-dashboard"] .subcard-purple-glass,
+[data-theme="light-glass-dashboard"] .glass-purple,
+[data-theme="light-glass-dashboard"] .bg-purple-glass {
+  background: rgba(245, 243, 255, 0.75) !important;
+  border: 1px solid rgba(221, 214, 254, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+[data-theme="light-glass-dashboard"] .subcard-cyan-glass,
+[data-theme="light-glass-dashboard"] .glass-cyan,
+[data-theme="light-glass-dashboard"] .bg-cyan-glass {
+  background: rgba(224, 247, 250, 0.75) !important;
+  border: 1px solid rgba(165, 243, 252, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* COMPONENT 05: TYPOGRAPHY */
+[data-theme="light-glass"] h1,
+[data-theme="light-glass"] h2,
+[data-theme="light-glass"] h3,
+[data-theme="light-glass"] h4,
+[data-theme="light-glass"] h5,
+[data-theme="light-glass"] h6,
+[data-theme="light-glass"] .font-play {
+  color: #1E1B4B !important;
+  font-family: var(--font-play);
+}
+
+[data-theme="light-glass-dashboard"] h1,
+[data-theme="light-glass-dashboard"] h2,
+[data-theme="light-glass-dashboard"] h3,
+[data-theme="light-glass-dashboard"] h4,
+[data-theme="light-glass-dashboard"] h5,
+[data-theme="light-glass-dashboard"] h6,
+[data-theme="light-glass-dashboard"] .font-play {
+  color: #1E3A6D !important;
+  font-family: var(--font-play);
+}
+
+[data-theme="light-glass"] strong {
+  color: #1E1B4B;
+}
+
+[data-theme="light-glass-dashboard"] strong {
+  color: #1E3A6D;
+}
+
+/* COMPONENT 07: UI COMPONENTS & CONTROLS */
+/* Buttons */
+[data-theme="light-glass"] .btn-primary,
+[data-theme="light-glass"] button.bg-primary {
+  background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(96, 165, 250, 0.35) !important;
+  border: none !important;
+}
+
+[data-theme="light-glass-dashboard"] .btn-primary,
+[data-theme="light-glass-dashboard"] button.bg-primary {
+  background: linear-gradient(135deg, #3B82F6 0%, #22C1DC 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(34, 193, 220, 0.35) !important;
+  border: none !important;
+}
+
+[data-theme="light-glass"] .btn-primary:hover,
+[data-theme="light-glass"] button.bg-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(96, 165, 250, 0.45) !important;
+}
+
+[data-theme="light-glass"] .btn-secondary {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  color: #1E1B4B !important;
+}
+
+[data-theme="light-glass"] .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-color: #60A5FA !important;
+  transform: translateY(-1px);
+}
+
+/* Form Controls */
+[data-theme="light-glass"] input,
+[data-theme="light-glass"] textarea,
+[data-theme="light-glass"] select {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1.5px solid rgba(226, 232, 240, 0.9) !important;
+  color: #1E1B4B !important;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+[data-theme="light-glass"] input::placeholder,
+[data-theme="light-glass"] textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+[data-theme="light-glass"] input:focus,
+[data-theme="light-glass"] textarea:focus,
+[data-theme="light-glass"] select:focus {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border-color: #60A5FA !important;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.28) !important;
+  outline: none !important;
+}
+
+/* Focus Ring */
+[data-theme="light-glass"] button:focus-visible,
+[data-theme="light-glass"] a:focus-visible {
+  outline: 2px solid #60A5FA !important;
+  outline-offset: 2px !important;
+}
+
+/* Modals & Dialogs */
+[data-theme="light-glass"] .modal-surface,
+[data-theme="light-glass"] .dialog-surface {
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 24px 60px -12px rgba(30, 27, 75, 0.16) !important;
+}
+
+/* COMPONENT 10: FOOTER */
+[data-theme="light-glass"] footer {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+  color: #475569 !important;
+}
+
+/* COMPONENT 11: UI STATES */
+[data-theme="light-glass"] :disabled,
+[data-theme="light-glass"] [aria-disabled="true"] {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+[data-theme="light-glass"] .is-loading-skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.6) 25%, rgba(245, 243, 255, 0.9) 50%, rgba(255, 255, 255, 0.6) 75%) !important;
+  background-size: 200% 100% !important;
+  animation: skeleton-shimmer 1.8s infinite !important;
+}
+
+/* =========================================================================
    THEME 2: GLASS UI TỐI NEON ĐA MÀU SẮC (DARK CYBER NEON WITH NEON MIRROR)
    ========================================================================= */
 
@@ -959,6 +1600,32 @@ body {
 .neon-glow-amber {
   color: #ffb800;
   filter: drop-shadow(0 0 10px #ffb800) drop-shadow(0 0 20px rgba(255, 184, 0, 0.7));
+}
+
+/* Section 6: Neon Border & Glow Variants */
+.neon-border-cyan {
+  border-color: rgba(34, 211, 238, 0.45) !important;
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.25) !important;
+}
+.neon-border-blue {
+  border-color: rgba(59, 130, 246, 0.45) !important;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.25) !important;
+}
+.neon-border-purple {
+  border-color: rgba(168, 85, 247, 0.45) !important;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.25) !important;
+}
+.neon-border-pink {
+  border-color: rgba(244, 114, 182, 0.45) !important;
+  box-shadow: 0 0 16px rgba(244, 114, 182, 0.25) !important;
+}
+.neon-border-green {
+  border-color: rgba(52, 211, 153, 0.45) !important;
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.25) !important;
+}
+.neon-border-multicolor {
+  border-color: rgba(34, 211, 238, 0.5) !important;
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.25), 0 0 20px rgba(168, 85, 247, 0.2) !important;
 }
 
 /* Floating Icons dành cho Giao Diện Sáng (Light Theme Floating Icons - 12 Sắc Màu Hiện Đại) */
@@ -1203,45 +1870,60 @@ body {
   z-index: 0;
 }
 
-/* Hiệu ứng Chữ Neon Phát Sáng (Neon Text Glow) */
-[data-theme="dark-neon"] h1,
-[data-theme="dark-neon"] h2,
-[data-theme="dark-neon"] h3,
-[data-theme="dark-neon"] h4,
-[data-theme="dark-neon"] .font-play,
-[data-theme="dark-neon"] strong {
-  color: #f8fafc !important;
-  text-shadow: 
-    0 0 10px rgba(0, 242, 254, 0.65),
-    0 0 20px rgba(139, 92, 246, 0.45),
-    0 0 35px rgba(255, 0, 127, 0.3);
+/* Khai báo color-scheme chuẩn cho trình duyệt theo từng chế độ Sáng / Tối */
+:root,
+[data-theme="light-glass"] {
+  color-scheme: light;
 }
 
-/* Hiệu ứng Glassmorphism Đa sắc cho tất cả Content Card trong Theme Tối (Trang trí mọi bề mặt, xuyên thấu nền đa sắc) */
+[data-theme="dark-neon"],
+html.dark {
+  color-scheme: dark;
+}
+
+/* Hiệu ứng Chữ Sắc Nét Trên Nền Kính Tối (Crisp Dark Neon Typography)
+   Không áp dụng !important lên .font-play và strong để bảo toàn màu nhấn của tiêu đề/icon/badge */
+[data-theme="dark-neon"] h1,
+[data-theme="dark-neon"] h2 {
+  text-shadow:
+    0 1px 10px rgba(0, 242, 254, 0.22),
+    0 2px 18px rgba(139, 92, 246, 0.16);
+}
+
+/* Hiệu ứng Glassmorphism Đa sắc cho các Content Card trong Theme Tối */
 [data-theme="dark-neon"] .card-system,
 [data-theme="dark-neon"] .card-mirror,
 [data-theme="dark-neon"] .education-book-card,
 [data-theme="dark-neon"] .theme-pastel-card,
 [data-theme="dark-neon"] .theme-kpi-box,
-[data-theme="dark-neon"] .bg-white\/40,
-[data-theme="dark-neon"] .bg-white\/50,
-[data-theme="dark-neon"] .bg-white\/60,
-[data-theme="dark-neon"] .bg-white\/70,
-[data-theme="dark-neon"] .bg-white\/75,
-[data-theme="dark-neon"] .bg-white\/80,
-[data-theme="dark-neon"] .bg-white\/85,
-[data-theme="dark-neon"] .bg-white\/90,
-[data-theme="dark-neon"] .bg-white\/95,
-[data-theme="dark-neon"] .bg-white {
-  background: rgba(15, 23, 42, 0.42) !important;
+[data-theme="dark-neon"] .bg-white\/40:not(.logo-pill-light),
+[data-theme="dark-neon"] .bg-white\/50:not(.logo-pill-light),
+[data-theme="dark-neon"] .bg-white\/60:not(.logo-pill-light),
+[data-theme="dark-neon"] .bg-white\/70:not(.logo-pill-light),
+[data-theme="dark-neon"] .bg-white\/75:not(.logo-pill-light),
+[data-theme="dark-neon"] .bg-white\/80:not(.logo-pill-light),
+[data-theme="dark-neon"] .bg-white\/85:not(.logo-pill-light) {
+  background: rgba(15, 23, 42, 0.68) !important;
   backdrop-filter: blur(16px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
   color: #f1f5f9 !important;
   box-shadow: 
     0 14px 35px -8px rgba(0, 0, 0, 0.5),
     0 0 20px rgba(0, 242, 254, 0.12),
-    inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+    inset 0 1px 1px rgba(255, 255, 255, 0.22) !important;
+}
+
+/* Bề mặt Modal, Popup, Dropdown có độ đặc cao (90% - 100%) giữ độ rõ nét cao trong Dark Mode */
+[data-theme="dark-neon"] .bg-white\/90:not(.logo-pill-light),
+[data-theme="dark-neon"] .bg-white\/95:not(.logo-pill-light),
+[data-theme="dark-neon"] .bg-white\/98:not(.logo-pill-light),
+[data-theme="dark-neon"] .bg-white:not(.logo-pill-light) {
+  background: rgba(15, 23, 42, 0.92) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #f1f5f9 !important;
 }
 
 [data-theme="dark-neon"] .elevated-float-card {
@@ -1263,6 +1945,18 @@ body {
   border-color: rgba(255, 255, 255, 0.45) !important;
 }
 
+/* Khóa hiệu ứng over mouse cho thẻ chính center-card ở Dark Mode */
+[data-theme="dark-neon"] #center-card:hover,
+[data-theme="dark-neon"] main#center-card:hover,
+[data-theme="dark-neon"] #center-card.elevated-float-card:hover {
+  transform: none !important;
+  box-shadow: 
+    0 24px 70px -10px rgba(0, 0, 0, 0.75),
+    0 0 30px -5px rgba(0, 242, 254, 0.25),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+
 /* Giữ nguyên nền sáng cho các pill chứa logo thương hiệu để logo luôn rõ nét */
 [data-theme="dark-neon"] .logo-pill-light,
 [data-theme="midnight-dark"] .logo-pill-light {
@@ -1278,18 +1972,17 @@ body {
 }
 
 /* Chuyển đổi Hero Banner, Pastel Card và KPI Box sang nền kính bán trong suốt */
-[data-theme="dark-neon"] .theme-hero-banner {
-  background: linear-gradient(120deg, rgba(15, 23, 42, 0.55) 0%, rgba(30, 27, 75, 0.5) 50%, rgba(12, 74, 110, 0.48) 100%) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+[data-theme="dark-neon"] .theme-hero-banner,
+[data-theme="dark-neon"] .hero-banner {
+  border: 1px solid rgba(34, 211, 238, 0.35) !important;
+  box-shadow: 0 16px 40px -8px rgba(7, 10, 20, 0.85), 0 0 24px rgba(34, 211, 238, 0.18) !important;
 }
 
 [data-theme="dark-neon"] .theme-pastel-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.48) 0%, rgba(24, 32, 64, 0.42) 100%) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.65) 0%, rgba(24, 32, 64, 0.52) 100%);
+  backdrop-filter: blur(18px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
 }
 
 [data-theme="dark-neon"] .theme-kpi-box {
@@ -1580,17 +2273,284 @@ body {
   color: #1e293b !important;
 }
 
-/* Hero Banner Standard Responsive CSS & Dynamic Layout Switcher (Horizontal <-> Vertical 300px <-> Compact 64px) */
-.hero-banner:not(.hero-banner-vertical):not(.hero-banner-compact) {
+/* 8. Pure Glassmorphism Vivid Surface (Kính mờ xuyên thấu — Decorative Glass Skin for Panels & Content Cards) */
+.vivid-glass-bg {
+  background-color: #0b1026;
+  background-image:
+    radial-gradient(at 8% 12%, rgba(236, 72, 153, 0.72) 0px, transparent 48%),
+    radial-gradient(at 88% 15%, rgba(6, 182, 212, 0.75) 0px, transparent 50%),
+    radial-gradient(at 50% 48%, rgba(124, 58, 237, 0.68) 0px, transparent 55%),
+    radial-gradient(at 15% 88%, rgba(59, 130, 246, 0.7) 0px, transparent 52%),
+    radial-gradient(at 86% 85%, rgba(244, 63, 94, 0.62) 0px, transparent 48%),
+    linear-gradient(135deg, #090d24 0%, #1a103c 45%, #0c2442 100%);
+  background-attachment: fixed;
+}
+
+[data-theme="vivid-glass"] {
+  color-scheme: dark;
+  --color-primary: #38bdf8;
+  --color-secondary: #f472b6;
+  --glass-surface-bg: rgba(255, 255, 255, 0.12);
+  --glass-card-scrim: linear-gradient(145deg, rgba(255, 255, 255, 0.14) 0%, rgba(15, 23, 42, 0.44) 100%);
+  --glass-border-thin: 1px solid rgba(255, 255, 255, 0.25);
+  --glass-shadow-floating: 0 20px 50px rgba(4, 9, 26, 0.45), 0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* Main floating panels and containers */
+[data-theme="vivid-glass"] .glass-panel {
+  background: rgba(255, 255, 255, 0.12) !important;
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.15) 0%, rgba(15, 23, 42, 0.38) 100%) !important;
+  backdrop-filter: blur(16px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: var(--glass-shadow-floating) !important;
+  color: #f8fafc !important;
+}
+
+/* Glassmorphism as a decorative skin for ALL content cards, KPI boxes, and inner panels */
+[data-theme="vivid-glass"] .bg-white,
+[data-theme="vivid-glass"] .bg-white\/40,
+[data-theme="vivid-glass"] .bg-white\/50,
+[data-theme="vivid-glass"] .bg-white\/60,
+[data-theme="vivid-glass"] .bg-white\/70,
+[data-theme="vivid-glass"] .bg-white\/75,
+[data-theme="vivid-glass"] .bg-white\/80,
+[data-theme="vivid-glass"] .bg-white\/85,
+[data-theme="vivid-glass"] .bg-white\/90,
+[data-theme="vivid-glass"] .bg-white\/95,
+[data-theme="vivid-glass"] .theme-pastel-card,
+[data-theme="vivid-glass"] .theme-kpi-box,
+[data-theme="vivid-glass"] .card-system,
+[data-theme="vivid-glass"] .education-book-card {
+  background: rgba(255, 255, 255, 0.12) !important;
+  background-image: var(--glass-card-scrim) !important;
+  backdrop-filter: blur(16px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(150%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 14px 36px rgba(4, 9, 26, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="vivid-glass"] .bg-slate-50,
+[data-theme="vivid-glass"] .bg-slate-50\/70,
+[data-theme="vivid-glass"] .bg-slate-50\/80,
+[data-theme="vivid-glass"] .bg-slate-100,
+[data-theme="vivid-glass"] .bg-slate-100\/80 {
+  background: rgba(255, 255, 255, 0.1) !important;
+  background-image: linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(15, 23, 42, 0.42) 100%) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  color: #f1f5f9 !important;
+}
+
+[data-theme="vivid-glass"] .theme-hero-banner {
+  background: rgba(255, 255, 255, 0.12) !important;
+  background-image: linear-gradient(125deg, rgba(255, 255, 255, 0.16) 0%, rgba(15, 23, 42, 0.48) 100%) !important;
+  backdrop-filter: blur(16px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(170%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 0 18px 44px rgba(4, 9, 26, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+}
+
+/* Readable typography over every vivid backdrop region */
+[data-theme="vivid-glass"] h1,
+[data-theme="vivid-glass"] h2,
+[data-theme="vivid-glass"] h3,
+[data-theme="vivid-glass"] h4,
+[data-theme="vivid-glass"] .font-play,
+[data-theme="vivid-glass"] strong {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.38);
+}
+
+[data-theme="vivid-glass"] .text-slate-900,
+[data-theme="vivid-glass"] .text-slate-800,
+[data-theme="vivid-glass"] .text-slate-700,
+[data-theme="vivid-glass"] .text-gray-900,
+[data-theme="vivid-glass"] .text-gray-800,
+[data-theme="vivid-glass"] .text-gray-700,
+[data-theme="vivid-glass"] .text-\[\#172554\],
+[data-theme="vivid-glass"] .text-\[\#1e1b4b\],
+[data-theme="vivid-glass"] .text-\[\#1e3a8a\],
+[data-theme="vivid-glass"] .text-\[\#0c4a6e\],
+[data-theme="vivid-glass"] .text-\[\#9a3412\],
+[data-theme="vivid-glass"] .text-\[\#9f1239\],
+[data-theme="vivid-glass"] .text-\[\#3730a3\],
+[data-theme="vivid-glass"] .text-\[\#9d174d\],
+[data-theme="vivid-glass"] .text-\[\#065f46\],
+[data-theme="vivid-glass"] .text-indigo-900,
+[data-theme="vivid-glass"] .text-indigo-950 {
+  color: #f8fafc !important;
+}
+
+[data-theme="vivid-glass"] .text-slate-600,
+[data-theme="vivid-glass"] .text-slate-500,
+[data-theme="vivid-glass"] .text-slate-400,
+[data-theme="vivid-glass"] .text-gray-600,
+[data-theme="vivid-glass"] .text-gray-500 {
+  color: #e2e8f0 !important;
+}
+
+/* Navigation items & interactive controls in vivid-glass */
+[data-theme="vivid-glass"] .nav-item-default {
+  background: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #f8fafc !important;
+}
+
+[data-theme="vivid-glass"] .nav-item-default:hover {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+}
+
+[data-theme="vivid-glass"] input,
+[data-theme="vivid-glass"] textarea,
+[data-theme="vivid-glass"] select {
+  background: rgba(15, 23, 42, 0.48) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  color: #ffffff !important;
+}
+
+/* Visible focus states for accessibility in vivid-glass */
+[data-theme="vivid-glass"] button:focus-visible,
+[data-theme="vivid-glass"] a:focus-visible,
+[data-theme="vivid-glass"] input:focus-visible,
+[data-theme="vivid-glass"] select:focus-visible,
+[data-theme="vivid-glass"] textarea:focus-visible {
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.35) !important;
+}
+
+/* Reduced-transparency & reduced-motion fallbacks */
+@media (prefers-reduced-transparency: reduce) {
+  [data-theme="vivid-glass"] .glass-panel,
+  [data-theme="vivid-glass"] .bg-white,
+  [data-theme="vivid-glass"] .bg-white\/75,
+  [data-theme="vivid-glass"] .bg-white\/80,
+  [data-theme="vivid-glass"] .bg-white\/85,
+  [data-theme="vivid-glass"] .bg-white\/90,
+  [data-theme="vivid-glass"] .bg-white\/95,
+  [data-theme="vivid-glass"] .theme-pastel-card,
+  [data-theme="vivid-glass"] .theme-kpi-box,
+  [data-theme="vivid-glass"] .card-system {
+    background: rgba(15, 23, 42, 0.94) !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="vivid-glass"] *,
+  .hero-banner {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* Animated Pulse Flow on Experience Timeline Rail (Dòng Chảy Ánh Sáng 2003 -> 2026+) */
+@keyframes timelinePulseRail {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0.2;
+  }
+}
+
+@keyframes timelineChevronGlow {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+  }
+  50% {
+    transform: scale(1.14);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95));
+  }
+}
+
+.timeline-pulse-beam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.95) 50%, transparent 100%);
+  animation: timelinePulseRail 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+.timeline-chevron-pulsing {
+  animation: timelineChevronGlow 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-pulse-beam,
+  .timeline-chevron-pulsing {
+    animation: none !important;
+  }
+}
+
+/* Chống giật vị trí cuộn (Scroll Anchoring) khi HeroBanner tự động thu gọn 64px hoặc mở rộng */
+#content-display,
+#content-display .overflow-y-auto {
+  overflow-anchor: none;
+}
+
+/* Hero Banner Standard Responsive CSS & Dynamic Layout Switcher (Horizontal 16:2 <-> Vertical 260px <-> Compact 64px) */
+.hero-banner {
+  transition:
+    min-height 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    max-height 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.28s ease;
+}
+
+.hero-banner:not(.hero-banner-vertical):not(.hero-banner-compact),
+.hero-banner.hero-banner-horizontal:not(.hero-banner-compact) {
   width: 100% !important;
-  min-height: clamp(140px, 11.5vw, 195px);
+  aspect-ratio: 16 / 2 !important;
+  min-height: 80px;
   height: auto;
   border-radius: 20px;
   overflow: visible;
 }
 
-/* Chế độ Thu Gọn Tiêu Đề Banner Siêu Gọn 64px (Compact / Mini Header Mode) */
+/* Aspect Ratio Preset Switcher: Chuẩn hóa tỉ lệ Banner ngang 16:2 */
+.hero-banner[data-banner-aspect="16:2"]:not(.hero-banner-vertical):not(.hero-banner-compact),
+.hero-banner[data-banner-aspect="16:2.5"]:not(.hero-banner-vertical):not(.hero-banner-compact),
+.hero-banner[data-banner-aspect="16:3.5"]:not(.hero-banner-vertical):not(.hero-banner-compact) {
+  aspect-ratio: 16 / 2 !important;
+  min-height: 80px;
+}
+
+@media (max-width: 639px) {
+  .hero-banner:not(.hero-banner-vertical):not(.hero-banner-compact),
+  .hero-banner.hero-banner-horizontal:not(.hero-banner-compact),
+  .hero-banner[data-banner-aspect="16:2"]:not(.hero-banner-vertical):not(.hero-banner-compact),
+  .hero-banner[data-banner-aspect="16:2.5"]:not(.hero-banner-vertical):not(.hero-banner-compact),
+  .hero-banner[data-banner-aspect="16:3.5"]:not(.hero-banner-vertical):not(.hero-banner-compact) {
+    aspect-ratio: auto !important;
+    min-height: 90px;
+    height: auto;
+  }
+}
+
+/* Chế độ Thu Gọn Tiêu Đề Banner Siêu Gọn 64px (Compact / Mini Header Mode & Auto-Collapse on Scroll >120px) */
 .hero-banner.hero-banner-compact {
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 40 !important;
   width: 100% !important;
   min-width: 100% !important;
   max-width: 100% !important;
@@ -1599,6 +2559,12 @@ body {
   max-height: 64px !important;
   border-radius: 16px !important;
   overflow: visible !important;
+}
+
+aside:has(> .hero-banner-compact) {
+  position: sticky !important;
+  top: 0px !important;
+  z-index: 40 !important;
 }
 
 /* Tinh chỉnh các nút/input bên trong thanh 64px để vừa vặn, không bị tràn chiều cao */
@@ -1623,27 +2589,37 @@ body {
   font-size: 11px !important;
 }
 
-/* Banner dọc cố định chiều rộng 300px trên Desktop và tự thích ứng trên Mobile/Tablet */
-.hero-banner.hero-banner-vertical {
-  width: 300px;
-  min-width: 300px;
-  max-width: 300px;
+/* Banner dọc theo tỉ lệ chuẩn 1.5:16 (260px) và tự thích ứng trên Mobile/Tablet */
+.hero-banner.hero-banner-vertical,
+.hero-banner[data-banner-aspect="1.5:16"],
+.hero-banner[data-banner-aspect="2:16"],
+.hero-banner[data-banner-orientation="vertical"] {
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
   height: 100%;
+  aspect-ratio: 1.5 / 16 !important;
   border-radius: 20px;
   overflow: visible;
 }
 
 @media (max-width: 1023px) {
-  .hero-banner.hero-banner-vertical {
+  .hero-banner.hero-banner-vertical,
+  .hero-banner[data-banner-aspect="1.5:16"],
+  .hero-banner[data-banner-aspect="2:16"],
+  .hero-banner[data-banner-orientation="vertical"],
+  aside[data-banner-aspect="1.5:16"],
+  aside[data-banner-aspect="2:16"] {
     width: 100% !important;
     min-width: 100% !important;
     max-width: 100% !important;
-    min-height: 240px;
-    height: auto;
+    aspect-ratio: auto !important;
+    min-height: 200px !important;
+    height: auto !important;
   }
 }
 
-/* 1. Khi trang mặc định Banner Ngang được người dùng chuyển sang Banner Dọc 300px trên Desktop (Hỗ trợ Ghim Trái / Ghim Phải) */
+/* 1. Khi trang mặc định Banner Ngang được người dùng chuyển sang Banner Dọc 260px trên Desktop (Hỗ trợ Ghim Trái / Ghim Phải) */
 @media (min-width: 1024px) {
   div:has(> .hero-banner-vertical),
   section:has(> .hero-banner-vertical) {
@@ -1651,7 +2627,7 @@ body {
     align-items: stretch !important;
   }
 
-  /* Ghim cột Banner Dọc 300px sang bên Phải cho các trang trực tiếp */
+  /* Ghim cột Banner Dọc 260px sang bên Phải cho các trang trực tiếp */
   div:has(> .hero-banner-vertical.hero-banner-pin-right),
   section:has(> .hero-banner-vertical.hero-banner-pin-right) {
     flex-direction: row-reverse !important;
@@ -1659,9 +2635,9 @@ body {
 
   div:has(> .hero-banner-vertical) > .hero-banner-vertical,
   section:has(> .hero-banner-vertical) > .hero-banner-vertical {
-    width: 300px !important;
-    min-width: 300px !important;
-    max-width: 300px !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
     height: auto !important;
     min-height: 100% !important;
     align-self: stretch !important;
@@ -1871,14 +2847,9 @@ div:has(> aside > .hero-banner-horizontal) {
   animation: cardFloatBreathe 7s ease-in-out infinite;
 }
 
-/* Glass Spotlight Mouseover Sheen (Hiệu ứng quầng sáng chuyển động theo chuột) */
+/* Glass Spotlight Mouseover Sheen - Đã tắt theo yêu cầu người dùng */
 .glass-spotlight {
-  position: absolute;
-  pointer-events: none;
-  border-radius: inherit;
-  inset: 0;
-  transition: opacity 0.35s ease;
-  z-index: 5;
+  display: none !important;
 }
 
 /* Enhanced 3D floating shadows */
@@ -1898,18 +2869,30 @@ div:has(> aside > .hero-banner-horizontal) {
   border-color: rgba(255, 255, 255, 0.98);
 }
 
+/* Khóa hiệu ứng over mouse cho thẻ chính center-card ở Light Mode */
+#center-card:hover,
+main#center-card:hover,
+#center-card.elevated-float-card:hover {
+  transform: none !important;
+  box-shadow: 
+    0 24px 68px -12px rgba(30, 27, 75, 0.2),
+    0 8px 24px -6px rgba(59, 130, 246, 0.12),
+    inset 0 1.5px 2.5px rgba(255, 255, 255, 0.95) !important;
+}
+
 /* ========================================================================= */
 /* CODEPEN CARD STACKING & HOVER DISPLACEMENT EFFECT (THẺ HỌC VẤN XẾP LỚP)  */
 /* ========================================================================= */
 .edu-deck-row {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-start;
   padding: 16px 25px 22px 25px;
   overflow-x: auto;
   overflow-y: visible;
   scroll-behavior: smooth;
   position: relative;
+  height: 100%;
 }
 
 @media (min-width: 1280px) {
@@ -1919,12 +2902,13 @@ div:has(> aside > .hero-banner-horizontal) {
 }
 
 .edu-stack-card {
-  width: 250px;
-  min-width: 250px;
-  height: 295px;
-  border-radius: 18px;
+  width: 375px;
+  min-width: 375px;
+  height: 100%;
+  min-height: 420px;
+  border-radius: 22px;
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  box-shadow: -12px 0 24px rgba(15, 23, 42, 0.12);
+  box-shadow: -14px 0 28px rgba(15, 23, 42, 0.14);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -1933,17 +2917,17 @@ div:has(> aside > .hero-banner-horizontal) {
   cursor: pointer;
   flex-shrink: 0;
   background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.92);
 }
 
 .dark .edu-stack-card {
   background: rgba(18, 18, 24, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: -12px 0 24px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: -14px 0 28px rgba(0, 0, 0, 0.5);
 }
 
 .edu-stack-card:not(:first-child) {
-  margin-left: -165px;
+  margin-left: -245px;
 }
 
 .edu-stack-card:hover {
@@ -1959,7 +2943,18 @@ div:has(> aside > .hero-banner-horizontal) {
 }
 
 .edu-stack-card:hover ~ .edu-stack-card {
-  transform: translateX(175px);
+  transform: translateX(255px);
+}
+
+.edu-stack-card.is-active {
+  z-index: 50 !important;
+  transform: translateY(-16px) scale(1.02) !important;
+  box-shadow: 0 20px 45px -8px rgba(15, 23, 42, 0.35), 0 0 25px rgba(59, 130, 246, 0.45) !important;
+  border-color: rgba(59, 130, 246, 0.8) !important;
+}
+
+.edu-stack-card.is-active ~ .edu-stack-card {
+  transform: translateX(255px) !important;
 }
 
 /* Single long deck for filtered subsets */
@@ -1992,12 +2987,12 @@ div:has(> aside > .hero-banner-horizontal) {
   height: 30px;
 }
 
-/* Base button: default elongated pill morphing into circle (114px x 46px, bo cong 999px) */
+/* Base button: default elongated pill morphing into circle (130px x 50px, bo cong 999px) */
 .avatar-morph-btn {
-  width: 114px;
-  height: 46px;
+  width: 130px;
+  height: 50px;
   border-radius: 999px;
-  padding: 4px 10px 4px 5px;
+  padding: 4px 12px 4px 6px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -2032,8 +3027,8 @@ div:has(> aside > .hero-banner-horizontal) {
 
 /* Active State: Morphs into circle & floats upward */
 .avatar-morph-btn.is-open {
-  width: 46px !important;
-  height: 46px !important;
+  width: 48px !important;
+  height: 48px !important;
   padding: 0 !important;
   border-radius: 50% !important;
   transform: translateY(-56px) scale(1.08) !important;
@@ -2070,13 +3065,13 @@ div:has(> aside > .hero-banner-horizontal) {
 }
 
 .avatar-morph-btn.is-open .avatar-morph-inner {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
 }
 
 /* Label text morph */
 .avatar-morph-text {
-  max-width: 65px;
+  max-width: 82px;
   opacity: 1;
   transform: scale(1);
   transition: max-width 0.25s ease, opacity 0.2s ease, transform 0.2s ease;
@@ -2278,68 +3273,22 @@ div:has(> aside > .hero-banner-horizontal) {
 }
 
 /* ========================================================
-   AI POPUP SQUARE CONVERGENCE / MATRIX ASSEMBLY EFFECT
-   (Hiệu ứng các ô vuông bung ra từ từ tập hợp thành popup)
+   AI POPUP SMOOTH ENTRANCE ANIMATION
    ======================================================== */
 @keyframes ai-assemble-window {
   0% {
     opacity: 0;
-    transform: scale(0.6) translateY(60px) rotate(-3deg);
-    filter: blur(14px);
-  }
-  55% {
-    opacity: 0.92;
-    transform: scale(1.025) translateY(-6px) rotate(0.6deg);
-    filter: blur(1.5px);
-  }
-  80% {
-    transform: scale(0.99) translateY(2px) rotate(0deg);
-    filter: blur(0px);
+    transform: scale(0.92) translateY(20px);
   }
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0) rotate(0deg);
-    filter: blur(0px);
-  }
-}
-
-@keyframes ai-tile-converge {
-  0% {
-    opacity: 0;
-    transform: translate(var(--tx, 0), var(--ty, 0)) scale(0.2) rotate(var(--rot, 0deg));
-    filter: blur(6px);
-  }
-  30% {
-    opacity: 0.95;
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 10px rgba(99, 102, 241, 0.6);
-  }
-  75% {
-    opacity: 0.75;
-    transform: translate(0, 0) scale(1) rotate(0deg);
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(0, 0) scale(1) rotate(0deg);
-    pointer-events: none;
+    transform: scale(1) translateY(0);
   }
 }
 
 .ai-modal-assemble {
-  animation: ai-assemble-window 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: ai-assemble-window 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform-origin: bottom right;
-}
-
-.ai-tile-matrix-particle {
-  position: absolute;
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.45), rgba(99, 102, 241, 0.55));
-  border: 1.5px solid rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 0 16px rgba(168, 85, 247, 0.5);
-  pointer-events: none;
-  animation: ai-tile-converge 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  z-index: 60;
 }
 
 /* ============================================================
@@ -2548,6 +3497,457 @@ html.theme-transitioning article {
   max-width: 25px !important;
   max-height: 25px !important;
   flex-shrink: 0 !important;
+}
+
+/* =========================================================================
+   SMART ADAPTIVE CARD LAYOUT SYSTEM (CORE ENGINE)
+   ========================================================================= */
+
+/* 1. Universal Card Adaptive Sizing */
+.smart-adaptive-card,
+.card-adaptive,
+.theme-pastel-card,
+.subcard-blue-glass,
+.subcard-green-glass,
+.subcard-yellow-glass,
+.subcard-coral-glass,
+.subcard-purple-glass,
+.subcard-cyan-glass {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: fit-content;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 2. Content Flow & Typography Natural Line Breaking */
+.smart-adaptive-card h1,
+.smart-adaptive-card h2,
+.smart-adaptive-card h3,
+.smart-adaptive-card h4,
+.smart-adaptive-card h5,
+.smart-adaptive-card h6,
+.smart-adaptive-card p,
+.smart-adaptive-card span,
+.theme-pastel-card h1,
+.theme-pastel-card h2,
+.theme-pastel-card h3,
+.theme-pastel-card h4,
+.theme-pastel-card h5,
+.theme-pastel-card h6,
+.theme-pastel-card p,
+.card-system .card-desc,
+.card-system .card-title,
+.card-system .card-fullname {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 3. Sub-card Independent Elastic Sizing */
+.smart-adaptive-subcard,
+.subcard-adaptive {
+  height: auto !important;
+  min-height: 0 !important;
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 4. Adaptive Image Behavior inside Cards */
+.smart-adaptive-card img:not([data-card-icon="true"]):not(.card-title-icon):not(.card-header-icon),
+.theme-pastel-card img:not([data-card-icon="true"]):not(.card-title-icon):not(.card-header-icon) {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* 5. Responsive Alignment Utility Classes */
+.adaptive-grid-start {
+  align-items: start !important;
+}
+
+.adaptive-grid-stretch {
+  align-items: stretch !important;
+}
+
+/* ==========================================================================
+   DOMAIN CARDS: ĐỒNG BỘ MÀU CHỮ TIÊU ĐỀ VỚI ICON TRÊN TẤT CẢ GIAO DIỆN
+   ========================================================================== */
+[data-theme] .theme-pastel-card .domain-card-title,
+[data-theme="light-glass"] .theme-pastel-card .domain-card-title,
+[data-theme="light-glass-dashboard"] .theme-pastel-card .domain-card-title,
+[data-theme="dark-neon"] .theme-pastel-card .domain-card-title,
+[data-theme="midnight-dark"] .theme-pastel-card .domain-card-title,
+[data-theme="vivid-glass"] .theme-pastel-card .domain-card-title,
+.theme-pastel-card .domain-card-title,
+.domain-card-title {
+  color: var(--card-accent-color, #0284c7) !important;
+}
+
+/* Thẻ Dịch Vụ Viễn Thông (ID 01): Màu chữ tiêu đề đồng bộ màu với icon trên tất cả giao diện */
+[data-theme] .theme-pastel-card[data-domain-id="01"] .domain-card-title,
+.theme-pastel-card[data-domain-id="01"] .domain-card-title {
+  color: #0284c7 !important;
+}
+
+[data-theme="dark-neon"] .theme-pastel-card[data-domain-id="01"] .domain-card-title,
+[data-theme="midnight-dark"] .theme-pastel-card[data-domain-id="01"] .domain-card-title {
+  color: #38bdf8 !important;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.7) !important;
+}
+
+[data-theme="dark-neon"] .theme-pastel-card[data-domain-id="01"] svg,
+[data-theme="midnight-dark"] .theme-pastel-card[data-domain-id="01"] svg {
+  color: #38bdf8 !important;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.65)) !important;
+}
+
+/* Partner Logo Pills của Thẻ Lĩnh Vực: Logo phóng to lấp đầy khung tròn không tạo viền */
+.theme-pastel-card .logo-pill-light {
+  padding: 0 !important;
+  border: none !important;
+}
+
+.theme-pastel-card .logo-pill-light img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* ==========================================================================
+   EDUCATION CARDS: ĐỒNG BỘ MÀU CHỮ TIÊU ĐỀ VỚI ICON TRÊN TẤT CẢ GIAO DIỆN
+   ========================================================================== */
+[data-theme] .edu-stack-card .edu-card-title,
+[data-theme="light-glass"] .edu-stack-card .edu-card-title,
+[data-theme="light-glass-dashboard"] .edu-stack-card .edu-card-title,
+[data-theme="dark-neon"] .edu-stack-card .edu-card-title,
+[data-theme="midnight-dark"] .edu-stack-card .edu-card-title,
+[data-theme="vivid-glass"] .edu-stack-card .edu-card-title,
+.edu-stack-card .edu-card-title,
+.edu-card-title {
+  color: var(--edu-accent-color) !important;
+}
+
+[data-theme="dark-neon"] .edu-stack-card .edu-card-title,
+[data-theme="midnight-dark"] .edu-stack-card .edu-card-title {
+  text-shadow: 0 0 12px currentColor !important;
+}
+
+/* ==========================================================================
+   SKILL CARDS: ĐỒNG BỘ MÀU CHỮ TIÊU ĐỀ VỚI ICON TRÊN TẤT CẢ GIAO DIỆN
+   ========================================================================== */
+[data-theme] .theme-pastel-card .skill-card-title,
+[data-theme="light-glass"] .theme-pastel-card .skill-card-title,
+[data-theme="light-glass-dashboard"] .theme-pastel-card .skill-card-title,
+[data-theme="dark-neon"] .theme-pastel-card .skill-card-title,
+[data-theme="midnight-dark"] .theme-pastel-card .skill-card-title,
+[data-theme="vivid-glass"] .theme-pastel-card .skill-card-title,
+.theme-pastel-card .skill-card-title,
+.skill-card-title {
+  color: var(--card-accent-color, #0284c7) !important;
+}
+
+[data-theme="dark-neon"] .theme-pastel-card .skill-card-title,
+[data-theme="midnight-dark"] .theme-pastel-card .skill-card-title {
+  text-shadow: 0 0 12px currentColor !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE TYPOGRAPHY TOKENS (MOBILE <= 767PX - FLUID ADJUSTMENT)
+   ========================================================================== */
+@media (max-width: 767px) {
+  :root,
+  [data-theme] {
+    --font-hero: clamp(1.625rem, 1.25rem + 1.8vw, 1.875rem);
+    --font-h1: clamp(1.375rem, 1.15rem + 1.2vw, 1.625rem);
+    --font-h2: clamp(1.15rem, 1rem + 0.9vw, 1.35rem);
+    --font-h3: clamp(1.05rem, 0.95rem + 0.6vw, 1.2rem);
+    --font-h4: clamp(0.95rem, 0.88rem + 0.4vw, 1.05rem);
+    --font-h5: clamp(0.875rem, 0.82rem + 0.3vw, 0.95rem);
+    --font-h6: clamp(0.8125rem, 0.78rem + 0.2vw, 0.875rem);
+    --font-input: 16px; /* Giữ 16px để iOS Safari không tự zoom */
+    --font-card-title: clamp(0.925rem, 0.85rem + 0.4vw, 1.05rem);
+    --font-stat: clamp(1.375rem, 1.15rem + 1.2vw, 1.65rem);
+  }
+}
+
+/* =========================================================================
+   THEME 3: NDESIGN LUMINOUS GLASS SHOWCASE (KÍNH SÁNG QUANG PHỔ)
+   Lấy chuẩn 100% từ Codepen: Mesh Gradient, 3 Floating Glass Blobs,
+   Kính mờ bão hòa cao (saturate 190%), Glow Pulse & Viền gương đa sắc
+   ========================================================================= */
+
+/* Nền Animated Mesh Gradient từ Codepen */
+.luminous-mesh-bg {
+  background: radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.35) 0%, transparent 40%),
+              radial-gradient(circle at 85% 25%, rgba(244, 114, 182, 0.35) 0%, transparent 45%),
+              radial-gradient(circle at 50% 75%, rgba(167, 139, 250, 0.35) 0%, transparent 50%),
+              radial-gradient(circle at 80% 85%, rgba(52, 211, 153, 0.3) 0%, transparent 40%),
+              linear-gradient(135deg, #f0fdf4 0%, #eff6ff 40%, #fdf2f8 70%, #fefce8 100%);
+  background-size: 200% 200%;
+  animation: ambientShift 18s ease infinite alternate;
+}
+
+@keyframes ambientShift {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 50% 0%; }
+}
+
+/* Floating Colorful Glass Orbs in Background */
+.luminous-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  z-index: 0;
+  opacity: 0.65;
+  pointer-events: none;
+  animation: floatBlob 14s ease-in-out infinite alternate;
+}
+.luminous-blob-1 {
+  width: 420px;
+  height: 420px;
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  top: -60px;
+  left: -80px;
+}
+.luminous-blob-2 {
+  width: 480px;
+  height: 480px;
+  background: linear-gradient(135deg, #f472b6, #fb923c);
+  bottom: -100px;
+  right: -80px;
+  animation-delay: -5s;
+}
+.luminous-blob-3 {
+  width: 360px;
+  height: 360px;
+  background: linear-gradient(135deg, #34d399, #06b6d4);
+  top: 40%;
+  right: 25%;
+  animation-delay: -9s;
+}
+
+@keyframes floatBlob {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 30px) scale(1.08); }
+  100% { transform: translate(-30px, 50px) scale(0.95); }
+}
+
+/* Pulse Glow Keyframes */
+@keyframes glowPulseLuminous {
+  from { box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
+  to { box-shadow: 0 0 45px rgba(236, 72, 153, 0.6); }
+}
+
+/* Design Tokens cho data-theme="luminous-glass" */
+[data-theme="luminous-glass"] {
+  color-scheme: light;
+  --page-bg: #eff6ff;
+  --surface-bg: rgba(255, 255, 255, 0.52);
+  --glass-bg: rgba(255, 255, 255, 0.52);
+  --glass-border: rgba(255, 255, 255, 0.88);
+  --glass-blur: 24px;
+  --glass-saturate: 190%;
+  --glass-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95);
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --clay-blue: #38bdf8;
+  --clay-coral: #f472b6;
+  --clay-purple: #a855f7;
+  --clay-green: #34d399;
+}
+
+[data-theme="luminous-glass"] body {
+  background-color: #eff6ff;
+  color: #0f172a;
+}
+
+/* Glass Panels & Cards in Luminous Glass Theme */
+[data-theme="luminous-glass"] .glass-card,
+[data-theme="luminous-glass"] .glass-panel,
+[data-theme="luminous-glass"] #center-card,
+[data-theme="luminous-glass"] .theme-pastel-card,
+[data-theme="luminous-glass"] .bento-card,
+[data-theme="luminous-glass"] .bento-view-card,
+[data-theme="luminous-glass"] .cp-card {
+  background: rgba(255, 255, 255, 0.52) !important;
+  backdrop-filter: blur(24px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+[data-theme="luminous-glass"] .theme-pastel-card:hover,
+[data-theme="luminous-glass"] .bento-card:hover,
+[data-theme="luminous-glass"] .bento-view-card:hover,
+[data-theme="luminous-glass"] .cp-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  background: rgba(255, 255, 255, 0.68) !important;
+  box-shadow: 0 25px 50px -10px rgba(56, 189, 248, 0.22), inset 0 1px 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+/* Buttons in Luminous Glass */
+[data-theme="luminous-glass"] .btn-primary,
+[data-theme="luminous-glass"] button.bg-blue-600,
+[data-theme="luminous-glass"] a.bg-blue-600 {
+  background: linear-gradient(to right, #06b6d4, #a855f7, #ec4899) !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 24px -4px rgba(236, 72, 153, 0.35) !important;
+}
+
+[data-theme="luminous-glass"] .btn-primary:hover,
+[data-theme="luminous-glass"] button.bg-blue-600:hover,
+[data-theme="luminous-glass"] a.bg-blue-600:hover {
+  box-shadow: 0 12px 30px -4px rgba(236, 72, 153, 0.5) !important;
+  transform: translateY(-1px) scale(1.02);
+}
+
+/* ========================================================
+   STICKY CARDS: GSAP FADE & SCALE OVERLAP SCROLL SYSTEM
+   ======================================================== */
+.sticky-card-active {
+  position: sticky !important;
+  top: 16px !important;
+  transform-origin: center top !important;
+  will-change: transform, opacity, filter !important;
+  backface-visibility: hidden !important;
+  -webkit-backface-visibility: hidden !important;
+}
+
+.sticky-card-active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.12);
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+/* ========================================================
+   MICRO-ANIMATED ICON PHYSICS & GLASSMORPHIC GLOW FRAMES
+   ======================================================== */
+
+/* 1. Nút làm mới xoay nhẹ tự nhiên khi click hoặc hover */
+@keyframes iconRotateSmooth {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.icon-rotate-click {
+  animation: iconRotateSmooth 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.icon-rotate-hover:hover {
+  animation: iconRotateSmooth 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 2. Hiệu ứng nhấp nháy lấp lánh cho SparklesIcon (AI / Highlight) */
+@keyframes iconSparkleTwinkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 2px currentColor);
+  }
+  30% {
+    opacity: 0.7;
+    transform: scale(0.88) rotate(-8deg);
+    filter: drop-shadow(0 0 0px transparent);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.15) rotate(12deg);
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+}
+
+.icon-sparkle-twinkle {
+  animation: iconSparkleTwinkle 2.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  display: inline-block;
+  transform-origin: center;
+}
+
+/* 3. Hiệu ứng nảy nhẹ đàn hồi tự nhiên (Spring Physics Bounce) khi hover tab điều hướng */
+.icon-spring-bounce {
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+  will-change: transform;
+}
+
+.group:hover .icon-spring-bounce,
+.icon-spring-bounce:hover {
+  transform: translateY(-2px) scale(1.18);
+}
+
+.icon-spring-bounce:active {
+  transform: translateY(0) scale(0.92);
+}
+
+/* 4. Khung Kính Mờ Hào Quang Siêu Thực (Glassmorphic Glow Icon Frame) */
+.glass-icon-frame {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 4px 12px -2px rgba(15, 23, 42, 0.08),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.95);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+.dark .glass-icon-frame {
+  background: rgba(15, 23, 42, 0.65);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 4px 14px -2px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+/* Vệt sáng gradient siêu thực xoay quanh khung icon khi hover chuột */
+.glass-icon-frame::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: radial-gradient(circle at top left, var(--frame-glow-color, rgba(56, 189, 248, 0.5)), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glass-icon-frame:hover,
+.group:hover .glass-icon-frame {
+  transform: translateY(-2px) scale(1.08);
+  border-color: var(--frame-glow-color, rgba(56, 189, 248, 0.6));
+  box-shadow: 
+    0 8px 24px -3px var(--frame-glow-shadow, rgba(56, 189, 248, 0.28)),
+    0 0 12px 1px var(--frame-glow-shadow, rgba(56, 189, 248, 0.2)),
+    inset 0 1px 2px rgba(255, 255, 255, 0.95);
+}
+
+.glass-icon-frame:hover::before,
+.group:hover .glass-icon-frame::before {
+  opacity: 1;
+}
+
+.glass-icon-frame > * {
+  position: relative;
+  z-index: 1;
 }
 
 

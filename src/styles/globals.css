@@ -1,14 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Fleur+De+Leah&family=Play:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Fleur+De+Leah&family=Italianno&family=Play:ital,wght@0,400;0,700;1,400;1,700&family=Playwrite+NZ+Guides&family=Playwrite+New+Zealand+Guides&display=swap');
 @import './variables.css';
+@import './cursors.css';
+@import './lucian/tokens.css';
+@import './lucian/tilt.css';
+@import './lucian/lucian-228.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
+/* Font dùng mặc định cho toàn bộ website là Play */
+*,
+*::before,
+*::after {
   font-family: 'Play', system-ui, -apple-system, sans-serif !important;
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
+}
+
+/* Áp dụng font Play mặc định cho mọi phần tử ngữ nghĩa */
+html,
+body,
+button,
+input,
+textarea,
+select,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div,
+a,
+b,
+strong,
+em,
+i,
+table,
+tr,
+td,
+th,
+li,
+ul,
+ol,
+blockquote {
+  font-family: 'Play', system-ui, -apple-system, sans-serif !important;
 }
 
 /* Cho phép chọn và sao chép văn bản trên toàn bộ website */
@@ -65,20 +104,20 @@ th {
   color: inherit;
 }
 
-body, button, input, textarea, select, h1, h2, h3, h4, h5, h6, p, span, div, a {
-  font-family: 'Play', system-ui, -apple-system, sans-serif !important;
-}
-
-/* Handwriting Vietnamese Font for quotes */
+/* Handwriting Vietnamese Font for specific special callouts */
 .font-handwriting,
 .font-handwriting * {
   font-family: 'Dancing Script', cursive, sans-serif !important;
 }
 
-/* Fleur De Leah Font for all Banner Quotes */
+/* Riêng câu nói hay (quote) trong Banner: Dùng font Italianno nghệ thuật, kích thước lớn rõ nét */
 .font-banner-quote,
 .font-banner-quote * {
-  font-family: 'Fleur De Leah', cursive, sans-serif !important;
+  font-family: 'Italianno', cursive, sans-serif !important;
+  font-size: 1.4em !important;
+  letter-spacing: 0.02em !important;
+  color: #facc15 !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95), 0 0 10px rgba(250, 204, 21, 0.45) !important;
 }
 
 /* Ẩn hoàn toàn viền của tất cả các loại Banner trên toàn bộ trang */
@@ -123,13 +162,257 @@ div#app-root-layout main#center-card div#content-display h4 svg {
   flex-shrink: 0 !important;
 }
 
-html, body {
-  width: 100vw;
-  height: 100vh;
+/* =========================================================================
+   HỆ THỐNG ICON LUCIDE MẢNG ĐẶC (LUCIDE SOLID / FILLED ICONS SYSTEM)
+   Đồng bộ toàn bộ biểu tượng trên website sang phong cách khối mảng đặc (Solid Fill),
+   tăng cường độ tương phản, đầy đặn, sang trọng trên cả giao diện Light Glass và Dark Neon.
+   ========================================================================= */
+.lucide,
+svg.lucide,
+svg[class*="lucide"],
+.web-icon-solid,
+.card-title-icon,
+.theme-card-icon svg,
+.animated-service-icon svg,
+.edu-stack-card h3 svg,
+.theme-pastel-card svg {
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* 1. Đổ màu mảng đặc cho các hình học khép kín nguyên thủy trong SVG (Polygon, Rect, Circle, Ellipse) */
+svg.lucide polygon,
+svg.lucide rect,
+svg.lucide circle,
+svg.lucide ellipse,
+svg[class*="lucide"] polygon,
+svg[class*="lucide"] rect,
+svg[class*="lucide"] circle,
+svg[class*="lucide"] ellipse,
+.web-icon-solid polygon,
+.web-icon-solid rect,
+.web-icon-solid circle,
+.web-icon-solid ellipse,
+.card-title-icon polygon,
+.card-title-icon rect,
+.card-title-icon circle,
+.card-title-icon ellipse {
+  fill: currentColor !important;
+  fill-opacity: 0.88 !important;
+}
+
+/* 2. Đổ màu mảng đặc cho tất cả các đường Path khép kín (kết thúc bằng lệnh ClosePath Z hoặc z) */
+svg.lucide path[d*="Z"],
+svg.lucide path[d*="z"],
+svg[class*="lucide"] path[d*="Z"],
+svg[class*="lucide"] path[d*="z"],
+.web-icon-solid path[d*="Z"],
+.web-icon-solid path[d*="z"],
+.card-title-icon path[d*="Z"],
+.card-title-icon path[d*="z"],
+.theme-card-icon svg path[d*="Z"],
+.theme-card-icon svg path[d*="z"],
+.animated-service-icon svg path[d*="Z"],
+.animated-service-icon svg path[d*="z"] {
+  fill: currentColor !important;
+  fill-opacity: 0.88 !important;
+}
+
+/* 3. Tối ưu mảng đặc 100% cho các biểu tượng danh mục trọng điểm của Lucide */
+svg.lucide-star,
+svg.lucide-heart,
+svg.lucide-bookmark,
+svg.lucide-award,
+svg.lucide-shield,
+svg.lucide-shield-check,
+svg.lucide-trophy,
+svg.lucide-sparkles,
+svg.lucide-flame,
+svg.lucide-zap,
+svg.lucide-bell,
+svg.lucide-check-circle,
+svg.lucide-check-circle-2,
+svg.lucide-folder,
+svg.lucide-mail,
+svg.lucide-user,
+svg.lucide-users,
+svg.lucide-graduation-cap,
+svg.lucide-briefcase,
+svg.lucide-play,
+svg.lucide-pause,
+svg.lucide-circle-check,
+svg.lucide-square {
+  fill: currentColor !important;
+}
+svg.lucide-star path,
+svg.lucide-heart path,
+svg.lucide-bookmark path,
+svg.lucide-award path,
+svg.lucide-shield path,
+svg.lucide-shield-check path,
+svg.lucide-trophy path,
+svg.lucide-sparkles path,
+svg.lucide-flame path,
+svg.lucide-zap path,
+svg.lucide-bell path,
+svg.lucide-check-circle path,
+svg.lucide-check-circle-2 path,
+svg.lucide-folder path,
+svg.lucide-mail path,
+svg.lucide-user path,
+svg.lucide-users path,
+svg.lucide-graduation-cap path,
+svg.lucide-briefcase path,
+svg.lucide-play path,
+svg.lucide-pause path,
+svg.lucide-circle-check path {
+  fill: currentColor !important;
+}
+
+/* 4. Giữ nét vẽ trong suốt không fill cho các đường kẻ mở (Line, Polyline) để tránh biến dạng */
+svg.lucide line,
+svg[class*="lucide"] line,
+.web-icon-solid line {
+  fill: none !important;
+}
+
+/* =========================================================================
+   HERO BANNER TITLE ICON: ĐỒNG BỘ 100% KÍCH THƯỚC BẰNG FONT-SIZE TIÊU ĐỀ
+   (1em = 100% font-size của h2, tự động đáp ứng mọi breakpoint màn hình)
+   ========================================================================= */
+div#app-root-layout main#center-card div#content-display .hero-banner h2 svg,
+div#app-root-layout main#center-card div#content-display .animate-banner-icon svg,
+div#app-root-layout main#center-card div#content-display h2 .animate-banner-icon svg,
+div#app-root-layout main#center-card div#content-display .banner-title svg {
+  width: 1em !important;
+  height: 1em !important;
+  min-width: 1em !important;
+  min-height: 1em !important;
+  max-width: 1em !important;
+  max-height: 1em !important;
+}
+
+/* =========================================================================
+   HERO BANNER & BANNER TITLE: ĐỒNG BỘ 100% MÀU CHỮ TIÊU ĐỀ VÀ ICON (LIGHT & DARK)
+   Ghi đè triệt để tất cả các luật !important từ data-theme lên h2 / .font-play
+   ========================================================================= */
+.hero-banner,
+.banner-title-root {
+  --banner-theme-color: var(--banner-theme-color-light, currentColor);
+}
+
+.dark .hero-banner,
+[data-theme="dark-neon"] .hero-banner,
+.dark .banner-title-root,
+[data-theme="dark-neon"] .banner-title-root {
+  --banner-theme-color: var(--banner-theme-color-dark, currentColor);
+}
+
+div#app-root-layout main#center-card div#content-display .hero-banner h2,
+div#app-root-layout main#center-card div#content-display .hero-banner h2 .banner-title-text,
+div#app-root-layout main#center-card div#content-display .hero-banner h2 > span,
+div#app-root-layout main#center-card div#content-display .hero-banner .animate-banner-icon,
+div#app-root-layout main#center-card div#content-display .hero-banner .animate-banner-icon svg,
+div#app-root-layout main#center-card div#content-display .banner-title,
+div#app-root-layout main#center-card div#content-display .banner-title .banner-title-text,
+div#app-root-layout main#center-card div#content-display .banner-title > span,
+div#app-root-layout main#center-card div#content-display .banner-title .animate-banner-icon,
+div#app-root-layout main#center-card div#content-display .banner-title .animate-banner-icon svg {
+  color: var(--banner-theme-color) !important;
+  stroke: var(--banner-theme-color) !important;
+}
+
+/* =========================================================================
+   HỆ THỐNG RESPONSIVE CHỐNG TRÀN CHỮ & CHỐNG LỆCH GIAO DIỆN UI / UX TOÀN DIỆN
+   ========================================================================= */
+html {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden !important;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
+
+body {
+  width: 100%;
+  width: 100vw;
+  height: 100%;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden !important;
+  overflow-y: hidden;
+  touch-action: pan-y pinch-zoom;
+}
+
+/* 1. Chống tràn chữ: Tự động xuống dòng tự nhiên cho mọi đoạn văn, tiêu đề và khối văn bản */
+p, span, h1, h2, h3, h4, h5, h6, li, a, label, blockquote, dt, dd, th, td {
+  overflow-wrap: break-word !important;
+  word-break: normal;
+  word-wrap: break-word;
+}
+
+/* Cân bằng dòng tiêu đề để không bị rớt chữ lẻ loi (orphan) và đoạn văn đọc mượt mà */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* 2. Chống lệch bố cục Flexbox và Grid: Tự động co giãn theo khung nhìn */
+.flex > *,
+.inline-flex > * {
+  min-width: 0;
+}
+
+/* Bảo toàn kích thước cho các phần tử bắt buộc giữ nguyên kích thước */
+.shrink-0,
+[class*="shrink-0"],
+.card-header-icon,
+.card-title-icon,
+.theme-card-icon,
+.card-icon-25,
+svg {
+  min-width: unset;
+}
+
+/* 3. Đảm bảo toàn bộ hình ảnh, video, iframe không vượt quá chiều rộng khung cha */
+img,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 4. Thẻ nội dung và card: tự động giới hạn độ rộng trong khung nhìn */
+.glass-panel,
+.elevated-float-card,
+.theme-pastel-card,
+.system-item,
+.bento-card,
+article,
+section {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* 5. Safe Area Inset cho các dòng điện thoại tai thỏ / dynamic island */
+@supports (padding-top: env(safe-area-inset-top)) {
+  #app-root-layout {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+}
+
+/* 6. Hệ thống Typography Responsive đã được chuẩn hóa tập trung thông qua CSS Variables (--font-*) */
 
 /* Ẩn hoàn toàn khối chuyển slide trên top/bottom, thanh tab slide và các chỉ số slide đối với tất cả các slide (Phạm vi: Áp dụng trên toàn website) */
 .slide-nav,
@@ -173,71 +456,34 @@ html.theme-transitioning footer {
 }
 
 /* =========================================================================
-   THIN GLASS UI SCROLLBAR FOR SCROLLABLE PAGE CONTENT
+   ẨN HOÀN TOÀN THANH TRƯỢT LÊN XUỐNG (GIỮ NGUYÊN TÍNH NĂNG CUỘN TRANG MƯỢT)
    ========================================================================= */
 .glass-scrollbar,
-#content-display {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(59, 130, 246, 0.52) rgba(255, 255, 255, 0.22);
-}
-
-[data-theme="dark-neon"] .glass-scrollbar,
-[data-theme="dark-neon"] #content-display,
-.dark .glass-scrollbar,
-.dark #content-display {
-  scrollbar-color: rgba(34, 211, 238, 0.58) rgba(15, 23, 42, 0.42);
-}
-
-[data-theme="flat-rainbow"] .glass-scrollbar,
-[data-theme="flat-rainbow"] #content-display {
-  scrollbar-color: rgba(96, 165, 250, 0.58) rgba(241, 245, 249, 0.65);
+#content-display,
+.no-scrollbar,
+html,
+body,
+div,
+main,
+section,
+article {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE & Edge */
 }
 
 .glass-scrollbar::-webkit-scrollbar,
-#content-display::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.glass-scrollbar::-webkit-scrollbar-track,
-#content-display::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.28);
-  border-radius: 999px;
-  margin: 6px 0;
-}
-
-[data-theme="dark-neon"] .glass-scrollbar::-webkit-scrollbar-track,
-[data-theme="dark-neon"] #content-display::-webkit-scrollbar-track,
-.dark .glass-scrollbar::-webkit-scrollbar-track,
-.dark #content-display::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.45);
-}
-
-.glass-scrollbar::-webkit-scrollbar-thumb,
-#content-display::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(59, 130, 246, 0.6), rgba(139, 92, 246, 0.6));
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-}
-
-.glass-scrollbar::-webkit-scrollbar-thumb:hover,
-#content-display::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(37, 99, 235, 0.85), rgba(124, 58, 237, 0.85));
-}
-
-[data-theme="dark-neon"] .glass-scrollbar::-webkit-scrollbar-thumb,
-[data-theme="dark-neon"] #content-display::-webkit-scrollbar-thumb,
-.dark .glass-scrollbar::-webkit-scrollbar-thumb,
-.dark #content-display::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(34, 211, 238, 0.65), rgba(168, 85, 247, 0.65));
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-[data-theme="dark-neon"] .glass-scrollbar::-webkit-scrollbar-thumb:hover,
-[data-theme="dark-neon"] #content-display::-webkit-scrollbar-thumb:hover,
-.dark .glass-scrollbar::-webkit-scrollbar-thumb:hover,
-.dark #content-display::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, rgba(34, 211, 238, 0.92), rgba(244, 114, 182, 0.88));
+#content-display::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+div::-webkit-scrollbar,
+main::-webkit-scrollbar,
+section::-webkit-scrollbar,
+article::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Edge, Opera */
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 
 /* =========================================================================
@@ -257,6 +503,35 @@ html.theme-transitioning footer {
 .animate-voice-bar {
   transform-origin: center;
   animation: voice-wave-bounce 0.85s ease-in-out infinite;
+}
+
+/* =========================================================================
+   CARD IN-PLACE FLOATING ANIMATIONS (ICON & 3D ILLUSTRATIONS)
+   ========================================================================= */
+@keyframes icon-floating {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3.5px) rotate(1.5deg);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02);
+  }
+}
+
+.animate-icon-floating {
+  animation: icon-floating 3s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 3.8s ease-in-out infinite;
 }
 
 /* =========================================================================
@@ -319,8 +594,29 @@ html.theme-transitioning footer {
 }
 
 /* =========================================================================
-   TYPOGRAPHY QUICK SCALER (A- / A / A+) FOR COMFORTABLE READING
+   UNIVERSAL FONT SCALE SYSTEM (5 NẤC: A- / A / A+ / A++ / A+++)
+   Tự động tăng / giảm toàn bộ kích thước font trên toàn website
    ========================================================================= */
+html[data-font-scale="sm"] {
+  --site-font-scale: 0.92;
+}
+
+html[data-font-scale="md"] {
+  --site-font-scale: 1;
+}
+
+html[data-font-scale="lg"] {
+  --site-font-scale: 1.08;
+}
+
+html[data-font-scale="xl"] {
+  --site-font-scale: 1.15;
+}
+
+html[data-font-scale="2xl"] {
+  --site-font-scale: 1.22;
+}
+
 html[data-font-scale="sm"] #content-display {
   zoom: 0.94;
 }
@@ -330,7 +626,1281 @@ html[data-font-scale="md"] #content-display {
 }
 
 html[data-font-scale="lg"] #content-display {
-  zoom: 1.07;
+  zoom: 1.08;
 }
+
+html[data-font-scale="xl"] #content-display {
+  zoom: 1.15;
+}
+
+html[data-font-scale="2xl"] #content-display {
+  zoom: 1.22;
+}
+
+/* Accessibility Classes applied from LiveDisplaySettings (Prompt #289) */
+html.a11y-high-contrast {
+  filter: contrast(125%) brightness(105%);
+}
+html.a11y-high-contrast #center-card,
+html.a11y-high-contrast .theme-pastel-card {
+  border-width: 2px !important;
+}
+html.a11y-highlight-links a {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 3px !important;
+  outline: 2px solid #2563eb !important;
+  outline-offset: 2px !important;
+}
+html.a11y-wide-line-height p,
+html.a11y-wide-line-height span {
+  line-height: 1.9 !important;
+}
+
+/* Lucian UX/UI Prompt #223 · Executive Section Card (Non-motion, standard card flow) */
+.u223-c {
+  position: relative;
+  border-radius: 14px;
+  transform: none !important;
+  will-change: auto;
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.08);
+  transition: none !important;
+}
+.u223-art {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  width: 90px;
+  height: 90px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.18);
+  transform: rotate(12deg);
+  pointer-events: none;
+}
+.u223-art::after {
+  content: "";
+  position: absolute;
+  inset: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+}
+.u223-sh {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .u223-c {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Frosted glass pill · https://designforai.dev/snippet/btn-032 */
+.btn-032 {
+  font: 600 15px/1 system-ui, -apple-system, sans-serif;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  padding: 13px 26px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: background 0.2s, border-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.btn-032:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+.btn-032:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+.btn-032:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Dark glass button · https://designforai.dev/snippet/btn-033 */
+.btn-033 {
+  font: 600 14px/1 system-ui, -apple-system, sans-serif;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  color: #f1f5f9 !important;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 12px 24px;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(10px) saturate(1.4);
+  backdrop-filter: blur(10px) saturate(1.4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: background 0.2s, border-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.btn-033:hover {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+.btn-033:focus-visible {
+  outline: 2px solid #94a3b8;
+  outline-offset: 2px;
+}
+.btn-033:active {
+  background: rgba(15, 23, 42, 0.8);
+}
+
+/* text-fit (fit-to-width headlines) · https://designforai.dev/css/text-fit · Chrome 150+ with clamp() fallback */
+.fx-056 {
+  font-size: clamp(2rem, 8vw, 6rem);
+  text-fit: fit-width;
+  white-space: nowrap;
+  font-family: system-ui, -apple-system, sans-serif;
+  margin: 0;
+  max-width: 100%;
+}
+
+/* font-size-adjust · https://designforai.dev/css/font-size-adjust · Baseline 2024 (fx-072) */
+/* Fallback: Browsers without support show each font at its natural size; text stays readable so no guard is needed */
+body, code, kbd, samp {
+  font-size-adjust: 0.5;
+}
+
+/* For all-caps labels */
+.caps-label,
+[data-caps] {
+  font-size-adjust: cap-height 0.7;
+}
+
+.fx-072 {
+  display: grid;
+  gap: 8px;
+  width: max-content;
+  color: #2b2118;
+}
+.fx-072 p {
+  margin: 0;
+  padding: 6px 14px 8px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e4dccf;
+  font-size: 30px;
+  line-height: 1.2;
+}
+.fx-072 code {
+  display: block;
+  font: 600 11px ui-monospace,monospace;
+  color: #8a5a3b;
+}
+.fx-072-serif {
+  font-family: "Times New Roman",Times,serif;
+}
+.fx-072-sans {
+  font-family: Verdana,"DejaVu Sans",sans-serif;
+}
+.fx-072-mono {
+  font-family: "Courier New",Courier,monospace;
+}
+.fx-072-adjust span {
+  font-size-adjust: 0.5;
+}
+
+/* Tagged photo card · https://designforai.dev/snippet/card-002 */
+.card-002 {
+  width: 300px;
+  padding: 12px;
+  background: #fafaf9;
+  border-radius: 20px;
+  font-family: system-ui, sans-serif;
+  color: #1c1917;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  box-sizing: border-box;
+}
+.card-002__img {
+  position: relative;
+  height: 180px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #fed7aa, #fb923c 70%, #ea580c);
+  overflow: hidden;
+}
+.card-002__img span {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, .85);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9a3412;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 2;
+}
+.card-002 h3 {
+  margin: 14px 6px 6px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.card-002 p {
+  margin: 0 6px 6px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #57534e;
+}
+
+/* Dark mode compatibility for card-002 */
+[data-theme="dark-neon"] .card-002,
+.dark .card-002 {
+  background: rgba(15, 23, 42, 0.85);
+  color: #f1f5f9;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 0 16px rgba(234, 88, 12, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark-neon"] .card-002 p,
+.dark .card-002 p {
+  color: #94a3b8;
+}
+
+/* Portrait gradient card · https://designforai.dev/snippet/card-003 */
+.card-003 {
+  position: relative;
+  width: 300px;
+  height: 380px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  color: #ffffff;
+  background: 
+    linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 55%),
+    linear-gradient(200deg, #0ea5e9, #6366f1, #312e81);
+  box-shadow: 0 10px 30px -5px rgba(14, 165, 233, 0.25), 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-family: system-ui, sans-serif;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+}
+
+.card-003:hover {
+  transform: none;
+  box-shadow: 0 10px 30px -5px rgba(14, 165, 233, 0.25), 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-003__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  background: linear-gradient(200deg, #0ea5e9, #6366f1, #312e81);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.card-003__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card-003__overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 55%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.card-003__body,
+.card-003__content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-003 h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #ffffff;
+}
+
+.card-003 p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.card-003 span {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Water ripples article card · https://designforai.dev/snippet/card-104 */
+.card-104 {
+  width: 264px;
+  background: #ffffff;
+  border: 1px solid #dfe4e1;
+  border-radius: 18px;
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-shadow: 0 2px 10px rgba(10, 55, 80, 0.05);
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.card-104:hover {
+  transform: none;
+  box-shadow: 0 2px 10px rgba(10, 55, 80, 0.05);
+  border-color: #8cd0dc;
+}
+
+.card-104__cover,
+.card-104__img {
+  position: relative;
+  height: 140px;
+  width: 100%;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.card-104__cover img,
+.card-104__img img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.card-104:hover .card-104__cover img,
+.card-104:hover .card-104__img img {
+  transform: none;
+}
+
+.card-104__tag,
+.card-104__pill {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #ffffff;
+  color: #1e3a47;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  line-height: 1.2;
+  box-shadow: 0 1px 4px rgba(10, 55, 80, 0.12);
+  z-index: 2;
+  letter-spacing: -0.01em;
+}
+
+.card-104__tab,
+.card-104__time {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 30px;
+  background: #ffffff;
+  border-top-right-radius: 12px;
+  padding: 0 10px 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #2c7a9b;
+  z-index: 2;
+  line-height: 1;
+}
+
+.card-104__tab::after,
+.card-104__time::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  bottom: 0;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle at 100% 0, transparent 12px, #ffffff 12.5px);
+  pointer-events: none;
+}
+
+.card-104__tab svg,
+.card-104__time svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.2;
+}
+
+.card-104__body,
+.card-104__content {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.card-104 h3,
+.card-104__body h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #1e293b;
+}
+
+.card-104 p,
+.card-104__body p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #57534e;
+}
+
+/* Dark mode compatibility for card-104 */
+[data-theme="dark-neon"] .card-104,
+.dark .card-104 {
+  background: #0f172a;
+  border-color: rgba(140, 208, 220, 0.2);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark-neon"] .card-104:hover,
+.dark .card-104:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 12px 30px -4px rgba(56, 189, 248, 0.25), 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark-neon"] .card-104__tag,
+.dark .card-104__tag,
+[data-theme="dark-neon"] .card-104__pill,
+.dark .card-104__pill {
+  background: #1e293b;
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+[data-theme="dark-neon"] .card-104__tab,
+.dark .card-104__tab,
+[data-theme="dark-neon"] .card-104__time,
+.dark .card-104__time {
+  background: #0f172a;
+  color: #38bdf8;
+}
+
+[data-theme="dark-neon"] .card-104__tab::after,
+.dark .card-104__tab::after,
+[data-theme="dark-neon"] .card-104__time::after,
+.dark .card-104__time::after {
+  background: radial-gradient(circle at 100% 0, transparent 12px, #0f172a 12.5px);
+}
+
+[data-theme="dark-neon"] .card-104 h3,
+.dark .card-104 h3,
+[data-theme="dark-neon"] .card-104__body h3,
+.dark .card-104__body h3 {
+  color: #f1f5f9;
+}
+
+[data-theme="dark-neon"] .card-104 p,
+.dark .card-104 p,
+[data-theme="dark-neon"] .card-104__body p,
+.dark .card-104__body p {
+  color: #94a3b8;
+}
+
+/* =========================================================================
+   HỆ THỐNG HIỆU ỨNG CHUỘT (MOUSE-OVER / HOVER EFFECTS) & MICRO-INTERACTIONS CHO CARD
+   Áp dụng trên toàn bộ 14 phân hệ: Systems, Projects, Domains, Skills, Exp, Edu, Contact, Wallpaper
+   ========================================================================= */
+
+/* =========================================================================
+   UNIVERSAL CARD BORDER RADIUS: 14PX
+   Quy chuẩn toàn bộ website card bo cong 14px
+   ========================================================================= */
+.theme-pastel-card,
+.bento-card,
+.bento-view-card,
+.edu-grid-card,
+.edu-stack-card,
+.system-item,
+.system-flip-front,
+.system-flip-back,
+.system-flip-inner,
+.card-104,
+.cp-card,
+.u308-it,
+.glass-card,
+.glass-panel-card,
+.editorial-card,
+.bento-cell,
+.hero-banner-card,
+.hero-banner,
+.theme-hero-banner,
+.smart-adaptive-card,
+#center-card,
+main#center-card,
+.u223-c,
+article.system-item,
+article.u308-it,
+div[class*="theme-pastel-card"],
+div[class*="bento-view-card"],
+div[class*="edu-grid-card"] {
+  border-radius: 14px !important;
+}
+
+/* =========================================================================
+   HỆ THỐNG HIỆU ỨNG ĐỔ BÓNG ĐA TẦNG CHO TẤT CẢ CÁC LOẠI THẺ (CARD SHADOW DESIGN SYSTEM)
+   - Tối ưu hóa 3 tầng bóng đổ (3-Layer Depth Elevation): Ambient + Key Light + Inset Rim
+   - Chế độ Sáng (Light Glass): Đổ bóng mềm mại, sang trọng, chiều sâu lập thể tự nhiên
+   - Chế độ Tối (Dark Neon): Đổ bóng sâu thẳm kết hợp quầng sáng Neon Glow phát sáng viền
+   - Hiệu ứng Hover Elevation: Nhấc thẻ và khuếch tán bóng đổ sống động (Volumetric Diffusion)
+   ========================================================================= */
+
+/* 1. Base Drop Shadow cho tất cả các loại thẻ (Mặc định / Chế độ Sáng) */
+.theme-pastel-card,
+.card-wrap,
+.system-item,
+.system-flip-front,
+.system-flip-back,
+.bento-card,
+.bento-view-card,
+.bento-cell,
+.card-104,
+.cp-card,
+.u308-it,
+.edu-stack-card,
+.edu-grid-card,
+.editorial-card,
+.smart-adaptive-card,
+div[class*="theme-pastel-card"],
+div[class*="bento-view-card"],
+article.system-item {
+  box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.08), 
+              0 4px 12px -2px rgba(15, 23, 42, 0.04), 
+              inset 0 1px 1.5px rgba(255, 255, 255, 0.95);
+  transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 0.32s cubic-bezier(0.25, 1, 0.5, 1),
+              border-color 0.3s ease,
+              background-color 0.3s ease;
+  will-change: transform, box-shadow;
+}
+
+/* 2. Base Drop Shadow cho tất cả các loại thẻ (Chế độ Tối - Dark Neon) */
+[data-theme="dark-neon"] .theme-pastel-card,
+[data-theme="dark-neon"] .card-wrap,
+[data-theme="dark-neon"] .system-item,
+[data-theme="dark-neon"] .system-flip-front,
+[data-theme="dark-neon"] .system-flip-back,
+[data-theme="dark-neon"] .bento-card,
+[data-theme="dark-neon"] .bento-view-card,
+[data-theme="dark-neon"] .bento-cell,
+[data-theme="dark-neon"] .card-104,
+[data-theme="dark-neon"] .cp-card,
+[data-theme="dark-neon"] .u308-it,
+[data-theme="dark-neon"] .edu-stack-card,
+[data-theme="dark-neon"] .edu-grid-card,
+[data-theme="dark-neon"] .editorial-card,
+[data-theme="dark-neon"] .smart-adaptive-card,
+[data-theme="dark-neon"] div[class*="theme-pastel-card"],
+[data-theme="dark-neon"] div[class*="bento-view-card"],
+[data-theme="dark-neon"] article.system-item,
+.dark .theme-pastel-card,
+.dark .card-wrap,
+.dark .system-item,
+.dark .system-flip-front,
+.dark .system-flip-back,
+.dark .bento-card,
+.dark .bento-view-card,
+.dark .bento-cell,
+.dark .card-104,
+.dark .cp-card,
+.dark .u308-it,
+.dark .edu-stack-card,
+.dark .edu-grid-card,
+.dark .editorial-card,
+.dark .smart-adaptive-card,
+.dark div[class*="theme-pastel-card"],
+.dark div[class*="bento-view-card"],
+.dark article.system-item {
+  box-shadow: 0 14px 38px -6px rgba(0, 0, 0, 0.75), 
+              0 4px 14px -2px rgba(0, 0, 0, 0.5), 
+              0 0 18px -2px var(--card-accent-color, rgba(56, 189, 248, 0.18)), 
+              inset 0 1px 1.5px rgba(255, 255, 255, 0.15);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .theme-pastel-card:hover,
+  .card-wrap:hover,
+  .system-flip-wrap:hover,
+  /* Tắt triệt để hiệu ứng rê chuột vào thẻ ở tất cả các trang theo yêu cầu (Thẻ đứng yên, tĩnh tại) */
+  .bento-card:hover,
+  .bento-view-card:hover,
+  .card-104:hover,
+  .cp-card:hover,
+  .u308-it:hover,
+  .edu-stack-card:hover,
+  .pillar-gradient-card:hover,
+  .masonry-card-item:hover,
+  .memory-photo-item:hover,
+  div[class*="theme-pastel-card"]:hover,
+  div[class*="bento-view-card"]:hover {
+    transform: none !important;
+  }
+
+  /* Khóa cứng bảo vệ tuyệt đối các mặt thẻ lật 3D (3D Flip Faces) - Tuyệt đối không ghi đè transform làm mất card */
+  .system-flip-front,
+  .system-flip-front:hover,
+  article.system-flip-front:hover,
+  .system-item.system-flip-front:hover {
+    transform: rotateY(0deg) !important;
+  }
+
+  .system-flip-back,
+  .system-flip-back:hover,
+  article.system-flip-back:hover,
+  .system-item.system-flip-back:hover {
+    transform: rotateY(180deg) !important;
+  }
+
+  /* Khóa cứng không có hiệu ứng over mouse cho Thẻ chính (#center-card) */
+  #center-card,
+  #center-card:hover,
+  main#center-card,
+  main#center-card:hover,
+  .elevated-float-card,
+  .elevated-float-card:hover {
+    transform: none !important;
+  }
+
+  /* 3. Hover Elevation Shadow (Chế độ Sáng - Light Glass) */
+  [data-theme="light-glass"] .theme-pastel-card:hover,
+  [data-theme="light-glass"] .card-wrap:hover,
+  [data-theme="light-glass"] .system-item:hover,
+  [data-theme="light-glass"] .bento-card:hover,
+  [data-theme="light-glass"] .bento-view-card:hover,
+  [data-theme="light-glass"] .card-104:hover,
+  [data-theme="light-glass"] .cp-card:hover,
+  [data-theme="light-glass"] .u308-it:hover,
+  [data-theme="light-glass"] .edu-stack-card:hover,
+  [data-theme="light-glass"] div[class*="theme-pastel-card"]:hover,
+  [data-theme="light-glass"] div[class*="bento-view-card"]:hover,
+  [data-theme="light-glass"] article.system-item:hover {
+    box-shadow: 0 20px 42px -6px rgba(15, 23, 42, 0.16), 
+                0 6px 16px -2px rgba(15, 23, 42, 0.08), 
+                inset 0 1.5px 2px rgba(255, 255, 255, 1) !important;
+    border-color: rgba(99, 102, 241, 0.5) !important;
+  }
+
+  /* 4. Hover Elevation Shadow (Chế độ Tối - Dark Neon) */
+  [data-theme="dark-neon"] .theme-pastel-card:hover,
+  [data-theme="dark-neon"] .card-wrap:hover,
+  [data-theme="dark-neon"] .system-item:hover,
+  [data-theme="dark-neon"] .bento-card:hover,
+  [data-theme="dark-neon"] .bento-view-card:hover,
+  [data-theme="dark-neon"] .card-104:hover,
+  [data-theme="dark-neon"] .cp-card:hover,
+  [data-theme="dark-neon"] .u308-it:hover,
+  [data-theme="dark-neon"] .edu-stack-card:hover,
+  [data-theme="dark-neon"] div[class*="theme-pastel-card"]:hover,
+  [data-theme="dark-neon"] div[class*="bento-view-card"]:hover,
+  [data-theme="dark-neon"] article.system-item:hover,
+  .dark .theme-pastel-card:hover,
+  .dark .card-wrap:hover,
+  .dark .system-item:hover,
+  .dark .bento-card:hover,
+  .dark .bento-view-card:hover,
+  .dark .card-104:hover,
+  .dark .cp-card:hover,
+  .dark .u308-it:hover,
+  .dark .edu-stack-card:hover,
+  .dark div[class*="theme-pastel-card"]:hover,
+  .dark div[class*="bento-view-card"]:hover,
+  .dark article.system-item:hover {
+    box-shadow: 0 24px 52px -8px rgba(0, 0, 0, 0.88), 
+                0 0 30px -2px var(--card-accent-color, rgba(56, 189, 248, 0.4)), 
+                inset 0 1px 2px rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(56, 189, 248, 0.6) !important;
+  }
+
+  /* Micro-reaction cho Icon tiêu đề khi hover vào thẻ */
+  .theme-pastel-card:hover .card-title-icon,
+  .theme-pastel-card:hover .animated-service-icon,
+  .system-item:hover .animated-service-icon,
+  .card-104:hover .card-title-icon,
+  div[class*="theme-pastel-card"]:hover .card-title-icon {
+    transform: scale(1.12) rotate(2deg);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Hiệu ứng quét sáng Acrylic Specular Sweep khi hover vào thẻ */
+  .theme-pastel-card::before,
+  .card-104::before,
+  .bento-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 40%;
+    height: 200%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.45) 50%,
+      transparent
+    );
+    transform: rotate(25deg);
+    pointer-events: none;
+    opacity: 0;
+    transition: none;
+    z-index: 25;
+  }
+
+  [data-theme="dark-neon"] .theme-pastel-card::before,
+  [data-theme="dark-neon"] .card-104::before,
+  [data-theme="dark-neon"] .bento-card::before,
+  .dark .theme-pastel-card::before,
+  .dark .card-104::before,
+  .dark .bento-card::before {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(56, 189, 248, 0.25) 50%,
+      transparent
+    );
+  }
+
+  .theme-pastel-card:hover::before,
+  .card-104:hover::before,
+  .bento-card:hover::before {
+    animation: card-light-sweep 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+
+  /* Không cho pseudo-element quét sáng che khuất hoặc phá vỡ context 3D của thẻ lật */
+  [style*="perspective"]::before,
+  [style*="preserve-3d"]::before,
+  .system-flip-wrap::before,
+  .system-flip-inner::before,
+  .system-flip-front::before,
+  .system-flip-back::before {
+    display: none !important;
+  }
+
+  /* Phản hồi cảm xúc khi nhấn chuột (Active Click Feedback) */
+  .theme-pastel-card:active,
+  .card-104:active,
+  .system-flip-wrap:active,
+  .bento-card:active {
+    transform: scale(0.985) translateY(-1px) !important;
+    transition: transform 0.1s ease !important;
+  }
+}
+
+@keyframes card-light-sweep {
+  0% {
+    left: -60%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    left: 150%;
+    opacity: 0;
+  }
+}
+
+/* 2. Quy chuẩn tiêu đề thẻ: Không đóng khung tiêu đề thẻ, icon và tiêu đề bằng nhau, đồng màu */
+.no-card-title-frame,
+.card-title-unframed {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* =========================================================================
+   QUY CHUẨN TIÊU ĐỀ CARD TOÀN WEBSITE (CARD PRESENTATION DESIGN SYSTEM)
+   - Tiêu đề 4 chữ viết hoa, icon màu và chữ tiêu đề đồng bộ 100% cùng màu với icon.
+   - Ghi đè triệt để tất cả các luật [data-theme] !important lên h2, h3, h4, h5 trong Card.
+   ========================================================================= */
+.theme-pastel-card h2,
+.theme-pastel-card h3,
+.theme-pastel-card h4,
+.theme-pastel-card h5,
+.edu-stack-card h2,
+.edu-stack-card h3,
+.edu-stack-card h4,
+.system-item h2,
+.system-item h3,
+.system-item h4,
+.bento-card h2,
+.bento-card h3,
+.bento-card h4,
+.domain-card-title,
+.edu-card-title,
+.skill-card-title,
+.system-card-title,
+.project-card-title,
+div[class*="theme-pastel-card"] h2,
+div[class*="theme-pastel-card"] h3,
+div[class*="theme-pastel-card"] h4 {
+  color: inherit !important;
+}
+
+/* =========================================================================
+   HỆ THỐNG GIAO DIỆN GLASS UI ĐA MÀU SẮC HIỆN ĐẠI (MODERN MULTICOLOR GLASS UI)
+   - Tối ưu hóa độ trong suốt có chiều sâu (Chromatic Frosted Glass Depth)
+   - Ánh sáng phản quang tráng gương (Specular Mirror Sheen) & Hào quang đa sắc
+   - 6 Biến thể Glass Đa Sắc cao cấp (Sapphire, Emerald, Rose, Amber, Purple, Cyan)
+   ========================================================================= */
+
+/* 1. Thẻ Kính Trung Tâm & Khối Nổi Hiện Đại (Modern Elevated Center Card) */
+#center-card.glass-panel {
+  position: relative;
+  backdrop-filter: blur(22px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(190%) !important;
+}
+
+[data-theme="light-glass"] #center-card.glass-panel {
+  background: rgba(255, 255, 255, 0.74) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 
+    0 24px 60px -12px rgba(30, 27, 75, 0.12),
+    0 8px 24px -4px rgba(30, 27, 75, 0.05),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.95),
+    inset 0 -1px 2px rgba(147, 197, 253, 0.15) !important;
+}
+
+[data-theme="dark-neon"] #center-card.glass-panel {
+  background: rgba(13, 19, 35, 0.75) !important;
+  border: 1.5px solid rgba(34, 211, 238, 0.32) !important;
+  box-shadow: 
+    0 28px 70px -14px rgba(0, 0, 0, 0.92),
+    0 0 32px rgba(34, 211, 238, 0.18),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.22),
+    inset 0 -1px 2px rgba(34, 211, 238, 0.15) !important;
+}
+
+/* 2. Dải Viền Phản Quang Đa Sắc Mép Trên (Prismatic Top Edge Beam) */
+#center-card.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 5%;
+  right: 5%;
+  height: 1.5px;
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(56, 189, 248, 0.8) 25%, 
+    rgba(168, 85, 247, 0.8) 50%, 
+    rgba(251, 113, 133, 0.8) 75%, 
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 25;
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
+/* 3. Hệ Thống 6 Biến Thể Thẻ Kính Đa Sắc Hiện Đại (Modern Multicolor Glass Cards) */
+/* --- 3.1 Lam Ngọc (Sapphire / Sky Blue Glass) --- */
+.glass-card-blue {
+  background: linear-gradient(135deg, rgba(239, 246, 255, 0.82) 0%, rgba(219, 234, 254, 0.62) 100%) !important;
+  border: 1.5px solid rgba(147, 197, 253, 0.65) !important;
+  box-shadow: 0 10px 28px -4px rgba(37, 99, 235, 0.12), inset 0 1.5px 2px rgba(255, 255, 255, 0.9) !important;
+}
+.glass-card-blue:hover {
+  border-color: rgba(96, 165, 250, 0.9) !important;
+  box-shadow: 0 16px 36px -6px rgba(37, 99, 235, 0.22), inset 0 1.5px 2px rgba(255, 255, 255, 1) !important;
+}
+[data-theme="dark-neon"] .glass-card-blue {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(30, 58, 138, 0.35) 100%) !important;
+  border: 1.5px solid rgba(56, 189, 248, 0.45) !important;
+  box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.25) !important;
+}
+
+/* --- 3.2 Lục Bảo (Emerald / Green Glass) --- */
+.glass-card-emerald {
+  background: linear-gradient(135deg, rgba(236, 253, 245, 0.82) 0%, rgba(167, 243, 208, 0.62) 100%) !important;
+  border: 1.5px solid rgba(110, 231, 183, 0.65) !important;
+  box-shadow: 0 10px 28px -4px rgba(5, 150, 105, 0.12), inset 0 1.5px 2px rgba(255, 255, 255, 0.9) !important;
+}
+.glass-card-emerald:hover {
+  border-color: rgba(52, 211, 153, 0.9) !important;
+  box-shadow: 0 16px 36px -6px rgba(5, 150, 105, 0.22), inset 0 1.5px 2px rgba(255, 255, 255, 1) !important;
+}
+[data-theme="dark-neon"] .glass-card-emerald {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(6, 78, 59, 0.35) 100%) !important;
+  border: 1.5px solid rgba(52, 211, 153, 0.45) !important;
+  box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(52, 211, 153, 0.25) !important;
+}
+
+/* --- 3.3 Thạch Anh Hồng (Rose / Pink Glass) --- */
+.glass-card-rose {
+  background: linear-gradient(135deg, rgba(255, 241, 242, 0.82) 0%, rgba(254, 205, 211, 0.62) 100%) !important;
+  border: 1.5px solid rgba(253, 164, 175, 0.65) !important;
+  box-shadow: 0 10px 28px -4px rgba(225, 29, 72, 0.12), inset 0 1.5px 2px rgba(255, 255, 255, 0.9) !important;
+}
+.glass-card-rose:hover {
+  border-color: rgba(251, 113, 133, 0.9) !important;
+  box-shadow: 0 16px 36px -6px rgba(225, 29, 72, 0.22), inset 0 1.5px 2px rgba(255, 255, 255, 1) !important;
+}
+[data-theme="dark-neon"] .glass-card-rose {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(159, 18, 57, 0.35) 100%) !important;
+  border: 1.5px solid rgba(251, 113, 133, 0.45) !important;
+  box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(251, 113, 133, 0.25) !important;
+}
+
+/* --- 3.4 Hổ Phách (Amber / Gold Glass) --- */
+.glass-card-amber {
+  background: linear-gradient(135deg, rgba(254, 243, 199, 0.82) 0%, rgba(253, 230, 138, 0.62) 100%) !important;
+  border: 1.5px solid rgba(252, 211, 77, 0.65) !important;
+  box-shadow: 0 10px 28px -4px rgba(217, 119, 6, 0.12), inset 0 1.5px 2px rgba(255, 255, 255, 0.9) !important;
+}
+.glass-card-amber:hover {
+  border-color: rgba(251, 191, 36, 0.9) !important;
+  box-shadow: 0 16px 36px -6px rgba(217, 119, 6, 0.22), inset 0 1.5px 2px rgba(255, 255, 255, 1) !important;
+}
+[data-theme="dark-neon"] .glass-card-amber {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(120, 53, 15, 0.35) 100%) !important;
+  border: 1.5px solid rgba(251, 191, 36, 0.45) !important;
+  box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(251, 191, 36, 0.25) !important;
+}
+
+/* --- 3.5 Thạch Anh Tím (Purple / Violet Glass) --- */
+.glass-card-purple {
+  background: linear-gradient(135deg, rgba(245, 243, 255, 0.82) 0%, rgba(221, 214, 254, 0.62) 100%) !important;
+  border: 1.5px solid rgba(196, 181, 253, 0.65) !important;
+  box-shadow: 0 10px 28px -4px rgba(124, 58, 237, 0.12), inset 0 1.5px 2px rgba(255, 255, 255, 0.9) !important;
+}
+.glass-card-purple:hover {
+  border-color: rgba(167, 139, 250, 0.9) !important;
+  box-shadow: 0 16px 36px -6px rgba(124, 58, 237, 0.22), inset 0 1.5px 2px rgba(255, 255, 255, 1) !important;
+}
+[data-theme="dark-neon"] .glass-card-purple {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(88, 28, 135, 0.35) 100%) !important;
+  border: 1.5px solid rgba(192, 132, 252, 0.45) !important;
+  box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(192, 132, 252, 0.25) !important;
+}
+
+/* --- 3.6 Ngọc Bích (Cyan / Teal Glass) --- */
+.glass-card-cyan {
+  background: linear-gradient(135deg, rgba(224, 247, 250, 0.82) 0%, rgba(165, 243, 252, 0.62) 100%) !important;
+  border: 1.5px solid rgba(103, 232, 249, 0.65) !important;
+  box-shadow: 0 10px 28px -4px rgba(8, 145, 178, 0.12), inset 0 1.5px 2px rgba(255, 255, 255, 0.9) !important;
+}
+.glass-card-cyan:hover {
+  border-color: rgba(34, 211, 238, 0.9) !important;
+  box-shadow: 0 16px 36px -6px rgba(8, 145, 178, 0.22), inset 0 1.5px 2px rgba(255, 255, 255, 1) !important;
+}
+[data-theme="dark-neon"] .glass-card-cyan {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(19, 78, 74, 0.35) 100%) !important;
+  border: 1.5px solid rgba(45, 212, 191, 0.45) !important;
+  box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(45, 212, 191, 0.25) !important;
+}
+
+/* 4. Thanh Cuộn Kính Đa Sắc Tinh Tế (Prismatic Glass Scrollbar) */
+.glass-scrollbar::-webkit-scrollbar,
+#content-display::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+.glass-scrollbar::-webkit-scrollbar-track,
+#content-display::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+.glass-scrollbar::-webkit-scrollbar-thumb,
+#content-display::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.55) 0%, rgba(129, 140, 248, 0.55) 50%, rgba(232, 121, 249, 0.55) 100%);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+}
+.glass-scrollbar::-webkit-scrollbar-thumb:hover,
+#content-display::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.85) 0%, rgba(129, 140, 248, 0.85) 50%, rgba(232, 121, 249, 0.85) 100%);
+  box-shadow: 0 0 10px rgba(129, 140, 248, 0.5);
+}
+
+/* 5. Khung Nhóm Icon & Tiêu Đề Viên Thuốc Hợp Nhất (Unified Capsule Frame) */
+.glass-pill-frame {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-theme="light-glass"] .glass-pill-frame {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+[data-theme="dark-neon"] .glass-pill-frame {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+}
+
+/* =========================================================================
+   HỆ THỐNG TYPOGRAPHY DESIGN SYSTEM TOÀN WEBSITE (CHUẨN HÓA ĐỒNG NHẤT)
+   Cùng đối tượng = Cùng cấp bậc = Cùng kích thước = Cùng độ đậm = Cùng quy tắc hiển thị
+   ========================================================================= */
+
+/* 1. Phần tử ngữ nghĩa chuẩn (H1 - H6, Body, Input, Label, Table, Code) */
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-body);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-body);
+  letter-spacing: var(--tracking-body);
+}
+
+h1,
+.typo-h1 {
+  font-size: var(--font-h1);
+  font-weight: var(--weight-bold);
+  line-height: var(--line-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+h2,
+.typo-h2 {
+  font-size: var(--font-h2);
+  font-weight: var(--weight-bold);
+  line-height: var(--line-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+h3,
+.typo-h3 {
+  font-size: var(--font-h3);
+  font-weight: var(--weight-semibold);
+  line-height: var(--line-subheading);
+  letter-spacing: var(--tracking-heading);
+}
+
+h4,
+.typo-h4 {
+  font-size: var(--font-h4);
+  font-weight: var(--weight-semibold);
+  line-height: var(--line-subheading);
+  letter-spacing: -0.01em;
+}
+
+h5,
+.typo-h5 {
+  font-size: var(--font-h5);
+  font-weight: var(--weight-semibold);
+  line-height: var(--line-subheading);
+  letter-spacing: 0em;
+}
+
+h6,
+.typo-h6 {
+  font-size: var(--font-h6);
+  font-weight: var(--weight-semibold);
+  line-height: var(--line-subheading);
+  letter-spacing: 0em;
+}
+
+/* 2. Các Token Lớp Đối Tượng Chuẩn Hóa (Semantic Typography Utility Classes) */
+.typo-hero {
+  font-size: var(--font-hero);
+  font-weight: var(--weight-bold);
+  line-height: var(--line-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+.typo-body {
+  font-size: var(--font-body);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-body);
+  letter-spacing: var(--tracking-body);
+}
+
+.typo-body-sm {
+  font-size: var(--font-body-sm);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-body-sm);
+  letter-spacing: var(--tracking-body);
+}
+
+.typo-caption {
+  font-size: var(--font-caption);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-compact);
+  letter-spacing: var(--tracking-body);
+}
+
+.typo-overline {
+  font-size: var(--font-overline);
+  font-weight: var(--weight-semibold);
+  line-height: var(--line-compact);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+}
+
+.typo-nav {
+  font-size: var(--font-nav);
+  font-weight: var(--weight-medium);
+  line-height: var(--line-compact);
+}
+
+.typo-button {
+  font-size: var(--font-button);
+  font-weight: var(--weight-semibold);
+  line-height: var(--line-compact);
+}
+
+.typo-label,
+label {
+  font-size: var(--font-label);
+  font-weight: var(--weight-medium);
+  line-height: var(--line-compact);
+}
+
+.typo-input,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea,
+select {
+  font-size: var(--font-input);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-body-sm);
+}
+
+.typo-card-title,
+.domain-card-title,
+.edu-card-title,
+.skill-card-title,
+.system-card-title,
+.project-card-title,
+.card-title {
+  font-size: var(--font-card-title);
+  font-weight: var(--weight-semibold);
+  line-height: var(--line-subheading);
+  letter-spacing: -0.01em;
+}
+
+.typo-card,
+.card-desc {
+  font-size: var(--font-card);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-body-sm);
+}
+
+.typo-stat {
+  font-size: var(--font-stat);
+  font-weight: var(--weight-bold);
+  line-height: var(--line-heading);
+  letter-spacing: var(--tracking-heading);
+}
+
+.typo-stat-label {
+  font-size: var(--font-stat-label);
+  font-weight: var(--weight-medium);
+  line-height: var(--line-compact);
+}
+
+.typo-breadcrumb {
+  font-size: var(--font-breadcrumb);
+  font-weight: var(--weight-medium);
+  line-height: var(--line-compact);
+}
+
+.typo-tooltip,
+.circle-node-tooltip {
+  font-size: var(--font-tooltip);
+  font-weight: var(--weight-medium);
+  line-height: var(--line-compact);
+}
+
+.typo-table,
+table th,
+table td {
+  font-size: var(--font-table);
+  line-height: var(--line-body-sm);
+}
+
+table th {
+  font-weight: var(--weight-semibold);
+}
+
+table td {
+  font-weight: var(--weight-regular);
+}
+
+.typo-code,
+code,
+pre,
+kbd,
+samp {
+  font-size: var(--font-code);
+  font-weight: var(--weight-medium);
+  line-height: var(--line-compact);
+}
+
+/* 3. Chuẩn hóa độ đậm chữ (Không tự ý vượt quá 700, đồng bộ font-extrabold / font-black -> 700) */
+.font-extrabold,
+.font-black {
+  font-weight: var(--weight-bold) !important;
+}
+
+/* 4. Chuẩn hóa Letter-Spacing cho văn bản Tiếng Việt (Tránh chữ quá thưa khó đọc) */
+.tracking-widest,
+.tracking-\[0\.15em\],
+.tracking-\[0\.18em\],
+.tracking-\[0\.2em\],
+.tracking-\[0\.22em\],
+.tracking-\[0\.25em\] {
+  letter-spacing: var(--tracking-overline) !important;
+}
+
+
+
+
+
+
+
+
+
+
 
 

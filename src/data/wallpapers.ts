@@ -70,6 +70,53 @@ export const BUILTIN_WALLPAPERS: WallpaperOption[] = [
     value: '#121212',
     previewStyle: { background: '#121212' },
   },
+  {
+    id: 'radial-sunset-pastel-glow',
+    name: 'Hoàng Hôn Cam Hồng Pastel',
+    type: 'gradient',
+    value: 'radial-gradient(125% 125% at -2% 101%, rgba(245, 87, 2, 1) 10.5%, rgba(245, 120, 2, 1) 16%, rgba(245, 140, 2, 1) 17.5%, rgba(245, 170, 100, 1) 25%, rgba(238, 174, 202, 1) 40%, rgba(202, 179, 214, 1) 65%, rgba(148, 201, 233, 1) 100%)',
+    previewStyle: {
+      background: 'radial-gradient(125% 125% at -2% 101%, rgba(245, 87, 2, 1) 10.5%, rgba(245, 120, 2, 1) 16%, rgba(245, 140, 2, 1) 17.5%, rgba(245, 170, 100, 1) 25%, rgba(238, 174, 202, 1) 40%, rgba(202, 179, 214, 1) 65%, rgba(148, 201, 233, 1) 100%)',
+    },
+  },
+  {
+    id: 'codepen-card-stacks-sky',
+    name: 'Nền CodePen Card Stacks',
+    type: 'image',
+    value: 'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1555&q=80',
+    previewStyle: {
+      backgroundImage: "url('https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?ixlib=rb-1.2.1&auto=format&fit=crop&w=1555&q=80')",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    },
+  },
+  {
+    id: 'codepen-waves-3d',
+    name: 'Nền CodePen Sóng 3D',
+    type: 'codepen',
+    value: 'https://codepen.io/zadvorsky/embed/vOErOB?default-tab=result&theme-id=dark&editable=false',
+    previewStyle: {
+      background: 'linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #064e3b 100%)',
+    },
+  },
+  {
+    id: 'codepen-particles-canvas',
+    name: 'Nền CodePen Ma Trận Hạt',
+    type: 'codepen',
+    value: 'https://codepen.io/aliev/embed/ExgQzR?default-tab=result&theme-id=dark&editable=false',
+    previewStyle: {
+      background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)',
+    },
+  },
+  {
+    id: 'codepen-aurora-webgl',
+    name: 'Nền CodePen Cực Quang Fluid',
+    type: 'codepen',
+    value: 'https://codepen.io/klevron/embed/WVrYmq?default-tab=result&theme-id=dark&editable=false',
+    previewStyle: {
+      background: 'linear-gradient(135deg, #18032e 0%, #032b30 100%)',
+    },
+  },
 ];
 
 export const WALLPAPER_OPTIONS: WallpaperOption[] = [

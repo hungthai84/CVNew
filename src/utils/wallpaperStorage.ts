@@ -87,6 +87,9 @@ export const CINEMATIC_LUT_PRESETS: CinematicLutPreset[] = [
   },
 ];
 
+export type SlideshowThemeFilter = 'auto' | 'light-only' | 'dark-only' | 'time-of-day' | 'all';
+export type SlideshowTransitionEffect = 'dissolve' | 'blur-dissolve' | 'zoom-out';
+
 export interface WallpaperAdvancedSettings {
   dimmerOpacity: number; // 0 - 80 (%)
   blurAmount: number; // 0 - 24 (px)
@@ -97,6 +100,10 @@ export interface WallpaperAdvancedSettings {
   slideshowEnabled: boolean;
   slideshowIntervalMinutes: number; // 0.5, 1, 3, 5
   slideshowFavoritesOnly: boolean;
+  slideshowThemeMode: SlideshowThemeFilter; // 'auto' (khớp giao diện Sáng/Tối), 'light-only', 'dark-only', 'time-of-day', 'all'
+  slideshowTransitionEffect: SlideshowTransitionEffect; // 'dissolve', 'blur-dissolve', 'zoom-out'
+  slideshowShowCountdown: boolean; // Hiển thị thanh tiến trình đếm ngược live
+  slideshowPillToastEnabled: boolean; // Hiển thị thông báo mini Dynamic Island khi đổi nền
   weatherSyncEnabled: boolean;
   autoAccentGlow: boolean;
   cinematicLut: CinematicLutPresetId;
@@ -114,17 +121,21 @@ export interface WallpaperAdvancedSettings {
 export const DEFAULT_WALLPAPER_SETTINGS: WallpaperAdvancedSettings = {
   dimmerOpacity: 0,
   blurAmount: 0,
-  parallaxEnabled: true,
+  parallaxEnabled: false,
   dayNightEnabled: false,
   dayWallpaperId: 'aurora',
   nightWallpaperId: 'css-aurora-borealis',
   slideshowEnabled: false,
   slideshowIntervalMinutes: 3,
   slideshowFavoritesOnly: false,
+  slideshowThemeMode: 'auto',
+  slideshowTransitionEffect: 'dissolve',
+  slideshowShowCountdown: true,
+  slideshowPillToastEnabled: true,
   weatherSyncEnabled: false,
-  autoAccentGlow: true,
+  autoAccentGlow: false,
   cinematicLut: 'none',
-  livingMeshEnabled: true,
+  livingMeshEnabled: false,
   livingMeshSpeed: 'normal',
   ambientSoundEnabled: false,
   ambientSoundMode: 'auto',
@@ -134,6 +145,137 @@ export const DEFAULT_WALLPAPER_SETTINGS: WallpaperAdvancedSettings = {
   pomodoroFocusWallpaperId: 'css-deep-space',
   pomodoroBreakWallpaperId: 'aurora',
 };
+
+/**
+ * Phân loại hình nền phù hợp cho Giao diện Tối (Dark Neon) hoặc Sáng (Light Glass)
+ */
+export function getWallpaperTone(wp: WallpaperOption): 'light' | 'dark' {
+  if (!wp) return 'light';
+  const id = wp.id || '';
+  if (['pure-white', 'aurora', 'ocean', 'sunset', 'rainforest', 'purple', 'autumn'].includes(id)) {
+    return 'light';
+  }
+  if (['night', 'matte-black', 'css-deep-space', 'css-aurora-borealis'].includes(id)) {
+    return 'dark';
+  }
+  if (wp.type === 'video' || wp.type === 'codepen') {
+    return 'dark';
+  }
+
+  const text = `${id} ${wp.name || ''} ${wp.value || ''}`.toLowerCase();
+
+  // Dấu hiệu nền tối
+  if (
+    text.includes('#0f172a') ||
+    text.includes('#1e293b') ||
+    text.includes('#121212') ||
+    text.includes('#000000') ||
+    text.includes('#020617') ||
+    text.includes('#070b19') ||
+    text.includes('#090e17') ||
+    text.includes('#0d1527') ||
+    text.includes('deep-space') ||
+    text.includes('matrix') ||
+    text.includes('night') ||
+    text.includes('cyber') ||
+    text.includes('dark') ||
+    text.includes('đen') ||
+    text.includes('tối')
+  ) {
+    return 'dark';
+  }
+
+  // Dấu hiệu nền sáng
+  if (
+    text.includes('#ffffff') ||
+    text.includes('#f8fafc') ||
+    text.includes('#ffedd5') ||
+    text.includes('#e0f2fe') ||
+    text.includes('#dcfce7') ||
+    text.includes('#fef3c7') ||
+    text.includes('#f3e8ff') ||
+    text.includes('#f1f5f9') ||
+    text.includes('light') ||
+    text.includes('sáng') ||
+    text.includes('white') ||
+    text.includes('pastel') ||
+    text.includes('aurora')
+  ) {
+    return 'light';
+  }
+
+  return 'light';
+}
+
+export function isWallpaperDark(wp: WallpaperOption): boolean {
+  return getWallpaperTone(wp) === 'dark';
+}
+
+/**
+ * Phân loại hình nền mờ (Blurred / Bokeh / Frosted / Aurora Mesh / Pastel Glow)
+ */
+export function isBlurredWallpaper(wp: WallpaperOption): boolean {
+  if (!wp) return false;
+  const id = (wp.id || '').toLowerCase();
+  const name = (wp.name || '').toLowerCase();
+  const val = (wp.value || '').toLowerCase();
+  const cls = (wp.className || '').toLowerCase();
+  const previewStr = wp.previewStyle ? JSON.stringify(wp.previewStyle).toLowerCase() : '';
+
+  // 1. Explicit ID matches for built-in or known blur / mesh presets
+  if (
+    id === 'aurora' ||
+    id === 'preset-aurora-mesh' ||
+    id === 'preset-pastel-day' ||
+    id === 'css-aurora-borealis' ||
+    id === 'css-sunset-mesh' ||
+    id === 'css-bryce-4color-gradient' ||
+    id === 'css-deep-space' ||
+    id.includes('blur') ||
+    id.includes('mesh') ||
+    id.includes('bokeh') ||
+    id.includes('frosted')
+  ) {
+    return true;
+  }
+
+  // 2. Keyword checks in name
+  const blurredKeywordsInName = [
+    'mờ',
+    'blur',
+    'bokeh',
+    'mesh',
+    'cực quang',
+    'aurora',
+    'frosted',
+    'khói',
+    'sương',
+    'pastel',
+    'lăng kính',
+    'tinh vân',
+  ];
+  if (blurredKeywordsInName.some((kw) => name.includes(kw))) {
+    return true;
+  }
+
+  // 3. CSS property or class signals
+  if (
+    cls.includes('aurora') ||
+    cls.includes('mesh') ||
+    cls.includes('blur') ||
+    val.includes('blur(') ||
+    val.includes('backdrop-filter') ||
+    previewStr.includes('blur(') ||
+    val.includes('mesh') ||
+    val.includes('radial-gradient(at ') ||
+    val.includes('radial-gradient(circle at ') ||
+    previewStr.includes('radial-gradient(circle at ')
+  ) {
+    return true;
+  }
+
+  return false;
+}
 
 // Open IndexedDB safely with Promise
 function openDB(): Promise<IDBDatabase | null> {
@@ -163,10 +305,25 @@ function openDB(): Promise<IDBDatabase | null> {
   });
 }
 
-// Get item from IndexedDB with fallback to localStorage
+// Get item from localStorage (fast, persistent, no cookies) with IndexedDB fallback
 export async function getStoredItem<T>(key: string, fallback: T): Promise<T> {
   if (typeof window === 'undefined') return fallback;
 
+  // 1. Check localStorage first for instant, non-expiring retrieval without cookies
+  try {
+    const localVal = localStorage.getItem(key);
+    if (localVal !== null && localVal !== undefined) {
+      try {
+        return JSON.parse(localVal) as T;
+      } catch {
+        return localVal as unknown as T;
+      }
+    }
+  } catch (err) {
+    console.warn(`localStorage read error for ${key}:`, err);
+  }
+
+  // 2. Fallback to IndexedDB (for large assets like custom uploaded videos/images)
   try {
     const db = await openDB();
     if (db) {
@@ -179,17 +336,7 @@ export async function getStoredItem<T>(key: string, fallback: T): Promise<T> {
             if (req.result !== undefined && req.result !== null) {
               resolve(req.result as T);
             } else {
-              // Try localStorage fallback
-              const localVal = localStorage.getItem(key);
-              if (localVal) {
-                try {
-                  resolve(JSON.parse(localVal) as T);
-                } catch {
-                  resolve(localVal as unknown as T);
-                }
-              } else {
-                resolve(fallback);
-              }
+              resolve(fallback);
             }
           };
           req.onerror = () => resolve(fallback);
@@ -197,28 +344,29 @@ export async function getStoredItem<T>(key: string, fallback: T): Promise<T> {
           resolve(fallback);
         }
       });
-    } else {
-      // LocalStorage fallback
-      const localVal = localStorage.getItem(key);
-      if (localVal) {
-        try {
-          return JSON.parse(localVal) as T;
-        } catch {
-          return localVal as unknown as T;
-        }
-      }
     }
   } catch (e) {
-    console.warn(`Failed to get stored item ${key}:`, e);
+    console.warn(`IndexedDB read error for ${key}:`, e);
   }
 
   return fallback;
 }
 
-// Set item in IndexedDB and localStorage (if size permits)
+// Set item in localStorage (permanent, no cookies) and IndexedDB (for large media)
 export async function setStoredItem<T>(key: string, value: T): Promise<void> {
   if (typeof window === 'undefined') return;
 
+  // 1. Immediately store in localStorage for permanent, cookie-free client persistence
+  try {
+    const strVal = typeof value === 'string' ? value : JSON.stringify(value);
+    if (strVal.length < 4_000_000) {
+      localStorage.setItem(key, strVal);
+    }
+  } catch (err) {
+    console.warn(`localStorage write error for ${key}:`, err);
+  }
+
+  // 2. Also persist to IndexedDB as high-capacity backing storage
   try {
     const db = await openDB();
     if (db) {
@@ -234,18 +382,8 @@ export async function setStoredItem<T>(key: string, value: T): Promise<void> {
         }
       });
     }
-
-    // Also sync to localStorage if not too large
-    try {
-      const strVal = typeof value === 'string' ? value : JSON.stringify(value);
-      if (strVal.length < 2_000_000) {
-        localStorage.setItem(key, strVal);
-      }
-    } catch {
-      // Ignore quota errors for large base64 files
-    }
   } catch (e) {
-    console.warn(`Failed to set stored item ${key}:`, e);
+    console.warn(`IndexedDB write error for ${key}:`, e);
   }
 }
 
@@ -313,6 +451,9 @@ const ALLOWED_WALLPAPER_STYLE_PROPS: Record<string, keyof React.CSSProperties> =
   'box-shadow': 'boxShadow',
   boxshadow: 'boxShadow',
   filter: 'filter',
+  'backdrop-filter': 'backdropFilter',
+  backdropfilter: 'backdropFilter',
+  '-webkit-backdrop-filter': 'WebkitBackdropFilter',
   opacity: 'opacity',
   'mix-blend-mode': 'mixBlendMode',
   mixblendmode: 'mixBlendMode',
@@ -351,40 +492,67 @@ export function parseCssToReactStyle(
     return styleObj as React.CSSProperties;
   }
 
-  // Strip CSS comments
-  let cleanedBlock = trimmed.replace(/\/\*[\s\S]*?\*\//g, '');
+  // 1. Strip CSS comments
+  let cleaned = trimmed.replace(/\/\*[\s\S]*?\*\//g, '');
 
-  // Strip nested rules like @keyframes {...} or &::before {...}
-  cleanedBlock = cleanedBlock.replace(/@keyframes[^{]+\{(?:[^{}]*|\{[^{}]*\})*\}/gi, '');
-  cleanedBlock = cleanedBlock.replace(/[^{};]+\{[^{}]*\}/g, '');
-  cleanedBlock = cleanedBlock.trim();
+  // 2. Strip nested @keyframes blocks
+  cleaned = cleaned.replace(/@keyframes[^{]+\{(?:[^{}]*|\{[^{}]*\})*\}/gi, '');
 
-  if (!cleanedBlock) {
-    return styleObj as React.CSSProperties;
+  // 3. Extract declarations inside selectors (e.g. body { ... }, .wallpaper { ... }, &::after { ... })
+  const blocksToParse: Array<{ selector: string; content: string }> = [];
+
+  const blockRegex = /([^{};]+)\{([^{}]+)\}/g;
+  let match: RegExpExecArray | null;
+  while ((match = blockRegex.exec(cleaned)) !== null) {
+    const selector = match[1].trim().toLowerCase();
+    const content = match[2].trim();
+    blocksToParse.push({ selector, content });
   }
 
-  const declarations = splitCssDeclarations(cleanedBlock);
+  // Extract top-level declarations (outside any curly brace blocks)
+  const topLevel = cleaned.replace(/[^{};]+\{[^{}]*\}/g, '').trim();
+  if (topLevel) {
+    blocksToParse.unshift({ selector: 'root', content: topLevel });
+  }
+
+  if (blocksToParse.length === 0) {
+    blocksToParse.push({ selector: 'root', content: cleaned });
+  }
+
   let matchedAnyDeclaration = false;
 
-  for (const decl of declarations) {
-    const propMatch = decl.match(/^([a-zA-Z-]+)\s*:\s*([\s\S]+)$/);
-    if (propMatch) {
-      const rawProp = propMatch[1].toLowerCase().trim();
-      if (rawProp !== 'http' && rawProp !== 'https' && rawProp !== 'data' && rawProp !== 'blob') {
-        matchedAnyDeclaration = true;
-        const mappedKey = ALLOWED_WALLPAPER_STYLE_PROPS[rawProp];
-        if (mappedKey) {
-          const cleanVal = cleanCssPropertyValue(propMatch[2]);
-          if (cleanVal && !cleanVal.includes(';')) {
-            styleObj[mappedKey as string] = cleanVal;
+  for (const block of blocksToParse) {
+    const declarations = splitCssDeclarations(block.content);
+    for (const decl of declarations) {
+      const propMatch = decl.match(/^([a-zA-Z-]+)\s*:\s*([\s\S]+)$/);
+      if (propMatch) {
+        const rawProp = propMatch[1].toLowerCase().trim();
+        if (rawProp !== 'http' && rawProp !== 'https' && rawProp !== 'data' && rawProp !== 'blob') {
+          const mappedKey = ALLOWED_WALLPAPER_STYLE_PROPS[rawProp];
+          if (mappedKey) {
+            const cleanVal = cleanCssPropertyValue(propMatch[2]);
+            if (cleanVal && !cleanVal.includes(';')) {
+              matchedAnyDeclaration = true;
+              if (
+                mappedKey === 'backgroundColor' &&
+                typeof styleObj.background === 'string' &&
+                styleObj.background.includes('gradient')
+              ) {
+                styleObj.backgroundColor = cleanVal;
+              } else if (mappedKey === 'background' && cleanVal.includes('gradient')) {
+                styleObj.background = cleanVal;
+              } else if (!styleObj[mappedKey as string] || mappedKey === 'background' || mappedKey === 'backgroundImage') {
+                styleObj[mappedKey as string] = cleanVal;
+              }
+            }
           }
         }
       }
     }
   }
 
-  if (!matchedAnyDeclaration) {
-    const singleVal = cleanCssPropertyValue(cleanedBlock);
+  if (!matchedAnyDeclaration && topLevel) {
+    const singleVal = cleanCssPropertyValue(topLevel);
     if (singleVal && !singleVal.includes(';')) {
       const isSolidColor =
         /^#([0-9a-fA-F]{3,8})$/.test(singleVal) ||
@@ -480,6 +648,14 @@ export function sanitizeWallpaperStyle(
     delete sanitized.background;
   }
 
+  // Loại bỏ triệt để trường hợp gán video URL vào backgroundImage gây lỗi CSS
+  if (
+    typeof sanitized.backgroundImage === 'string' &&
+    /\.(mp4|webm|mov|ogg|m4v)/i.test(sanitized.backgroundImage)
+  ) {
+    delete sanitized.backgroundImage;
+  }
+
   if (Object.keys(sanitized).length === 0 && fallbackCss) {
     return parseCssToReactStyle(fallbackCss);
   }
@@ -573,6 +749,62 @@ export interface DetectionResult {
   badgeColor: string;
 }
 
+/**
+ * Chuẩn hóa link CodePen thành link embed chạy trực tiếp an toàn, loại bỏ các thành phần chỉnh sửa
+ */
+export function normalizeCodepenUrl(rawUrl: string): string {
+  let url = (rawUrl || '').trim();
+  if (url.includes('<iframe') && url.includes('src=')) {
+    const match = url.match(/src=["']([^"']+)["']/i);
+    if (match) url = match[1];
+  }
+  if (url.includes('/pen/')) {
+    url = url.replace('/pen/', '/embed/');
+  } else if (url.includes('/full/')) {
+    url = url.replace('/full/', '/embed/');
+  } else if (url.includes('/debug/')) {
+    url = url.replace('/debug/', '/embed/');
+  }
+  if (url.includes('codepen.io') && url.includes('/embed/')) {
+    if (!url.includes('default-tab=')) {
+      const sep = url.includes('?') ? '&' : '?';
+      url = `${url}${sep}default-tab=result&theme-id=dark&editable=false`;
+    } else if (!url.includes('theme-id=')) {
+      url = `${url}&theme-id=dark&editable=false`;
+    }
+  }
+  return url;
+}
+
+/**
+ * Tự động đặt tên thông minh cho hình nền mới
+ */
+export function generateAutoWallpaperName(
+  type: WallpaperType,
+  count: number,
+  hint?: string
+): string {
+  if (hint && hint.trim().length > 0 && !hint.startsWith('http') && !hint.startsWith('data:') && !hint.includes('{') && !hint.includes(';')) {
+    return hint.trim();
+  }
+  switch (type) {
+    case 'video':
+      return `Hình Nền Video #${count}`;
+    case 'image':
+      return `Hình Nền Nghệ Thuật #${count}`;
+    case 'gradient':
+      return `Hình Nền Gradient #${count}`;
+    case 'css':
+      return `Hình Nền CSS Sáng Tạo #${count}`;
+    case 'codepen':
+      return `Hình Nền CodePen #${count}`;
+    case 'color':
+      return `Hình Nền Sắc Màu #${count}`;
+    default:
+      return `Hình Nền Mới #${count}`;
+  }
+}
+
 export function detectWallpaperType(rawInput: string): DetectionResult {
   const trimmed = (rawInput || '').trim();
 
@@ -582,6 +814,47 @@ export function detectWallpaperType(rawInput: string): DetectionResult {
       cleanedValue: '',
       label: 'Chưa xác định',
       badgeColor: 'bg-slate-100 text-slate-500 border-slate-300',
+    };
+  }
+
+  // 0. Phát hiện nếu dán mã nguồn HTML / CSS từ CodePen chứa background-image hoặc background
+  if (
+    trimmed.includes('<!DOCTYPE') ||
+    trimmed.includes('<html') ||
+    trimmed.includes('<head') ||
+    trimmed.includes('body {') ||
+    trimmed.includes('.stack {') ||
+    trimmed.includes('card-stacks')
+  ) {
+    const bgUrlMatch = trimmed.match(/background(?:-image)?\s*:\s*url\s*\(\s*["']?([^"')]+)["']?\s*\)/i);
+    if (bgUrlMatch && bgUrlMatch[1]) {
+      const extractedUrl = bgUrlMatch[1].trim();
+      return {
+        type: 'image',
+        cleanedValue: extractedUrl,
+        previewStyle: {
+          backgroundImage: `url('${extractedUrl}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        },
+        label: 'Hình Nền CodePen Trích Xuất',
+        badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-400',
+      };
+    }
+  }
+
+  // 0.1. CodePen URL or CodePen Embed
+  if (trimmed.includes('codepen.io') || trimmed.includes('cdpn.io')) {
+    const embedUrl = normalizeCodepenUrl(trimmed);
+    return {
+      type: 'codepen',
+      cleanedValue: embedUrl,
+      previewStyle: {
+        background: 'linear-gradient(135deg, #131417 0%, #1e1f26 100%)',
+      },
+      label: 'Nền CodePen Tương Tác',
+      badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-400',
     };
   }
 
@@ -725,7 +998,10 @@ export function detectWallpaperType(rawInput: string): DetectionResult {
 }
 
 // Export custom wallpapers as a downloadable JSON file
-export function exportWallpapersToJsonFile(wallpapers: WallpaperOption[]): void {
+export function exportWallpapersToJsonFile(
+  wallpapers: WallpaperOption[],
+  filename?: string
+): void {
   try {
     const exportData = {
       version: '1.0',
@@ -739,7 +1015,7 @@ export function exportWallpapersToJsonFile(wallpapers: WallpaperOption[]): void 
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `hung-thai-wallpapers-${Date.now()}.json`;
+    link.download = filename || `hung-thai-wallpapers-${Date.now()}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -790,8 +1066,10 @@ export function parseWallpapersJson(jsonString: string): { wallpapers: Wallpaper
       let type: WallpaperType = (item.type as WallpaperType) || 'image';
 
       // Normalize types
-      if (type === ('codepen' as unknown) || type === ('floating-particles' as unknown)) {
+      if (type === ('floating-particles' as unknown)) {
         type = 'image';
+      } else if (String(item.value || item.url || '').includes('codepen.io') || type === 'codepen') {
+        type = 'codepen';
       } else if (item.cssCode || type === 'css') {
         type = 'css';
       }
@@ -881,22 +1159,10 @@ export async function loadWallpaperSettings(): Promise<WallpaperAdvancedSettings
       typeof stored.blurAmount === 'number'
         ? Math.min(24, Math.max(0, stored.blurAmount))
         : DEFAULT_WALLPAPER_SETTINGS.blurAmount,
-    parallaxEnabled:
-      typeof stored.parallaxEnabled === 'boolean'
-        ? stored.parallaxEnabled
-        : DEFAULT_WALLPAPER_SETTINGS.parallaxEnabled,
-    dayNightEnabled:
-      typeof stored.dayNightEnabled === 'boolean'
-        ? stored.dayNightEnabled
-        : DEFAULT_WALLPAPER_SETTINGS.dayNightEnabled,
-    dayWallpaperId:
-      typeof stored.dayWallpaperId === 'string' && stored.dayWallpaperId
-        ? stored.dayWallpaperId
-        : DEFAULT_WALLPAPER_SETTINGS.dayWallpaperId,
-    nightWallpaperId:
-      typeof stored.nightWallpaperId === 'string' && stored.nightWallpaperId
-        ? stored.nightWallpaperId
-        : DEFAULT_WALLPAPER_SETTINGS.nightWallpaperId,
+    parallaxEnabled: false,
+    dayNightEnabled: false,
+    dayWallpaperId: DEFAULT_WALLPAPER_SETTINGS.dayWallpaperId,
+    nightWallpaperId: DEFAULT_WALLPAPER_SETTINGS.nightWallpaperId,
     slideshowEnabled:
       typeof stored.slideshowEnabled === 'boolean'
         ? stored.slideshowEnabled
@@ -909,49 +1175,26 @@ export async function loadWallpaperSettings(): Promise<WallpaperAdvancedSettings
       typeof stored.slideshowFavoritesOnly === 'boolean'
         ? stored.slideshowFavoritesOnly
         : DEFAULT_WALLPAPER_SETTINGS.slideshowFavoritesOnly,
-    weatherSyncEnabled:
-      typeof stored.weatherSyncEnabled === 'boolean'
-        ? stored.weatherSyncEnabled
-        : DEFAULT_WALLPAPER_SETTINGS.weatherSyncEnabled,
-    autoAccentGlow:
-      typeof stored.autoAccentGlow === 'boolean'
-        ? stored.autoAccentGlow
-        : DEFAULT_WALLPAPER_SETTINGS.autoAccentGlow,
-    cinematicLut:
-      stored.cinematicLut === 'cyberpunk' ||
-      stored.cinematicLut === 'vintage' ||
-      stored.cinematicLut === 'nordic' ||
-      stored.cinematicLut === 'golden' ||
-      stored.cinematicLut === 'noir' ||
-      stored.cinematicLut === 'none'
-        ? stored.cinematicLut
-        : DEFAULT_WALLPAPER_SETTINGS.cinematicLut,
-    livingMeshEnabled:
-      typeof stored.livingMeshEnabled === 'boolean'
-        ? stored.livingMeshEnabled
-        : DEFAULT_WALLPAPER_SETTINGS.livingMeshEnabled,
-    livingMeshSpeed:
-      stored.livingMeshSpeed === 'slow' ||
-      stored.livingMeshSpeed === 'normal' ||
-      stored.livingMeshSpeed === 'fast'
-        ? stored.livingMeshSpeed
-        : DEFAULT_WALLPAPER_SETTINGS.livingMeshSpeed,
-    ambientSoundEnabled:
-      typeof stored.ambientSoundEnabled === 'boolean'
-        ? stored.ambientSoundEnabled
-        : DEFAULT_WALLPAPER_SETTINGS.ambientSoundEnabled,
-    ambientSoundMode:
-      stored.ambientSoundMode === 'auto' ||
-      stored.ambientSoundMode === 'rain' ||
-      stored.ambientSoundMode === 'ocean' ||
-      stored.ambientSoundMode === 'forest' ||
-      stored.ambientSoundMode === 'cosmos'
-        ? stored.ambientSoundMode
-        : DEFAULT_WALLPAPER_SETTINGS.ambientSoundMode,
-    ambientSoundVolume:
-      typeof stored.ambientSoundVolume === 'number'
-        ? Math.min(100, Math.max(0, stored.ambientSoundVolume))
-        : DEFAULT_WALLPAPER_SETTINGS.ambientSoundVolume,
+    slideshowThemeMode:
+      stored.slideshowThemeMode || DEFAULT_WALLPAPER_SETTINGS.slideshowThemeMode,
+    slideshowTransitionEffect:
+      stored.slideshowTransitionEffect || DEFAULT_WALLPAPER_SETTINGS.slideshowTransitionEffect,
+    slideshowShowCountdown:
+      typeof stored.slideshowShowCountdown === 'boolean'
+        ? stored.slideshowShowCountdown
+        : DEFAULT_WALLPAPER_SETTINGS.slideshowShowCountdown,
+    slideshowPillToastEnabled:
+      typeof stored.slideshowPillToastEnabled === 'boolean'
+        ? stored.slideshowPillToastEnabled
+        : DEFAULT_WALLPAPER_SETTINGS.slideshowPillToastEnabled,
+    weatherSyncEnabled: false,
+    autoAccentGlow: false,
+    cinematicLut: 'none',
+    livingMeshEnabled: false,
+    livingMeshSpeed: 'normal',
+    ambientSoundEnabled: false,
+    ambientSoundMode: 'auto',
+    ambientSoundVolume: DEFAULT_WALLPAPER_SETTINGS.ambientSoundVolume,
     pomodoroFocusMinutes:
       typeof stored.pomodoroFocusMinutes === 'number' && stored.pomodoroFocusMinutes > 0
         ? stored.pomodoroFocusMinutes
@@ -1403,6 +1646,16 @@ export async function exportGradientStudioToPng(
   });
 }
 
-
+/**
+ * Xuất danh sách hình nền sang chuỗi JSON định dạng đẹp
+ */
+export function exportWallpapersToJsonString(wallpapers: WallpaperOption[]): string {
+  try {
+    return JSON.stringify(wallpapers, null, 2);
+  } catch (err) {
+    console.error('Lỗi chuyển đổi danh sách hình nền sang JSON:', err);
+    return '[]';
+  }
+}
 
 

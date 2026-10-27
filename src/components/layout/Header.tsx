@@ -3,8 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PageMeta, SiteTheme } from '@/types';
 import { SoundEngine } from '@/components/ui/SoundEngine';
-import { WebIcon } from '@/components/ui/WebIcon';
-import { useToast } from '@/components/ui/Toast';
+import { useLanguage } from '@/context/LanguageContext';
 
 export interface HeaderProps {
   pages: PageMeta[];
@@ -14,80 +13,34 @@ export interface HeaderProps {
   onOpenAiChat?: () => void;
 }
 
+// Bảng màu ánh sáng Neon đèn độc bản cho từng mục menu ở giao diện tối Glass Neon
+const PAGE_NEON_COLORS: Record<number, { neon: string; glow: string }> = {
+  0: { neon: '#38BDF8', glow: 'rgba(56, 189, 248, 0.7)' },   // Trang Chủ: Electric Sky Blue
+  1: { neon: '#FB7185', glow: 'rgba(251, 113, 133, 0.7)' },  // Thư Ngỏ: Neon Rose Red
+  2: { neon: '#C084FC', glow: 'rgba(192, 132, 252, 0.7)' },  // Giới Thiệu: Neon Violet
+  3: { neon: '#FBBF24', glow: 'rgba(251, 191, 36, 0.7)' },   // Lĩnh Vực: Amber Gold Neon
+  4: { neon: '#22D3EE', glow: 'rgba(34, 211, 238, 0.7)' },   // Kỹ Năng: Vivid Cyan Neon
+  5: { neon: '#818CF8', glow: 'rgba(129, 140, 248, 0.7)' },  // Kinh Nghiệm: Indigo Laser Neon
+  6: { neon: '#E879F9', glow: 'rgba(232, 121, 249, 0.7)' },  // Dự Án: Fuchsia Neon
+  7: { neon: '#FB923C', glow: 'rgba(251, 146, 60, 0.7)' },   // Hệ Thống: Radiant Orange Neon
+  8: { neon: '#F472B6', glow: 'rgba(244, 114, 182, 0.7)' },  // Phỏng Vấn: Hot Pink Neon
+  9: { neon: '#F0ABFC', glow: 'rgba(240, 171, 252, 0.7)' },  // Tử Vi: Mystic Purple Neon
+  10: { neon: '#4ADE80', glow: 'rgba(74, 222, 128, 0.7)' },  // Kỷ Niệm: Lime Mint Neon
+  11: { neon: '#2DD4BF', glow: 'rgba(45, 212, 191, 0.7)' },  // Liên Hệ: Electric Teal Neon
+};
+
 export const Header: React.FC<HeaderProps> = ({
   pages,
   currentPage,
   currentTheme = 'light-glass',
   onSelectPage,
 }) => {
-  const { showToast } = useToast();
+  const { language } = useLanguage();
 
   // Xóa icon Hình Nền khỏi thanh menu Header, giữ các mục nội dung chính
   const headerPages = pages.filter((page) => page.shortTitle !== 'Hình Nền');
 
   const isDark = currentTheme === 'dark-neon';
-
-  // Trạng thái Bật/Tắt âm thanh giao diện toàn cục (lưu trong localStorage & đồng bộ với SoundEngine)
-  const [isSoundEnabled, setIsSoundEnabled] = useState<boolean>(true);
-
-  // Trạng thái Tùy chỉnh Cỡ chữ Linh hoạt (Typography Quick Scaler: 'sm' = A-, 'md' = A, 'lg' = A+)
-  const [fontScale, setFontScale] = useState<'sm' | 'md' | 'lg'>('md');
-
-  const applyFontScaleToDom = (scale: 'sm' | 'md' | 'lg') => {
-    if (typeof document === 'undefined') return;
-    document.documentElement.setAttribute('data-font-scale', scale);
-    const rootFontSize = scale === 'sm' ? '14.5px' : scale === 'lg' ? '17.5px' : '16px';
-    document.documentElement.style.fontSize = rootFontSize;
-  };
-
-  useEffect(() => {
-    const initial = SoundEngine.loadPersistedState();
-    setIsSoundEnabled(initial);
-    const unsubscribe = SoundEngine.subscribe((enabled) => {
-      setIsSoundEnabled(enabled);
-    });
-
-    try {
-      const savedScale = localStorage.getItem('hungthai_font_scale') as 'sm' | 'md' | 'lg' | null;
-      if (savedScale === 'sm' || savedScale === 'md' || savedScale === 'lg') {
-        setFontScale(savedScale);
-        applyFontScaleToDom(savedScale);
-      } else {
-        applyFontScaleToDom('md');
-      }
-    } catch {
-      applyFontScaleToDom('md');
-    }
-
-    return unsubscribe;
-  }, []);
-
-  const handleSelectFontScale = (nextScale: 'sm' | 'md' | 'lg') => {
-    SoundEngine.playTap();
-    setFontScale(nextScale);
-    applyFontScaleToDom(nextScale);
-    try {
-      localStorage.setItem('hungthai_font_scale', nextScale);
-    } catch {
-      // Ignore storage error
-    }
-    const labelMap = {
-      sm: 'Cỡ chữ Thu gọn (A- · 90%)',
-      md: 'Cỡ chữ Chuẩn mặc định (A · 100%)',
-      lg: 'Cỡ chữ Phóng đại dễ đọc (A+ · 110%)',
-    };
-    showToast(`Đã áp dụng: ${labelMap[nextScale]}`);
-  };
-
-  const handleToggleGlobalSound = () => {
-    const nextState = SoundEngine.toggleSound();
-    setIsSoundEnabled(nextState);
-    showToast(
-      nextState
-        ? 'Đã bật âm thanh phản hồi giao diện (Unmuted)'
-        : 'Đã tắt âm thanh phản hồi giao diện (Muted)'
-    );
-  };
 
   const navRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -158,20 +111,10 @@ export const Header: React.FC<HeaderProps> = ({
       clearTimeout(timer);
       window.removeEventListener('resize', calculateLayout);
     };
-  }, [headerPages.length, longestWidth]);
+  }, [headerPages.length, longestWidth, language]);
 
-  // Tự động cuộn mượt đến nút đang chọn khi chuyển trang
-  useEffect(() => {
-    if (!navRef.current) return;
-    const activeItem = navRef.current.querySelector<HTMLElement>('.neonav-item.active');
-    if (activeItem) {
-      activeItem.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center',
-      });
-    }
-  }, [currentPage]);
+  // Giữ thanh menu Header cố định, không tự động cuộn giật khi chuyển trang từ các nút bên dưới
+  // (Người dùng vẫn có thể cuộn ngang tự do bằng con lăn chuột onWheel)
 
   // Hỗ trợ cuộn ngang bằng con lăn chuột trên thanh menu Header
   const handleWheel = (e: React.WheelEvent<HTMLElement>) => {
@@ -185,24 +128,12 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       id="app-header"
-      className="neonav-bar w-[1200px] max-w-[calc(100%-40px)] mx-auto h-[64px] sm:h-[68px] glass-panel rounded-b-[20px] rounded-t-none flex items-center justify-between p-[2px] z-40 relative flex-shrink-0 transition-all duration-300 shadow-[0_14px_40px_-6px_rgba(30,27,75,0.18),0_4px_16px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)] dark:shadow-[0_16px_45px_-6px_rgba(0,0,0,0.65),0_0_24px_rgba(99,102,241,0.18),inset_0_1px_1px_rgba(255,255,255,0.2)] border-b-2 border-x border-white/80 dark:border-white/20 hover:shadow-[0_18px_50px_-6px_rgba(99,102,241,0.25),0_6px_22px_rgba(0,0,0,0.08),inset_0_1.5px_2px_rgba(255,255,255,1)] hover:border-white/95 group/header overflow-hidden"
+      className={`neonav-bar w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto h-[64px] sm:h-[68px] glass-panel flex items-center justify-between p-[2px] z-40 relative flex-shrink-0 transition-all duration-300 rounded-t-none rounded-b-[20px] border-t-0 border-x border-b ${
+        isDark
+          ? 'border-2 border-cyan-400/30 bg-slate-950/80 backdrop-blur-xl shadow-[0_16px_45px_-6px_rgba(0,0,0,0.75),0_0_24px_rgba(34,211,238,0.22),inset_0_1px_1px_rgba(255,255,255,0.15)]'
+          : 'border-2 border-white/80 dark:border-white/20 shadow-[0_14px_40px_-6px_rgba(30,27,75,0.18),0_4px_16px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)]'
+      } hover:shadow-[0_18px_50px_-6px_rgba(99,102,241,0.25),0_6px_22px_rgba(0,0,0,0.08),inset_0_1.5px_2px_rgba(255,255,255,1)] hover:border-white/95 group/header overflow-hidden`}
     >
-      {/* NeoNav Floating Background Elements */}
-      <div className="header-floating-elements">
-        <div
-          className="header-floating-circle"
-          style={{ width: '45px', height: '45px', top: '10%', left: '8%', animationDelay: '0s' }}
-        />
-        <div
-          className="header-floating-circle"
-          style={{ width: '65px', height: '65px', top: '25%', right: '12%', animationDelay: '2s' }}
-        />
-        <div
-          className="header-floating-circle"
-          style={{ width: '35px', height: '35px', bottom: '15%', left: '48%', animationDelay: '4s' }}
-        />
-      </div>
-
       {/* Top ambient highlight line */}
       <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-white/80 dark:via-white/30 to-transparent pointer-events-none z-10" />
 
@@ -212,39 +143,100 @@ export const Header: React.FC<HeaderProps> = ({
         aria-hidden="true"
         className="absolute -top-[9999px] -left-[9999px] pointer-events-none opacity-0 invisible flex flex-nowrap"
       >
-        {headerPages.map((page) => (
-          <div
-            key={`measure-${page.id}`}
-            className="neonav-measure-item h-[38px] w-auto min-w-max flex items-center justify-start gap-1.5 pl-1.5 pr-3 rounded-full border text-[11px] sm:text-[11.5px] font-bold"
-          >
-            <div className="w-7 h-7 rounded-full shrink-0" />
-            <span className="whitespace-nowrap font-bold text-[11px] sm:text-[11.5px] tracking-tight text-left">
-              {page.shortTitle}
-            </span>
-          </div>
-        ))}
+        {headerPages.map((page) => {
+          const title = language === 'en' && page.shortTitleEn ? page.shortTitleEn : page.shortTitle;
+          return (
+            <div
+              key={`measure-${page.id}`}
+              className="neonav-measure-item h-[36px] sm:h-[38px] w-auto min-w-max flex items-center justify-center gap-1.5 px-3 rounded-xl border text-[11px] sm:text-[11.5px] font-bold"
+            >
+              <div className="w-[24px] h-[24px] shrink-0" />
+              <span className="whitespace-nowrap font-bold text-[11px] sm:text-[11.5px] tracking-tight text-left">
+                {title}
+              </span>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Danh sách Tabs Menu Điều Hướng NeoNav Glass */}
+      {/* Danh sách Tabs Menu Điều Hướng NeoNav Glass Cố Định */}
       <nav
         ref={navRef}
         id="header-center"
         onWheel={handleWheel}
-        className={`flex-1 min-w-0 h-full flex items-center overflow-x-auto no-scrollbar z-10 ${
-          currentPage === 4 ? 'p-[2px]' : 'py-[2px] px-2'
-        }`}
+        className="flex-1 min-w-0 h-full flex items-center justify-center overflow-x-auto no-scrollbar z-10 p-[2px]"
       >
         <div
           ref={containerRef}
           id="header-menu-container"
-          className={`flex items-center m-auto py-[2px] flex-nowrap transition-all duration-300 ${
+          className={`flex items-center m-auto py-[2px] flex-nowrap ${
             isOverflowing ? 'neonav-stacked' : 'gap-1 sm:gap-1.5'
           }`}
         >
           {headerPages.map((page, index) => {
             const isHovered = hoveredId === page.id;
+            const isSelected = currentPage === page.id;
             const baseZIndex = index + 1;
-            const itemZIndex = isHovered ? 50 : baseZIndex;
+            // Không tăng z-index khi được chọn để nút không nổi đè lên trên các nút khác
+            const itemZIndex = isHovered ? 15 : baseZIndex;
+
+            // Format menu icon và item theo giao diện được chọn (currentTheme)
+            let itemBg = page.bgNormal || page.bgLight || `${page.theme}15`;
+            let itemBorder = page.borderColor || `${page.theme}45`;
+            let itemBoxShadow = '0 1px 2px rgba(0,0,0,0.04)';
+            let iconColor = page.theme;
+            let iconGlowFilter = 'none';
+            let titleColor = page.theme;
+            let titleTextShadow = 'none';
+
+            if (currentTheme === 'dark-neon') {
+              // Giao diện tối Glass Neon: Mỗi nút menu icon có màu ánh sáng neon đèn riêng biệt độc bản
+              const neonData = PAGE_NEON_COLORS[page.id] || { neon: page.theme, glow: `${page.theme}80` };
+              iconColor = neonData.neon;
+              iconGlowFilter = isHovered || isSelected
+                ? `drop-shadow(0 0 5px ${neonData.neon})`
+                : `drop-shadow(0 0 3px ${neonData.neon}B3)`;
+
+              // Khi trang được chọn: Màu nền đậm hơn chút nhưng phẳng, không nổi đè nút khác
+              itemBg = isSelected
+                ? `${neonData.neon}32`
+                : isHovered
+                ? `${neonData.neon}20`
+                : 'rgba(15, 23, 42, 0.85)';
+              itemBorder = isSelected
+                ? `${neonData.neon}90`
+                : isHovered
+                ? `${neonData.neon}60`
+                : `${neonData.neon}30`;
+              itemBoxShadow = '0 1px 3px rgba(0, 0, 0, 0.25)';
+
+              titleColor = iconColor;
+              titleTextShadow = isSelected
+                ? `0 0 6px ${neonData.neon}`
+                : isHovered
+                ? `0 0 4px ${neonData.neon}80`
+                : 'none';
+            } else {
+              // default: light-glass (Giao diện sáng kính đa sắc)
+              // Khi trang được chọn: Màu nền đậm hơn chút nhưng phẳng, không nổi đè nút khác
+              itemBg = isSelected
+                ? `${page.theme}26`
+                : isHovered
+                ? `${page.theme}16`
+                : 'rgba(255, 255, 255, 0.75)';
+              itemBorder = isSelected
+                ? page.theme
+                : isHovered
+                ? `${page.theme}80`
+                : page.borderColor || `${page.theme}35`;
+              itemBoxShadow = '0 1px 2px rgba(0,0,0,0.04)';
+
+              titleColor = iconColor;
+              titleTextShadow = 'none';
+            }
+
+            const pageTitle = language === 'en' && page.shortTitleEn ? page.shortTitleEn : page.shortTitle;
+            const pageFullName = language === 'en' && page.fullNameEn ? page.fullNameEn : page.fullName;
 
             return (
               <button
@@ -257,7 +249,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }}
                 onMouseEnter={() => setHoveredId(page.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className="neonav-item relative h-[38px] flex items-center justify-start gap-1.5 pl-1.5 pr-2.5 rounded-full border cursor-pointer select-none transition-colors duration-200 shrink-0"
+                className="neonav-item relative h-[36px] sm:h-[38px] flex items-center justify-center px-2 sm:px-2.5 rounded-xl border cursor-pointer select-none transition-colors duration-200 shrink-0 group/navitem overflow-hidden"
                 style={{
                   width: `${longestWidth}px`,
                   minWidth: `${longestWidth}px`,
@@ -265,130 +257,73 @@ export const Header: React.FC<HeaderProps> = ({
                   marginLeft: isOverflowing && index > 0 ? `-${overlapAmount}px` : undefined,
                   zIndex: itemZIndex,
                   transform: 'none',
-                  boxShadow: 'none',
-                  borderColor: isDark ? `${page.theme}60` : page.borderColor || `${page.theme}45`,
-                  background: isDark
-                    ? 'rgba(15, 23, 42, 0.75)'
-                    : page.bgNormal || page.bgLight || `${page.theme}15`,
-                  color: page.theme,
+                  boxShadow: itemBoxShadow,
+                  borderColor: itemBorder,
+                  background: itemBg,
                 }}
-                title={page.fullName}
+                title={pageFullName}
               >
-                {/* Circular Icon Container - Không có hiệu ứng chọn trang */}
-                <div
-                  className="neonav-icon-box w-7 h-7 rounded-full flex items-center justify-center shrink-0 shadow-none transition-none"
-                  style={{
-                    background: isDark ? 'rgba(15, 23, 42, 0.85)' : page.bgLight,
-                    color: page.theme,
-                  }}
-                >
-                  <span className="w-4 h-4 flex items-center justify-center" style={{ color: page.theme }}>
-                    {page.iconSvg}
+                {/* Khung nhóm icon và tiêu đề được căn giữa hoàn hảo trong nút menu */}
+                <div className="flex items-center justify-center gap-1.5 w-full mx-auto overflow-hidden">
+                  {/* Icon Menu: Bọc Khung Tròn Kính Mờ backdrop-blur-md Hào Quang Siêu Thực & Hiệu Ứng Nảy Nhẹ */}
+                  <div
+                    className="w-[22px] h-[22px] sm:w-[24px] sm:h-[24px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 relative overflow-hidden icon-spring-bounce group-hover/navitem:scale-115"
+                    style={{
+                      background: isDark
+                        ? isSelected
+                          ? `${iconColor}35`
+                          : 'rgba(15, 23, 42, 0.7)'
+                        : isSelected
+                        ? `${iconColor}22`
+                        : 'rgba(255, 255, 255, 0.7)',
+                      border: `1px solid ${
+                        isSelected
+                          ? iconColor
+                          : isDark
+                          ? 'rgba(255, 255, 255, 0.18)'
+                          : 'rgba(255, 255, 255, 0.85)'
+                      }`,
+                      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+                      backdropFilter: 'blur(8px)',
+                      WebkitBackdropFilter: 'blur(8px)',
+                    }}
+                  >
+                    {/* Vệt sáng gradient siêu thực phản quang khi hover chuột */}
+                    <span
+                      className="absolute inset-0 rounded-full opacity-0 group-hover/navitem:opacity-100 transition-opacity duration-300 pointer-events-none"
+                      style={{
+                        background: `radial-gradient(circle at 35% 25%, ${iconColor}50 0%, transparent 70%)`,
+                      }}
+                    />
+
+                    {/* Icon vector bên trong */}
+                    <span
+                      className="w-[14px] h-[14px] sm:w-[15px] sm:h-[15px] flex items-center justify-center shrink-0 relative z-1 transition-transform duration-300 group-hover/navitem:scale-110"
+                      style={{
+                        color: iconColor,
+                        filter: iconGlowFilter,
+                      }}
+                    >
+                      {page.iconSvg}
+                    </span>
+                  </div>
+
+                  {/* Tiêu đề ngắn gọn căn giữa cân đối */}
+                  <span
+                    className="whitespace-nowrap font-bold text-[11px] sm:text-[11.5px] tracking-tight transition-colors duration-200 truncate"
+                    style={{
+                      color: titleColor,
+                      textShadow: titleTextShadow,
+                    }}
+                  >
+                    {pageTitle}
                   </span>
                 </div>
-
-                {/* Tiêu đề ngắn gọn có màu TRÙNG KHỚP với màu icon */}
-                <span
-                  className="whitespace-nowrap font-bold text-[11px] sm:text-[11.5px] tracking-tight transition-colors z-10 text-left truncate flex-1"
-                  style={{
-                    color: page.theme,
-                  }}
-                >
-                  {page.shortTitle}
-                </span>
               </button>
             );
           })}
         </div>
       </nav>
-
-      {/* Cụm điều khiển nhanh: Tùy chỉnh Cỡ chữ (A- / A / A+) & Bật/Tắt Âm Thanh Toàn Cục */}
-      <div className="shrink-0 pr-2 pl-1 flex items-center gap-1.5 z-20">
-        {/* Typography Quick Scaler (A- / A / A+) */}
-        <div
-          id="header-font-scaler"
-          role="group"
-          aria-label="Tùy chỉnh cỡ chữ hiển thị"
-          className={`h-[38px] px-1 rounded-full border flex items-center gap-0.5 transition-all duration-200 ${
-            isDark
-              ? 'bg-slate-900/85 border-slate-700/90 text-slate-300'
-              : currentTheme === 'flat-rainbow'
-              ? 'bg-white/95 border-indigo-200 text-slate-700'
-              : 'bg-white/85 border-slate-200/90 text-slate-600 shadow-2xs'
-          }`}
-        >
-          {(
-            [
-              { key: 'sm', label: 'A-', title: 'Cỡ chữ thu gọn (90%)' },
-              { key: 'md', label: 'A', title: 'Cỡ chữ mặc định (100%)' },
-              { key: 'lg', label: 'A+', title: 'Cỡ chữ phóng đại dễ đọc (110%)' },
-            ] as const
-          ).map((item) => {
-            const isActive = fontScale === item.key;
-            return (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => handleSelectFontScale(item.key)}
-                aria-pressed={isActive}
-                title={item.title}
-                className={`h-[28px] min-w-[26px] px-1.5 rounded-full font-play font-black tracking-tight flex items-center justify-center cursor-pointer transition-all duration-150 ${
-                  item.key === 'sm'
-                    ? 'text-[10px]'
-                    : item.key === 'lg'
-                    ? 'text-[12px]'
-                    : 'text-[11px]'
-                } ${
-                  isActive
-                    ? isDark
-                      ? 'bg-cyan-500/25 text-cyan-300 border border-cyan-400/60 shadow-[0_0_10px_rgba(34,211,238,0.25)]'
-                      : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-2xs'
-                    : isDark
-                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
-                }`}
-              >
-                {item.label}
-              </button>
-            );
-          })}
-        </div>
-
-        <button
-          id="header-sound-toggle"
-          type="button"
-          onClick={handleToggleGlobalSound}
-          aria-pressed={isSoundEnabled}
-          aria-label={isSoundEnabled ? 'Tắt âm thanh giao diện (Mute)' : 'Bật âm thanh giao diện (Unmute)'}
-          title={
-            isSoundEnabled
-              ? 'Âm thanh phản hồi đang BẬT — Nhấp để Tắt (Mute)'
-              : 'Âm thanh phản hồi đang TẮT — Nhấp để Bật (Unmute)'
-          }
-          className={`relative h-[38px] w-[38px] rounded-full border flex items-center justify-center cursor-pointer select-none transition-all duration-200 active:scale-90 hover:scale-105 shrink-0 ${
-            isSoundEnabled
-              ? isDark
-                ? 'bg-slate-900/85 border-cyan-400/60 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.28)] hover:border-cyan-300'
-                : currentTheme === 'flat-rainbow'
-                ? 'bg-emerald-50 border-emerald-400 text-emerald-700 hover:bg-emerald-100'
-                : 'bg-blue-50/90 border-blue-300/80 text-blue-600 shadow-2xs hover:bg-blue-100/80'
-              : isDark
-              ? 'bg-slate-900/60 border-slate-700/80 text-slate-400 hover:text-rose-400 hover:border-rose-500/50'
-              : 'bg-slate-100/85 border-slate-300/80 text-slate-400 hover:text-rose-500 hover:border-rose-300'
-          }`}
-        >
-          <WebIcon
-            name={isSoundEnabled ? 'volume-2' : 'volume-x'}
-            className="w-4 h-4 transition-transform duration-200"
-          />
-          {/* Chấm trạng thái trực quan */}
-          <span
-            className={`absolute top-1 right-1 w-2 h-2 rounded-full border border-white dark:border-slate-900 transition-colors duration-200 ${
-              isSoundEnabled ? 'bg-emerald-500 animate-pulse' : 'bg-rose-400'
-            }`}
-          />
-        </button>
-      </div>
     </header>
   );
 };

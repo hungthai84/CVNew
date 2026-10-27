@@ -16,9 +16,9 @@ export const DOMAINS_DATA: DomainData[] = [
     teamSizeEn: "50 – 130+ Staff / shift (>100K calls & trans/mo)",
     toolsVi: "Avaya CallCenter, AICC System, Smart IVR, CRM Telecom, SOP Matrix",
     toolsEn: "Avaya CallCenter, AICC System, Smart IVR, Telecom CRM, SOP Matrix",
-    orientationVi: "Bảo đảm hạ tầng dịch vụ và luồng kết nối thoại thông suốt 24/7/365 cho thị trường trong nước và kiều bào quốc tế.",
-    orientationEn: "Ensuring 24/7/365 voice connection & service uptime for domestic & global overseas customers.",
-    descVi: "Quản lý và điều hành trực tiếp 50 – 130+ nhân sự/ca, xử lý >100.000+ cuộc gọi & giao dịch/tháng. Bảo đảm hạ tầng dịch vụ và luồng kết nối thoại thông suốt 24/7/365 cho thị trường trong nước và kiều bào quốc tế.",
+    orientationVi: "Kết nối người dùng, xây dựng hạ tầng số, đem lại giá trị bền vững cho cộng đồng.",
+    orientationEn: "Connecting users, building digital infrastructure, and delivering sustainable values to the community.",
+    descVi: "Quản lý và điều hành trực tiếp 50 – 130+ nhân sự/ca, xử lý >100.000+ cuộc gọi & giao dịch/tháng. Kết nối người dùng, xây dựng hạ tầng số, đem lại giá trị bền vững cho cộng đồng.",
     descEn: "Directed 50-130+ staff per shift handling 100K+ monthly calls & transactions with round-the-clock reliability.",
     highlightsVi: [
       "Duy trì SLA tiếp nhận cuộc gọi > 98%, điểm CSAT đạt 96.5%",
@@ -38,6 +38,7 @@ export const DOMAINS_DATA: DomainData[] = [
       { src: "https://i.ibb.co/R4YXWyzF/LBC.png", alt: "LBC", name: "LBC Post" },
       { src: "https://i.ibb.co/1fNw0hBq/HTVC.png", alt: "HTVC", name: "HTVC Truyền hình cáp" },
     ],
+    illustrationSrc: "https://i.ibb.co/4RYYfBvx/D-ch-v-vi-n-th-ng-removebg-preview.png",
     colorTheme: {
       primary: "#0284c7",
       border: "border-sky-300 dark:border-sky-500/30",
@@ -83,6 +84,7 @@ export const DOMAINS_DATA: DomainData[] = [
       { src: "https://i.ibb.co/BSVS4xf/Shopee.png", alt: "Shopee", name: "Shopee Vietnam" },
       { src: "https://i.ibb.co/7NtSSz4d/Finviet.png", alt: "Finviet", name: "Finviet" },
     ],
+    illustrationSrc: "https://i.ibb.co/fY3Nqny0/Th-ng-m-i-i-n-t-removebg-preview.png",
     colorTheme: {
       primary: "#ea580c",
       border: "border-orange-300 dark:border-orange-500/30",
@@ -127,6 +129,7 @@ export const DOMAINS_DATA: DomainData[] = [
     logos: [
       { src: "https://i.ibb.co/XfpQphWF/Prudential.png", alt: "Prudential", name: "Prudential Vietnam" },
     ],
+    illustrationSrc: "https://i.ibb.co/B8K1Gwr/D-ch-v-b-o-hi-m-removebg-preview.png",
     colorTheme: {
       primary: "#dc2626",
       border: "border-red-300 dark:border-red-500/30",
@@ -173,6 +176,7 @@ export const DOMAINS_DATA: DomainData[] = [
       { src: "https://i.ibb.co/fYPJLfbw/VED.png", alt: "VED", name: "Vietnam Esports" },
       { src: "https://i.ibb.co/FkWk3s4W/GCafe.png", alt: "GCafe", name: "GCafe Network" },
     ],
+    illustrationSrc: "https://i.ibb.co/pBKmWZHc/Game-e-Sports-removebg-preview.png",
     colorTheme: {
       primary: "#7c3aed",
       border: "border-purple-300 dark:border-purple-500/30",
@@ -219,6 +223,7 @@ export const DOMAINS_DATA: DomainData[] = [
       { src: "https://i.ibb.co/LdYv3TJy/Shopee-Paye.png", alt: "ShopeePay", name: "ShopeePay" },
       { src: "https://i.ibb.co/7NtSSz4d/Finviet.png", alt: "Finviet", name: "Ví ECO (Finviet)" },
     ],
+    illustrationSrc: "https://i.ibb.co/hRJDnYw4/Thanh-to-n-i-n-t-removebg-preview.png",
     colorTheme: {
       primary: "#ec4899",
       border: "border-pink-300 dark:border-pink-500/30",
@@ -262,8 +267,9 @@ export const DOMAINS_DATA: DomainData[] = [
     partnersEn: "Power Service, Partner Ecosystem, VED",
     logos: [
       { src: "https://i.ibb.co/G4QnNzWb/Power-Service.png", alt: "PowerService", name: "Power Service" },
-      { src: "https://i.ibb.co/BKHcWL5R/Logo-VED.gif", alt: "VED", name: "Vietnam Esports" },
+      { src: "https://i.ibb.co/fYPJLfbw/VED.png", alt: "VED", name: "Vietnam Esports" },
     ],
+    illustrationSrc: "https://i.ibb.co/Kj5P9tvf/X-y-d-ng-h-th-ng-removebg-preview.png",
     colorTheme: {
       primary: "#059669",
       border: "border-emerald-300 dark:border-emerald-500/30",

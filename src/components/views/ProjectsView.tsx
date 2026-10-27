@@ -1,13 +1,28 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { 
+  LayoutGrid, 
+  Layers, 
+  Maximize2, 
+  ChevronRight, 
+  ChevronLeft, 
+  Volume2, 
+  VolumeX, 
+  FolderGit2, 
+  CheckCircle2, 
+  Sparkles,
+  Award,
+  ExternalLink
+} from 'lucide-react';
 import { PROJECTS_DATA } from '@/data/projects';
-import { ProjectData } from '@/types';
+import { ProjectData, SiteTheme } from '@/types';
 import { Modal } from '@/components/ui/Modal';
-import { WebIcon } from '@/components/ui/WebIcon';
-import { HeroBanner } from '@/components/ui/HeroBanner';
+import { formatCardTitle } from '@/lib/utils';
+import { SoundEngine } from '@/components/ui/SoundEngine';
+import { ProjectDetailView } from './ProjectDetailView';
 
-interface ProjectCardGroup {
+export interface ProjectCardGroup {
   id: string;
   code: string;
   filterKey: string;
@@ -26,7 +41,7 @@ const getByIds = (ids: string[]): ProjectData[] =>
     .map((id) => PROJECTS_DATA.find((p) => p.id === id))
     .filter((p): p is ProjectData => Boolean(p));
 
-const PROJECT_CARD_GROUPS: ProjectCardGroup[] = [
+export const PROJECT_CARD_GROUPS: ProjectCardGroup[] = [
   {
     id: 'group-strategy',
     code: 'Nhóm 1',
@@ -71,7 +86,7 @@ const PROJECT_CARD_GROUPS: ProjectCardGroup[] = [
     code: 'Nhóm 4',
     filterKey: 'tech',
     badgeText: 'Nhóm Công nghệ, Dữ liệu & AI CSKH (CS Tech, Data & AI)',
-    fourWordTitle: 'Công Nghệ, Data & AI',
+    fourWordTitle: 'Công Nghệ Data AI',
     pillText: '4 Dự án · 4.1 – 4.4',
     desc: 'Xây dựng hệ thống CRM 360 độ (4.1), Phân tích & Báo cáo BI Dashboard (4.2), Khảo sát & Đánh giá khách hàng CSAT/NPS 1-click (4.3), Xây dựng AI Bot Generative & RAG 24/7 (4.4).',
     visualId: '04',
@@ -84,7 +99,7 @@ const PROJECT_CARD_GROUPS: ProjectCardGroup[] = [
     code: 'Nhóm 5',
     filterKey: 'learning',
     badgeText: 'Nhóm Đào tạo, Phát triển & Văn hóa Dịch vụ (CS Learning & Culture)',
-    fourWordTitle: 'Đào Tạo & Văn Hóa',
+    fourWordTitle: 'Đào Tạo Văn Hóa',
     pillText: '6 Dự án · 5.1 – 5.6',
     desc: 'Phát triển đào tạo trực tuyến CS Academy LMS (5.1), Khung năng lực & lộ trình phát triển ASK (5.2), Thành lập Trung tâm Hỗ trợ KH (5.3), Chiến lược Customer-Centric & Khung TQA chuẩn COPC (5.4), Quản trị sự thay đổi và khủng hoảng dịch vụ (5.5), Ứng dụng trí tuệ nhân tạo nâng cao hiệu suất CSKH (5.6).',
     visualId: '06',
@@ -94,69 +109,126 @@ const PROJECT_CARD_GROUPS: ProjectCardGroup[] = [
   },
 ];
 
-export const ProjectsView: React.FC = () => {
-  const [filter, setFilter] = useState<string>('all');
-  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
+export const PROJECT_CATEGORIES = [
+  { id: 'all', label: 'Tất cả (21 Dự án)' },
+  { id: 'strategy', label: 'Chiến Lược (2)' },
+  { id: 'sop', label: 'Chuẩn Hóa SOP (5)' },
+  { id: 'cx', label: 'Trải Nghiệm CX (4)' },
+  { id: 'tech', label: 'Công Nghệ AI (4)' },
+  { id: 'learning', label: 'Đào Tạo (6)' },
+];
+
+export interface ProjectsViewProps {
+  currentTheme?: SiteTheme;
+}
+
+export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'light-glass' }) => {
+  const isDark = currentTheme === 'dark-neon';
+  const isLight = currentTheme !== 'dark-neon';
+
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'carousel'>('grid');
   const [selectedGroup, setSelectedGroup] = useState<ProjectCardGroup | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<ProjectData | null>(null);
   const [mindmapProject, setMindmapProject] = useState<ProjectData | null>(null);
+  const [activeSection, setActiveSection] = useState<string>('sec-overview');
+  const [isBannerMuted, setIsBannerMuted] = useState<boolean>(true);
+  const [activeCarouselIdx, setActiveCarouselIdx] = useState<number>(0);
 
-  // Visual theme config per card matching DomainsView & SkillsView
+  const bannerVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (selectedArticle) {
+      setActiveSection(selectedArticle.detailedSpec ? 'sec-overview' : 'sec-star-situation');
+    }
+  }, [selectedArticle]);
+
+  // Bộ màu trực quan theo phân hệ (tương thích DomainsView & SkillsView)
   const getCardVisualConfig = (visualId: string) => {
     switch (visualId) {
       case '01': // Chiến lược - Sky Blue
         return {
-          accentColor: '#0284c7',
-          cardBg: 'linear-gradient(135deg, #f0f7fe 0%, #ddf0fd 30%, #c4e2fa 65%, #beddf9 100%)',
-          cardBorder: 'border-[#93c5fd]/90 hover:border-[#38bdf8]',
+          accentColor: isLight ? '#0284c7' : '#38bdf8',
+          cardBg: isLight
+            ? 'linear-gradient(135deg, #f0f7fe 0%, #ddf0fd 30%, #c4e2fa 65%, #beddf9 100%)'
+            : 'linear-gradient(135deg, rgba(12, 74, 110, 0.52) 0%, rgba(15, 23, 42, 0.86) 100%)',
+          cardBorder: isLight
+            ? 'border-[#93c5fd]/90 hover:border-[#38bdf8]'
+            : 'border-sky-400/45 hover:border-sky-300',
           ambientGlow: 'radial-gradient(circle at 75% 50%, rgba(190, 221, 249, 0.95) 0%, rgba(196, 226, 250, 0.5) 55%, transparent 75%)',
-          titleColor: 'text-[#0284c7]',
-          pillBg: 'bg-sky-100/90 border-sky-200/90 text-[#0369a1]',
+          titleColor: isLight ? 'text-[#0284c7]' : 'text-sky-300',
+          pillBg: isLight
+            ? 'bg-sky-100/90 border-sky-200/90 text-[#0369a1]'
+            : 'bg-sky-950/80 border-sky-500/40 text-sky-200',
           arrowBg: 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)',
           arrowShadow: '0 4px 12px rgba(2, 132, 199, 0.4)',
         };
       case '02': // CX Design - Warm Orange / Amber
         return {
-          accentColor: '#ea580c',
-          cardBg: 'linear-gradient(135deg, #fffcf7 0%, #fef1e2 30%, #fccc9b 65%, #fbd2a6 100%)',
-          cardBorder: 'border-[#fdba74]/90 hover:border-[#fb923c]',
+          accentColor: isLight ? '#ea580c' : '#fb923c',
+          cardBg: isLight
+            ? 'linear-gradient(135deg, #fffcf7 0%, #fef1e2 30%, #fccc9b 65%, #fbd2a6 100%)'
+            : 'linear-gradient(135deg, rgba(124, 45, 18, 0.48) 0%, rgba(15, 23, 42, 0.86) 100%)',
+          cardBorder: isLight
+            ? 'border-[#fdba74]/90 hover:border-[#fb923c]'
+            : 'border-orange-400/45 hover:border-orange-300',
           ambientGlow: 'radial-gradient(circle at 75% 50%, rgba(251, 210, 166, 0.95) 0%, rgba(252, 204, 155, 0.5) 55%, transparent 75%)',
-          titleColor: 'text-[#ea580c]',
-          pillBg: 'bg-orange-100/80 border-orange-200/90 text-[#c2410c]',
+          titleColor: isLight ? 'text-[#ea580c]' : 'text-orange-300',
+          pillBg: isLight
+            ? 'bg-orange-100/80 border-orange-200/90 text-[#c2410c]'
+            : 'bg-orange-950/80 border-orange-500/40 text-orange-200',
           arrowBg: 'linear-gradient(135deg, #fbbf24 0%, #ea580c 100%)',
           arrowShadow: '0 4px 12px rgba(234, 88, 12, 0.4)',
         };
       case '03': // SOP & BPO - Rose / Ruby
         return {
-          accentColor: '#e11d48',
-          cardBg: 'linear-gradient(135deg, #fff7f6 0%, #feeae5 30%, #fdd8cf 65%, #f9b3b1 100%)',
-          cardBorder: 'border-[#fca5a5]/90 hover:border-[#f43f5e]',
+          accentColor: isLight ? '#e11d48' : '#fb7185',
+          cardBg: isLight
+            ? 'linear-gradient(135deg, #fff7f6 0%, #feeae5 30%, #fdd8cf 65%, #f9b3b1 100%)'
+            : 'linear-gradient(135deg, rgba(136, 19, 55, 0.48) 0%, rgba(15, 23, 42, 0.86) 100%)',
+          cardBorder: isLight
+            ? 'border-[#fca5a5]/90 hover:border-[#f43f5e]'
+            : 'border-rose-400/45 hover:border-rose-300',
           ambientGlow: 'radial-gradient(circle at 75% 50%, rgba(253, 216, 207, 0.95) 0%, rgba(249, 179, 177, 0.5) 55%, transparent 75%)',
-          titleColor: 'text-[#e11d48]',
-          pillBg: 'bg-rose-100/80 border-rose-200/90 text-[#be123c]',
+          titleColor: isLight ? 'text-[#e11d48]' : 'text-rose-300',
+          pillBg: isLight
+            ? 'bg-rose-100/80 border-rose-200/90 text-[#be123c]'
+            : 'bg-rose-950/80 border-rose-500/40 text-rose-200',
           arrowBg: 'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)',
           arrowShadow: '0 4px 12px rgba(225, 29, 72, 0.4)',
         };
       case '04': // Tech & AI - Purple / Violet
         return {
-          accentColor: '#7c3aed',
-          cardBg: 'linear-gradient(135deg, #faf8fe 0%, #ede8fe 30%, #d9d0fb 65%, #c5b5f9 100%)',
-          cardBorder: 'border-[#c4b5fd]/90 hover:border-[#a855f7]',
+          accentColor: isLight ? '#7c3aed' : '#c084fc',
+          cardBg: isLight
+            ? 'linear-gradient(135deg, #faf8fe 0%, #ede8fe 30%, #d9d0fb 65%, #c5b5f9 100%)'
+            : 'linear-gradient(135deg, rgba(88, 28, 135, 0.52) 0%, rgba(15, 23, 42, 0.86) 100%)',
+          cardBorder: isLight
+            ? 'border-[#c4b5fd]/90 hover:border-[#a855f7]'
+            : 'border-purple-400/45 hover:border-purple-300',
           ambientGlow: 'radial-gradient(circle at 75% 50%, rgba(217, 208, 251, 0.95) 0%, rgba(157, 126, 243, 0.5) 55%, transparent 75%)',
-          titleColor: 'text-[#7c3aed]',
-          pillBg: 'bg-purple-100/80 border-purple-200/90 text-[#5b21b6]',
+          titleColor: isLight ? 'text-[#7c3aed]' : 'text-purple-300',
+          pillBg: isLight
+            ? 'bg-purple-100/80 border-purple-200/90 text-[#5b21b6]'
+            : 'bg-purple-950/80 border-purple-500/40 text-purple-200',
           arrowBg: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
           arrowShadow: '0 4px 12px rgba(124, 58, 237, 0.4)',
         };
       case '06': // Learning & Culture - Mint / Emerald
       default:
         return {
-          accentColor: '#059669',
-          cardBg: 'linear-gradient(135deg, #f3fbfa 0%, #dff4f2 30%, #b1dfdd 65%, #abd9d6 100%)',
-          cardBorder: 'border-[#6ee7b7]/90 hover:border-[#10b981]',
+          accentColor: isLight ? '#059669' : '#34d399',
+          cardBg: isLight
+            ? 'linear-gradient(135deg, #f3fbfa 0%, #dff4f2 30%, #b1dfdd 65%, #abd9d6 100%)'
+            : 'linear-gradient(135deg, rgba(6, 78, 59, 0.52) 0%, rgba(15, 23, 42, 0.86) 100%)',
+          cardBorder: isLight
+            ? 'border-[#6ee7b7]/90 hover:border-[#10b981]'
+            : 'border-emerald-400/45 hover:border-emerald-300',
           ambientGlow: 'radial-gradient(circle at 75% 50%, rgba(171, 217, 214, 0.95) 0%, rgba(177, 223, 221, 0.5) 55%, transparent 75%)',
-          titleColor: 'text-[#059669]',
-          pillBg: 'bg-emerald-100/80 border-emerald-200/90 text-[#047857]',
+          titleColor: isLight ? 'text-[#059669]' : 'text-emerald-300',
+          pillBg: isLight
+            ? 'bg-emerald-100/80 border-emerald-200/90 text-[#047857]'
+            : 'bg-emerald-950/80 border-emerald-500/40 text-emerald-200',
           arrowBg: 'linear-gradient(135deg, #34d399 0%, #059669 100%)',
           arrowShadow: '0 4px 12px rgba(5, 150, 105, 0.4)',
         };
@@ -179,522 +251,440 @@ export const ProjectsView: React.FC = () => {
     );
   };
 
-  const filteredProjects = PROJECTS_DATA.filter((p) => {
-    if (filter === 'all') return true;
-    return p.groupKey === filter;
-  });
+  // Lọc danh sách dự án theo danh mục
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === 'all') return PROJECTS_DATA;
+    return PROJECTS_DATA.filter((p) => p.groupKey === activeCategory);
+  }, [activeCategory]);
 
   const handleOpenGroup = (group: ProjectCardGroup, initialProject?: ProjectData) => {
+    SoundEngine.playTap();
     setSelectedGroup(group);
     setSelectedArticle(initialProject || group.projects[0] || null);
   };
 
   const handleCloseDetail = () => {
+    SoundEngine.playTap();
     setSelectedArticle(null);
     setSelectedGroup(null);
   };
 
-  const carouselRef = useRef<HTMLDivElement>(null);
-
-  const scrollLeft = () => {
-    carouselRef.current?.scrollBy({ left: -390, behavior: 'smooth' });
+  const handleToggleBannerMute = () => {
+    const video = bannerVideoRef.current;
+    if (!video) return;
+    const next = !isBannerMuted;
+    setIsBannerMuted(next);
+    video.muted = next;
   };
 
-  const scrollRight = () => {
-    carouselRef.current?.scrollBy({ left: 390, behavior: 'smooth' });
+  const handlePrevCarousel = () => {
+    SoundEngine.playTap();
+    setActiveCarouselIdx((prev) => (prev > 0 ? prev - 1 : filteredProjects.length - 1));
+  };
+
+  const handleNextCarousel = () => {
+    SoundEngine.playTap();
+    setActiveCarouselIdx((prev) => (prev < filteredProjects.length - 1 ? prev + 1 : 0));
   };
 
   return (
-    <div
-      className="w-full h-full flex-1 min-h-0 flex flex-col lg:flex-row-reverse gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 overflow-hidden"
-    >
-      {/* 1. VERTICAL HERO BANNER BÊN PHẢI (300PX) */}
-      <aside className="w-full lg:w-[300px] min-w-[300px] max-w-[300px] shrink-0 h-full flex flex-col overflow-hidden">
-        <HeroBanner
-          badgeText="Dự án"
-          title="Dự án trọng điểm & thành tựu"
-          titleIcon="target"
-          badgeColor="text-cyan-300"
-          titleColor="text-cyan-300"
-          quote="“Thành công của dự án nằm ở sự tỉ mỉ trong từng quy trình.”"
-          quoteAuthor="— Nguyễn Hùng Thái"
-          orientation="vertical"
-          className="h-full rounded-[20px]"
-        >
-          {/* Metric Badges */}
-          <div className="relative z-10 my-auto py-1.5 hidden lg:flex flex-col gap-2.5 w-full pointer-events-auto">
-            <div className="grid grid-cols-2 gap-2">
-              <div className="p-1.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-center">
-                <div className="text-sm font-black text-amber-400">21+</div>
-                <div className="text-[9.5px] text-white/80 font-medium">Dự Án Thực Chiến</div>
-              </div>
-              <div className="p-1.5 rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 text-center">
-                <div className="text-base font-black text-emerald-400">98%</div>
-                <div className="text-[9.5px] text-white/80 font-medium">SLA Hoàn Thành</div>
-              </div>
-            </div>
-          </div>
+    <div className="w-full h-full flex flex-col gap-3.5 sm:gap-4 overflow-y-auto no-scrollbar pb-6 select-none text-left">
+      {/* Khi chưa chọn xem chi tiết dự án: Hiển thị Hero Banner và Danh sách thẻ dự án */}
+      {!selectedGroup && !selectedArticle ? (
+        <>
+          {/* 1. HERO BANNER VIDEO - CHUẨN ĐỒNG BỘ THƯƠNG HIỆU NHƯ THẺ HỌC VẤN */}
+          <section className="relative w-full rounded-2xl overflow-hidden shrink-0 border border-cyan-500/30 dark:border-cyan-400/30 shadow-lg min-h-[175px] sm:min-h-[195px] flex flex-col justify-between p-3.5 sm:p-5 bg-slate-900">
+            {/* Video nền hoặc Poster */}
+            <video
+              ref={bannerVideoRef}
+              src="https://cdn.scena.ai/project/10223/cc5a8e558d2380dc8bfb96fd26cd877e444d63b6a7036a8530abd823d6d6da63.mp4"
+              poster="/images/skills/ill-01.png"
+              autoPlay
+              loop
+              muted={isBannerMuted}
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            />
 
-          {/* NHÓM NÚT LỌC CHUYỂN VÀO BANNER (Theo yêu cầu người dùng) */}
-          <div className="relative z-10 flex flex-col gap-1.5 w-full pt-2 border-t border-white/20 shrink-0 pointer-events-auto">
-            <div className="relative">
-              {/* Single Filter Dropdown Button */}
-              <button
-                type="button"
-                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                className="w-full text-left px-3 py-2 rounded-xl text-[11.5px] font-bold font-play tracking-wide transition-all border cursor-pointer flex items-center justify-between gap-2 bg-white/20 hover:bg-white/30 text-white border-white/30 shadow-md backdrop-blur-md"
-              >
-                <div className="flex items-center gap-2 truncate">
-                  <WebIcon name="filter" className="w-4 h-4 text-cyan-300 shrink-0" />
-                  <span className="truncate">
-                    Danh mục: {
-                      [
-                        { key: 'all', label: 'Tất cả (21)' },
-                        { key: 'strategy', label: '1. Chiến lược (2)' },
-                        { key: 'sop', label: '2. Chuẩn hóa SOP (5)' },
-                        { key: 'cx', label: '3. Trải nghiệm CX (4)' },
-                        { key: 'tech', label: '4. Công nghệ & AI (4)' },
-                        { key: 'learning', label: '5. Đào tạo (6)' },
-                      ].find(c => c.key === filter)?.label || 'Tất cả (21)'
-                    }
+            {/* Lớp phủ Gradient Scrim bảo vệ độ tương phản chữ */}
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/75 to-slate-950/50 dark:from-slate-950/95 dark:via-slate-950/85 dark:to-slate-950/60 pointer-events-none" />
+
+            {/* Khối Header Top: Tiêu đề 4 từ, Badge & Nút chuyển chế độ xem */}
+            <div className="relative z-10 flex items-start justify-between gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-mono font-bold tracking-wider uppercase bg-cyan-500/25 border border-cyan-400/40 text-cyan-300 shadow-sm backdrop-blur-md">
+                    <FolderGit2 className="w-3.5 h-3.5 text-cyan-300" />
+                    <span>Dự Án Thực Chiến</span>
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/10 text-white/90 border border-white/15">
+                    {PROJECTS_DATA.length} Dự Án &amp; Giải Pháp
                   </span>
                 </div>
-                <svg className={`w-3.5 h-3.5 transition-transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
 
-              {/* Dropdown Menu List */}
-              {isFilterDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1.5 p-1 rounded-2xl bg-slate-900/95 backdrop-blur-2xl border border-white/20 shadow-2xl z-50 flex flex-col gap-1">
-                  {[
-                    { key: 'all', label: 'Tất cả (21)', icon: 'globe' },
-                    { key: 'strategy', label: '1. Chiến lược (2)', icon: 'compass' },
-                    { key: 'sop', label: '2. Chuẩn hóa SOP (5)', icon: 'shield' },
-                    { key: 'cx', label: '3. Trải nghiệm CX (4)', icon: 'sparkles' },
-                    { key: 'tech', label: '4. Công nghệ & AI (4)', icon: 'database' },
-                    { key: 'learning', label: '5. Đào tạo (6)', icon: 'graduation' },
-                  ].map((item) => {
-                    const isActive = filter === item.key;
-                    return (
-                      <button
-                        key={item.key}
-                        type="button"
-                        onClick={() => {
-                          setFilter(item.key);
-                          setIsFilterDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-3 py-2 rounded-xl text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center justify-between gap-2 ${
-                          isActive
-                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white border-cyan-300 shadow-md'
-                            : 'bg-white/5 hover:bg-white/15 text-white/90 border-white/10'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 truncate">
-                          <WebIcon name={item.icon} className="w-3.5 h-3.5 shrink-0" />
-                          <span className="truncate">{item.label}</span>
-                        </div>
-                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
-                      </button>
-                    );
-                  })}
+                <h1 className="text-lg sm:text-2xl font-black font-play text-white tracking-tight drop-shadow-md">
+                  Dự Án Thực Chiến
+                </h1>
+
+                <p className="text-xs sm:text-sm text-slate-200/90 font-medium max-w-2xl drop-shadow-sm hidden sm:block">
+                  21 Dự án Chuyên ngành • Chuẩn hóa quy trình SOP, kiến trúc dữ liệu CRM &amp; ứng dụng AI đa kênh.
+                </p>
+              </div>
+
+              {/* Nhóm nút góc phải trên: Đổi chế độ xem (Lưới / Trình chiếu) & Mute */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <div className="bg-black/40 backdrop-blur-md p-0.5 rounded-xl border border-white/15 flex items-center gap-0.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      SoundEngine.playTap();
+                      setViewMode('grid');
+                    }}
+                    className={`p-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
+                      viewMode === 'grid'
+                        ? 'bg-cyan-600 text-white shadow-xs'
+                        : 'text-slate-300 hover:text-white hover:bg-white/10'
+                    }`}
+                    title="Xem dạng lưới"
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline text-[11px]">Lưới</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      SoundEngine.playTap();
+                      setViewMode('carousel');
+                    }}
+                    className={`p-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
+                      viewMode === 'carousel'
+                        ? 'bg-cyan-600 text-white shadow-xs'
+                        : 'text-slate-300 hover:text-white hover:bg-white/10'
+                    }`}
+                    title="Xem dạng băng chuyền"
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline text-[11px]">Trình chiếu</span>
+                  </button>
                 </div>
-              )}
-            </div>
-          </div>
-        </HeroBanner>
-      </aside>
 
-      {/* 2. MAIN RIGHT AREA: 21 THẺ DỰ ÁN VỚI HÌNH BANNER LẮP ĐẦY THẺ */}
-      <div className="flex-1 min-w-0 h-full min-h-0 flex flex-col gap-2 overflow-hidden">
-        {/* Responsive Grid Card View Container */}
-        <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
-        {!selectedGroup && !selectedArticle ? (
-          <div className="relative w-full h-full flex-1 min-h-0 overflow-y-auto glass-scrollbar pr-1 py-0.5">
-            {/* 21 THẺ DỰ ÁN ĐỘC LẬP - HÌNH BANNER LẮP ĐẦY THẺ DỰ ÁN 100% */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-3.5 auto-rows-[200px] sm:auto-rows-[215px] pb-4">
+                <button
+                  type="button"
+                  onClick={handleToggleBannerMute}
+                  title={isBannerMuted ? 'Bật âm thanh banner' : 'Tắt tiếng banner'}
+                  className="p-2 rounded-xl bg-black/40 hover:bg-black/60 text-white border border-white/15 backdrop-blur-md transition cursor-pointer"
+                >
+                  {isBannerMuted ? <VolumeX className="w-4 h-4 text-rose-300" /> : <Volume2 className="w-4 h-4 text-cyan-300" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Khối Trích Dẫn Triết Lý & Bộ Lọc Nhanh Dưới Cùng */}
+            <div className="relative z-10 pt-3 border-t border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+              <p className="text-[11px] sm:text-xs italic text-cyan-200/90 font-sans tracking-wide">
+                “Hệ thống vận hành chuẩn xác là nền tảng cho sự phát triển vượt bậc.” <span className="font-semibold text-white/80">— Nguyễn Hùng Thái</span>
+              </p>
+
+              {/* Bộ lọc danh mục 5 nhóm dự án */}
+              <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+                {PROJECT_CATEGORIES.map((cat) => {
+                  const isSelected = activeCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => {
+                        SoundEngine.playTap();
+                        setActiveCategory(cat.id);
+                        setActiveCarouselIdx(0);
+                      }}
+                      className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold whitespace-nowrap transition cursor-pointer border ${
+                        isSelected
+                          ? 'bg-cyan-500 text-slate-950 font-black border-cyan-300 shadow-sm'
+                          : 'bg-black/35 hover:bg-black/55 text-slate-200 border-white/15 hover:border-cyan-400/50'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* 2. NỘI DUNG CHÍNH: CHẾ ĐỘ LƯỚI (GRID 4 CỘT) HOẶC BĂNG CHUYỀN (CAROUSEL) */}
+          {viewMode === 'grid' ? (
+            /* CHẾ ĐỘ 1: RESPONSIVE CARD GRID VIEW (LƯỚI 4 CỘT ĐỒNG BỘ 100% NHƯ THẺ HỌC VẤN) */
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4 items-stretch">
               {filteredProjects.map((proj) => {
-                const cfg = getVisualConfigForProject(proj);
                 const parentGroup = getParentGroupForProject(proj);
-                const displayTitle = proj.title.includes('·')
-                  ? proj.title.split('·')[1].trim()
-                  : proj.title;
+                const cfg = getVisualConfigForProject(proj);
+                const cleanTitle = proj.title.replace(/^[\d.]+\s*·\s*/, '').trim();
 
                 return (
-                  <div
+                  <article
                     key={proj.id}
                     onClick={() => handleOpenGroup(parentGroup, proj)}
-                    className="group/card relative rounded-[18px] overflow-hidden border border-white/80 dark:border-white/20 shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-300 hover:-translate-y-1 h-full min-h-0 text-left bg-slate-900"
-                    title={`Bấm để xem Case Study STAR: ${proj.title}`}
+                    className={`group relative rounded-2xl overflow-hidden p-3 sm:p-3.5 flex flex-col justify-between border select-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${
+                      isDark
+                        ? 'bg-slate-900/80 border-slate-700/70 hover:border-cyan-400/60 shadow-[0_4px_20px_rgba(0,0,0,0.5)] text-slate-100'
+                        : 'bg-white/90 border-slate-200/90 hover:border-cyan-500/60 shadow-md text-slate-800'
+                    }`}
+                    style={{
+                      backdropFilter: 'blur(16px)',
+                    }}
                   >
-                    {/* HÌNH BANNER LẮP ĐẦY TOÀN BỘ THẺ DỰ ÁN (Rõ ràng, sắc nét) */}
-                    <img
-                      src={proj.image}
-                      alt={proj.title}
-                      className="absolute inset-0 w-full h-full object-cover object-center brightness-[1.06] contrast-[1.06] group-hover/card:scale-108 transition-transform duration-700 select-none pointer-events-none"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = parentGroup.illustrationSrc;
-                      }}
-                    />
+                    {/* Khối Ảnh Dự Án (Tỷ Lệ 16/10 Chuẩn Thẻ Học Vấn) */}
+                    <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-black/10 dark:border-white/10 shadow-xs mb-2.5 group/img">
+                      <img
+                        src={proj.image}
+                        alt={proj.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://i.ibb.co/vzG7Z1z/hungthai-avatar.jpg';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
 
-                    {/* Gradient Scrim nhẹ mỏng làm nổi bật hình ảnh và chữ */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent pointer-events-none" />
-
-                    {/* Default Top Badges */}
-                    <div className="absolute top-2.5 inset-x-2.5 flex items-center justify-between z-10">
-                      <span
-                        style={{ background: cfg.accentColor }}
-                        className="px-2 py-0.5 rounded-md text-white font-mono text-[10px] font-black shadow-md border border-white/30"
-                      >
-                        {proj.code}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-emerald-300 font-mono text-[9px] font-bold shadow-xs border border-white/20 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span>{proj.progressText || '100% Hoàn thành'}</span>
-                      </span>
-                    </div>
-
-                    {/* KHỐI DƯỚI NẰM TRỰC TIẾP TRÊN HÌNH BANNER: TÊN DỰ ÁN & MŨI TÊN */}
-                    <div className="absolute bottom-0 inset-x-0 p-3 z-10 flex items-end justify-between gap-2 bg-gradient-to-t from-slate-950/90 via-slate-950/60 to-transparent pt-6">
-                      <div className="min-w-0 flex-1">
-                        <span className="text-[9.5px] font-bold uppercase tracking-wider text-cyan-300/90 font-mono block truncate">
-                          {parentGroup.fourWordTitle}
-                        </span>
-                        <h4
-                          className="text-[12.5px] font-black font-play leading-snug text-white drop-shadow-md truncate mt-0.5"
-                          title={proj.title}
+                      {/* Badge Mã Dự Án & Tiến độ */}
+                      <div className="absolute top-2 left-2 flex items-center gap-1 z-10">
+                        <span
+                          style={{ color: cfg.accentColor }}
+                          className="px-2 py-0.5 rounded-md text-[9.5px] font-mono font-bold bg-black/70 border border-white/20 backdrop-blur-md"
                         >
-                          {displayTitle}
-                        </h4>
+                          {proj.code}
+                        </span>
+                        <span className="px-1.5 py-0.5 rounded-md text-[9px] font-mono font-semibold bg-black/60 text-white/90 border border-white/15 backdrop-blur-md">
+                          {proj.phase || '100% Hoàn thành'}
+                        </span>
                       </div>
 
-                      {/* Right: Nút mũi tên xem chi tiết */}
+                      {/* Nút phóng to / xem sơ đồ tư duy Mindmap */}
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleOpenGroup(parentGroup, proj);
+                          SoundEngine.playTap();
+                          setMindmapProject(proj);
                         }}
-                        style={{ background: cfg.arrowBg, boxShadow: cfg.arrowShadow }}
-                        className="w-6 h-6 rounded-full text-white flex items-center justify-center shrink-0 transition-transform duration-300 group-hover/card:translate-x-0.5 hover:scale-115 cursor-pointer shadow-md"
-                        title="Xem STAR Case Study"
+                        title="Phóng to sơ đồ tư duy Mindmap"
+                        className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-black/60 hover:bg-cyan-600 text-white flex items-center justify-center transition border border-white/20 backdrop-blur-md opacity-85 group-hover:opacity-100 cursor-pointer shadow-xs"
                       >
-                        <svg className="w-3 h-3 stroke-[2.8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                        </svg>
+                        <Maximize2 className="w-3.5 h-3.5" />
                       </button>
+
+                      {/* Nhãn vai trò & mã ở chân ảnh */}
+                      <span className="absolute bottom-1.5 left-2 right-2 text-[10px] font-bold text-white/90 truncate drop-shadow-sm font-sans flex items-center justify-between">
+                        <span className="truncate">{proj.role || 'Trưởng Dự Án'}</span>
+                        <span className="text-[9px] text-cyan-300 font-mono shrink-0 ml-1">
+                          {proj.number ? `Mã ${proj.number}` : 'STAR Case'}
+                        </span>
+                      </span>
                     </div>
 
-                    {/* LỚP PHỦ CHI TIẾT KHI HOVER CHUỘT (Translucent Glass Overlay) */}
-                    <div className="absolute inset-0 bg-slate-950/78 backdrop-blur-[5px] opacity-0 group-hover/card:opacity-100 transition-all duration-300 p-3.5 flex flex-col justify-between text-white z-20 pointer-events-none">
-                      {/* Top: Nhóm & Giai đoạn */}
-                      <div className="flex items-center justify-between gap-1.5 flex-wrap">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-sm text-[10px] font-bold text-white border border-white/30 truncate max-w-[190px]">
-                          <WebIcon name={parentGroup.iconName} className="w-3.5 h-3.5 shrink-0 text-cyan-300" />
-                          <span className="truncate">{parentGroup.code}: {parentGroup.fourWordTitle}</span>
-                        </span>
+                    {/* Phần Thân Card: Tiêu đề 4 từ, Phân loại & Tóm tắt */}
+                    <div className="flex-1 flex flex-col justify-between space-y-2">
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <span
+                            className="w-2 h-2 rounded-full shrink-0"
+                            style={{ backgroundColor: cfg.accentColor }}
+                          />
+                          <span
+                            className="text-[10px] font-bold font-mono tracking-tight"
+                            style={{ color: cfg.accentColor }}
+                          >
+                            {parentGroup.fourWordTitle}
+                          </span>
+                          <span className="ml-auto text-[9px] font-mono text-slate-400">
+                            {proj.progressPercent ? `${proj.progressPercent}%` : '100%'}
+                          </span>
+                        </div>
 
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-mono text-[9px] font-black shadow-xs">
-                          {proj.progressText || '100% Hoàn thành'}
-                        </span>
-                      </div>
+                        <h3
+                          className="font-black font-play text-sm sm:text-[14.5px] leading-tight tracking-wide group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-2"
+                          style={{ color: isDark ? '#ffffff' : '#0f172a' }}
+                          title={cleanTitle}
+                        >
+                          {formatCardTitle(cleanTitle)}
+                        </h3>
 
-                      {/* Middle: Mô tả chi tiết dự án */}
-                      <div className="my-auto py-1">
-                        <span className="text-[9px] uppercase tracking-wider font-mono text-cyan-300 font-bold block mb-1">
-                          Mô tả dự án:
-                        </span>
-                        <p className="text-[11px] text-slate-100 leading-snug line-clamp-3 font-medium">
+                        <p className={`text-[11px] leading-snug line-clamp-2 mt-1.5 font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                           {proj.description}
                         </p>
                       </div>
 
-                      {/* Bottom: Hashtags & Gợi ý click */}
-                      <div className="flex items-center justify-between pt-1 border-t border-white/20 gap-1 text-[10px]">
-                        <div className="flex items-center gap-1 flex-wrap overflow-hidden">
-                          {proj.hashtags?.slice(0, 2).map((t) => (
-                            <span key={t} className="px-1.5 py-0.2 rounded bg-white/15 text-slate-200 font-mono text-[9px] font-medium truncate">
-                              {t}
+                      {/* Tags hashtag kỹ năng */}
+                      <div className="pt-2 border-t border-black/5 dark:border-white/10">
+                        <div className="flex items-center gap-1 flex-wrap mb-2">
+                          {proj.hashtags.slice(0, 3).map((tag, tIdx) => (
+                            <span
+                              key={tIdx}
+                              className="px-1.5 py-0.5 rounded text-[9.5px] font-mono font-medium bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border border-cyan-200/80 dark:border-cyan-800/60"
+                            >
+                              {tag.replace(/^#/, '')}
                             </span>
                           ))}
                         </div>
-                        <span className="text-[9.5px] text-amber-300 font-bold flex items-center gap-0.5 shrink-0">
-                          <span>Xem STAR Case Study</span>
-                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => handleOpenGroup(parentGroup, proj)}
+                          className="w-full py-1.5 px-2.5 rounded-xl text-xs font-bold font-play flex items-center justify-center gap-1 transition border bg-slate-100 hover:bg-cyan-50 text-slate-700 hover:text-cyan-700 dark:bg-slate-800 dark:hover:bg-cyan-950/60 dark:text-slate-200 dark:hover:text-cyan-300 border-slate-300/80 dark:border-white/15 cursor-pointer shadow-2xs group-hover:border-cyan-400/60"
+                        >
+                          <span>Xem chi tiết dự án</span>
+                          <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                        </button>
                       </div>
                     </div>
-                  </div>
+                  </article>
                 );
               })}
             </div>
-          </div>
-        ) : (
-          /* Detail View cho nhóm dự án & Case Study STAR đang chọn */
-          selectedArticle && (
-            <div className="w-full h-full flex-1 min-h-0 relative overflow-y-auto glass-scrollbar pr-1.5 pb-8 flex flex-col gap-4 text-left">
-              {/* Thẻ 1: Header & Tổng Quan Dự Án */}
-              <div className="w-full p-4 sm:p-5 rounded-[22px] bg-white/95 dark:bg-slate-900/95 border border-purple-200/90 dark:border-purple-500/30 shadow-[0_10px_30px_rgba(0,0,0,0.12)] space-y-3.5 transition-all duration-300 backdrop-blur-2xl shrink-0">
-                {/* Top Back Bar & Sub-Project Selector Tabs */}
-                <div className="flex flex-col gap-3 pb-3 border-b border-slate-200 dark:border-white/10">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      {selectedGroup && (
-                        <div
-                          style={{ color: getCardVisualConfig(selectedGroup.visualId).accentColor }}
-                          className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200/80 dark:border-purple-500/30 flex items-center justify-center shrink-0 shadow-2xs"
-                        >
-                          <WebIcon name={selectedGroup.iconName} className="w-[25px] h-[25px]" />
-                        </div>
-                      )}
-                      <div className="min-w-0">
-                        <span className="text-[10.5px] font-mono font-black uppercase tracking-wider text-purple-600 dark:text-purple-400 block truncate">
-                          {selectedGroup ? `${selectedGroup.code} · ${selectedGroup.badgeText}` : selectedArticle.groupTitle}
-                        </span>
-                        <h4 className="text-sm sm:text-base font-black tracking-tight font-play text-slate-900 dark:text-white truncate">
-                          {selectedGroup ? selectedGroup.fourWordTitle : selectedArticle.title}
-                        </h4>
-                      </div>
-                    </div>
+          ) : (
+            /* CHẾ ĐỘ 2: TRÌNH CHIẾU / BĂNG CHUYỀN (CAROUSEL VIEW) */
+            <div className="flex flex-col gap-3">
+              {filteredProjects.length > 0 && (() => {
+                const curProj = filteredProjects[activeCarouselIdx];
+                const curGroup = getParentGroupForProject(curProj);
+                const curCfg = getVisualConfigForProject(curProj);
+                const cleanCurTitle = curProj.title.replace(/^[\d.]+\s*·\s*/, '').trim();
 
-                    <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => setMindmapProject(selectedArticle)}
-                        className="px-3.5 py-1.5 rounded-full bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/90 dark:border-purple-500/40 font-bold text-xs flex items-center gap-1.5 hover:bg-purple-100 dark:hover:bg-purple-900/50 transition cursor-pointer active:scale-95 shadow-2xs"
-                      >
-                        <WebIcon name="brain" className="w-3.5 h-3.5" />
-                        <span>Sơ Đồ Tư Duy</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={handleCloseDetail}
-                        title="Đóng chi tiết dự án"
-                        aria-label="Đóng chi tiết dự án"
-                        className="w-9 h-9 rounded-full bg-slate-100 hover:bg-rose-500 dark:bg-slate-800 dark:hover:bg-rose-600 text-slate-600 hover:text-white dark:text-slate-300 dark:hover:text-white border border-slate-300 dark:border-slate-700 hover:border-rose-500 text-xs font-bold shadow-2xs hover:shadow-md transition-all duration-200 flex items-center justify-center cursor-pointer shrink-0 active:scale-90"
-                      >
-                        <svg className="w-4 h-4 stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Tabs chọn nhanh các dự án trong nhóm */}
-                  {selectedGroup && selectedGroup.projects.length > 1 && (
-                    <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5">
-                      {selectedGroup.projects.map((proj) => {
-                        const isCurrent = proj.id === selectedArticle.id;
-                        return (
-                          <button
-                            key={proj.id}
-                            type="button"
-                            onClick={() => setSelectedArticle(proj)}
-                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer whitespace-nowrap flex items-center gap-1.5 active:scale-95 ${
-                              isCurrent
-                                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-purple-500 shadow-xs'
-                                : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-white dark:hover:bg-slate-750'
-                            }`}
-                          >
-                            <span className="font-mono font-black">{proj.code}</span>
-                            <span className="truncate max-w-[200px]">
-                              {proj.title.includes('·') ? proj.title.split('·')[1].trim() : proj.title}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-
-                {/* Main Info Box */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-                  <div className="lg:col-span-8 flex flex-col justify-between gap-3 p-4 rounded-xl bg-slate-50/90 dark:bg-slate-950/60 border border-slate-200/90 dark:border-white/10">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs font-mono font-black px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-xs">
-                          Mã dự án: {selectedArticle.code}
-                        </span>
-                        <span className="text-xs font-bold px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/50">
-                          {selectedArticle.groupTitle}
-                        </span>
-                        <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50">
-                          {selectedArticle.progressText}
-                        </span>
-                      </div>
-
-                      <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-tight font-play">
-                        {selectedArticle.title}
-                      </h2>
-
-                      <p className="text-xs sm:text-[13px] text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
-                        {selectedArticle.description}
-                      </p>
-                    </div>
-
-                    <div className="pt-2.5 border-t border-slate-200/90 dark:border-white/10 space-y-2 text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="font-extrabold text-slate-900 dark:text-slate-200 w-20 shrink-0 inline-flex items-center gap-1.5">
-                          <WebIcon name="target" className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
-                          <span>Vai trò:</span>
-                        </span>
-                        <span className="font-bold text-purple-700 dark:text-purple-300">{selectedArticle.role}</span>
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-extrabold text-slate-900 dark:text-slate-200 w-20 shrink-0 inline-flex items-center gap-1.5">
-                          <WebIcon name="tag" className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
-                          <span>Hashtags:</span>
-                        </span>
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          {selectedArticle.hashtags.map((t) => (
-                            <span
-                              key={t}
-                              className="px-2.5 py-0.5 rounded-full bg-white dark:bg-slate-800 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-500/30 font-mono text-[11px] font-semibold shadow-2xs"
-                            >
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="lg:col-span-4 flex flex-col gap-2">
-                    <div
-                      className="w-full h-44 sm:h-48 rounded-xl overflow-hidden bg-slate-950 border border-slate-200 dark:border-white/15 relative group cursor-pointer shadow-md"
-                      onClick={() => setMindmapProject(selectedArticle)}
-                    >
-                      <img
-                        src={selectedArticle.mindmap}
-                        alt={`Sơ đồ tư duy ${selectedArticle.code}`}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = selectedArticle.image;
+                return (
+                  <div className={`p-4 sm:p-6 rounded-2xl border shadow-xl flex flex-col lg:flex-row gap-5 items-stretch ${
+                    isDark ? 'bg-slate-900/90 border-slate-700 text-white' : 'bg-white/95 border-slate-200 text-slate-900'
+                  }`}>
+                    {/* Cột trái: Ảnh dự án lớn */}
+                    <div className="lg:w-1/2 flex flex-col justify-between">
+                      <div
+                        onClick={() => {
+                          SoundEngine.playTap();
+                          setMindmapProject(curProj);
                         }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-black/30 flex flex-col justify-end p-3">
-                        <span className="text-[11.5px] font-bold text-white flex items-center gap-1.5 drop-shadow">
-                          <WebIcon name="search" className="w-3.5 h-3.5 text-purple-300" />
-                          <span>Nhấp phóng to Sơ Đồ Tư Duy</span>
+                        className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-black shadow-md border border-white/20 cursor-pointer group"
+                      >
+                        <img
+                          src={curProj.image}
+                          alt={curProj.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://i.ibb.co/vzG7Z1z/hungthai-avatar.jpg';
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors flex items-center justify-center">
+                          <span className="px-3 py-1.5 rounded-full bg-black/70 text-white text-xs font-bold backdrop-blur-md opacity-0 group-hover:opacity-100 transition flex items-center gap-1.5">
+                            <Maximize2 className="w-3.5 h-3.5" />
+                            <span>Phóng to sơ đồ tư duy</span>
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Điều hướng Carousel mini */}
+                      <div className="flex items-center justify-between gap-2 pt-3">
+                        <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
+                          Dự án {activeCarouselIdx + 1} / {filteredProjects.length}
                         </span>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={handlePrevCarousel}
+                            className="p-1.5 rounded-lg border border-slate-300 dark:border-white/20 bg-slate-100 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-cyan-950 text-slate-700 dark:text-white transition cursor-pointer"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={handleNextCarousel}
+                            className="p-1.5 rounded-lg border border-slate-300 dark:border-white/20 bg-slate-100 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-cyan-950 text-slate-700 dark:text-white transition cursor-pointer"
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
 
-              {/* Thẻ 2: 1. Bối cảnh & Thách thức (Situation & Task) */}
-              <div className="w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-amber-50/98 via-orange-50/95 to-amber-100/90 dark:from-slate-900/98 dark:via-amber-950/40 dark:to-slate-900/95 border-2 border-amber-300/90 dark:border-amber-500/40 shadow-[0_12px_32px_rgba(217,119,6,0.18)] space-y-3 transition-all duration-300 backdrop-blur-2xl shrink-0">
-                <div className="flex items-center justify-between pb-2 border-b border-amber-200/80 dark:border-amber-500/30">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white font-mono font-black text-sm flex items-center justify-center shadow-md">
-                      S
-                    </span>
-                    <h3 className="font-black text-sm sm:text-base text-amber-950 dark:text-amber-300 font-play">
-                      1. Bối cảnh & Thách thức (Situation & Task)
-                    </h3>
-                  </div>
-                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-200/80 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200">
-                    Giai đoạn 01
-                  </span>
-                </div>
-                <p className="text-xs sm:text-[13px] text-slate-800 dark:text-slate-100 leading-relaxed font-medium">
-                  {selectedArticle.star.situation}
-                </p>
-              </div>
+                    {/* Cột phải: Thông tin sâu dự án */}
+                    <div className="lg:w-1/2 flex flex-col justify-between space-y-3">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span
+                            style={{ color: curCfg.accentColor, borderColor: `${curCfg.accentColor}50` }}
+                            className="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-cyan-500/10 border"
+                          >
+                            {curGroup.fourWordTitle}
+                          </span>
+                          <span className="text-xs font-mono font-bold opacity-70">
+                            Mã {curProj.code} • {curProj.phase || 'Hoàn thành 100%'}
+                          </span>
+                        </div>
 
-              {/* Thẻ 3: 2. Phương pháp tiếp cận chiến lược (Approach) */}
-              <div className="w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-blue-50/98 via-sky-50/95 to-indigo-100/90 dark:from-slate-900/98 dark:via-blue-950/40 dark:to-slate-900/95 border-2 border-blue-300/90 dark:border-blue-500/40 shadow-[0_14px_36px_rgba(2,132,199,0.18)] space-y-3 transition-all duration-300 backdrop-blur-2xl shrink-0">
-                <div className="flex items-center justify-between pb-2 border-b border-blue-200/80 dark:border-blue-500/30">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-600 text-white font-mono font-black text-sm flex items-center justify-center shadow-md">
-                      A
-                    </span>
-                    <h3 className="font-black text-sm sm:text-base text-blue-950 dark:text-sky-300 font-play">
-                      2. Phương pháp tiếp cận chiến lược (Approach)
-                    </h3>
-                  </div>
-                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-200/80 dark:bg-blue-900/60 text-blue-800 dark:text-blue-200">
-                    Giai đoạn 02
-                  </span>
-                </div>
-                <p className="text-xs sm:text-[13px] text-slate-800 dark:text-slate-100 leading-relaxed font-medium">
-                  {selectedArticle.star.approach}
-                </p>
-              </div>
+                        <h2 className="text-xl sm:text-2xl font-black font-play tracking-tight text-cyan-700 dark:text-cyan-400">
+                          {formatCardTitle(cleanCurTitle)}
+                        </h2>
 
-              {/* Thẻ 4: 3. Hành động triển khai thực tế (Action Steps) */}
-              <div className="w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-purple-50/98 via-fuchsia-50/95 to-violet-100/90 dark:from-slate-900/98 dark:via-purple-950/40 dark:to-slate-900/95 border-2 border-purple-300/90 dark:border-purple-500/40 shadow-[0_16px_40px_rgba(124,58,237,0.2)] space-y-3.5 transition-all duration-300 backdrop-blur-2xl shrink-0">
-                <div className="flex items-center justify-between pb-2 border-b border-purple-200/80 dark:border-purple-500/30">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-600 to-fuchsia-600 text-white font-mono font-black text-sm flex items-center justify-center shadow-md">
-                      A
-                    </span>
-                    <h3 className="font-black text-sm sm:text-base text-purple-950 dark:text-purple-300 font-play">
-                      3. Hành động triển khai thực tế (Action Steps)
-                    </h3>
-                  </div>
-                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-purple-200/80 dark:bg-purple-900/60 text-purple-800 dark:text-purple-200">
-                    Giai đoạn 03
-                  </span>
-                </div>
+                        <p className="text-xs font-bold font-mono opacity-80">
+                          Vai trò: {curProj.role || 'Trưởng Dự Án'}
+                        </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {selectedArticle.star.actions.map((act) => (
-                    <div
-                      key={act.step}
-                      className="p-3.5 rounded-xl bg-white/95 dark:bg-slate-800/90 border border-purple-200/80 dark:border-purple-500/30 shadow-xs space-y-1.5 hover:border-purple-400 dark:hover:border-purple-300 transition"
-                    >
-                      <div className="flex items-center gap-1.5">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-black bg-purple-600 text-white shrink-0">
-                          {act.step}
-                        </span>
-                        <h5 className="font-bold text-xs text-slate-900 dark:text-white leading-snug truncate">
-                          {act.title}
-                        </h5>
+                        <p className="text-xs sm:text-sm leading-relaxed font-medium">
+                          {curProj.description}
+                        </p>
+
+                        {/* STAR Actions nổi bật */}
+                        {curProj.star?.actions && (
+                          <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 space-y-1.5">
+                            <span className="text-xs font-bold uppercase tracking-wider block text-cyan-600 dark:text-cyan-400">
+                              Hạng mục thực thi cốt lõi (STAR Actions)
+                            </span>
+                            <ul className="space-y-1">
+                              {curProj.star.actions.slice(0, 3).map((act, aIdx) => (
+                                <li key={aIdx} className="text-xs flex items-start gap-1.5 font-medium">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500 shrink-0 mt-0.5" />
+                                  <span>
+                                    <strong>{act.title}:</strong> {act.desc}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
-                      <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed font-medium">{act.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Thẻ 5: 4. Kết quả định lượng & ROI (Quantifiable Results) */}
-              <div className="w-full p-4 sm:p-5 rounded-[22px] bg-gradient-to-br from-emerald-50/98 via-teal-50/95 to-green-100/90 dark:from-slate-900/98 dark:via-emerald-950/40 dark:to-slate-900/95 border-2 border-emerald-300/90 dark:border-emerald-500/40 shadow-[0_20px_48px_rgba(5,150,105,0.22)] space-y-3.5 transition-all duration-300 backdrop-blur-2xl shrink-0">
-                <div className="flex items-center justify-between pb-2 border-b border-emerald-200/80 dark:border-emerald-500/30">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white font-mono font-black text-sm flex items-center justify-center shadow-md">
-                      R
-                    </span>
-                    <h3 className="font-black text-sm sm:text-base text-emerald-950 dark:text-emerald-300 font-play">
-                      4. Kết quả định lượng & ROI (Quantifiable Results)
-                    </h3>
+                      {/* Nút xem chi tiết STAR */}
+                      <button
+                        type="button"
+                        onClick={() => handleOpenGroup(curGroup, curProj)}
+                        className="w-full py-2 px-3 rounded-xl text-xs font-bold font-play flex items-center justify-center gap-1.5 transition border bg-slate-900 text-white hover:bg-cyan-600 dark:bg-white dark:text-slate-900 dark:hover:bg-cyan-400 shadow-md cursor-pointer"
+                      >
+                        <span>Xem chi tiết hồ sơ dự án (STAR)</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-200/80 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200">
-                    Giai đoạn 04
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {selectedArticle.star.results.map((res, rIdx) => (
-                    <div
-                      key={rIdx}
-                      className="p-3.5 rounded-xl bg-white/95 dark:bg-slate-800/90 border border-emerald-200/80 dark:border-emerald-500/30 shadow-xs space-y-1.5 flex flex-col justify-between hover:border-emerald-400 dark:hover:border-emerald-300 transition"
-                    >
-                      <span className="text-[10px] font-mono font-black text-emerald-600 dark:text-emerald-400 tracking-wider">
-                        Chỉ số đo lường 0{rIdx + 1}
-                      </span>
-                      <p className="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">{res}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                );
+              })()}
             </div>
-          )
-        )}
-      </div>
-      </div>
+          )}
+        </>
+      ) : (
+        /* 3. CHI TIẾT DỰ ÁN & HỒ SƠ STAR TOÀN DIỆN */
+        selectedArticle && (
+          <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
+            <ProjectDetailView
+              selectedArticle={selectedArticle}
+              selectedGroup={selectedGroup}
+              onSelectProject={(proj) => setSelectedArticle(proj)}
+              onClose={handleCloseDetail}
+              onOpenMindmap={(proj) => setMindmapProject(proj)}
+              getCardVisualConfig={getCardVisualConfig}
+              isLight={isLight}
+              activeSection={activeSection}
+              onSectionChange={setActiveSection}
+            />
+          </div>
+        )
+      )}
 
       {/* Mindmap Lightbox Modal */}
       {mindmapProject && (
@@ -718,7 +708,7 @@ export const ProjectsView: React.FC = () => {
                 href={mindmapProject.mindmap || mindmapProject.image}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-3.5 py-1.5 rounded-full bg-purple-600 text-white font-bold hover:bg-purple-700 transition inline-flex items-center gap-1.5"
+                className="px-3.5 py-1.5 rounded-full bg-cyan-600 text-white font-bold hover:bg-cyan-700 transition inline-flex items-center gap-1.5"
               >
                 <span>Mở ảnh gốc trong tab mới</span>
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">

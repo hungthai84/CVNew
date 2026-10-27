@@ -9,14 +9,17 @@ import {
 import { MemoryPhoto } from '@/types';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
-import { HeroBanner } from '@/components/ui/HeroBanner';
+import { formatCardTitle } from '@/lib/utils';
 
-export const MemoriesView: React.FC = () => {
+export interface MemoriesViewProps {
+  currentTheme?: string;
+}
+
+export const MemoriesView: React.FC<MemoriesViewProps> = ({ currentTheme = 'light-glass' }) => {
   const { showToast } = useToast();
   const [companyFilter, setCompanyFilter] = useState<string>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [viewMode, setViewMode] = useState<'masonry' | 'grid'>('masonry');
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState<boolean>(false);
   const [activeLightboxIdx, setActiveLightboxIdx] = useState<number | null>(null);
   const [isSlideshowPlaying, setIsSlideshowPlaying] = useState<boolean>(false);
@@ -120,7 +123,7 @@ export const MemoriesView: React.FC = () => {
   const hasActiveFilter = companyFilter !== 'all' || categoryFilter !== 'all' || searchQuery.trim() !== '';
 
   return (
-    <div className="w-full flex-grow flex flex-col gap-[15px] max-w-7xl mx-auto justify-start select-none relative text-slate-800 pb-8 text-left">
+    <div className="w-full flex-grow flex flex-col gap-[15px] max-w-7xl mx-auto justify-start select-none relative text-slate-800 dark:text-slate-100 pb-8 text-left">
       {/* 1. TOP HERO BANNER (ĐỒNG BỘ CHUẨN FORM TRANG LĨNH VỰC) */}
       {/* Style for crisp bright image, smooth zoom & fly-up animation from below */}
       <style
@@ -153,120 +156,6 @@ export const MemoriesView: React.FC = () => {
         }}
       />
 
-      {/* 1. TOP HERO BANNER VỚI NÚT NHÓM, TÌM KIẾM, FILTER, VIEW NẰM DƯỚI BANNER BÊN TRONG BANNER */}
-      <HeroBanner
-        badgeText="Kỷ niệm"
-        title="Khoảnh Khắc Kỷ Niệm"
-        subtitle="Lưu giữ những khoảnh khắc tự hào trên hành trình hơn 22 năm cống hiến"
-        quote="“Khoảnh khắc tự hào lưu giữ hành trình cống hiến thực chiến.”"
-        quoteAuthor="— Nguyễn Hùng Thái"
-        badgeColor="text-rose-600"
-        videoSrc="https://cdn.scena.ai/project/10223/f4c3b1609dff55beba6724fc23e5bea0499462b4096d444e320c33727ec0f455.mp4"
-        bottomControls={
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 w-full pt-1 px-1">
-            {/* Nút Nhóm: Huy hiệu nhóm album kỷ niệm (Đã xóa 4 thẻ chữ nhật thể loại theo yêu cầu) */}
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md border border-white shadow-2xs">
-                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center text-white shadow-xs">
-                  <WebIcon name="camera" className="w-3 h-3" />
-                </div>
-                <span className="text-xs sm:text-sm font-black font-play tracking-tight text-slate-900">
-                  Khoảnh Khắc Kỷ Niệm
-                </span>
-                <span className="text-[10px] font-mono font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
-                  {filteredMemories.length} / {MEMORIES_DATA.length} ảnh
-                </span>
-              </div>
-            </div>
-
-            {/* Nhóm Nút: Tìm Kiếm, Nút Filter Công Ty & Nút Chuyển View Mode */}
-            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-              {/* Nút Tìm kiếm */}
-              <div className="relative flex items-center w-full sm:w-56 shrink-0">
-                <svg className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                  <circle cx="11" cy="11" r="8" />
-                  <path strokeLinecap="round" d="M21 21l-4.35-4.35" />
-                </svg>
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Tìm sự kiện, năm, công ty..."
-                  className="w-full pl-8 pr-7 py-1.5 rounded-full text-xs bg-white/95 text-slate-900 placeholder:text-slate-400 border border-slate-200/90 focus:outline-none focus:border-rose-400 shadow-2xs font-semibold"
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    title="Xóa tìm kiếm"
-                    className="absolute right-2 text-slate-400 hover:text-slate-600 text-xs cursor-pointer"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-
-              {/* Nút Filter: Lọc theo Công ty */}
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  type="button"
-                  onClick={() => setCompanyDropdownOpen(!companyDropdownOpen)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer bg-white/95 border-slate-200/90 text-slate-700 hover:bg-white shadow-2xs whitespace-nowrap"
-                  title="Lọc theo đơn vị / công ty"
-                >
-                  <svg className="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                  </svg>
-                  <span className="max-w-[110px] truncate">
-                    {MEMORIES_COMPANIES.find((c) => c.id === companyFilter)?.labelVi || 'Tất cả công ty'}
-                  </span>
-                  <span className="text-[9px] text-slate-400">▼</span>
-                </button>
-              </div>
-
-              {/* Nút View: Chuyển đổi giao diện Masonry vs Thẻ Lưới Grid */}
-              <div className="flex items-center gap-0.5 bg-white/95 p-0.5 rounded-full border border-slate-200/90 shadow-2xs">
-                <button
-                  type="button"
-                  onClick={() => setViewMode('masonry')}
-                  className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    viewMode === 'masonry'
-                      ? 'bg-rose-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title="Dạng lưới nghệ thuật"
-                >
-                  Masonry
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode('grid')}
-                  className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                    viewMode === 'grid'
-                      ? 'bg-rose-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title="Dạng thẻ lưới"
-                >
-                  Thẻ
-                </button>
-              </div>
-
-              {hasActiveFilter && (
-                <button
-                  type="button"
-                  onClick={handleResetFilters}
-                  className="px-2.5 py-1.5 rounded-full text-xs font-bold text-rose-600 bg-white/95 hover:bg-rose-50 border border-rose-200 transition-all flex items-center gap-1 cursor-pointer shadow-2xs"
-                  title="Đặt lại bộ lọc"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          </div>
-        }
-      />
-
       {/* Modal Popup Dropdown Lọc Công Ty (Tránh bị overflow-hidden của banner che khuất) */}
       {companyDropdownOpen && (
         <div
@@ -274,11 +163,11 @@ export const MemoriesView: React.FC = () => {
           onClick={() => setCompanyDropdownOpen(false)}
         >
           <div
-            className="w-full max-w-sm rounded-2xl bg-white border border-slate-200 shadow-2xl p-3 flex flex-col gap-2 animate-fadeIn"
+            className="w-full max-w-sm rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-2xl p-3 flex flex-col gap-2 animate-fadeIn"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <div className="flex items-center gap-2 text-rose-600 font-bold text-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-white/10">
+              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-sm">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                 </svg>
@@ -287,7 +176,7 @@ export const MemoriesView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setCompanyDropdownOpen(false)}
-                className="w-6 h-6 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 text-xs cursor-pointer"
+                className="w-6 h-6 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-300 text-xs cursor-pointer"
               >
                 ✕
               </button>
@@ -310,12 +199,12 @@ export const MemoriesView: React.FC = () => {
                     }}
                     className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer ${
                       isActive
-                        ? 'bg-rose-50 text-rose-700 font-bold'
-                        : 'text-slate-700 hover:bg-slate-100'
+                        ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 font-bold'
+                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                     }`}
                   >
                     <span className="truncate pr-2">{comp.labelVi}</span>
-                    <span className="text-[10px] font-mono opacity-70 bg-slate-100 px-1.5 py-0.5 rounded-md">
+                    <span className="text-[10px] font-mono opacity-70 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-md">
                       {count}
                     </span>
                   </button>
@@ -329,12 +218,12 @@ export const MemoriesView: React.FC = () => {
       {/* 2. Vùng chứa hiển thị Album hình ảnh (Sáng rõ nét, bay từ dưới lên, KHÔNG hiện tiêu đề/mô tả mặc định, CHỈ hiện khi hover chuột) */}
       <div className="w-full flex-grow relative min-h-[420px]">
         {filteredMemories.length === 0 ? (
-          <div className="w-full py-16 px-6 rounded-3xl bg-white/70 border border-dashed border-slate-300 text-center flex flex-col items-center justify-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center">
+          <div className="w-full py-16 px-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-dashed border-slate-300 dark:border-white/20 text-center flex flex-col items-center justify-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center">
               <WebIcon name="camera" className="w-6 h-6" />
             </div>
-            <p className="text-sm font-bold text-slate-700">Không tìm thấy ảnh kỷ niệm phù hợp với bộ lọc.</p>
-            <p className="text-xs text-slate-500">Hãy thử đổi từ khóa tìm kiếm hoặc chọn công ty khác.</p>
+            <p className="text-sm font-bold text-slate-700 dark:text-white">Không tìm thấy ảnh kỷ niệm phù hợp với bộ lọc.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Hãy thử đổi từ khóa tìm kiếm hoặc chọn công ty khác.</p>
             <button
               type="button"
               onClick={handleResetFilters}
@@ -343,7 +232,7 @@ export const MemoriesView: React.FC = () => {
               <span>↻ Đặt lại bộ lọc</span>
             </button>
           </div>
-        ) : viewMode === 'masonry' ? (
+        ) : (
           /* Multi-column Masonry Layout */
           <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-[15px] space-y-[15px] text-left">
             {filteredMemories.map((item, idx) => (
@@ -351,13 +240,13 @@ export const MemoriesView: React.FC = () => {
                 key={item.id}
                 onClick={() => setActiveLightboxIdx(idx)}
                 style={{ animationDelay: `${(idx % 16) * 45}ms` }}
-                className="memory-photo-item break-inside-avoid relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-200/80 shadow-xs hover:shadow-2xl transition-all duration-300 cursor-pointer group hover:-translate-y-1"
+                className="memory-photo-item break-inside-avoid relative rounded-2xl overflow-hidden bg-slate-900 border border-slate-200/80 dark:border-white/10 shadow-[0_10px_28px_-4px_rgba(15,23,42,0.08),0_2px_8px_rgba(15,23,42,0.04)] dark:shadow-[0_14px_34px_-6px_rgba(0,0,0,0.7),0_0_18px_rgba(244,63,94,0.18)] hover:shadow-[0_20px_42px_-6px_rgba(15,23,42,0.16)] dark:hover:shadow-[0_22px_45px_-6px_rgba(0,0,0,0.85),0_0_26px_rgba(244,63,94,0.35)] transition-all duration-300 cursor-pointer group "
               >
                 {/* Hình ảnh sáng rõ nét, không lớp tối phủ mặc định */}
                 <img
                   src={item.imageUrl}
                   alt={item.titleVi}
-                  className="memory-crisp-img w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 block"
+                  className="memory-crisp-img w-full h-auto object-cover  transition-transform duration-500 block"
                   loading="lazy"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
@@ -379,10 +268,11 @@ export const MemoriesView: React.FC = () => {
                     <span className="text-[10px] font-mono font-bold text-rose-300 uppercase tracking-wide block">
                       {item.companyId?.toUpperCase()}
                     </span>
-                    <h4 className="text-xs sm:text-sm font-bold text-white leading-snug line-clamp-2 mt-0.5 drop-shadow-sm">
-                      {item.titleVi}
+                    <h4 className="text-xs sm:text-sm font-bold text-white leading-snug break-words mt-0.5 drop-shadow-sm flex items-center gap-1.5">
+                      <WebIcon name="camera" className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                      <span>{formatCardTitle(item.titleVi)}</span>
                     </h4>
-                    <p className="text-[11px] text-slate-200 line-clamp-2 mt-1 opacity-90 leading-tight">
+                    <p className="text-[11px] text-slate-200 break-words mt-1 opacity-90 leading-tight">
                       {item.descVi}
                     </p>
                     <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-white/20 text-[10px] font-mono text-slate-300">
@@ -394,66 +284,6 @@ export const MemoriesView: React.FC = () => {
                         <span className="text-cyan-300 font-bold">
                           {item.teamSize}
                         </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          /* Detailed Grid Cards View (Hình ảnh sáng rõ nét, CHỈ hiện tiêu đề/mô tả khi hover) */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[15px] text-left w-full">
-            {filteredMemories.map((item, idx) => (
-              <div
-                key={item.id}
-                onClick={() => setActiveLightboxIdx(idx)}
-                style={{ animationDelay: `${(idx % 16) * 45}ms` }}
-                className="memory-photo-item group relative rounded-2xl bg-slate-950 border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-2xl transition-all duration-300 flex flex-col cursor-pointer hover:-translate-y-1 h-64 sm:h-72"
-              >
-                {/* Hình ảnh sáng rõ nét */}
-                <img
-                  src={item.imageUrl}
-                  alt={item.titleVi}
-                  className="memory-crisp-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 block"
-                  loading="lazy"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      'https://placehold.co/400x300/1e293b/ffffff?text=Photo';
-                  }}
-                />
-
-                {/* Tiêu đề và mô tả CHỈ hiển thị khi hover chuột (opacity-0 group-hover:opacity-100) */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 backdrop-blur-[2px] pointer-events-none">
-                  <div className="flex items-center justify-between gap-1 translate-y-[-8px] group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-white bg-rose-600/90 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/20 shadow-xs">
-                      {item.tagVi}
-                    </span>
-                    <span className="text-[10px] font-mono font-bold text-slate-200 bg-slate-900/80 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/10">
-                      {item.year}
-                    </span>
-                  </div>
-
-                  <div className="translate-y-2 group-hover:translate-y-0 transition-transform duration-300 space-y-1">
-                    <p className="text-xs font-mono text-rose-300 font-semibold uppercase tracking-wide">
-                      {item.companyId?.toUpperCase()}
-                    </p>
-                    <h3 className="text-sm font-bold text-white line-clamp-1">
-                      {item.titleVi}
-                    </h3>
-                    <p className="text-xs text-slate-200 line-clamp-2 leading-relaxed">
-                      {item.descVi}
-                    </p>
-                    <div className="flex items-center justify-between text-[11px] font-mono text-slate-300 border-t border-white/20 pt-2 mt-2">
-                      <div className="flex items-center gap-1 truncate mr-2">
-                        <WebIcon name="location" className="w-3.5 h-3.5 shrink-0 text-rose-400" />
-                        <span className="truncate">{item.locationVi}</span>
-                      </div>
-                      {item.teamSize && (
-                        <div className="flex items-center gap-1 text-cyan-300 font-semibold shrink-0">
-                          <WebIcon name="users" className="w-3.5 h-3.5 shrink-0" />
-                          <span>{item.teamSize}</span>
-                        </div>
                       )}
                     </div>
                   </div>

@@ -6,6 +6,10 @@ import { THEME_LIST } from '@/data/themes';
 import { WeatherWidget } from './WeatherWidget';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
+import { SoundEngine } from '@/components/ui/SoundEngine';
+import { LiveDisplaySettings } from '@/components/ui/LiveDisplaySettings';
+import { useLanguage } from '@/context/LanguageContext';
+import { LanguageSelectorModal } from '@/components/ui/LanguageSelectorModal';
 
 export interface FooterProps {
   pages: PageMeta[];
@@ -19,7 +23,16 @@ export interface FooterProps {
   onSelectTheme?: (theme: SiteTheme) => void;
   onOpenThemeModal?: () => void;
   onOpenAiChat?: () => void;
+  onOpenPagesCarousel?: () => void;
+  onOpenNetworkDebug?: () => void;
 }
+
+export const FONT_SCALE_OPTIONS = [
+  { id: 'sm' as const, label: 'Cỡ Chữ Nhỏ', subLabel: 'Thu gọn bố cục, hiển thị nhiều thông tin', badge: 'A-', percent: '90%', samplePx: '14.5px' },
+  { id: 'md' as const, label: 'Cỡ Chữ Chuẩn', subLabel: 'Kích thước mặc định cân đối, dễ đọc', badge: 'A', percent: '100%', samplePx: '16px' },
+  { id: 'lg' as const, label: 'Cỡ Chữ Lớn', subLabel: 'Tăng cỡ chữ, đọc êm mắt, rõ ràng', badge: 'A+', percent: '110%', samplePx: '17.5px' },
+  { id: '2xl' as const, label: 'Cỡ Chữ Cực Đại', subLabel: 'Tối đa khả năng tiếp cận và thị lực', badge: 'A+++', percent: '130%', samplePx: '20.5px' },
+];
 
 export const Footer: React.FC<FooterProps> = ({
   pages,
@@ -33,14 +46,48 @@ export const Footer: React.FC<FooterProps> = ({
   onSelectTheme,
   onOpenThemeModal,
   onOpenAiChat,
+  onOpenPagesCarousel,
+  onOpenNetworkDebug,
 }) => {
   const { showToast } = useToast();
   const activePage = pages[currentPage] || pages[0];
+  const { language, t } = useLanguage();
+  const isDark = currentTheme === 'dark-neon';
+  const isLuminous = currentTheme === 'luminous-glass';
 
   const [isPageMenuOpen, setIsPageMenuOpen] = useState<boolean>(false);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState<boolean>(false);
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState<boolean>(false);
+  const [isDisplaySettingsOpen, setIsDisplaySettingsOpen] = useState<boolean>(false);
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState<boolean>(false);
+  const [currentFontScalePercent, setCurrentFontScalePercent] = useState<number>(100);
   const pageMenuContainerRef = useRef<HTMLDivElement>(null);
   const contactContainerRef = useRef<HTMLDivElement>(null);
+  const themeMenuContainerRef = useRef<HTMLDivElement>(null);
+  const displaySettingsContainerRef = useRef<HTMLDivElement>(null);
+  const languageMenuContainerRef = useRef<HTMLDivElement>(null);
+
+  // Lắng nghe thay đổi kích thước hiển thị để cập nhật tỷ lệ mặc định trên nút Footer
+  useEffect(() => {
+    try {
+      const sp = localStorage.getItem('hungthai_font_scale_percent');
+      if (sp) {
+        const val = parseInt(sp, 10);
+        if (!isNaN(val) && val >= 70 && val <= 160) {
+          setCurrentFontScalePercent(val);
+        }
+      }
+    } catch {}
+
+    const handleFontScaleChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ percent?: number }>;
+      if (customEvent.detail?.percent) {
+        setCurrentFontScalePercent(customEvent.detail.percent);
+      }
+    };
+    window.addEventListener('hungthai-font-scale-change', handleFontScaleChange);
+    return () => window.removeEventListener('hungthai-font-scale-change', handleFontScaleChange);
+  }, []);
 
   // Close popup menus when clicking outside
   useEffect(() => {
@@ -51,24 +98,43 @@ export const Footer: React.FC<FooterProps> = ({
       if (contactContainerRef.current && !contactContainerRef.current.contains(event.target as Node)) {
         setIsContactMenuOpen(false);
       }
+      if (themeMenuContainerRef.current && !themeMenuContainerRef.current.contains(event.target as Node)) {
+        setIsThemeMenuOpen(false);
+      }
+      if (displaySettingsContainerRef.current && !displaySettingsContainerRef.current.contains(event.target as Node)) {
+        setIsDisplaySettingsOpen(false);
+      }
+      if (languageMenuContainerRef.current && !languageMenuContainerRef.current.contains(event.target as Node)) {
+        setIsLanguageMenuOpen(false);
+      }
     };
-    if (isPageMenuOpen || isContactMenuOpen) {
+    if (isPageMenuOpen || isContactMenuOpen || isThemeMenuOpen || isDisplaySettingsOpen || isLanguageMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isPageMenuOpen, isContactMenuOpen]);
+  }, [isPageMenuOpen, isContactMenuOpen, isThemeMenuOpen, isDisplaySettingsOpen, isLanguageMenuOpen]);
 
   return (
     <footer
       id="app-footer"
-      className="w-[1200px] max-w-[calc(100%-40px)] mx-auto h-[72px] glass-panel rounded-t-[18px] rounded-b-none flex items-center justify-between px-4 z-40 relative flex-shrink-0 transition-all duration-300 shadow-[0_-14px_40px_-6px_rgba(30,27,75,0.18),0_-4px_16px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)] dark:shadow-[0_-16px_45px_-6px_rgba(0,0,0,0.65),0_0_24px_rgba(99,102,241,0.18),inset_0_1px_1px_rgba(255,255,255,0.2)] border-t-2 border-x border-white/80 dark:border-white/20 hover:shadow-[0_-18px_50px_-6px_rgba(99,102,241,0.25),0_-6px_22px_rgba(0,0,0,0.08),inset_0_1.5px_2px_rgba(255,255,255,1)] hover:border-white/95 group/footer"
+      className={`w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto h-[72px] glass-panel flex items-center justify-between px-2.5 sm:px-4 z-40 relative flex-shrink-0 transition-all duration-300 rounded-b-none rounded-t-[20px] border-b-0 border-x border-t ${
+        isDark
+          ? 'border-2 border-cyan-400/30 bg-slate-950/85 backdrop-blur-xl shadow-[0_16px_45px_-6px_rgba(0,0,0,0.75),0_0_24px_rgba(34,211,238,0.22),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-cyan-400/50'
+          : 'border-2 border-white/80 shadow-[0_14px_40px_-6px_rgba(30,27,75,0.18),0_4px_16px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)] hover:border-white/95 bg-white/80 backdrop-blur-xl'
+      } hover:shadow-[0_18px_50px_-6px_rgba(99,102,241,0.25),0_6px_22px_rgba(0,0,0,0.08),inset_0_1.5px_2px_rgba(255,255,255,1)] group/footer`}
     >
       {/* Top ambient highlight line */}
-      <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-white/80 dark:via-white/30 to-transparent pointer-events-none" />
-      {/* Khu vực 1: Bên trái - Card thời tiết, co giãn tùy theo khoảng trống còn lại */}
-      <div className="flex-1 h-full py-2.5 pr-2 flex items-center justify-start min-w-0 relative z-10">
+      <div
+        className={`absolute top-0 inset-x-8 h-[1px] pointer-events-none transition-colors duration-300 ${
+          isDark
+            ? 'bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent'
+            : 'bg-gradient-to-r from-transparent via-white/80 to-transparent'
+        }`}
+      />
+      {/* Khu vực 1: Bên trái - Card thời tiết & đồng hồ */}
+      <div className="flex-1 h-full py-2 pr-2 flex items-center justify-start min-w-0 relative z-10 gap-2.5">
         <WeatherWidget currentPreset={currentWeather} onCycle={onCycleWeather} currentTheme={currentTheme} />
       </div>
 
@@ -77,20 +143,42 @@ export const Footer: React.FC<FooterProps> = ({
         ref={pageMenuContainerRef}
         className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-50 pointer-events-auto flex items-center justify-center shrink-0"
       >
-        <div className="relative inline-flex items-center p-[2px] rounded-[999px] overflow-hidden shadow-[0_0_18px_rgba(99,102,241,0.4)] group transition-all duration-300 hover:shadow-[0_0_28px_rgba(99,102,241,0.65)] hover:scale-[1.03]">
+        <div
+          className={`relative inline-flex items-center p-[2px] rounded-[999px] overflow-hidden group transition-all duration-300 hover:scale-[1.03] ${
+            isDark
+              ? 'shadow-[0_0_24px_rgba(34,211,238,0.45)] hover:shadow-[0_0_35px_rgba(34,211,238,0.7)]'
+              : 'shadow-[0_0_18px_rgba(99,102,241,0.4)] hover:shadow-[0_0_28px_rgba(99,102,241,0.65)]'
+          }`}
+        >
           {/* Rotating Conic Laser Beam Border */}
-          <div className="absolute -inset-[220%] animate-[spin_4.5s_linear_infinite] pointer-events-none bg-[conic-gradient(from_0deg,#6366f1,#8b5cf6,#ec4899,#06b6d4,#10b981,#fbbf24,#6366f1)] opacity-95 blur-[0.8px]" />
+          <div
+            className={`absolute -inset-[220%] animate-[spin_4.5s_linear_infinite] pointer-events-none opacity-95 blur-[0.8px] ${
+              isDark
+                ? 'bg-[conic-gradient(from_0deg,#22d3ee,#6366f1,#ec4899,#06b6d4,#10b981,#3b82f6,#22d3ee)]'
+                : 'bg-[conic-gradient(from_0deg,#6366f1,#8b5cf6,#ec4899,#06b6d4,#10b981,#fbbf24,#6366f1)]'
+            }`}
+          />
 
           {/* Glassmorphism Inner Capsule (114px × 46px, bo cong 4 góc 999px hài hòa với Footer) */}
-          <div className="relative z-10 w-[114px] h-[46px] flex items-center justify-between px-1 rounded-[999px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/90 dark:border-white/20 shadow-inner">
+          <div
+            className={`relative z-10 w-[114px] h-[46px] flex items-center justify-between px-1 rounded-[999px] backdrop-blur-xl border shadow-inner transition-colors duration-300 ${
+              isDark
+                ? 'bg-slate-900/95 border-cyan-400/40 text-cyan-300 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)]'
+                : 'bg-white/90 border-white/90 text-indigo-900'
+            }`}
+          >
             {/* Prev Button (Lùi trang) */}
             <button
               type="button"
               onClick={onPrevPage}
               title="Trang trước (Lùi trang)"
-              className="w-[34px] h-[34px] rounded-[999px] bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-cyan-400 flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0"
+              className={`w-[34px] h-[34px] rounded-[999px] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0 group/prev ${
+                isDark
+                  ? 'bg-slate-800 hover:bg-cyan-950/80 text-slate-200 hover:text-cyan-300 border border-white/10'
+                  : 'bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600'
+              }`}
             >
-              <svg className="w-[14px] h-[14px] stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-[14px] h-[14px] stroke-[2.4] transition-transform duration-200 group-hover/prev:-translate-x-0.5 icon-spring-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m15 18-6-6 6-6" />
               </svg>
             </button>
@@ -107,25 +195,13 @@ export const Footer: React.FC<FooterProps> = ({
               className="flex-1 h-[34px] flex items-center justify-center cursor-pointer transition-transform hover:scale-105 px-0.5"
             >
               {currentPage === 6 ? (
-                /* Khối <div> "7/16" được format theo phong cách giao diện được chọn */
                 <div
                   id="domains-page-counter-badge"
                   className={`px-2 py-0.5 rounded-lg flex items-center justify-center transition-all duration-300 ${
-                    currentTheme === 'dark-neon'
-                      ? 'bg-slate-950/90 border border-cyan-400/80 shadow-[0_0_12px_rgba(6,182,212,0.6)] text-cyan-300'
-                      : currentTheme === 'flat-rainbow'
-                      ? 'bg-white text-slate-900 border-2 font-black shadow-xs'
+                    isDark
+                      ? 'bg-cyan-950/80 border border-cyan-400/60 shadow-[0_0_10px_rgba(34,211,238,0.3)] text-cyan-300'
                       : 'bg-indigo-50/90 border border-indigo-200/90 shadow-2xs text-indigo-700'
                   }`}
-                  style={
-                    currentTheme === 'flat-rainbow'
-                      ? {
-                          background:
-                            'linear-gradient(#fff, #fff) padding-box, linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e, #06b6d4, #3b82f6, #a855f7) border-box',
-                          border: '2px solid transparent',
-                        }
-                      : {}
-                  }
                 >
                   <span
                     id="footer-page-counter"
@@ -137,7 +213,9 @@ export const Footer: React.FC<FooterProps> = ({
               ) : (
                 <span
                   id="footer-page-counter"
-                  className="text-xs sm:text-[13px] font-mono font-black text-indigo-700 dark:text-cyan-400 tracking-tight whitespace-nowrap leading-none select-none text-center"
+                  className={`text-xs sm:text-[13px] font-mono font-black tracking-tight whitespace-nowrap leading-none select-none text-center ${
+                    isDark ? 'text-cyan-300 drop-shadow-[0_0_6px_rgba(34,211,238,0.5)]' : 'text-indigo-700'
+                  }`}
                 >
                   {currentPage + 1}/{pages.length}
                 </span>
@@ -149,9 +227,13 @@ export const Footer: React.FC<FooterProps> = ({
               type="button"
               onClick={onNextPage}
               title="Trang kế tiếp (Tới trang)"
-              className="w-[34px] h-[34px] rounded-[999px] bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-cyan-400 flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0"
+              className={`w-[34px] h-[34px] rounded-[999px] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0 group/next ${
+                isDark
+                  ? 'bg-slate-800 hover:bg-cyan-950/80 text-slate-200 hover:text-cyan-300 border border-white/10'
+                  : 'bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600'
+              }`}
             >
-              <svg className="w-[14px] h-[14px] stroke-[2.4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-[14px] h-[14px] stroke-[2.4] transition-transform duration-200 group-hover/next:translate-x-0.5 icon-spring-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m9 18 6-6-6-6" />
               </svg>
             </button>
@@ -161,24 +243,37 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Popup Menu Đi Tới Trang Nhanh */}
         {isPageMenuOpen && (
           <div
-            className="absolute bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2 w-80 sm:w-96 rounded-3xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/90 dark:border-white/20 shadow-2xl p-3.5 text-left z-[100] flex flex-col gap-2 font-play select-none animate-in fade-in zoom-in-95 duration-150"
-            style={{
-              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.2)',
-            }}
+            className={`absolute bottom-[calc(100%+10px)] left-1/2 -translate-x-1/2 w-80 sm:w-96 rounded-3xl backdrop-blur-2xl border shadow-2xl p-3.5 text-left z-[100] flex flex-col gap-2 font-play select-none animate-in fade-in zoom-in-95 duration-150 ${
+              isDark
+                ? 'bg-slate-900/95 border-cyan-400/40 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_25px_rgba(34,211,238,0.2)]'
+                : 'bg-white/95 border-white/90 text-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.25),0_0_0_1px_rgba(255,255,255,0.2)]'
+            }`}
           >
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-white/10 px-1">
+            <div
+              className={`flex items-center justify-between pb-2 border-b px-1 ${
+                isDark ? 'border-white/10' : 'border-slate-100'
+              }`}
+            >
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 flex items-center justify-center">
+                <span
+                  className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                    isDark ? 'bg-cyan-950 text-cyan-300' : 'bg-indigo-50 text-indigo-600'
+                  }`}
+                >
                   <WebIcon name="compass" className="w-3.5 h-3.5" />
                 </span>
-                <span className="text-xs font-black text-slate-800 dark:text-slate-100">
-                  Đi Tới Trang Nhanh ({currentPage + 1}/{pages.length})
+                <span className={`text-xs font-black ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                  {language === 'en' ? 'Quick Jump' : 'Đi Tới Trang Nhanh'} ({currentPage + 1}/{pages.length})
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setIsPageMenuOpen(false)}
-                className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 flex items-center justify-center cursor-pointer"
+                className={`w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition ${
+                  isDark
+                    ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-500'
+                }`}
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" />
@@ -187,6 +282,7 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
             <div className="grid grid-cols-2 gap-1.5 max-h-64 overflow-y-auto no-scrollbar py-0.5">
               {pages.map((p, idx) => {
+                const pageTitle = language === 'en' && p.shortTitleEn ? p.shortTitleEn : p.shortTitle;
                 return (
                   <button
                     key={p.id}
@@ -195,80 +291,145 @@ export const Footer: React.FC<FooterProps> = ({
                       onSelectPage(idx);
                       setIsPageMenuOpen(false);
                     }}
-                    className="p-1.5 px-2.5 rounded-full border text-left flex items-center gap-2 transition cursor-pointer bg-white/80 dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/80 border-slate-100 dark:border-white/10 text-slate-700 dark:text-slate-200 font-semibold"
+                    className={`p-1.5 px-2.5 rounded-xl border text-left flex items-center gap-2 transition cursor-pointer font-semibold ${
+                      isDark
+                        ? 'bg-slate-800/80 hover:bg-cyan-950/70 border-white/10 text-slate-200 hover:text-cyan-300'
+                        : 'bg-white/80 hover:bg-slate-50 border-slate-100 text-slate-700'
+                    }`}
                   >
                     <span
-                      className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
-                      style={{ background: p.bgLight, color: p.theme }}
+                      className="w-4 h-4 flex items-center justify-center shrink-0"
+                      style={{
+                        color: isDark ? '#22d3ee' : p.theme,
+                      }}
                     >
                       {p.iconSvg}
                     </span>
-                    <span className="text-[11px] truncate flex-1">
-                      {idx + 1}. {p.shortTitle}
+                    <span className="text-[11px] truncate flex-1 font-bold">
+                      {idx + 1}. {pageTitle}
                     </span>
                   </button>
                 );
               })}
             </div>
+
+            {onOpenPagesCarousel && (
+              <div className="pt-2 border-t border-black/5 dark:border-white/10 mt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    SoundEngine.playTap();
+                    setIsPageMenuOpen(false);
+                    onOpenPagesCarousel();
+                  }}
+                  className={`w-full py-2 px-3 rounded-xl border text-xs font-bold font-play flex items-center justify-center gap-2 transition cursor-pointer ${
+                    isDark
+                      ? 'bg-gradient-to-r from-cyan-600/30 to-indigo-600/30 hover:from-cyan-600/45 hover:to-indigo-600/45 border-cyan-400/40 text-cyan-200 shadow-[0_0_12px_rgba(34,211,238,0.2)]'
+                      : 'bg-gradient-to-r from-indigo-50 to-sky-50 hover:from-indigo-100 hover:to-sky-100 border-indigo-200 text-indigo-700 shadow-2xs'
+                  }`}
+                >
+                  <WebIcon name="layers" className="w-4 h-4" />
+                  <span>Xem 3D Carousel (14 Trang)</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {/* Khu vực 3: Bên phải - Avatar + nhóm nút tiện ích (Kích thước bằng nhóm nút tới và lùi trang: 107px x 40px) */}
+      {/* Khu vực 3: Bên phải - Avatar + nhóm nút tiện ích */}
       <div className="flex-1 h-full flex items-center justify-end overflow-visible pl-2 min-w-0 relative z-20">
         <div className="flex items-center justify-end py-1 relative">
-          {/* Tiện ích 1: Ngôn Ngữ */}
-          <button
-            type="button"
-            onClick={() => showToast('Đã mở chuyển đổi Ngôn Ngữ')}
-            className="footer-util-btn border border-indigo-300/80 dark:border-indigo-400/40"
-            style={{
-              background: currentTheme === 'dark-neon' ? 'rgba(30, 27, 75, 0.75)' : 'rgba(224, 231, 255, 0.7)',
-              color: currentTheme === 'dark-neon' ? '#818cf8' : '#4f46e5',
-              zIndex: 10,
-            }}
-            title="Ngôn Ngữ"
-          >
-            <div
-              className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0"
-              style={{
-                background: currentTheme === 'dark-neon' ? 'rgba(99, 102, 241, 0.25)' : 'rgba(99, 102, 241, 0.2)',
-                color: currentTheme === 'dark-neon' ? '#818cf8' : '#4f46e5',
+          {/* Tiện ích 1: Ngôn Ngữ (Màu 1: Xanh Ngọc Bích Emerald) - Bấm hiển thị danh sách lựa chọn */}
+          <div ref={languageMenuContainerRef} className="relative pointer-events-auto" style={{ zIndex: 10 }}>
+            <button
+              id="language-selector-footer-btn"
+              type="button"
+              onClick={() => {
+                SoundEngine.playTap();
+                setIsLanguageMenuOpen((prev) => !prev);
               }}
+              className={`footer-util-btn border transition-all duration-300 cursor-pointer ${
+                isDark
+                  ? 'border-emerald-400/60 shadow-[0_0_12px_rgba(52,211,153,0.3)] hover:border-emerald-300'
+                  : 'border-emerald-300/90 shadow-xs hover:border-emerald-400'
+              }`}
+              style={{
+                background: isDark
+                  ? 'linear-gradient(135deg, rgba(6, 78, 59, 0.92) 0%, rgba(6, 95, 70, 0.88) 100%)'
+                  : 'linear-gradient(135deg, rgba(209, 250, 229, 0.95) 0%, rgba(167, 243, 208, 0.85) 100%)',
+                color: isDark ? '#a7f3d0' : '#065f46',
+              }}
+              title={language === 'en' ? 'Language: English (Click to change)' : 'Ngôn ngữ: Tiếng Việt (Bấm để chọn)'}
             >
-              <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              </svg>
-            </div>
-            <span
-              className="text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight"
-              style={{ color: currentTheme === 'dark-neon' ? '#818cf8' : '#4f46e5' }}
-            >
-              Ngôn Ngữ
-            </span>
-          </button>
+              <div
+                className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform duration-300 group-hover:scale-110"
+                style={{
+                  background: isDark ? 'rgba(52, 211, 153, 0.25)' : 'rgba(16, 185, 129, 0.2)',
+                  color: isDark ? '#a7f3d0' : '#047857',
+                }}
+              >
+                <span className="text-[17px] leading-none select-none">
+                  {language === 'en' ? '🇬🇧' : '🇻🇳'}
+                </span>
+              </div>
+              <div className="flex flex-col text-left leading-none">
+                <span
+                  className="text-[11px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play flex items-center gap-1"
+                  style={{ color: isDark ? '#a7f3d0' : '#065f46' }}
+                >
+                  <span>{language === 'en' ? 'English' : 'Tiếng Việt'}</span>
+                </span>
+                <span
+                  className="text-[8.5px] font-semibold mt-1 opacity-80 select-none whitespace-nowrap flex items-center gap-0.5"
+                  style={{ color: isDark ? '#6ee7b7' : '#047857' }}
+                >
+                  <span>{language === 'en' ? 'EN / Tiếng Anh' : 'VI / Song ngữ'}</span>
+                  <svg className={`w-2.5 h-2.5 transition-transform ${isLanguageMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </span>
+              </div>
+            </button>
 
-          {/* Tiện ích 2: Hình Nền (xếp chồng đè lên nút Ngôn Ngữ) */}
+            {/* Popup Danh Sách Ngôn Ngữ Lựa Chọn */}
+            {isLanguageMenuOpen && (
+              <div className="absolute bottom-[calc(100%+14px)] left-0 sm:-left-4 z-[130] animate-in fade-in zoom-in-95 duration-150">
+                <LanguageSelectorModal
+                  isOpen={isLanguageMenuOpen}
+                  onClose={() => setIsLanguageMenuOpen(false)}
+                  isDark={isDark}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Tiện ích 2: Hình Nền (Màu 2: Hồng Sen Rose - xếp chồng đè lên nút Ngôn Ngữ) */}
           <button
             type="button"
             onClick={() => {
               const idx = pages.findIndex((p) => p.shortTitle === 'Hình Nền');
               onSelectPage(idx !== -1 ? idx : pages.length - 1);
             }}
-            className="footer-util-btn border border-fuchsia-300/80 dark:border-fuchsia-400/40 -ml-[64px]"
+            className={`footer-util-btn border -ml-[64px] transition-all duration-300 ${
+              isDark
+                ? 'border-rose-400/60 shadow-[0_0_12px_rgba(251,113,133,0.3)]'
+                : 'border-rose-300/90 shadow-xs'
+            }`}
             style={{
-              background: currentTheme === 'dark-neon' ? 'rgba(74, 4, 78, 0.75)' : 'rgba(253, 228, 255, 0.7)',
-              color: currentTheme === 'dark-neon' ? '#f472b6' : '#c026d3',
-              zIndex: 20,
+              background: isDark
+                ? 'linear-gradient(135deg, rgba(76, 5, 25, 0.92) 0%, rgba(136, 19, 55, 0.88) 100%)'
+                : 'linear-gradient(135deg, rgba(255, 228, 230, 0.95) 0%, rgba(254, 205, 211, 0.88) 100%)',
+              color: isDark ? '#fecdd3' : '#9f1239',
+              zIndex: 18,
             }}
             title="Hình Nền"
           >
             <div
-              className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0"
+              className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs"
               style={{
-                background: currentTheme === 'dark-neon' ? 'rgba(217, 70, 239, 0.25)' : 'rgba(217, 70, 239, 0.2)',
-                color: currentTheme === 'dark-neon' ? '#f472b6' : '#c026d3',
+                background: isDark ? 'rgba(251, 113, 133, 0.25)' : 'rgba(244, 63, 94, 0.2)',
+                color: isDark ? '#fecdd3' : '#be123c',
               }}
             >
               <svg className="w-[16px] h-[16px]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -277,96 +438,332 @@ export const Footer: React.FC<FooterProps> = ({
                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
               </svg>
             </div>
-            <span
-              className="text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight"
-              style={{ color: currentTheme === 'dark-neon' ? '#f472b6' : '#c026d3' }}
-            >
-              Hình Nền
-            </span>
-          </button>
-
-          {/* Tiện ích 3: Nút Giao Diện - Click mở Danh sách Giao diện (ThemeSelectorModal) */}
-          <button
-            id="theme-toggle-footer-btn"
-            type="button"
-            onClick={() => {
-              if (onOpenThemeModal) {
-                onOpenThemeModal();
-              } else if (onSelectTheme) {
-                const nextTheme: SiteTheme =
-                  currentTheme === 'dark-neon'
-                    ? 'flat-rainbow'
-                    : currentTheme === 'flat-rainbow'
-                    ? 'light-glass'
-                    : 'dark-neon';
-                onSelectTheme(nextTheme);
-              }
-            }}
-            className="footer-util-btn border -ml-[64px] cursor-pointer"
-            style={{
-              background:
-                currentTheme === 'dark-neon'
-                  ? 'linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 23, 42, 0.85) 100%)'
-                  : currentTheme === 'flat-rainbow'
-                  ? 'linear-gradient(135deg, rgba(254, 242, 242, 0.95) 0%, rgba(240, 253, 244, 0.9) 50%, rgba(238, 242, 255, 0.95) 100%)'
-                  : 'linear-gradient(135deg, rgba(245, 243, 255, 0.9) 0%, rgba(254, 243, 199, 0.85) 100%)',
-              borderColor:
-                currentTheme === 'dark-neon'
-                  ? 'rgba(56, 189, 248, 0.5)'
-                  : currentTheme === 'flat-rainbow'
-                  ? 'rgba(236, 72, 153, 0.8)'
-                  : 'rgba(252, 211, 77, 0.8)',
-              color:
-                currentTheme === 'dark-neon'
-                  ? '#38bdf8'
-                  : currentTheme === 'flat-rainbow'
-                  ? '#db2777'
-                  : '#d97706',
-              zIndex: 30,
-            }}
-            title="Tùy chọn giao diện hệ thống (Nhấp để mở danh sách chọn)"
-          >
-            <div
-              className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs"
-              style={{
-                background:
-                  currentTheme === 'dark-neon'
-                    ? 'rgba(56, 189, 248, 0.2)'
-                    : currentTheme === 'flat-rainbow'
-                    ? 'rgba(236, 72, 153, 0.2)'
-                    : 'rgba(251, 191, 36, 0.25)',
-                color:
-                  currentTheme === 'dark-neon'
-                    ? '#38bdf8'
-                    : currentTheme === 'flat-rainbow'
-                    ? '#db2777'
-                    : '#d97706',
-              }}
-            >
-              {currentTheme === 'dark-neon' ? (
-                <WebIcon name="moon" className="w-[16px] h-[16px]" />
-              ) : currentTheme === 'flat-rainbow' ? (
-                <WebIcon name="palette" className="w-[16px] h-[16px]" />
-              ) : (
-                <WebIcon name="sun" className="w-[16px] h-[16px]" />
-              )}
+            <div className="flex flex-col text-left leading-none">
+              <span
+                className="text-[11px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play"
+                style={{ color: isDark ? '#fecdd3' : '#9f1239' }}
+              >
+                Hình Nền
+              </span>
+              <span
+                className="text-[8.5px] font-semibold mt-1 opacity-80 select-none whitespace-nowrap"
+                style={{ color: isDark ? '#fda4af' : '#be123c' }}
+              >
+                Tùy chỉnh
+              </span>
             </div>
-            <span
-              className="text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play"
-              style={{
-                color:
-                  currentTheme === 'dark-neon'
-                    ? '#38bdf8'
-                    : currentTheme === 'flat-rainbow'
-                    ? '#db2777'
-                    : '#d97706',
-              }}
-            >
-              Giao Diện
-            </span>
           </button>
 
-          {/* Tiện ích 4: Avatar Hùng Thái biến đổi hình thái từ pill -> circle -> bay lên + Pure CSS Circle Menu */}
+          {/* Tiện ích 2.5: Cài Đặt Hiển Thị (Màu 3: Xanh Da Trời Sky Blue - zIndex: 24) */}
+          <div ref={displaySettingsContainerRef} className="relative -ml-[64px] pointer-events-auto" style={{ zIndex: 24 }}>
+            <button
+              id="display-settings-footer-btn"
+              type="button"
+              onClick={() => {
+                SoundEngine.playTap();
+                setIsDisplaySettingsOpen((prev) => !prev);
+              }}
+              className={`footer-util-btn border transition-all duration-300 cursor-pointer ${
+                isDark
+                  ? 'border-sky-400/60 shadow-[0_0_12px_rgba(56,189,248,0.3)] hover:border-sky-300'
+                  : 'border-sky-300/90 shadow-xs hover:border-sky-400'
+              }`}
+              style={{
+                background: isDark
+                  ? 'linear-gradient(135deg, rgba(8, 47, 73, 0.92) 0%, rgba(12, 74, 110, 0.88) 100%)'
+                  : 'linear-gradient(135deg, rgba(224, 242, 254, 0.95) 0%, rgba(186, 230, 253, 0.88) 100%)',
+                color: isDark ? '#bae6fd' : '#075985',
+              }}
+              title="Cài Đặt Hiển Thị (Live Display Settings)"
+            >
+              <div
+                className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs"
+                style={{
+                  background: isDark ? 'rgba(56, 189, 248, 0.25)' : 'rgba(14, 165, 233, 0.2)',
+                  color: isDark ? '#bae6fd' : '#0284c7',
+                }}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="w-[16px] h-[16px]">
+                  <circle cx="12" cy="4.5" r="2.2" fill="currentColor" />
+                  <path
+                    d="M4.5 8.5l7.5 1.5 7.5-1.5M12 10v5m0 0l-3.5 6.5M12 15l3.5 6.5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <div className="flex flex-col text-left leading-none">
+                <span
+                  className="text-[11px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play flex items-center gap-1"
+                  style={{ color: isDark ? '#bae6fd' : '#075985' }}
+                >
+                  <span>Hiển Thị</span>
+                  {currentFontScalePercent !== 100 && (
+                    <span className="px-1 py-0.5 rounded text-[8.5px] font-mono font-extrabold bg-sky-500/20 text-sky-600 dark:text-sky-300">
+                      {currentFontScalePercent}%
+                    </span>
+                  )}
+                </span>
+                <span
+                  className="text-[8px] font-semibold mt-0.5 opacity-80 select-none whitespace-nowrap"
+                  style={{ color: isDark ? '#7dd3fc' : '#0284c7' }}
+                >
+                  {currentFontScalePercent === 100 ? 'Mặc định: 100%' : `Mặc định: ${currentFontScalePercent}%`}
+                </span>
+              </div>
+            </button>
+
+            {/* Popup Bảng Cài Đặt Hiển Thị (Live Display Settings) */}
+            {isDisplaySettingsOpen && (
+              <div className="absolute bottom-[calc(100%+14px)] right-0 sm:-right-8 z-[120] animate-in fade-in zoom-in-95 duration-150 shadow-2xl rounded-[30px] overflow-hidden">
+                <LiveDisplaySettings
+                  onNavigatePage={(idx) => {
+                    onSelectPage(idx);
+                    setIsDisplaySettingsOpen(false);
+                  }}
+                  onClose={() => setIsDisplaySettingsOpen(false)}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Tiện ích 3: Nút Giao Diện (Màu 4: Vàng Hổ Phách Amber Gold - zIndex: 30) */}
+          <div ref={themeMenuContainerRef} className="relative -ml-[64px] z-30 pointer-events-auto" style={{ zIndex: 30 }}>
+            <button
+              id="theme-toggle-footer-btn"
+              type="button"
+              onClick={() => {
+                SoundEngine.playTap();
+                setIsThemeMenuOpen((prev) => !prev);
+              }}
+              className={`footer-util-btn border cursor-pointer transition-all duration-300 ${
+                isDark
+                  ? 'border-amber-400/60 shadow-[0_0_14px_rgba(251,191,36,0.3)] hover:border-amber-300'
+                  : 'border-amber-300/90 shadow-[0_2px_10px_rgba(245,158,11,0.15)] hover:border-amber-400'
+              }`}
+              style={{
+                background: isDark
+                  ? 'linear-gradient(135deg, rgba(69, 26, 3, 0.92) 0%, rgba(120, 53, 15, 0.88) 100%)'
+                  : 'linear-gradient(135deg, rgba(254, 243, 199, 0.95) 0%, rgba(253, 230, 138, 0.9) 100%)',
+                color: isDark ? '#fde68a' : '#92400e',
+              }}
+              title="Nhấp để hiển thị danh sách giao diện cho chọn lựa"
+            >
+              <div
+                className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform duration-300 group-hover:rotate-12 icon-spring-bounce"
+                style={{
+                  background: isDark ? 'rgba(251, 191, 36, 0.25)' : 'rgba(245, 158, 11, 0.25)',
+                  color: isDark ? '#fde68a' : '#b45309',
+                }}
+              >
+                <WebIcon
+                  name={isDark ? 'moon' : isLuminous ? 'sparkles' : 'sun'}
+                  className="w-[16px] h-[16px]"
+                  sparkle={isLuminous}
+                  springBounce
+                />
+              </div>
+              <div className="flex flex-col text-left leading-none">
+                <span
+                  className="text-[11px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play flex items-center gap-1"
+                  style={{
+                    color: isDark ? '#fde68a' : '#92400e',
+                  }}
+                >
+                  {isDark ? 'Giao Diện Tối' : isLuminous ? 'Kính Quang Phổ' : 'Giao Diện Sáng'}
+                </span>
+                <span
+                  className="text-[8.5px] font-semibold mt-1 opacity-80 select-none whitespace-nowrap flex items-center gap-0.5"
+                  style={{
+                    color: isDark ? '#fcd34d' : '#b45309',
+                  }}
+                >
+                  <span>Chọn giao diện</span>
+                  <svg className={`w-2.5 h-2.5 transition-transform ${isThemeMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </span>
+              </div>
+            </button>
+
+            {/* Popup Danh Sách Giao Diện Cho Chọn Lựa */}
+            {isThemeMenuOpen && (
+              <div
+                className={`absolute bottom-[calc(100%+14px)] right-0 w-[310px] sm:w-[330px] rounded-3xl backdrop-blur-2xl border shadow-2xl p-3 text-left z-[120] flex flex-col gap-2 font-play select-none animate-in fade-in zoom-in-95 duration-150 ${
+                  isDark
+                    ? 'bg-slate-900/98 border-cyan-400/50 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_25px_rgba(34,211,238,0.25)]'
+                    : 'bg-white/98 border-white/95 text-slate-800 shadow-[0_20px_50px_rgba(30,27,75,0.22),0_0_0_1px_rgba(255,255,255,0.9)]'
+                }`}
+                style={{
+                  boxShadow: isDark
+                    ? '0 20px 50px rgba(0, 0, 0, 0.85), 0 0 25px rgba(34, 211, 238, 0.25)'
+                    : '0 20px 50px rgba(30, 27, 75, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.9)',
+                }}
+              >
+                {/* Header Popup */}
+                <div
+                  className={`flex items-center justify-between pb-2 border-b px-1 ${
+                    isDark ? 'border-white/10' : 'border-slate-100'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                        isDark
+                          ? 'bg-cyan-950 text-cyan-300'
+                          : isLuminous
+                          ? 'bg-sky-100 text-sky-600'
+                          : 'bg-amber-100 text-amber-700'
+                      }`}
+                    >
+                      <WebIcon name="palette" className="w-3.5 h-3.5" />
+                    </span>
+                    <span className={`text-xs font-black ${isDark ? 'text-white' : 'text-slate-800'}`}>
+                      Chọn Giao Diện
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsThemeMenuOpen(false)}
+                    className={`w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition ${
+                      isDark
+                        ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-500'
+                    }`}
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Danh Sách Giao Diện: Chỉ hiển thị icon và tiêu đề 4 chữ, không hiển thị sub tiêu đề */}
+                <div className="flex flex-col gap-1.5 py-0.5">
+                  {THEME_LIST.map((theme) => {
+                    const isActive = currentTheme === theme.id;
+                    const iconName = theme.id === 'light-glass' ? 'sun' : theme.id === 'luminous-glass' ? 'sparkles' : 'moon';
+
+                    return (
+                      <button
+                        key={theme.id}
+                        type="button"
+                        onClick={() => {
+                          SoundEngine.playTap();
+                          if (onSelectTheme) onSelectTheme(theme.id);
+                          setIsThemeMenuOpen(false);
+                          showToast(`Đã áp dụng giao diện: ${theme.fourWordName}`);
+                        }}
+                        className={`w-full p-2.5 rounded-2xl border text-left flex items-center justify-between gap-2.5 transition-all cursor-pointer ${
+                          isActive
+                            ? isDark
+                              ? 'bg-cyan-950/70 border-cyan-400/70 shadow-[0_0_12px_rgba(34,211,238,0.25)]'
+                              : theme.id === 'luminous-glass'
+                              ? 'bg-sky-50/90 border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.25)]'
+                              : 'bg-amber-50/90 border-amber-300 shadow-sm'
+                            : isDark
+                            ? 'bg-slate-800/60 hover:bg-slate-800 border-white/10 text-slate-300'
+                            : 'bg-slate-50/80 hover:bg-slate-100/90 border-slate-200/80 text-slate-700'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div
+                            className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-xs icon-spring-bounce ${
+                              isActive
+                                ? isDark
+                                  ? 'bg-cyan-500/30 text-cyan-300 ring-1 ring-cyan-400'
+                                  : theme.id === 'luminous-glass'
+                                  ? 'bg-sky-200/80 text-sky-700 ring-1 ring-sky-400'
+                                  : 'bg-amber-200/80 text-amber-800 ring-1 ring-amber-400'
+                                : isDark
+                                ? 'bg-slate-700/80 text-slate-300'
+                                : 'bg-white text-slate-600 border border-slate-200'
+                            }`}
+                          >
+                            <WebIcon
+                              name={iconName}
+                              className="w-4 h-4"
+                              sparkle={theme.id === 'luminous-glass'}
+                              springBounce
+                            />
+                          </div>
+                          <div className="min-w-0 flex items-center gap-2">
+                            <span
+                              className={`text-xs font-black font-play truncate ${
+                                isActive
+                                  ? isDark
+                                    ? 'text-cyan-300'
+                                    : theme.id === 'luminous-glass'
+                                    ? 'text-sky-800'
+                                    : 'text-amber-900'
+                                  : isDark
+                                  ? 'text-slate-100'
+                                  : 'text-slate-800'
+                              }`}
+                            >
+                              {theme.fourWordName}
+                            </span>
+                            {isActive && (
+                              <span className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
+                                isDark
+                                  ? 'bg-cyan-400/30 text-cyan-200'
+                                  : theme.id === 'luminous-glass'
+                                  ? 'bg-sky-200 text-sky-800'
+                                  : 'bg-amber-200 text-amber-900'
+                              }`}>
+                                Đang dùng
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {isActive && (
+                          <div
+                            className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                              isDark
+                                ? 'bg-cyan-400 text-slate-950 shadow-xs'
+                                : theme.id === 'luminous-glass'
+                                ? 'bg-sky-500 text-white shadow-xs'
+                                : 'bg-amber-500 text-white shadow-xs'
+                            }`}
+                          >
+                            <svg className="w-3 h-3 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Footer xem modal so sánh chi tiết */}
+                {onOpenThemeModal && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsThemeMenuOpen(false);
+                      onOpenThemeModal();
+                    }}
+                    className={`w-full py-1.5 px-2 rounded-xl text-[10.5px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer border mt-0.5 ${
+                      isDark
+                        ? 'bg-slate-800/80 hover:bg-slate-700 text-cyan-300 border-white/10'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    <span>Mở bảng so sánh giao diện chi tiết</span>
+                    <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Tiện ích 4: Avatar Hùng Thái biến đổi hình thái từ pill -> circle -> bay lên + Pure CSS Circle Menu (Màu 5: Xanh Chàm Hoàng Gia Royal Indigo) */}
           <div ref={contactContainerRef} className="avatar-circle-menu-container -ml-[64px] z-42">
             {/* Nút Avatar Morphing: Lúc bình thường là nút dài, click vào thu tròn và bay lên */}
             <button
@@ -377,18 +774,37 @@ export const Footer: React.FC<FooterProps> = ({
                 setIsContactMenuOpen((prev) => !prev);
               }}
               className={`avatar-morph-btn ${isContactMenuOpen ? 'is-open' : ''}`}
+              style={
+                isDark
+                  ? {
+                      background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.94) 0%, rgba(49, 46, 129, 0.9) 100%)',
+                      borderColor: 'rgba(129, 140, 248, 0.65)',
+                      boxShadow: '0 0 16px rgba(129, 140, 248, 0.35)',
+                    }
+                  : {
+                      background: 'linear-gradient(135deg, rgba(238, 242, 255, 0.95) 0%, rgba(224, 231, 255, 0.9) 100%)',
+                      borderColor: 'rgba(165, 180, 252, 0.9)',
+                      boxShadow: 'inset 0 1px 1.5px rgba(255, 255, 255, 0.95), 0 3px 12px rgba(79, 70, 229, 0.18)',
+                    }
+              }
               title={isContactMenuOpen ? 'Thu gọn menu liên hệ' : 'Nguyễn Hùng Thái (Nhấp để mở Circle Menu liên hệ)'}
               aria-expanded={isContactMenuOpen}
               aria-label="Menu liên hệ Hùng Thái"
             >
-              <div className="avatar-morph-inner bg-sky-500/20 text-[#0284c7] ring-1 ring-sky-300">
+              <div
+                className={`avatar-morph-inner ${
+                  isDark
+                    ? 'bg-indigo-950/80 text-indigo-300 ring-1 ring-indigo-400/50'
+                    : 'bg-indigo-500/20 text-[#4f46e5] ring-1 ring-indigo-300'
+                }`}
+              >
                 <img
                   src="https://i.ibb.co/RT3jX4Mv/H-ng-Th-i-Avata-Gif.gif"
                   alt="Hùng Thái"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
-                      'https://placehold.co/100x100/0284c7/ffffff?text=HT';
+                      'https://placehold.co/100x100/4f46e5/ffffff?text=HT';
                   }}
                 />
                 {!isContactMenuOpen && (
@@ -397,9 +813,22 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
 
               {/* Nhãn chữ co biến mất mượt mà khi thu thành hình tròn */}
-              <span className="avatar-morph-text text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight text-[#0284c7]">
-                Hùng Thái
-              </span>
+              <div className="avatar-morph-text flex flex-col items-start select-none">
+                <span
+                  className={`text-[11.5px] font-bold whitespace-nowrap leading-tight tracking-tight font-play ${
+                    isDark ? 'text-indigo-200' : 'text-[#3730a3]'
+                  }`}
+                >
+                  Hùng Thái
+                </span>
+                <span
+                  className={`text-[9px] font-medium whitespace-nowrap leading-none tracking-tight ${
+                    isDark ? 'text-indigo-300' : 'text-[#4f46e5]'
+                  }`}
+                >
+                  Chuyên gia CSKH
+                </span>
+              </div>
 
               {/* Nút đóng badge ✕ hiện lên khi ở trạng thái bay lên */}
               <span className="avatar-morph-close-badge" title="Đóng">
@@ -513,24 +942,33 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
           </div>
 
-          {/* Tiện ích 5: Avatar AI Chat 24/7 (Nằm trên nút Avatar Hùng Thái với zIndex cao hơn) */}
+          {/* Tiện ích 5: Avatar AI Chat 24/7 (Màu 6: Tím Thạch Anh Neon Violet - zIndex cao nhất) */}
           <button
             type="button"
             onClick={() => {
               if (onOpenAiChat) onOpenAiChat();
             }}
-            className="footer-util-btn border border-purple-300/90 dark:border-purple-400/40 -ml-[64px] cursor-pointer"
+            className={`footer-util-btn border -ml-[64px] cursor-pointer transition-all duration-300 ${
+              isDark
+                ? 'border-purple-400/60 shadow-[0_0_16px_rgba(192,132,252,0.35)]'
+                : 'border-purple-300/90 shadow-xs'
+            }`}
             style={{
-              background:
-                currentTheme === 'dark-neon'
-                  ? 'linear-gradient(135deg, rgba(59, 7, 100, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%)'
-                  : 'linear-gradient(135deg, rgba(250, 245, 255, 0.9) 0%, rgba(243, 232, 255, 0.85) 100%)',
-              color: currentTheme === 'dark-neon' ? '#c084fc' : '#7c3aed',
+              background: isDark
+                ? 'linear-gradient(135deg, rgba(59, 7, 100, 0.92) 0%, rgba(88, 28, 135, 0.88) 100%)'
+                : 'linear-gradient(135deg, rgba(250, 245, 255, 0.95) 0%, rgba(243, 232, 255, 0.9) 100%)',
+              color: isDark ? '#f3e8ff' : '#6b21a8',
               zIndex: 55,
             }}
             title="Trợ lý AI Hùng Thái 24/7 (Nhấp để mở trò chuyện bung popup)"
           >
-            <div className="w-[36px] h-[36px] rounded-full bg-purple-500/20 text-[#7c3aed] flex items-center justify-center shrink-0 relative overflow-hidden ring-1 ring-purple-300 shadow-xs">
+            <div
+              className={`w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 relative overflow-hidden ring-1 shadow-xs ${
+                isDark
+                  ? 'bg-purple-950/80 text-purple-300 ring-purple-400/50'
+                  : 'bg-purple-500/20 text-[#7c3aed] ring-purple-300'
+              }`}
+            >
               <img
                 src="https://i.ibb.co/Hfhyt1Dg/Avata-Ti-Chuot-GIF.gif"
                 alt="Avata Ti Chuot GIF"
@@ -542,12 +980,20 @@ export const Footer: React.FC<FooterProps> = ({
               />
               <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 rounded-full border border-white animate-pulse" />
             </div>
-            <span
-              className="text-[11.5px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play"
-              style={{ color: currentTheme === 'dark-neon' ? '#c084fc' : '#7c3aed' }}
-            >
-              Avatar AI
-            </span>
+            <div className="flex flex-col items-start select-none">
+              <span
+                className="text-[11.5px] font-bold whitespace-nowrap leading-tight tracking-tight font-play"
+                style={{ color: isDark ? '#f3e8ff' : '#6b21a8' }}
+              >
+                AI hỗ trợ
+              </span>
+              <span
+                className="text-[9px] font-medium whitespace-nowrap leading-none tracking-tight"
+                style={{ color: isDark ? '#d8b4fe' : '#9333ea' }}
+              >
+                Trợ lý 24/7
+              </span>
+            </div>
           </button>
         </div>
       </div>

@@ -7,12 +7,15 @@ import {
   sanitizeWallpaperStyle,
   CINEMATIC_LUT_PRESETS,
   CinematicLutPresetId,
+  SlideshowTransitionEffect,
 } from '@/utils/wallpaperStorage';
 
 export interface BackgroundLayerProps {
   wallpaperClass?: string;
   wallpaperStyle?: React.CSSProperties;
   wallpaperVideo?: string;
+  wallpaperCodepen?: string;
+  wallpaperRawCss?: string;
   theme?: SiteTheme;
   currentPage?: number;
   dimmerOpacity?: number; // 0 - 80
@@ -23,6 +26,7 @@ export interface BackgroundLayerProps {
   cinematicLut?: CinematicLutPresetId;
   livingMeshEnabled?: boolean;
   livingMeshSpeed?: 'slow' | 'normal' | 'fast';
+  transitionEffect?: SlideshowTransitionEffect;
 }
 
 const RAIN_DROPS = [
@@ -169,6 +173,8 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
   wallpaperClass = 'prism-light-bg',
   wallpaperStyle = {},
   wallpaperVideo,
+  wallpaperCodepen,
+  wallpaperRawCss,
   theme = 'light-glass',
   currentPage = 0,
   dimmerOpacity = 0,
@@ -179,9 +185,22 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
   cinematicLut = 'none',
   livingMeshEnabled = true,
   livingMeshSpeed = 'normal',
+  transitionEffect = 'dissolve',
 }) => {
   const safeWallpaperStyle = sanitizeWallpaperStyle(wallpaperStyle);
+  const [transitionKey, setTransitionKey] = useState<number>(0);
+  const prevStyleRef = useRef<string>('');
+
+  useEffect(() => {
+    const currentStr = JSON.stringify(wallpaperStyle || {}) + (wallpaperClass || '') + (wallpaperVideo || '') + (wallpaperCodepen || '') + (wallpaperRawCss || '');
+    if (prevStyleRef.current && prevStyleRef.current !== currentStr) {
+      setTransitionKey((k) => k + 1);
+    }
+    prevStyleRef.current = currentStr;
+  }, [wallpaperStyle, wallpaperClass, wallpaperVideo, wallpaperCodepen, wallpaperRawCss]);
   const hasCustomWallpaper =
+    Boolean(wallpaperCodepen) ||
+    Boolean(wallpaperRawCss) ||
     Boolean(safeWallpaperStyle?.background) ||
     Boolean(safeWallpaperStyle?.backgroundImage) ||
     Boolean(safeWallpaperStyle?.backgroundColor) ||
@@ -189,6 +208,7 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
 
   const isGradientOrCssWallpaper =
     !wallpaperVideo &&
+    !wallpaperCodepen &&
     !(
       typeof safeWallpaperStyle?.backgroundImage === 'string' &&
       safeWallpaperStyle.backgroundImage.trim().toLowerCase().startsWith('url(')
@@ -260,7 +280,94 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
 
   return (
     <>
-      {wallpaperVideo ? (
+      {/* Cross-Fade Slideshow Transitions Keyframes */}
+      <style>{`
+        @keyframes wp-dissolve {
+          0% { opacity: 0.65; }
+          100% { opacity: 1; }
+        }
+        .animate-wp-dissolve {
+          animation: wp-dissolve 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        @keyframes wp-blur-dissolve {
+          0% { opacity: 0.55; filter: blur(8px); }
+          100% { opacity: 1; filter: blur(0px); }
+        }
+        .animate-wp-blur-dissolve {
+          animation: wp-blur-dissolve 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        @keyframes wp-zoom-out {
+          0% { opacity: 0.65; transform: scale(1.045); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        .animate-wp-zoom-out {
+          animation: wp-zoom-out 0.95s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-wp-dissolve,
+          .animate-wp-blur-dissolve,
+          .animate-wp-zoom-out {
+            animation: none !important;
+          }
+        }
+      `}</style>
+
+      {wallpaperCodepen ? (
+        <div className="fixed inset-0 w-screen h-screen z-0 overflow-hidden pointer-events-none">
+          <div
+            className="relative w-full h-full overflow-hidden"
+            style={{ ...parallaxStyle, ...lutFilterStyle }}
+          >
+            {/*
+              Kỹ thuật Negative Offset + Dynamic Oversizing:
+              Cắt bỏ hoàn toàn thanh Header màu đen ở trên đỉnh (~56px)
+              và thanh Footer màu đen ở dưới đáy (~48px) của CodePen iframe embed.
+              Đảm bảo hình nền CodePen hiển thị tràn viền 100% viewport, loại bỏ triệt để viền đen letterbox.
+            */}
+            <iframe
+              key={wallpaperCodepen}
+              src={wallpaperCodepen}
+              title="CodePen Wallpaper"
+              className="absolute left-0 right-0 w-full border-0 pointer-events-none origin-center"
+              style={{
+                top: '-64px',
+                height: 'calc(100% + 128px)',
+                minHeight: 'calc(100vh + 128px)',
+                width: '100%',
+              }}
+              allow="accelerometer; camera; encrypted-media; geolocation; gyroscope; microphone; midi; clipboard-read; clipboard-write;"
+              sandbox="allow-scripts allow-same-origin"
+            />
+          </div>
+          {/* Subtle contrast tint overlay */}
+          <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+
+          {/* Cinematic LUT Split-Tone Color Grading Overlay */}
+          {activeLutPreset.id !== 'none' && (
+            <div
+              className="absolute inset-0 pointer-events-none transition-all duration-500 z-[1]"
+              style={{
+                background: activeLutPreset.tintOverlay,
+                mixBlendMode: activeLutPreset.mixBlendMode,
+              }}
+            />
+          )}
+
+          {/* Customizable Dimmer & Blur Filter Overlay */}
+          {showFilterOverlay && (
+            <div
+              className="absolute inset-0 pointer-events-none transition-all duration-300 z-[1]"
+              style={filterOverlayStyle}
+            />
+          )}
+
+          {/* Weather-Synced Ambient Overlay */}
+          {weatherSyncEnabled && <WeatherAmbientOverlay condition={weatherCondition} />}
+
+          {/* Dynamic Floating Icons */}
+          <FloatingIcons theme={theme} currentPage={currentPage} />
+        </div>
+      ) : wallpaperVideo ? (
         <div className="fixed inset-0 w-screen h-screen z-0 overflow-hidden pointer-events-none">
           <div className="w-full h-full" style={{ ...parallaxStyle, ...lutFilterStyle }}>
             <video
@@ -303,137 +410,140 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
         </div>
       ) : (
         <div className="fixed inset-0 w-screen h-screen z-0 overflow-hidden pointer-events-none">
+          {wallpaperRawCss && (
+            <style>{`
+              ${(() => {
+                const raw = wallpaperRawCss.trim();
+                if (raw.includes('&') || raw.includes('@keyframes')) {
+                  // Phân tách thuộc tính gốc và các pseudo-selectors / keyframes để tránh lỗi nesting CSS
+                  const firstAmpIndex = raw.indexOf('&');
+                  const firstAtKeyframeIndex = raw.indexOf('@');
+                  const cutIndex = Math.min(
+                    firstAmpIndex !== -1 ? firstAmpIndex : Infinity,
+                    firstAtKeyframeIndex !== -1 ? firstAtKeyframeIndex : Infinity
+                  );
+                  if (cutIndex > 0 && cutIndex !== Infinity) {
+                    const baseProps = raw.slice(0, cutIndex).trim();
+                    const rest = raw.slice(cutIndex).replace(/&/g, '.hungthai-raw-css-bg');
+                    return `.hungthai-raw-css-bg { ${baseProps} }\n${rest}`;
+                  }
+                  return raw.replace(/&/g, '.hungthai-raw-css-bg');
+                }
+                return `.hungthai-raw-css-bg { ${raw} }`;
+              })()}
+            `}</style>
+          )}
           <div
-            className={`w-full h-full transition-colors duration-700 ${wallpaperClass} ${livingMeshClass}`}
+            key={transitionKey}
+            className={`w-full h-full transition-colors duration-700 ${wallpaperClass} ${
+              wallpaperRawCss ? 'hungthai-raw-css-bg' : ''
+            } ${livingMeshClass} ${
+              transitionEffect === 'blur-dissolve'
+                ? 'animate-wp-blur-dissolve'
+                : transitionEffect === 'zoom-out'
+                ? 'animate-wp-zoom-out'
+                : 'animate-wp-dissolve'
+            }`}
             style={{
               ...safeWallpaperStyle,
               ...parallaxStyle,
               ...lutFilterStyle,
             }}
           >
-            {/* THEME 1 & SÁNG: Light Multi-color Ambient Flares (Chỉ hiển thị khi không dùng hình nền tùy biến riêng) */}
-            {!hasCustomWallpaper && (theme === 'light-glass' || theme === 'pastel-sky' || theme === 'crystal-glass' || theme === 'aurora' || theme === 'purple-pastel') && (
-              <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                {/* 1. Top-Left: Coral Rose & Hot Pink */}
-                <div
-                  className="absolute -top-[5%] -left-[3%] w-[460px] h-[460px] bg-gradient-to-tr from-rose-400/24 via-pink-400/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
-                  style={{ animationDuration: '6.5s' }}
-                />
-                {/* 2. Top-Center: Electric Sky & Ocean Blue */}
-                <div
-                  className="absolute -top-[8%] left-[32%] w-[480px] h-[480px] bg-gradient-to-b from-sky-400/26 via-blue-500/14 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
-                  style={{ animationDuration: '8.5s' }}
-                />
-                {/* 3. Top-Right: Orchid Fuchsia & Rich Violet */}
-                <div
-                  className="absolute -top-[4%] -right-[3%] w-[470px] h-[470px] bg-gradient-to-bl from-fuchsia-400/22 via-purple-500/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
-                  style={{ animationDuration: '7.5s' }}
-                />
-                {/* 4. Mid-Left: Mint Teal & Fresh Lime */}
-                <div
-                  className="absolute top-[38%] -left-[6%] w-[440px] h-[440px] bg-gradient-to-r from-teal-400/22 via-lime-400/14 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
-                  style={{ animationDuration: '9.5s' }}
-                />
-                {/* 5. Center-Core: Prismatic Sheen & Electric Indigo */}
-                <div
-                  className="absolute top-[28%] left-[30%] w-[520px] h-[520px] bg-gradient-to-tr from-indigo-400/18 via-sky-300/12 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
-                  style={{ animationDuration: '10.5s' }}
-                />
-                {/* 6. Mid-Right: Sunset Orange & Warm Amber */}
-                <div
-                  className="absolute top-[36%] -right-[5%] w-[450px] h-[450px] bg-gradient-to-l from-orange-400/22 via-amber-400/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
-                  style={{ animationDuration: '8s' }}
-                />
-                {/* 7. Bottom-Left: Emerald Green & Mint Teal */}
-                <div
-                  className="absolute -bottom-[6%] -left-[4%] w-[490px] h-[490px] bg-gradient-to-tr from-emerald-400/22 via-teal-300/15 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
-                  style={{ animationDuration: '7s' }}
-                />
-                {/* 8. Bottom-Center: Royal Ocean & Indigo */}
-                <div
-                  className="absolute -bottom-[8%] left-[34%] w-[480px] h-[480px] bg-gradient-to-t from-blue-600/20 via-indigo-500/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
-                  style={{ animationDuration: '9s' }}
-                />
-                {/* 9. Bottom-Right: Rich Violet & Hot Pink */}
-                <div
-                  className="absolute -bottom-[5%] -right-[4%] w-[470px] h-[470px] bg-gradient-to-tl from-violet-500/24 via-pink-400/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
-                  style={{ animationDuration: '11s' }}
-                />
-              </div>
-            )}
+            {/* THEME AMBIENT FLARES: Adapted to Active Theme (Chỉ hiển thị khi không dùng hình nền tùy biến riêng) */}
+            {!hasCustomWallpaper && (
+              theme === 'dark-neon' ? (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                  {/* Dark Neon Flares: Cyan, Purple, Electric Blue & Magenta */}
+                  <div
+                    className="absolute -top-[10%] -left-[5%] w-[520px] h-[520px] bg-gradient-to-tr from-cyan-500/25 via-blue-600/18 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '7s' }}
+                  />
+                  <div
+                    className="absolute -top-[5%] right-[10%] w-[550px] h-[550px] bg-gradient-to-bl from-purple-600/25 via-fuchsia-600/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '8.5s' }}
+                  />
+                  <div
+                    className="absolute bottom-[10%] -left-[5%] w-[500px] h-[500px] bg-gradient-to-tr from-blue-700/22 via-indigo-600/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '9s' }}
+                  />
+                  <div
+                    className="absolute -bottom-[8%] right-[5%] w-[540px] h-[540px] bg-gradient-to-tl from-cyan-600/22 via-purple-700/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '10s' }}
+                  />
+                </div>
+              ) : theme === 'luminous-glass' ? (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                  {/* NDesign Luminous Glass Showcase: 3 Animated Floating Glass Blobs from Codepen */}
+                  <div className="luminous-blob luminous-blob-1" />
+                  <div className="luminous-blob luminous-blob-2" />
+                  <div className="luminous-blob luminous-blob-3" />
 
-            {/* THEME 2: Glass UI Dark Neon Multicolor Ambient Flares */}
-            {!hasCustomWallpaper && theme === 'dark-neon' && (
-              <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                {/* Radial Cyan Glow */}
-                <div
-                  className="absolute -top-[10%] left-[10%] w-[550px] h-[550px] rounded-full blur-[100px] pointer-events-none opacity-45 animate-pulse"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(34, 211, 238, 0.25) 0%, rgba(59, 130, 246, 0.12) 50%, transparent 75%)',
-                    animationDuration: '8s',
-                  }}
-                />
-                {/* Radial Electric Blue & Purple Glow */}
-                <div
-                  className="absolute top-[20%] -right-[5%] w-[600px] h-[600px] rounded-full blur-[110px] pointer-events-none opacity-40 animate-pulse"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(168, 85, 247, 0.22) 0%, rgba(59, 130, 246, 0.14) 50%, transparent 75%)',
-                    animationDuration: '10s',
-                  }}
-                />
-                {/* Radial Neon Pink & Orange Accent */}
-                <div
-                  className="absolute -bottom-[10%] left-[25%] w-[580px] h-[580px] rounded-full blur-[120px] pointer-events-none opacity-35 animate-pulse"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(244, 114, 182, 0.18) 0%, rgba(251, 146, 60, 0.1) 50%, transparent 75%)',
-                    animationDuration: '9s',
-                  }}
-                />
-                {/* Radial Neon Green Accent */}
-                <div
-                  className="absolute top-[50%] -left-[10%] w-[500px] h-[500px] rounded-full blur-[100px] pointer-events-none opacity-30 animate-pulse"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(52, 211, 153, 0.16) 0%, transparent 70%)',
-                    animationDuration: '11s',
-                  }}
-                />
-              </div>
-            )}
-
-            {/* THEME 3: Aurora Classic Orbs */}
-            {!hasCustomWallpaper && theme === 'aurora' && (
-              <>
-                <div className="absolute -top-20 -left-20 w-80 h-80 bg-rose-400/25 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: '6s' }} />
-                <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-cyan-400/25 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: '8s' }} />
-                <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-80 h-80 bg-amber-300/20 rounded-full blur-3xl pointer-events-none animate-pulse" style={{ animationDuration: '7s' }} />
-              </>
-            )}
-
-            {/* THEME 6: Soft Pastel Purple UI */}
-            {!hasCustomWallpaper && theme === 'purple-pastel' && (
-              <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-                <div
-                  className="absolute -top-[10%] -left-[5%] w-[580px] h-[580px] rounded-full blur-3xl pointer-events-none opacity-60 animate-pulse"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(196, 181, 253, 0.7) 0%, rgba(167, 139, 250, 0.35) 50%, transparent 70%)',
-                    animationDuration: '8s',
-                  }}
-                />
-                <div
-                  className="absolute top-[25%] -right-[10%] w-[620px] h-[620px] rounded-full blur-3xl pointer-events-none opacity-60 animate-pulse"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(165, 180, 252, 0.65) 0%, rgba(199, 210, 254, 0.35) 50%, transparent 70%)',
-                    animationDuration: '9s',
-                  }}
-                />
-                <div
-                  className="absolute -bottom-[15%] left-[20%] w-[680px] h-[680px] rounded-full blur-3xl pointer-events-none opacity-50 animate-pulse"
-                  style={{
-                    background: 'radial-gradient(circle, rgba(244, 208, 244, 0.65) 0%, rgba(221, 214, 254, 0.35) 50%, transparent 70%)',
-                    animationDuration: '10s',
-                  }}
-                />
-              </div>
+                  {/* Extra Prismatic Soft Radial Glows */}
+                  <div
+                    className="absolute top-[18%] left-[25%] w-[420px] h-[420px] rounded-full blur-3xl opacity-40 pointer-events-none animate-pulse"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(56, 189, 248, 0.4) 0%, transparent 70%)',
+                      animationDuration: '8s',
+                    }}
+                  />
+                  <div
+                    className="absolute bottom-[20%] left-[40%] w-[460px] h-[460px] rounded-full blur-3xl opacity-35 pointer-events-none animate-pulse"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(236, 72, 153, 0.35) 0%, transparent 70%)',
+                      animationDuration: '11s',
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+                  {/* 1. Top-Left: Coral Rose & Hot Pink */}
+                  <div
+                    className="absolute -top-[5%] -left-[3%] w-[460px] h-[460px] bg-gradient-to-tr from-rose-400/24 via-pink-400/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '6.5s' }}
+                  />
+                  {/* 2. Top-Center: Electric Sky & Ocean Blue */}
+                  <div
+                    className="absolute -top-[8%] left-[32%] w-[480px] h-[480px] bg-gradient-to-b from-sky-400/26 via-blue-500/14 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '8.5s' }}
+                  />
+                  {/* 3. Top-Right: Orchid Fuchsia & Rich Violet */}
+                  <div
+                    className="absolute -top-[4%] -right-[3%] w-[470px] h-[470px] bg-gradient-to-bl from-fuchsia-400/22 via-purple-500/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '7.5s' }}
+                  />
+                  {/* 4. Mid-Left: Mint Teal & Fresh Lime */}
+                  <div
+                    className="absolute top-[38%] -left-[6%] w-[440px] h-[440px] bg-gradient-to-r from-teal-400/22 via-lime-400/14 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '9.5s' }}
+                  />
+                  {/* 5. Center-Core: Prismatic Sheen & Electric Indigo */}
+                  <div
+                    className="absolute top-[28%] left-[30%] w-[520px] h-[520px] bg-gradient-to-tr from-indigo-400/18 via-sky-300/12 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '10.5s' }}
+                  />
+                  {/* 6. Mid-Right: Sunset Orange & Warm Amber */}
+                  <div
+                    className="absolute top-[36%] -right-[5%] w-[450px] h-[450px] bg-gradient-to-l from-orange-400/22 via-amber-400/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '8s' }}
+                  />
+                  {/* 7. Bottom-Left: Emerald Green & Mint Teal */}
+                  <div
+                    className="absolute -bottom-[6%] -left-[4%] w-[490px] h-[490px] bg-gradient-to-tr from-emerald-400/22 via-teal-300/15 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '7s' }}
+                  />
+                  {/* 8. Bottom-Center: Royal Ocean & Indigo */}
+                  <div
+                    className="absolute -bottom-[8%] left-[34%] w-[480px] h-[480px] bg-gradient-to-t from-blue-600/20 via-indigo-500/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '9s' }}
+                  />
+                  {/* 9. Bottom-Right: Rich Violet & Hot Pink */}
+                  <div
+                    className="absolute -bottom-[5%] -right-[4%] w-[470px] h-[470px] bg-gradient-to-tl from-violet-500/24 via-pink-400/16 to-transparent rounded-full blur-3xl pointer-events-none animate-pulse"
+                    style={{ animationDuration: '11s' }}
+                  />
+                </div>
+              )
             )}
           </div>
 
@@ -458,9 +568,6 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
 
           {/* Weather-Synced Ambient Overlay */}
           {weatherSyncEnabled && <WeatherAmbientOverlay condition={weatherCondition} />}
-
-          {/* DYNAMIC FLOATING ICONS (Tự động di chuyển vị trí ngẫu nhiên trên toàn website) */}
-          <FloatingIcons theme={theme} currentPage={currentPage} />
         </div>
       )}
     </>

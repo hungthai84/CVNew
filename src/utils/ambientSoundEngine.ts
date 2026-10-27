@@ -283,6 +283,14 @@ class ProceduralAmbientSoundEngine {
     }, 350);
   }
 
+  public getIsPlaying(): boolean {
+    return this.isPlaying;
+  }
+
+  public getTrack(): AmbientTrackId | null {
+    return this.currentTrack;
+  }
+
   // 1. Rain on Glass: Soft steady rain wash + gentle glass droplet pings
   private buildRainGraph(ctx: AudioContext, dest: AudioNode) {
     const pinkBuffer = this.createPinkNoiseBuffer(ctx, 5);
