@@ -46,9 +46,10 @@ import { BeforeAfterImpactSlider } from '@/components/domains/BeforeAfterImpactS
 import { TechStackExplorerModal } from '@/components/domains/TechStackExplorerModal';
 import { DOMAIN_CASE_STUDIES, DOMAIN_BEFORE_AFTER_DATA } from '@/data/domainCaseStudies';
 
-export interface DomainsViewProps {
+export interface ServicesViewProps {
   currentTheme?: SiteTheme;
 }
+export type DomainsViewProps = ServicesViewProps;
 
 // 15s Executive Audio Summaries cho từng lĩnh vực điều hành cốt lõi (Chuẩn 100% dữ liệu gốc)
 const DOMAIN_AUDIO_SUMMARIES: Record<string, { title: string; text: string }> = {
@@ -263,7 +264,7 @@ export const getBrandMeta = (rawName: string): BrandMeta => {
   };
 };
 
-export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-glass' }) => {
+export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'light-glass' }) => {
   const [filter, setFilter] = useState<string>('all');
   const [selectedDomain, setSelectedDomain] = useState<DomainData | null>(null);
   const isDark = currentTheme === 'dark-neon';
@@ -1362,14 +1363,13 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                             </span>
                           </div>
 
-                          {/* Row 3: Orientation Description */}
+                          {/* Row 3: Orientation Description - Đã chuẩn hóa hiển thị đồng đều khoảng 6 hàng chữ cho tất cả 6 thẻ */}
                           <p
-                            className="text-[11px] sm:text-[11.5px] leading-relaxed break-words line-clamp-3 mt-0.5"
+                            className="text-[11px] sm:text-[11.5px] leading-[1.55] break-words mt-0.5 line-clamp-6 min-h-[6.2rem] sm:min-h-[6.8rem] flex items-center"
                             style={{
-                              color: isDark ? 'rgba(226, 232, 240, 0.92)' : '#1e293b',
+                              color: isDark ? 'rgba(226, 232, 240, 0.95)' : '#1e293b',
                             }}
                           >
-                            <span className="font-bold text-slate-900 dark:text-white font-play">Mô tả : </span>
                             “{domain.orientationVi.replace(/^[“"']+|[”"']+$/g, '')}”
                           </p>
                         </div>
@@ -1406,7 +1406,7 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                               border: '1px solid rgba(0, 0, 0, 0.15)',
                             }}
                           >
-                            <span>Xem lĩnh vực</span>
+                            <span>Xem dịch vụ</span>
                             <svg
                               className="w-3 h-3 group-hover/card:translate-x-1 transition-transform duration-300"
                               fill="none"
@@ -1725,10 +1725,10 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                       setSelectedDomain(null);
                     }}
                     className="px-4 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0"
-                    title="Quay lại 6 lĩnh vực ban đầu (Phím Esc)"
+                    title="Quay lại 6 dịch vụ ban đầu (Phím Esc)"
                   >
                     <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
-                    <span>Quay lại 6 lĩnh vực</span>
+                    <span>Quay lại 6 dịch vụ</span>
                   </button>
                   <button
                     type="button"
@@ -2251,3 +2251,6 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
     </div>
   );
 };
+
+export const DomainsView = ServicesView;
+

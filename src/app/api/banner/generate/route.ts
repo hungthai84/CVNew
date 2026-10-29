@@ -1,6 +1,12 @@
 import { GoogleGenAI, Type } from '@google/genai';
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
+export async function GET() {
+  return NextResponse.json({ status: 'ok', service: 'banner-generator' });
+}
+
 function getAiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
@@ -101,7 +107,7 @@ export async function POST(req: NextRequest) {
     }
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+      model: 'gemini-2.5-flash',
       contents: `Thiết kế nền đồ họa SVG chuẩn tỷ lệ siêu rộng 16:3 (viewBox="0 0 1920 360") cho trang "${pageTitle}" trong Website Portfolio của Trưởng phòng Dịch vụ Khách hàng Nguyễn Hùng Thái.
 Mô tả yêu cầu từ người dùng: "${prompt}".
 Hãy trả về JSON gồm:

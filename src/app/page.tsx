@@ -37,7 +37,7 @@ import { HomeView } from '@/components/views/HomeView';
 import { LetterView } from '@/components/views/LetterView';
 import { AboutView } from '@/components/views/AboutView';
 import { EducationView } from '@/components/views/EducationView';
-import { DomainsView } from '@/components/views/DomainsView';
+import { ServicesView } from '@/components/views/ServicesView';
 import { ExperienceView } from '@/components/views/ExperienceView';
 import { SkillsView } from '@/components/views/SkillsView';
 import { ProjectsView } from '@/components/views/ProjectsView';
@@ -719,7 +719,7 @@ export default function HomePage() {
             key={`content-${currentPage}`}
             id="content-display"
             className={`animate-page-enter ${
-              currentPage === 0 || currentPage === 1 || currentPage === 2
+              currentPage === 0 || currentPage === 1 || currentPage === 2 || currentPage === 10
                 ? 'flex-1 p-0 overflow-hidden relative flex flex-col h-full w-full min-w-0'
                 : 'flex-1 p-4 sm:p-5 md:p-[24px] overflow-y-auto snap-y snap-proximity scroll-pt-[24px] scroll-smooth glass-scrollbar relative flex flex-col gap-4 sm:gap-5 md:gap-[24px] h-full w-full min-w-0'
             }`}
@@ -739,7 +739,7 @@ export default function HomePage() {
             )}
             {currentPage === 2 && <AboutView currentTheme={currentTheme} onNavigatePage={setCurrentPage} />}
             {currentPage === 3 && <EducationView currentTheme={currentTheme} />}
-            {currentPage === 4 && <DomainsView currentTheme={currentTheme} />}
+            {currentPage === 4 && <ServicesView currentTheme={currentTheme} />}
             {currentPage === 5 && <SkillsView currentTheme={currentTheme} onNavigatePage={setCurrentPage} />}
             {currentPage === 6 && <ExperienceView currentTheme={currentTheme} />}
             {currentPage === 7 && <ProjectsView currentTheme={currentTheme} />}

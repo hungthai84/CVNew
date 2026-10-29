@@ -553,3 +553,20 @@ export const LANGUAGES_DATA: LanguageProficiencyItem[] = [
   },
 ];
 
+export interface SkillGroup {
+  id: string;
+  titleVi: string;
+  titleEn: string;
+  code: string;
+  items: SwotSkillItem[];
+}
+
+export const SKILL_GROUPS: SkillGroup[] = [
+  { id: 'strengths', titleVi: 'Thế mạnh vận hành', titleEn: 'Core Strengths', code: 'S', items: STRENGTHS_DATA },
+  { id: 'weaknesses', titleVi: 'Hoàn thiện quản trị', titleEn: 'Growth Areas', code: 'W', items: WEAKNESSES_DATA },
+  { id: 'opportunities', titleVi: 'Cơ hội bứt phá', titleEn: 'Opportunities', code: 'O', items: OPPORTUNITIES_DATA },
+  { id: 'threats', titleVi: 'Thách thức thích ứng', titleEn: 'Threats', code: 'T', items: THREATS_DATA },
+];
+
+
+

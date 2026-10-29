@@ -939,8 +939,8 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
 
   return (
     <div className="w-full flex-grow flex flex-col gap-4 max-w-7xl mx-auto justify-start select-none relative text-slate-800 dark:text-slate-100 pb-10 text-left p-0">
-      {/* THANH TOOLBAR ĐIỀU KHIỂN & LỌC HÌNH NỀN (THAY THẾ BANNER) */}
-      <div className="w-full p-2.5 sm:p-3 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 backdrop-blur-xl shadow-xs flex flex-wrap items-center justify-between gap-2.5 shrink-0">
+      {/* THANH TOOLBAR ĐIỀU KHIỂN & LỌC HÌNH NỀN (NỘI DUNG ĐÃ ĐƯỢC ĐƯA RA NGOÀI CONTAINER) */}
+      <div className="w-full flex flex-wrap items-center justify-between gap-2.5 shrink-0">
         <div className="flex items-center gap-2">
           <WebIcon name="palette" className="w-4 h-4 text-fuchsia-600 dark:text-fuchsia-400" />
           <h2 className="text-xs sm:text-sm font-black font-play text-fuchsia-600 dark:text-fuchsia-400">

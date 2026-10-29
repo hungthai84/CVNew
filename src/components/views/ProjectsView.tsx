@@ -39,6 +39,13 @@ const getByIds = (ids: string[]): ProjectData[] =>
     .map((id) => PROJECTS_DATA.find((p) => p.id === id))
     .filter((p): p is ProjectData => Boolean(p));
 
+const formatTenWordTitle = (title: string): string => {
+  const clean = title.replace(/^[\d.]+\s*·\s*/, '').trim();
+  const words = clean.split(/\s+/);
+  if (words.length <= 10) return clean;
+  return words.slice(0, 10).join(' ');
+};
+
 export const PROJECT_CARD_GROUPS: ProjectCardGroup[] = [
   {
     id: 'group-strategy',
@@ -409,13 +416,13 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
                           </span>
                         </div>
 
-                        {/* Tiêu đề dự án hiển thị 2 dòng */}
+                        {/* Tiêu đề dự án hiển thị đầy đủ có số thứ tự và chỉ 2 dòng */}
                         <h3
-                          className="font-black font-play text-[14.5px] sm:text-[15.5px] leading-snug tracking-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors break-words"
+                          className="font-black font-play text-[14px] sm:text-[14.5px] leading-snug tracking-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors break-words line-clamp-2 overflow-hidden"
                           style={{ color: isDark ? '#ffffff' : cfg.accentColor }}
                           title={proj.title}
                         >
-                          {proj.title}
+                          {/^[\d.]+\s*·/.test(proj.title) ? proj.title : `${proj.code || proj.number ? `${proj.code || proj.number} · ` : ''}${proj.title}`}
                         </h3>
 
                         <p className={`text-[11px] leading-snug line-clamp-2 mt-1.5 font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>

@@ -189,7 +189,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
       {/* 2. Hai Thẻ Liên Hệ Side-by-Side (5 cols & 7 cols) - Căn chỉnh chiều cao nằm gọn trong thẻ chính */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-[15px] items-stretch flex-1 min-h-0 overflow-hidden">
         {/* CARD 1: Contact Hub, Direct Channels & Trust Badges */}
-        <div className="lg:col-span-5 relative overflow-hidden rounded-[14px] border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(99,102,241,0.2)] flex flex-col justify-between p-3.5 sm:p-4 gap-2.5 text-left backdrop-blur-xl h-full">
+        <div className="lg:col-span-5 relative overflow-hidden rounded-[14px] border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(99,102,241,0.2)] flex flex-col justify-between p-[15px] gap-2.5 text-left backdrop-blur-xl h-full">
           {/* Header Card 1 */}
           <div className="space-y-1 relative z-10 shrink-0 bg-transparent border-0 shadow-none backdrop-blur-none p-0">
             <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
@@ -350,7 +350,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
         </div>
 
         {/* CARD 2: Tabbed Interface - Gửi Thông Điệp Trực Tiếp & Câu Hỏi Thường Gặp */}
-        <div className="lg:col-span-7 relative overflow-hidden rounded-[14px] border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(99,102,241,0.2)] flex flex-col justify-between p-3.5 sm:p-4 gap-2.5 text-left backdrop-blur-xl h-full">
+        <div className="lg:col-span-7 relative overflow-hidden rounded-[14px] border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(99,102,241,0.2)] flex flex-col justify-between p-[15px] gap-2.5 text-left backdrop-blur-xl h-full">
           {/* Tab Selector Header */}
           <div className="flex items-center justify-between gap-2 relative z-10 pb-2 border-b border-slate-200/80 dark:border-slate-800 shrink-0">
             {/* Pill Tabs */}

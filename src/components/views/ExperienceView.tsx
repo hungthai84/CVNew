@@ -906,7 +906,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
 
   return (
     <div
-      className="w-full h-full flex-1 flex flex-col justify-between gap-0 max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-y-auto no-scrollbar pb-4"
+      className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-0 max-w-full mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-y-auto no-scrollbar pb-2"
     >
       {!showJobCard && (
         <>
@@ -1750,7 +1750,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
           'Khách hàng là trung tâm — Kiến tạo giá trị dịch vụ bền vững và chuẩn hóa vận hành xuất sắc.';
 
         return (
-          <div className="w-full flex flex-col gap-3.5 sm:gap-4 text-left transition-all duration-300 animate-fadeIn mt-0.5 font-play">
+          <div className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-3.5 sm:gap-4 text-left transition-all duration-300 animate-fadeIn font-play">
             {/* 1. TOP HEADER ROW: THẺ JOB CARD BO CONG 4 GÓC (NÚT QUAY LẠI & BỘ LỌC CỘT MỐC NHANH) */}
             <div className="w-full p-3 sm:p-3.5 px-4 sm:px-5 rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_10px_30px_-5px_rgba(30,27,75,0.05)] dark:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <button

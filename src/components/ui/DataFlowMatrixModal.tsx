@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { X, Play, Pause, Sparkles, Activity, Layers, ArrowRightLeft, CheckCircle2, ShieldCheck, Zap } from 'lucide-react';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { SoundEngine } from '@/components/ui/SoundEngine';
@@ -413,14 +414,26 @@ export const DataFlowMatrixModal: React.FC<DataFlowMatrixModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-xl animate-fadeIn select-none font-play">
+    <AnimatePresence>
       <div
-        className={`relative w-full max-w-5xl max-h-[92vh] overflow-hidden rounded-[26px] border shadow-2xl flex flex-col backdrop-blur-2xl transition-all duration-300 ${
-          isDark
-            ? 'bg-slate-950/95 border-cyan-500/40 shadow-[0_0_50px_rgba(34,211,238,0.25)] text-white'
-            : 'bg-white/95 border-blue-200/90 shadow-[0_20px_60px_rgba(15,23,42,0.25)] text-slate-900'
-        }`}
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-xl select-none font-play"
+        onClick={() => {
+          SoundEngine.playTap();
+          onClose();
+        }}
       >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.92, y: 15 }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          onClick={(e) => e.stopPropagation()}
+          className={`relative w-[95vw] sm:w-[92vw] max-w-7xl h-[88vh] max-h-[88vh] overflow-hidden rounded-[14px] border shadow-2xl flex flex-col backdrop-blur-2xl transition-all duration-300 ${
+            isDark
+              ? 'bg-slate-950/95 border-cyan-500/40 shadow-[0_0_50px_rgba(34,211,238,0.25)] text-white'
+              : 'bg-white/95 border-blue-200/90 shadow-[0_20px_60px_rgba(15,23,42,0.25)] text-slate-900'
+          }`}
+        >
         {/* Header Modal */}
         <div className="flex items-center justify-between p-3.5 sm:p-4.5 border-b border-slate-200/80 dark:border-white/10 shrink-0">
           <div className="flex items-center gap-2.5">
@@ -708,7 +721,8 @@ export const DataFlowMatrixModal: React.FC<DataFlowMatrixModalProps> = ({
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
+    </AnimatePresence>
   );
 };

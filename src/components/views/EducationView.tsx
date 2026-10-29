@@ -4,6 +4,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   GraduationCap,
+  Building2,
   CheckCircle2,
   ExternalLink,
   Maximize2,
@@ -400,6 +401,14 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
             transition={{ duration: 0.25 }}
             className="w-full h-full flex flex-col gap-3 sm:gap-3.5 overflow-y-auto no-scrollbar pb-6"
           >
+            {/* HERO BANNER PANORAMA NHƯ HÌNH ĐÍNH KÈM */}
+            <div className="relative w-full rounded-2xl overflow-hidden shadow-lg border border-slate-200/80 dark:border-white/10 shrink-0 aspect-[16/4] sm:aspect-[16/3.3] max-h-[160px] sm:max-h-[195px] bg-slate-900">
+              <img
+                src="/images/education/hero-banner.png"
+                alt="Banner Học Vấn & Chứng Chỉ Chuyên Ngành"
+                className="w-full h-full object-cover object-center"
+              />
+            </div>
             {filteredCourses.length === 0 ? (
               <div
                 className="w-full p-8 rounded-2xl border border-slate-300/60 dark:border-slate-700/60 text-center space-y-2"
@@ -640,10 +649,10 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                             </div>
                           </div>
 
-                          {/* TIÊU ĐỀ GIỐNG MÀU ICON (course.accentColor) */}
+                          {/* TIÊU ĐỀ GIỐNG MÀU ICON (course.accentColor) & KÍCH THƯỚC BẰNG THẺ DỊCH VỤ */}
                           <div className="flex items-start justify-between gap-2">
                             <h3
-                              className="font-black font-play text-[15px] sm:text-[16px] leading-snug tracking-tight transition-opacity flex items-start gap-1.5 min-w-0 hover:opacity-85 line-clamp-2 min-h-[2.5em]"
+                              className="font-black font-play text-[17px] sm:text-[18.5px] lg:text-[19.5px] leading-snug tracking-tight transition-opacity flex items-start gap-1.5 min-w-0 hover:opacity-85 line-clamp-2 min-h-[2.5em]"
                               style={{ color: course.accentColor }}
                             >
                               <span
@@ -797,307 +806,275 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                   </div>
                 </div>
 
-                {/* 2. Main Content Grid chuẩn 100% bố cục trang dịch vụ: Cột trái 4 cols + Cột phải 8 cols */}
-                <div className="w-full flex-1 min-h-0 my-2 grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch relative z-10 overflow-y-auto lg:overflow-hidden glass-scrollbar pr-0.5">
-                  {/* Left Area (4 cols on lg): Tổng quan định hướng + Ảnh bằng cấp có 4 icon vệ tinh nổi + Đơn vị cấp */}
-                  <div className="col-span-12 lg:col-span-4 flex flex-col justify-between gap-3 h-full min-h-0">
-                    {/* Khối Tổng quan mục tiêu giá trị & Minh họa bằng cấp */}
-                    <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 backdrop-blur-md shadow-sm flex flex-col justify-between flex-1 min-h-0 relative overflow-hidden">
-                      <div className="relative z-10 flex flex-col justify-between h-full">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <span
-                              className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs"
-                              style={{ backgroundColor: course.accentColor }}
-                            />
-                            <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300">
-                              TỔNG QUAN GIÁ TRỊ ĐÀO TẠO
-                            </span>
-                          </div>
-                          <h4
-                            className="text-sm sm:text-[15.5px] font-black leading-snug font-play"
-                            style={{ color: course.accentColor }}
-                          >
-                            “{course.title}”
-                          </h4>
-                          <p className="text-[11.5px] font-medium text-slate-700 dark:text-slate-300 leading-relaxed mt-2.5">
-                            {course.desc}
-                          </p>
-                        </div>
+                {/* 2. Main Content Layout: Banner Panorama -> 3 Bento Columns -> 5 KPI Cards */}
+                <div className="w-full flex-1 min-h-0 my-2 flex flex-col justify-between gap-3 relative z-10 overflow-y-auto lg:overflow-hidden glass-scrollbar pr-0.5">
+                  {/* Tier 1: Panoramic Hero Banner (Tràn chiều ngang 100%) */}
+                  <div className="w-full rounded-2xl bg-gradient-to-r from-sky-50/90 via-blue-50/80 to-indigo-50/90 dark:from-slate-900/90 dark:via-blue-950/60 dark:to-slate-900/90 border border-sky-200/90 dark:border-white/10 p-4 sm:p-5 shadow-sm relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-4 shrink-0">
+                    {/* Floating ambient glow */}
+                    <div
+                      className="absolute right-0 top-0 w-96 h-full pointer-events-none opacity-40 blur-2xl"
+                      style={{ background: `radial-gradient(circle, ${course.accentColor} 0%, transparent 70%)` }}
+                    />
 
-                        {/* Hình Bằng Cấp trung tâm kèm 4 nút icon tròn nổi xung quanh chuẩn hình mẫu trang dịch vụ */}
-                        <div className="relative w-full h-36 sm:h-44 flex items-center justify-center my-auto overflow-visible">
-                          {/* 4 Floating Satellite Glass Badges */}
-                          <div
-                            className="absolute left-2 top-2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 border border-sky-200 dark:border-white/15 shadow-md flex items-center justify-center pointer-events-none z-20"
-                            style={{ color: course.accentColor }}
-                          >
-                            <Calendar className="w-4 h-4" />
-                          </div>
-                          <div
-                            className="absolute right-2 top-2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 border border-sky-200 dark:border-white/15 shadow-md flex items-center justify-center text-blue-600 dark:text-sky-400 pointer-events-none z-20"
-                          >
-                            <ShieldCheck className="w-4 h-4" />
-                          </div>
-                          <div
-                            className="absolute left-3 bottom-2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 border border-sky-200 dark:border-white/15 shadow-md flex items-center justify-center text-indigo-600 dark:text-indigo-400 pointer-events-none z-20"
-                          >
-                            <Award className="w-4 h-4" />
-                          </div>
-                          <div
-                            className="absolute right-3 bottom-2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 border border-sky-200 dark:border-white/15 shadow-md flex items-center justify-center text-emerald-600 dark:text-emerald-400 pointer-events-none z-20"
-                          >
-                            <Sparkles className="w-4 h-4" />
-                          </div>
-
-                          {/* Ảnh bằng cấp phóng to khi click */}
-                          <div
-                            onClick={() => handleOpenLightbox(course.image, course.title)}
-                            className="w-full h-32 sm:h-36 rounded-xl overflow-hidden bg-black/40 shadow-lg border-2 border-white/80 dark:border-white/15 cursor-pointer group relative flex items-center justify-center transition-all duration-300 hover:scale-102"
-                            title="Bấm để phóng to bằng cấp toàn màn hình"
-                          >
-                            <img
-                              src={course.image}
-                              alt={course.title}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                              <span className="px-3 py-1 rounded-full bg-black/75 text-white text-[10.5px] font-bold backdrop-blur-md flex items-center gap-1.5 shadow-md">
-                                <Maximize2 className="w-3.5 h-3.5" />
-                                <span>Phóng to toàn cảnh</span>
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                    {/* Left Info: Kicker + Title + Desc */}
+                    <div className="flex-1 min-w-0 text-left space-y-1.5 relative z-10">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs"
+                          style={{ backgroundColor: course.accentColor }}
+                        />
+                        <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                          TỔNG QUAN GIÁ TRỊ ĐÀO TẠO
+                        </span>
                       </div>
+                      <h4
+                        className="text-xl sm:text-2xl lg:text-3xl font-black leading-tight font-play"
+                        style={{ color: course.accentColor }}
+                      >
+                        “{course.title}”
+                      </h4>
+                      <p className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 leading-relaxed max-w-2xl">
+                        {course.desc}
+                      </p>
                     </div>
 
-                    {/* Khối đơn vị cấp & mã xác thực */}
-                    <div className="p-3 rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 shadow-sm flex items-center justify-between gap-2 shrink-0">
-                      <div className="min-w-0 flex-1">
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                          ĐƠN VỊ CẤP CHỨNG CHỈ
+                    {/* Right Banner / Image Preview */}
+                    <div className="relative shrink-0 w-full md:w-80 lg:w-96 h-28 sm:h-32 rounded-xl overflow-hidden shadow-md border border-white/80 dark:border-white/20 group cursor-pointer"
+                      onClick={() => handleOpenLightbox(course.image, course.title)}
+                      title="Bấm để xem bằng cấp đầy đủ"
+                    >
+                      <img
+                        src="/images/education/hero-banner.png"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).src = course.image;
+                        }}
+                        alt={course.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                        <span className="px-3 py-1 rounded-full bg-slate-950/80 text-white text-[10.5px] font-bold backdrop-blur-md flex items-center gap-1.5 shadow-md">
+                          <Maximize2 className="w-3.5 h-3.5 text-cyan-300" />
+                          <span>Xem ảnh bằng cấp</span>
                         </span>
-                        <p className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate mt-0.5 font-play">
-                          {course.issuer}
-                        </p>
                       </div>
                     </div>
                   </div>
 
-                  {/* Right Area (8 cols on lg): 3 Trụ Cột Đào Tạo & Ứng Dụng + 4 KPI Thành Tựu Cốt Lõi */}
-                  <div className="col-span-12 lg:col-span-8 flex flex-col justify-between gap-3 h-full min-h-0">
-                    {/* Top: 3 Trụ Cột Đào Tạo Chuẩn Trang Dịch Vụ */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1 min-h-0 items-stretch">
-                      {/* Trụ cột 1: Chuyên đề đào tạo cốt lõi */}
-                      <div className="rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 p-3.5 shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden">
-                        <div>
-                          <div className="flex items-center gap-2 pb-2 border-b border-slate-200/70 dark:border-white/10">
-                            <div className="w-6 h-6 rounded-lg bg-blue-500/15 text-blue-600 dark:text-sky-400 flex items-center justify-center shrink-0">
-                              <BookOpen className="w-3.5 h-3.5 stroke-[2.5]" />
+                  {/* Tier 2: 3 Bento Columns (Chuyên đề đào tạo | Ứng dụng thực chiến | Năng lực kỹ năng) */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 flex-1 min-h-0 items-stretch">
+                    {/* Column 1: Chuyên đề đào tạo cốt lõi */}
+                    <div className="rounded-2xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 p-3.5 sm:p-4 shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden">
+                      <div>
+                        <div className="flex items-center justify-between pb-2 border-b border-slate-200/70 dark:border-white/10">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-7 h-7 rounded-xl bg-blue-500/15 text-blue-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                              <BookOpen className="w-4 h-4 stroke-[2.5]" />
                             </div>
-                            <h4 className="text-xs sm:text-[13px] font-black font-play text-blue-700 dark:text-sky-400 leading-tight">
-                              {formatCardTitle('Chuyên đề đào tạo')}
+                            <h4 className="text-xs sm:text-[13.5px] font-black font-play text-blue-800 dark:text-sky-300 leading-tight">
+                              Chuyên đề đào tạo
                             </h4>
                           </div>
-
-                          <div className="my-2">
-                            <span className="inline-block px-2.5 py-0.5 rounded-full text-[9.5px] font-mono font-bold bg-blue-100/90 dark:bg-blue-950/70 text-blue-800 dark:text-sky-300 border border-blue-200 dark:border-blue-800">
-                              {course.modules.length} HỌC PHẦN CỐT LÕI
-                            </span>
-                          </div>
-
-                          <ul className="space-y-2 text-[11px] sm:text-[11.5px] text-slate-700 dark:text-slate-200 font-medium">
-                            {course.modules.map((m, i) => (
-                              <li key={i} className="flex items-start gap-2 leading-snug">
-                                <CheckCircle2
-                                  className="w-4 h-4 shrink-0 mt-0.5"
-                                  style={{ color: course.accentColor }}
-                                />
-                                <span>{m}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      {/* Trụ cột 2: Ứng dụng thực chiến quản trị */}
-                      <div className="rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 p-3.5 shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden">
-                        <div>
-                          <div className="flex items-center gap-2 pb-2 border-b border-slate-200/70 dark:border-white/10">
-                            <div className="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                              <Briefcase className="w-3.5 h-3.5 stroke-[2.5]" />
-                            </div>
-                            <h4 className="text-xs sm:text-[13px] font-black font-play text-emerald-700 dark:text-emerald-400 leading-tight">
-                              {formatCardTitle('Ứng dụng thực chiến')}
-                            </h4>
-                          </div>
-
-                          <div className="my-2">
-                            <span className="inline-block px-2.5 py-0.5 rounded-full text-[9.5px] font-mono font-bold bg-emerald-100/90 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                              VẬN HÀNH THỰC TIỄN 100%
-                            </span>
-                          </div>
-
-                          <p className="text-[11.5px] sm:text-[12px] text-slate-700 dark:text-slate-200 font-medium leading-relaxed">
-                            {course.application}
-                          </p>
+                          <span className="px-2 py-0.5 rounded-full text-[9.5px] font-mono font-bold bg-blue-100/90 dark:bg-blue-950/70 text-blue-800 dark:text-sky-300 border border-blue-200 dark:border-blue-800 shrink-0">
+                            {course.modules.length} HỌC PHẦN CỐT LÕI
+                          </span>
                         </div>
 
-                        {/* Minh họa vai trò thực chiến dưới đáy thẻ giống hình tham khảo trang dịch vụ */}
-                        <div className="mt-auto pt-2 flex items-center justify-center">
-                          <div className="w-full h-14 rounded-xl bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-blue-500/10 border border-emerald-500/20 flex items-center justify-between px-3 py-1.5">
-                            <div className="flex -space-x-2">
-                              <span className="w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
-                                CX
-                              </span>
-                              <span className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
-                                QA
-                              </span>
-                              <span className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
-                                PM
-                              </span>
-                            </div>
-                            <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 font-play">
-                              Thực chiến doanh nghiệp
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Trụ cột 3: Năng lực & Kỹ năng đạt được (MỖI TAG CÓ ICON TƯƠNG ỨNG) */}
-                      <div className="rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 p-3.5 shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden">
-                        <div>
-                          <div className="flex items-center justify-between gap-1.5 pb-2 border-b border-slate-200/70 dark:border-white/10">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <div className="w-6 h-6 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
-                                <Cpu className="w-3.5 h-3.5 stroke-[2.5]" />
-                              </div>
-                              <h4 className="text-xs sm:text-[13px] font-black font-play text-purple-700 dark:text-purple-400 leading-tight truncate">
-                                {formatCardTitle('Năng lực kỹ năng')}
-                              </h4>
-                            </div>
-                          </div>
-
-                          <div className="my-2">
-                            <span className="inline-block px-2.5 py-0.5 rounded-full text-[9.5px] font-mono font-bold bg-purple-100/90 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                              {course.skills.length} KỸ NĂNG CHUYÊN MÔN
-                            </span>
-                          </div>
-
-                          {/* Danh sách Tag Kỹ Năng với Icon tương ứng chuẩn yêu cầu */}
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            {course.skills.map((skill, skIdx) => (
-                              <span
-                                key={skIdx}
-                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10.5px] font-mono font-bold bg-purple-50/80 dark:bg-purple-950/50 text-purple-900 dark:text-purple-200 border border-purple-200 dark:border-purple-800/60 shadow-2xs"
-                              >
-                                <span style={{ color: course.accentColor }}>
-                                  {getTagIcon(skill, 'w-3 h-3 shrink-0')}
-                                </span>
-                                <span>{skill}</span>
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Banner hạ tầng / công nghệ dưới đáy thẻ giống trang dịch vụ */}
-                        <div className="mt-auto pt-2 flex items-center justify-center">
-                          <div className="w-full h-14 rounded-xl bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-sky-500/10 border border-purple-500/25 flex items-center justify-between px-3 py-1.5">
-                            <div className="flex items-center gap-1.5">
-                              <span className="px-1.5 py-0.5 rounded bg-sky-500 text-white text-[9px] font-mono font-black">
-                                {course.code}
-                              </span>
-                              <span className="px-1.5 py-0.5 rounded bg-indigo-500 text-white text-[9px] font-mono font-black">
-                                CERT
-                              </span>
-                            </div>
-                            <span className="text-[10px] font-bold text-purple-700 dark:text-purple-300 font-play flex items-center gap-0.5">
-                              <span>Năng lực cốt lõi</span>
-                              <ChevronRight className="w-3 h-3" />
-                            </span>
-                          </div>
-                        </div>
+                        <ul className="space-y-2 mt-3 text-[11px] sm:text-[11.5px] text-slate-700 dark:text-slate-200 font-medium">
+                          {course.modules.map((m, i) => (
+                            <li key={i} className="flex items-start gap-2 leading-snug">
+                              <CheckCircle2
+                                className="w-4 h-4 shrink-0 mt-0.5 text-emerald-500"
+                              />
+                              <span>{m}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
 
-                    {/* Bottom Area: 4 Chỉ số KPI cốt lõi chuẩn trang dịch vụ */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0">
-                      <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/75 border border-black/5 dark:border-white/10 shadow-2xs">
-                        <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block font-play">
+                    {/* Column 2: Ứng dụng thực chiến */}
+                    <div className="rounded-2xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 p-3.5 sm:p-4 shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden">
+                      <div>
+                        <div className="flex items-center justify-between pb-2 border-b border-slate-200/70 dark:border-white/10">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-7 h-7 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                              <Briefcase className="w-4 h-4 stroke-[2.5]" />
+                            </div>
+                            <h4 className="text-xs sm:text-[13.5px] font-black font-play text-emerald-800 dark:text-emerald-300 leading-tight">
+                              Ứng dụng thực chiến
+                            </h4>
+                          </div>
+                          <span className="px-2 py-0.5 rounded-full text-[9.5px] font-mono font-bold bg-emerald-100/90 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shrink-0">
+                            VẬN HÀNH THỰC TIỄN 100%
+                          </span>
+                        </div>
+
+                        <p className="text-[11.5px] sm:text-[12px] text-slate-700 dark:text-slate-200 font-medium leading-relaxed my-3">
+                          {course.application}
+                        </p>
+                      </div>
+
+                      {/* Bottom Role Chips */}
+                      <div className="mt-auto pt-2 flex items-center justify-between gap-2 border-t border-slate-100 dark:border-white/5">
+                        <div className="flex items-center gap-1">
+                          {['CX', 'CS', 'PM', 'BI'].map((chip, idx) => (
+                            <span
+                              key={idx}
+                              className="w-6 h-6 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 text-white text-[9.5px] font-bold flex items-center justify-center shadow-xs"
+                            >
+                              {chip}
+                            </span>
+                          ))}
+                        </div>
+                        <span className="text-[10.5px] font-bold text-emerald-700 dark:text-emerald-300 font-play">
+                          Thực chiến doanh nghiệp
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Column 3: Năng lực kỹ năng */}
+                    <div className="rounded-2xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 p-3.5 sm:p-4 shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden">
+                      <div>
+                        <div className="flex items-center justify-between pb-2 border-b border-slate-200/70 dark:border-white/10">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-7 h-7 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                              <Cpu className="w-4 h-4 stroke-[2.5]" />
+                            </div>
+                            <h4 className="text-xs sm:text-[13.5px] font-black font-play text-purple-800 dark:text-purple-300 leading-tight">
+                              Năng lực kỹ năng
+                            </h4>
+                          </div>
+                          <span className="px-2 py-0.5 rounded-full text-[9.5px] font-mono font-bold bg-purple-100/90 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800 shrink-0">
+                            {course.skills.length} KỸ NĂNG CHUYÊN MÔN
+                          </span>
+                        </div>
+
+                        {/* Interactive Skill Pills */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 my-2.5">
+                          {course.skills.map((skill, skIdx) => (
+                            <div
+                              key={skIdx}
+                              className="px-2.5 py-1.5 rounded-xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200/70 dark:border-purple-800/50 flex items-center justify-between text-[11px] font-bold text-purple-900 dark:text-purple-200 shadow-2xs hover:border-purple-400 transition-colors"
+                            >
+                              <div className="flex items-center gap-1.5 truncate">
+                                {getTagIcon(skill, 'w-3.5 h-3.5 text-purple-600 shrink-0')}
+                                <span className="truncate">{skill}</span>
+                              </div>
+                              <ChevronRight className="w-3 h-3 text-purple-400 shrink-0" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Bottom Capsule Bar */}
+                      <div className="mt-auto pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-[10.5px]">
+                        <div className="flex items-center gap-1.5">
+                          <span className="px-2 py-0.5 rounded-md bg-sky-500 text-white font-mono font-black text-[9.5px]">
+                            {course.code}
+                          </span>
+                          <span className="px-2 py-0.5 rounded-md bg-purple-600 text-white font-mono font-black text-[9.5px]">
+                            CERT
+                          </span>
+                        </div>
+                        <span className="font-bold text-purple-700 dark:text-purple-300 font-play flex items-center gap-0.5">
+                          <span>Năng lực cốt lõi</span>
+                          <ChevronRight className="w-3 h-3" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tier 3: 5 Stat Bento Cards (1 Hàng 5 Thẻ) */}
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 shrink-0">
+                    <div className="p-2.5 rounded-xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 shadow-2xs flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
+                        <Building2 className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1 text-left">
+                        <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block truncate">
+                          ĐƠN VỊ CẤP CHỨNG CHỈ
+                        </span>
+                        <p className="text-xs font-black text-slate-900 dark:text-white truncate font-play">
+                          {course.issuer}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 shadow-2xs flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+                        <Calendar className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1 text-left">
+                        <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block truncate">
                           Năm tốt nghiệp
                         </span>
-                        <span
-                          className="text-lg sm:text-xl font-black font-play leading-tight block mt-0.5"
-                          style={{ color: course.accentColor }}
-                        >
+                        <p className="text-xs font-black text-sky-600 dark:text-sky-400 truncate font-play">
                           {course.year}
-                        </span>
-                        <span className="text-[9px] text-slate-400 block font-mono">Chính quy/Chứng nhận</span>
+                        </p>
                       </div>
+                    </div>
 
-                      <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/75 border border-black/5 dark:border-white/10 shadow-2xs">
-                        <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block font-play">
+                    <div className="p-2.5 rounded-xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 shadow-2xs flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                        <FileCheck className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1 text-left">
+                        <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block truncate">
                           Mã văn bằng
                         </span>
-                        <span
-                          className="text-lg sm:text-xl font-black font-play leading-tight block mt-0.5"
-                          style={{ color: course.accentColor }}
-                        >
+                        <p className="text-xs font-black text-emerald-600 dark:text-emerald-400 truncate font-play">
                           {course.code}
-                        </span>
-                        <span className="text-[9px] text-slate-400 block font-mono">Hồ sơ xác thực số</span>
+                        </p>
                       </div>
+                    </div>
 
-                      <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/75 border border-black/5 dark:border-white/10 shadow-2xs">
-                        <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block font-play">
+                    <div className="p-2.5 rounded-xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 shadow-2xs flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                        <GraduationCap className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1 text-left">
+                        <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block truncate">
                           Chuyên đề đào tạo
                         </span>
-                        <span
-                          className="text-lg sm:text-xl font-black font-play leading-tight block mt-0.5"
-                          style={{ color: course.accentColor }}
-                        >
+                        <p className="text-xs font-black text-amber-600 dark:text-amber-400 truncate font-play">
                           {course.modules.length} Modules
-                        </span>
-                        <span className="text-[9px] text-slate-400 block font-mono">Kiến thức chuyên sâu</span>
+                        </p>
                       </div>
+                    </div>
 
-                      <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/75 border border-black/5 dark:border-white/10 shadow-2xs">
-                        <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block font-play">
+                    <div className="p-2.5 rounded-xl bg-white/85 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 shadow-2xs flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
+                        <Award className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1 text-left">
+                        <span className="text-[9.5px] font-bold text-slate-500 dark:text-slate-400 block truncate">
                           Trạng thái văn bằng
                         </span>
-                        <span className="text-lg sm:text-xl font-black font-play leading-tight block mt-0.5 text-emerald-600 dark:text-emerald-400">
-                          100% Hợp lệ
-                        </span>
-                        <span className="text-[9px] text-emerald-600/80 dark:text-emerald-400/80 block font-mono flex items-center gap-0.5">
-                          <Check className="w-2.5 h-2.5" />
-                          Đã kiểm duyệt
-                        </span>
+                        <p className="text-xs font-black text-rose-600 dark:text-rose-400 truncate font-play flex items-center gap-1">
+                          <Check className="w-3 h-3 text-emerald-500 shrink-0" />
+                          <span>100% Hợp lệ</span>
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* 3. Footer Bar: Các nút hành động chính */}
-                <div className="pt-2.5 mt-0.5 border-t border-black/10 dark:border-white/10 flex items-center justify-between gap-3 shrink-0 flex-wrap relative z-10">
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleOpenLightbox(course.image, course.title)}
-                      className="px-3.5 py-1.5 rounded-xl text-xs font-bold font-play flex items-center gap-1.5 text-white transition cursor-pointer shadow-sm hover:scale-105 active:scale-95"
-                      style={{
-                        backgroundColor: course.accentColor,
-                      }}
-                    >
-                      <Maximize2 className="w-3.5 h-3.5" />
-                      <span>Xem bằng cấp toàn màn hình</span>
-                    </button>
-                  </div>
+                {/* 3. Footer Action Bar */}
+                <div className="pt-2 border-t border-slate-200/80 dark:border-white/10 flex items-center justify-between gap-3 shrink-0 relative z-10">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenLightbox(course.image, course.title)}
+                    className="px-4 py-1.5 rounded-full text-xs font-bold font-play flex items-center gap-1.5 text-white transition cursor-pointer shadow-md hover:scale-105 active:scale-95 bg-teal-600 hover:bg-teal-700"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" />
+                    <span>Xem bằng cấp toàn màn hình</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
 
                   <button
                     type="button"
                     onClick={() => setSelectedCourse(null)}
-                    className="px-4 py-1.5 rounded-xl text-xs font-bold font-play border border-slate-300 dark:border-white/20 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition cursor-pointer flex items-center gap-1.5"
+                    className="px-4 py-1.5 rounded-full text-xs font-bold font-play border border-slate-300 dark:border-white/20 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     <span>Quay lại lưới học vấn</span>

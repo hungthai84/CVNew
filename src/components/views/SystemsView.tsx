@@ -1510,33 +1510,19 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                         onClick={(e) => e.stopPropagation()}
                         className="relative w-full h-full rounded-[14px] overflow-hidden p-3 sm:p-4 flex flex-col justify-between select-none border transition-all duration-500 shadow-2xl backdrop-blur-xl"
                         style={{
-                          background: isDark
-                            ? `radial-gradient(circle at top right, ${config.cardTheme}40, transparent 70%), linear-gradient(155deg, #090e17 0%, #0f172a 100%)`
-                            : `linear-gradient(145deg, #ffffff 0%, ${config.cardTheme}18 60%, #f8fafc 100%)`,
-                          borderColor: isDark ? `${config.cardTheme}70` : config.lightBorder,
-                          boxShadow: isDark
-                            ? `0 16px 36px -6px rgba(0, 0, 0, 0.75), 0 0 25px ${config.cardTheme}45, inset 0 1px 2px rgba(255, 255, 255, 0.2)`
-                            : `0 16px 32px -6px ${config.cardTheme}25, 0 6px 14px -3px rgba(15, 23, 42, 0.08), inset 0 1.5px 2px rgba(255, 255, 255, 0.96)`,
+                          background: config.gradient,
+                          borderColor: 'rgba(255, 255, 255, 0.28)',
+                          boxShadow: `0 16px 36px -6px rgba(0, 0, 0, 0.55), 0 0 25px ${config.cardTheme}45, inset 0 1px 2px rgba(255, 255, 255, 0.4)`,
+                          color: '#ffffff',
                         }}
                       >
-                        {/* Header Thẻ Mở Rộng: Mã hệ thống, Tiêu đề 4 từ, Nút thu nhỏ */}
-                        <div className="flex items-center justify-between gap-2 pb-2 border-b border-black/10 dark:border-white/15 shrink-0">
+                        {/* Header Thẻ Mở Rộng: Tiêu đề, Nút thu nhỏ */}
+                        <div className="flex items-center justify-between gap-2 pb-2 border-b border-white/20 shrink-0">
                           <div className="flex items-center gap-2 min-w-0">
-                            <span
-                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-black tracking-wider uppercase border shadow-2xs"
-                              style={{
-                                backgroundColor: isDark ? 'rgba(0, 0, 0, 0.45)' : 'rgba(255, 255, 255, 0.95)',
-                                borderColor: isDark ? 'rgba(255, 255, 255, 0.3)' : `${config.cardTheme}40`,
-                                color: isDark ? '#ffffff' : config.lightAccent,
-                              }}
-                            >
-                              <span>{item.abbr}</span>
-                            </span>
                             <h3
-                              className="font-black font-play text-sm sm:text-base leading-tight tracking-wide truncate flex items-center gap-1.5"
-                              style={{ color: isDark ? '#ffffff' : config.lightAccent }}
+                              className="font-black font-play text-[17px] sm:text-[18.5px] lg:text-[19.5px] leading-tight tracking-tight truncate flex items-center gap-1.5 text-white"
                             >
-                              <WebIcon name={config.iconName} className="w-4 h-4 shrink-0 opacity-95" />
+                              <WebIcon name={config.iconName} className="w-5 h-5 shrink-0 opacity-95 text-white" />
                               <span className="truncate">{config.displayTitle}</span>
                             </h3>
                           </div>
@@ -1702,56 +1688,26 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                           {/* Nội dung Mặt Trước: Tên viết tắt, Tiêu đề 4 từ, Mô tả & Khung hình gấp đôi */}
                           <div className="relative z-10 flex flex-col justify-between h-full text-left">
                             {/* Hàng Đỉnh: Tên viết tắt (Trái) & Tên đầy đủ + Nút Lật (Phải) */}
-                            <div className="flex items-center justify-between gap-1.5 pb-1.5 border-b border-black/10 dark:border-white/15">
-                              {/* Phía trên bên trái: Tên viết tắt */}
-                              <div className="flex items-center gap-1 shrink-0">
-                                <span
-                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-mono font-black tracking-wider uppercase border shadow-2xs"
-                                  style={
-                                    isVividDarkFace
-                                      ? {
-                                          backgroundColor: 'rgba(0, 0, 0, 0.35)',
-                                          borderColor: 'rgba(255, 255, 255, 0.28)',
-                                          color: '#ffffff',
-                                        }
-                                      : {
-                                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                          borderColor: `${config.cardTheme}40`,
-                                          color: config.lightAccent,
-                                        }
-                                  }
-                                >
-                                  <span>{item.abbr}</span>
-                                </span>
-                              </div>
-
-                              {/* Phía trên bên phải: Tên đầy đủ */}
-                              <div className="flex items-center gap-1.5 max-w-[75%] justify-end shrink-0">
-                                <span
-                                  className="text-[9px] sm:text-[9.5px] font-bold font-mono tracking-tight truncate text-right text-white/85"
-                                  title={item.fullName}
-                                >
-                                  {item.fullName}
-                                </span>
-                              </div>
+                            {/* Hàng Đỉnh: Tên đầy đủ */}
+                            <div className="flex items-center justify-end gap-1.5 pb-1.5 border-b border-white/20">
+                              <span
+                                className="text-[10px] sm:text-[10.5px] font-bold font-mono tracking-tight truncate text-right text-white/90"
+                                title={item.fullName}
+                              >
+                                {item.fullName}
+                              </span>
                             </div>
 
-                            {/* Thân Thẻ: Tiêu đề 4 từ, Mô tả hiển thị rõ ràng & Khung hình ảnh GẤP ĐÔI KÍCH THƯỚC */}
+                            {/* Thân Thẻ: Tiêu đề, Mô tả hiển thị rõ ràng */}
                             <div className="flex items-center justify-between gap-2.5 pt-1.5 flex-1 min-h-0">
-                              {/* Cột thông tin: Tiêu đề & Mô tả hệ thống hiển thị rõ ràng */}
+                              {/* Cột thông tin: Tiêu đề & Mô tả hệ thống */}
                               <div
                                 className="flex flex-col min-w-0 flex-1 pr-1"
-                                style={{ color: isVividDarkFace ? '#ffffff' : config.lightAccent }}
                               >
                                 <h3
-                                  className={`font-black font-play text-[13.5px] sm:text-[14.5px] leading-tight tracking-wide flex items-center gap-1.5 ${
-                                    isVividDarkFace
-                                      ? 'text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]'
-                                      : ''
-                                  }`}
-                                  style={{ color: isVividDarkFace ? '#ffffff' : config.lightAccent }}
+                                  className="font-black font-play text-[17px] sm:text-[18.5px] lg:text-[19.5px] leading-tight tracking-tight flex items-center gap-1.5 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]"
                                 >
-                                  <WebIcon name={config.iconName} className="w-4 h-4 shrink-0 opacity-95" />
+                                  <WebIcon name={config.iconName} className="w-5 h-5 shrink-0 opacity-95 text-white" />
                                   <span className="truncate">{config.displayTitle}</span>
                                 </h3>
 

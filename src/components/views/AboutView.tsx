@@ -750,7 +750,42 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
               })}
             </div>
 
-
+            {/* Chi tiết lộ trình di chuyển Q7 - Mỹ Tho */}
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-50/90 via-sky-50/70 to-blue-50/60 dark:from-indigo-950/40 dark:via-sky-950/30 dark:to-slate-900/40 border border-indigo-200/80 dark:border-indigo-800/60">
+              <div className="flex items-center gap-2 mb-2 text-indigo-700 dark:text-indigo-300">
+                <Car className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <h4 className="text-sm font-black font-play">Chi Tiết Lộ Trình &amp; Khả Năng Di Chuyển Linh Hoạt</h4>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-2 text-xs">
+                <div className="bg-white/80 dark:bg-slate-900/80 p-3 rounded-xl border border-indigo-100 dark:border-indigo-900">
+                  <div className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 font-bold mb-1">
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span>Khoảng cách</span>
+                  </div>
+                  <span className="text-base font-black text-slate-900 dark:text-white font-play">~68 KM</span>
+                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">Tuyến Cao tốc TP.HCM - Trung Lương</p>
+                </div>
+                <div className="bg-white/80 dark:bg-slate-900/80 p-3 rounded-xl border border-indigo-100 dark:border-indigo-900">
+                  <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold mb-1">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Thời gian</span>
+                  </div>
+                  <span className="text-base font-black text-slate-900 dark:text-white font-play">50 – 65 Phút</span>
+                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">Lộ trình thông thoáng, xe đưa đón liên tục</p>
+                </div>
+                <div className="bg-white/80 dark:bg-slate-900/80 p-3 rounded-xl border border-indigo-100 dark:border-indigo-900">
+                  <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold mb-1">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Sẵn sàng Onsite</span>
+                  </div>
+                  <span className="text-base font-black text-slate-900 dark:text-white font-play">100% Onsite / Hybrid</span>
+                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">Có chỗ tạm trú Q7 sẵn sàng cho công tác</p>
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mt-2">
+                Chuyên gia Nguyễn Hùng Thái chủ động hoàn toàn phương tiện di chuyển, sẵn sàng đáp ứng yêu cầu công việc toàn thời gian tại TP.HCM hoặc chế độ làm việc kết hợp (Hybrid) theo nhu cầu của ban điều hành.
+              </p>
+            </div>
           </div>
         );
 
@@ -962,54 +997,20 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
 
   const isDark = currentTheme === 'dark-neon';
 
-  // Glass card classes đồng bộ Light Glass UI Đa Sắc & Dark Neon
+  // Glass card classes
   const glassCardClass =
     isDark
-      ? 'bg-slate-900/90 backdrop-blur-2xl border border-cyan-500/30 shadow-[0_12px_36px_rgba(0,0,0,0.65)] text-slate-100'
-      : 'bg-white/80 backdrop-blur-2xl border border-white/95 shadow-[0_10px_30px_rgba(100,110,140,0.08)] text-slate-800';
+      ? 'bg-slate-900/85 backdrop-blur-xl border border-white/10 shadow-[0_12px_36px_rgba(0,0,0,0.65)] text-slate-100'
+      : 'bg-white/85 backdrop-blur-xl border border-white/90 shadow-[0_10px_30px_-5px_rgba(30,27,75,0.06)] text-slate-800';
 
-  // Phân nhóm màu sắc rõ nét cho 9 thẻ Thông tin cá nhân trên Slide 1
-  const getDemographicGroupStyle = (id: string) => {
-    switch (id) {
-      case 'gender_ethnicity':
-      case 'marital_status':
-      case 'birthday':
-        // Nhóm 1: Nhân thân (Tone Sky - Rose - Amber Pastel)
-        return {
-          groupLabel: 'Nhân thân',
-          cardBg: isDark
-            ? 'bg-slate-900/85 hover:bg-slate-800/95 border-sky-400/35 hover:border-sky-400/70'
-            : 'bg-gradient-to-br from-white/95 via-sky-50/85 to-indigo-50/75 hover:from-white hover:to-sky-100/80 border-sky-200/90 hover:border-sky-400',
-          badgeBg: isDark ? 'bg-sky-500/20 text-sky-300 border-sky-400/30' : 'bg-sky-100 text-sky-700 border-sky-200',
-        };
-      case 'temp_residence':
-      case 'perm_residence':
-        // Nhóm 2: Địa chỉ & Bản đồ (Tone Violet - Emerald Pastel)
-        return {
-          groupLabel: 'Bản đồ',
-          cardBg: isDark
-            ? 'bg-slate-900/85 hover:bg-slate-800/95 border-emerald-400/40 hover:border-emerald-400/80'
-            : 'bg-gradient-to-br from-white/95 via-emerald-50/85 to-teal-50/75 hover:from-white hover:to-emerald-100/80 border-emerald-200/95 hover:border-emerald-400',
-          badgeBg: isDark ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30' : 'bg-emerald-100 text-emerald-700 border-emerald-200',
-        };
-      default:
-        // Nhóm 3: Liên hệ & Mạng lưới (Tone Indigo - Purple - Cyan Pastel)
-        return {
-          groupLabel: 'Liên hệ',
-          cardBg: isDark
-            ? 'bg-slate-900/85 hover:bg-slate-800/95 border-indigo-400/35 hover:border-indigo-400/70'
-            : 'bg-gradient-to-br from-white/95 via-indigo-50/85 to-violet-50/75 hover:from-white hover:to-indigo-100/80 border-indigo-200/90 hover:border-indigo-400',
-          badgeBg: isDark ? 'bg-indigo-500/20 text-indigo-300 border-indigo-400/30' : 'bg-indigo-100 text-indigo-700 border-indigo-200',
-        };
-    }
-  };
+  const renderAboutRightNavigationBar = () => null;
 
   return (
     <section
       id="about"
-      className="relative w-full h-full flex-1 min-h-0 flex flex-col justify-between items-stretch font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-y-auto lg:overflow-hidden glass-scrollbar select-none"
+      className="relative w-full h-full flex-1 flex flex-col justify-start items-stretch font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-y-auto lg:overflow-hidden glass-scrollbar select-none"
     >
-      <div className="w-full h-full flex-1 min-h-0 flex flex-col justify-between relative">
+      <div className="w-full max-w-7xl mx-auto flex flex-col gap-3 sm:gap-3.5 h-full min-h-0">
         {/* ========================================================================= */}
         {/* NÚT ĐIỀU HƯỚNG SLIDE TRÁI & PHẢI (CHỈ HIỂN THỊ Ở CHẾ ĐỘ SLIDE KHI KHÔNG PHÁT VIDEO) */}
         {/* ========================================================================= */}
@@ -1018,7 +1019,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
             <button
               type="button"
               onClick={handlePrevSlide}
-              className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 dark:bg-slate-900/95 hover:bg-blue-600 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-slate-950 text-slate-800 dark:text-white border-2 border-blue-500/80 dark:border-cyan-400/80 shadow-[0_0_20px_rgba(59,130,246,0.38)] dark:shadow-[0_0_20px_rgba(34,211,238,0.45)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer z-30 group"
+              className="absolute left-2 sm:left-3.5 lg:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 dark:bg-slate-900/95 hover:bg-blue-600 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-slate-950 text-slate-800 dark:text-white border-2 border-blue-500/80 dark:border-cyan-400/80 shadow-[0_0_20px_rgba(59,130,246,0.38)] dark:shadow-[0_0_20px_rgba(34,211,238,0.45)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 hover:scale-115 active:scale-95 cursor-pointer z-30 group"
               title="Slide trước (Phím ←)"
               aria-label="Slide trước"
             >
@@ -1028,7 +1029,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
             <button
               type="button"
               onClick={handleNextSlide}
-              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/95 dark:bg-slate-900/95 hover:bg-blue-600 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-slate-950 text-slate-800 dark:text-white border-2 border-blue-500/80 dark:border-cyan-400/80 shadow-[0_0_20px_rgba(59,130,246,0.38)] dark:shadow-[0_0_20px_rgba(34,211,238,0.45)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer z-30 group"
+              className="absolute right-2 sm:right-3.5 lg:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 dark:bg-slate-900/95 hover:bg-blue-600 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-slate-950 text-slate-800 dark:text-white border-2 border-blue-500/80 dark:border-cyan-400/80 shadow-[0_0_20px_rgba(59,130,246,0.38)] dark:shadow-[0_0_20px_rgba(34,211,238,0.45)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 hover:scale-115 active:scale-95 cursor-pointer z-30 group"
               title="Slide kế tiếp (Phím →)"
               aria-label="Slide kế tiếp"
             >
@@ -1038,18 +1039,20 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
         )}
 
         {/* ========================================================================= */}
-        {/* SLIDE 1: TỔNG QUAN VIDEO, 4 CHỈ SỐ KPI & 9 THẺ HỒ SƠ CÁ NHÂN (FULL CARD)  */}
+        {/* CHẾ ĐỘ TRÌNH CHIẾU SLIDE 3 BƯỚC                                           */}
         {/* ========================================================================= */}
+
+        {/* SLIDE 1: TỔNG QUAN & VIDEO TRỢ LÝ ẢO */}
         {viewMode === 'slides' && currentSlide === 0 && (
           <div
             key="about-slide-0"
-            className={`w-full h-full flex-1 min-h-0 flex flex-col justify-between ${
+            className={`w-full flex-1 min-h-0 flex flex-col justify-between gap-3 ${
               slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'
             }`}
           >
             <div
-              className={`relative w-full h-full flex-1 min-h-0 overflow-y-auto lg:overflow-hidden rounded-[14px] p-3 sm:p-4 lg:p-5 flex flex-col justify-between gap-3 bg-slate-900 text-left transition-all duration-500 group/hero ${
-                isPlayingIntro ? 'ring-1 ring-cyan-400/40' : ''
+              className={`relative overflow-hidden rounded-[14px] border border-slate-200/90 dark:border-white/10 p-5 sm:p-6 lg:p-7 flex flex-col justify-between shadow-xs backdrop-blur-xl bg-slate-900 text-left transition-all duration-500 group/hero flex-1 min-h-[360px] sm:min-h-[420px] ${
+                isPlayingIntro ? 'h-full min-h-[480px] sm:min-h-[540px] lg:min-h-[580px] shadow-2xl ring-1 ring-cyan-400/30' : ''
               }`}
             >
               {/* Video Background Layer */}
@@ -1062,275 +1065,190 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                 playsInline
                 onTimeUpdate={handleTimeUpdate}
                 onEnded={handleVideoEnded}
-                className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none z-0 opacity-100 transition-opacity duration-700 brightness-105 contrast-105"
+                className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none z-0 opacity-100 transition-opacity duration-700 brightness-110 contrast-105"
                 src={isPlayingIntro ? ABOUT_INTRO_VIDEO_URL : ABOUT_IDLE_VIDEO_URL}
               />
 
-              {/* Multi-layered Ambient Scrim Overlay for Crystal Readability */}
+              {/* High-contrast Ambient Scrim Overlay */}
               <div
-                className={`absolute inset-0 pointer-events-none z-10 transition-opacity duration-500 ${
+                className={`absolute inset-0 bg-gradient-to-r pointer-events-none z-10 transition-opacity duration-500 ${
                   isPlayingIntro
-                    ? 'bg-gradient-to-r from-slate-950/65 via-slate-950/25 to-slate-950/40'
-                    : 'bg-gradient-to-r from-slate-950/80 via-slate-950/45 to-slate-950/75'
+                    ? 'from-black/50 via-black/20 to-black/30 dark:from-slate-950/60 dark:via-slate-950/20 dark:to-slate-950/40'
+                    : 'from-black/45 via-black/20 to-transparent dark:from-slate-950/55 dark:via-slate-950/25 dark:to-transparent'
                 }`}
               />
 
-              {/* Top Navigation & Slide Switcher Bar inside Slide 1 */}
-              <div className="relative z-20 flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-white/15 shrink-0">
-                <div className="flex items-center gap-2">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-800/95 shadow-sm border border-sky-200/80 dark:border-cyan-400/30 text-xs font-bold text-slate-800 dark:text-slate-100 backdrop-blur-md">
-                    <span>👋</span>
-                    <span>Xin chào,</span>
-                    {isPlayingIntro ? (
-                      <span className="ml-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-black animate-pulse">
-                        Đang phát Video giới thiệu
-                      </span>
-                    ) : (
-                      <span className="ml-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-[10px] font-black">
-                        Hồ sơ Chuyên gia CX
-                      </span>
-                    )}
-                  </div>
-
-                  {!isPlayingIntro && (
-                    <span className="hidden md:inline-block font-handwriting text-cyan-300 text-lg font-bold select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] ml-2">
-                      Luôn bên bạn ♡
-                    </span>
-                  )}
+              {/* Calligraphy note */}
+              {!isPlayingIntro && (
+                <div className="hidden sm:block absolute left-[260px] lg:left-[280px] top-6 z-20 pointer-events-none">
+                  <span className="font-handwriting text-cyan-300 dark:text-cyan-400 text-xl font-bold select-none rotate-[-6deg] block drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
+                    Luôn bên bạn ♡
+                  </span>
                 </div>
+              )}
 
-                {/* Quick Slide Switcher & Quick Modal Triggers */}
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  {!isPlayingIntro && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => handleOpenBentoFocus('map')}
-                        className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/25 hover:bg-emerald-500/40 text-emerald-200 border border-emerald-400/40 text-[11px] font-bold backdrop-blur-md transition cursor-pointer"
-                        title="Xem Bản đồ Cư trú & Lộ trình Quận 7 - Mỹ Tho (68km)"
-                      >
-                        <MapPin className="w-3.5 h-3.5 text-emerald-300" />
-                        <span>Lộ trình Q7 ⇄ Mỹ Tho</span>
-                      </button>
-
-                      <div className="inline-flex items-center p-0.5 rounded-full bg-slate-900/85 border border-white/20 backdrop-blur-xl shadow-md">
-                        {ABOUT_SLIDES.map((s, idx) => {
-                          const SlideIcon = s.icon;
-                          const active = currentSlide === idx;
-                          return (
-                            <button
-                              key={s.id}
-                              type="button"
-                              onClick={() => handleSelectSlide(idx)}
-                              className={cn(
-                                'px-2.5 sm:px-3 py-1 rounded-full text-[11px] font-bold font-play flex items-center gap-1.5 transition-all cursor-pointer',
-                                active
-                                  ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white shadow-xs'
-                                  : 'text-slate-300 hover:text-white'
-                              )}
-                            >
-                              <SlideIcon className="w-3 h-3" />
-                              <span>Slide {idx + 1}: {s.title}</span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </>
-                  )}
-
-                  {isPlayingIntro && (
+              {/* Nội dung Slide 1 */}
+              <div className="flex flex-col md:flex-row items-stretch justify-between gap-6 relative z-20 h-full">
+                {/* Left Column: Greeting, Name, Role, CTA Button */}
+                {isPlayingIntro && (
+                  <div className="absolute top-4 right-4 z-50">
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCancelIntro();
                       }}
-                      className="px-4 py-1.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-[0_0_24px_rgba(244,63,94,0.7)] border border-rose-300/80 transition cursor-pointer active:scale-95"
+                      className="px-6 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-sm sm:text-base flex items-center gap-2.5 shadow-[0_0_30px_rgba(244,63,94,0.7)] backdrop-blur-xl border border-rose-400/80 transition cursor-pointer active:scale-95"
                       title="Hủy video"
                     >
-                      <X className="w-4 h-4 stroke-[2.8]" />
-                      <span>Đóng Video</span>
+                      <X className="w-5 h-5 stroke-[3]" />
+                      <span>Hủy</span>
                     </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Main Slide 1 Content Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 relative z-20 flex-1 min-h-0 items-stretch">
-                {/* CỘT TRÁI (lg:col-span-5): NHÓM 1 - CHÂN DUNG CHUYÊN GIA & NHÓM 2 - 4 CHỈ SỐ KPI ĐA SẮC */}
+                  </div>
+                )}
                 <div
-                  className={cn(
-                    'flex flex-col justify-between gap-3 z-20',
-                    isPlayingIntro ? 'lg:col-span-12 justify-end' : 'lg:col-span-5'
-                  )}
+                  className={`flex flex-col justify-between z-20 ${
+                    isPlayingIntro ? 'hidden' : 'max-w-full md:max-w-[340px] lg:max-w-[380px]'
+                  }`}
                 >
-                  {/* Khối Tên, Chức Danh & Nút Phát Video */}
-                  <div
-                    className={cn(
-                      'rounded-2xl p-4 sm:p-5 border transition-all duration-300 flex flex-col justify-between gap-3',
-                      isPlayingIntro
-                        ? 'bg-slate-950/65 backdrop-blur-md border-cyan-400/30 max-w-md'
-                        : 'bg-gradient-to-br from-slate-900/80 via-blue-950/75 to-indigo-950/80 backdrop-blur-xl border-cyan-400/35 shadow-[0_10px_30px_rgba(0,0,0,0.45)] flex-1'
-                    )}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-1.5">
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30">
-                          Nhóm 01 · Định Danh Chuyên Gia
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-800/90 shadow-2xs border border-slate-200/80 dark:border-white/10 text-xs font-bold text-slate-800 dark:text-slate-100 w-fit backdrop-blur-md">
+                      <span>👋</span>
+                      <span>Xin chào,</span>
+                      {isPlayingIntro && (
+                        <span className="ml-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] font-black animate-pulse">
+                          Đang phát Video giới thiệu
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => handleOpenBentoFocus('hero')}
-                          className="text-[10.5px] font-bold text-cyan-300 hover:text-white flex items-center gap-1 transition cursor-pointer"
-                          title="Mở rộng toàn màn hình"
-                        >
-                          <Maximize2 className="w-3 h-3" />
-                          <span>Chi tiết</span>
-                        </button>
-                      </div>
-
-                      <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-black font-play !text-white leading-tight tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-                        Nguyễn Hùng Thái <span className="text-amber-400">✨</span>
-                      </h2>
-
-                      <p className="text-xs sm:text-[13px] !text-sky-100/95 font-medium leading-relaxed mt-2 drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
-                        Chuyên gia Quản trị Trải nghiệm Khách hàng (CX) &amp; Vận hành Contact Center với hơn{' '}
-                        <strong className="text-amber-300 font-black">22 năm kinh nghiệm</strong> thực chiến.
-                      </p>
+                      )}
                     </div>
 
-                    {/* Cụm nút Giới thiệu bản thân đa năng nhóm chung Speaker */}
-                    <div className="pt-2 flex flex-wrap items-center gap-2.5">
-                      <div className="relative inline-flex items-center p-[2px] rounded-full overflow-hidden transition-all duration-300 group/pill shadow-lg hover:shadow-[0_0_25px_rgba(59,130,246,0.55)]">
-                        <div
-                          className={`absolute inset-[-100%] animate-[spin_3.5s_linear_infinite] transition-opacity duration-300 opacity-90 group-hover/pill:opacity-100 blur-[0.5px] ${
-                            !isPlayingIntro
-                              ? 'bg-[conic-gradient(from_90deg_at_50%_50%,#3b82f6_0%,#a855f7_25%,#ec4899_50%,#06b6d4_75%,#3b82f6_100%)]'
-                              : 'bg-[conic-gradient(from_90deg_at_50%_50%,#f43f5e_0%,#fb7185_25%,#f97316_50%,#e11d48_75%,#f43f5e_100%)]'
-                          }`}
-                        />
+                    <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-black font-play !text-white leading-[1.15] mt-3 tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                      Nguyễn Hùng Thái <span className="text-amber-400">✨</span>
+                    </h2>
 
-                        <div
-                          className={`relative z-10 flex items-center rounded-full backdrop-blur-xl transition-all duration-300 ${
-                            !isPlayingIntro
-                              ? 'bg-slate-950/90 text-white'
-                              : 'bg-gradient-to-r from-rose-950/95 via-pink-950/90 to-slate-950/95 text-white'
-                          }`}
-                        >
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleVideoMute();
-                            }}
-                            title={isVideoMuted ? 'Bấm để mở âm thanh video' : 'Bấm để tắt âm thanh'}
-                            className={`px-3 py-2 flex items-center justify-center transition-all cursor-pointer rounded-l-full border-r border-white/15 ${
-                              !isVideoMuted
-                                ? 'text-cyan-300 bg-cyan-500/20'
-                                : 'text-slate-400 hover:text-white hover:bg-white/10'
-                            }`}
-                          >
-                            {!isVideoMuted ? (
-                              <Volume2 className="w-4 h-4 animate-bounce text-cyan-300" />
-                            ) : (
-                              <VolumeX className="w-4 h-4 text-slate-400" />
-                            )}
-                          </button>
+                    {!isPlayingIntro && (
+                      <p className="text-xs sm:text-[13px] !text-white/95 font-medium leading-relaxed mt-2.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
+                        Chuyên gia Quản trị Trải nghiệm Khách hàng (CX) & Vận hành Contact Center với hơn 22 năm kinh nghiệm thực chiến.
+                      </p>
+                    )}
+                  </div>
 
-                          {!isPlayingIntro ? (
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handlePlayIntro();
-                              }}
-                              className="px-4 py-2 flex items-center gap-2 font-bold font-play text-xs sm:text-sm text-white hover:text-cyan-200 transition-all cursor-pointer rounded-r-full group/btn"
-                              title="Bấm để phát video Giới thiệu bản thân"
-                            >
-                              <div className="w-5.5 h-5.5 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white shadow-xs group-hover/btn:scale-110 transition-transform">
-                                <Play className="w-3 h-3 ml-0.5" />
-                              </div>
-                              <span>Giới thiệu bản thân</span>
-                              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleCancelIntro();
-                              }}
-                              className="px-3.5 py-2 flex items-center gap-2 font-bold font-play text-xs sm:text-sm text-rose-100 hover:text-white transition-all cursor-pointer rounded-r-full bg-gradient-to-r from-rose-600/80 to-red-600/80 hover:from-rose-600 hover:to-red-600 group/btn"
-                              title="Bấm để dừng nghe và quay lại Video ban đầu"
-                            >
-                              <div className="w-5.5 h-5.5 rounded-full bg-rose-500 flex items-center justify-center text-white shadow-xs group-hover/btn:scale-110 transition-transform">
-                                <X className="w-3.5 h-3.5 stroke-[2.5]" />
-                              </div>
-                              <span>Dừng nghe</span>
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-rose-500/30 text-rose-100 border border-rose-300/40 text-[10.5px] font-mono font-bold tracking-tight shrink-0 shadow-xs ml-0.5">
-                                <span>{formatCountdown(Math.max(0, 105 - Math.floor(videoCurrentTime)))}</span>
-                              </span>
-                            </button>
-                          )}
-                        </div>
-                      </div>
+                  {/* Cụm nút Giới thiệu bản thân đa năng nhóm chung Speaker */}
+                  <div className="pt-4 flex items-center gap-3">
+                    <div className="relative inline-flex items-center p-[2px] rounded-full overflow-hidden transition-all duration-300 group/pill shadow-lg hover:shadow-[0_0_25px_rgba(59,130,246,0.55)]">
+                      {/* Animated Conic Gradient Border Chạy Viền Màu */}
+                      <div
+                        className={`absolute inset-[-100%] animate-[spin_3.5s_linear_infinite] transition-opacity duration-300 opacity-90 group-hover/pill:opacity-100 blur-[0.5px] ${
+                          !isPlayingIntro
+                            ? 'bg-[conic-gradient(from_90deg_at_50%_50%,#3b82f6_0%,#a855f7_25%,#ec4899_50%,#06b6d4_75%,#3b82f6_100%)]'
+                            : 'bg-[conic-gradient(from_90deg_at_50%_50%,#f43f5e_0%,#fb7185_25%,#f97316_50%,#e11d48_75%,#f43f5e_100%)]'
+                        }`}
+                      />
 
-                      {isPlayingIntro && (
+                      <div
+                        className={`relative z-10 flex items-center rounded-full backdrop-blur-xl transition-all duration-300 ${
+                          !isPlayingIntro
+                            ? 'bg-slate-950/90 text-white'
+                            : 'bg-gradient-to-r from-rose-950/95 via-pink-950/90 to-slate-950/95 text-white'
+                        }`}
+                      >
+                        {/* Nút Speaker: Mặc định tắt âm, bấm vào toggle âm thanh video */}
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            togglePlayPause();
+                            toggleVideoMute();
                           }}
-                          className="p-2.5 rounded-full bg-black/50 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 transition-all cursor-pointer active:scale-95 shadow-md"
-                          title={isVideoPaused ? 'Tiếp tục phát' : 'Tạm dừng'}
+                          title={isVideoMuted ? 'Bấm để mở âm thanh video' : 'Bấm để tắt âm thanh'}
+                          className={`px-3 py-2 flex items-center justify-center transition-all cursor-pointer rounded-l-full border-r border-white/15 ${
+                            !isVideoMuted
+                              ? 'text-cyan-300 bg-cyan-500/20'
+                              : 'text-slate-400 hover:text-white hover:bg-white/10'
+                          }`}
                         >
-                          {isVideoPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+                          {!isVideoMuted ? (
+                            <Volume2 className="w-4 h-4 animate-bounce text-cyan-300" />
+                          ) : (
+                            <VolumeX className="w-4 h-4 text-slate-400" />
+                          )}
                         </button>
-                      )}
+
+                        {/* Nút Play / Dừng nghe */}
+                        {!isPlayingIntro ? (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePlayIntro();
+                            }}
+                            className="px-4.5 py-2 flex items-center gap-2 font-bold font-play text-xs sm:text-sm text-white hover:text-cyan-200 transition-all cursor-pointer rounded-r-full group/btn"
+                            title="Bấm để phát video 2 (Giới thiệu bản thân)"
+                          >
+                            <div className="w-5.5 h-5.5 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white shadow-xs group-hover/btn:scale-110 transition-transform">
+                              <Play className="w-3 h-3 fill-current ml-0.5" />
+                            </div>
+                            <span>Giới thiệu bản thân</span>
+                            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCancelIntro();
+                            }}
+                            className="px-3.5 py-2 flex items-center gap-2 font-bold font-play text-xs sm:text-sm text-rose-100 hover:text-white transition-all cursor-pointer rounded-r-full bg-gradient-to-r from-rose-600/80 to-red-600/80 hover:from-rose-600 hover:to-red-600 group/btn"
+                            title="Bấm để dừng nghe và quay lại Video ban đầu"
+                          >
+                            <div className="w-5.5 h-5.5 rounded-full bg-rose-500 flex items-center justify-center text-white shadow-xs group-hover/btn:scale-110 transition-transform">
+                              <X className="w-3.5 h-3.5 stroke-[2.5]" />
+                            </div>
+                            <span>Dừng nghe</span>
+                            {/* Audio Duration Pill: Đếm ngược thời gian + sóng âm mini */}
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-rose-500/30 text-rose-100 border border-rose-300/40 text-[10.5px] font-mono font-bold tracking-tight shrink-0 shadow-xs ml-0.5">
+                              <span className="flex items-center gap-0.5 h-2.5">
+                                <span className="w-0.5 h-1.5 bg-rose-200 rounded-full animate-[pulse_0.6s_ease-in-out_infinite]" />
+                                <span className="w-0.5 h-2.5 bg-rose-100 rounded-full animate-[pulse_0.4s_ease-in-out_infinite]" />
+                                <span className="w-0.5 h-2 bg-rose-200 rounded-full animate-[pulse_0.7s_ease-in-out_infinite]" />
+                              </span>
+                              <span>{formatCountdown(Math.max(0, 105 - Math.floor(videoCurrentTime)))}</span>
+                            </span>
+                          </button>
+                        )}
+                      </div>
                     </div>
+
+                    {isPlayingIntro && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          togglePlayPause();
+                        }}
+                        className="p-2.5 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 transition-all cursor-pointer active:scale-95 shadow-md"
+                        title={isVideoPaused ? 'Tiếp tục phát' : 'Tạm dừng'}
+                      >
+                        {isVideoPaused ? <Play className="w-3.5 h-3.5 fill-current" /> : <Pause className="w-3.5 h-3.5 fill-current" />}
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                {/* CỘT PHẢI (lg:col-span-7): NHÓM 3 - 9 THẺ THÔNG TIN CÁ NHÂN CHỐNG CẮT CHỮ & PHÂN NHÓM MÀU RÕ NÉT */}
+                {/* Right Column: Thẻ Thông Tin Cá Nhân (Chỉ hiện khi idle) */}
                 {!isPlayingIntro && (
-                  <div className="lg:col-span-7 flex flex-col justify-between gap-2.5 z-20 min-w-0">
-                    <div className="rounded-2xl p-3.5 sm:p-4.5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl border border-indigo-200/90 dark:border-cyan-500/30 shadow-xl flex flex-col justify-between gap-3 h-full">
-                      {/* Header Nhóm 03 */}
-                      <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-200/80 dark:border-white/10">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-400/30 flex items-center gap-1.5">
-                            <User className="w-3.5 h-3.5 text-indigo-600 dark:text-cyan-300" />
-                            <span>Nhóm 03 · Thông Tin Cá Nhân &amp; Liên Hệ</span>
-                          </span>
-                          <div className="hidden sm:flex items-center gap-1 text-[10px] font-bold">
-                            <span className="px-2 py-0.5 rounded-full bg-sky-100 text-sky-700 dark:bg-sky-500/20 dark:text-sky-300">
-                              Nhân thân
-                            </span>
-                            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300">
-                              Bản đồ
-                            </span>
-                            <span className="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300">
-                              Liên hệ
-                            </span>
-                          </div>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => handleOpenBentoFocus('demographics')}
-                          className="text-[11px] font-bold text-indigo-600 dark:text-cyan-300 hover:underline flex items-center gap-1 cursor-pointer"
-                        >
-                          <Maximize2 className="w-3 h-3" />
-                          <span>Mở rộng Hồ sơ</span>
-                        </button>
+                  <div className="flex flex-col gap-2 z-20 w-full sm:w-[160px] lg:w-[180px] shrink-0 justify-center">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between px-0.5">
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-white/90 drop-shadow-xs flex items-center gap-1.5">
+                          <User className="w-3.5 h-3.5 text-cyan-300" />
+                          <span>Thông Tin Cá Nhân</span>
+                        </span>
+                        <span className="text-[9.5px] text-white/70 font-mono">Hồ sơ C-Level</span>
                       </div>
 
-                      {/* Lưới 9 thẻ Thông tin cá nhân chống cắt chữ (Responsive 1 -> 2 -> 3 cột rộng rãi) */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2.5 flex-1 content-center">
+                      <div className="grid grid-cols-1 gap-2">
                         {PERSONAL_DEMOGRAPHICS.map((item) => {
                           const ItemIcon = getLucideIcon(item.iconName);
-                          const groupStyle = getDemographicGroupStyle(item.id);
                           return (
                             <div
                               key={item.id}
@@ -1348,68 +1266,31 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                                   showToast(`${item.labelVi}: ${item.valueVi}`);
                                 }
                               }}
-                              className={cn(
-                                'p-2.5 sm:p-3 rounded-xl border shadow-2xs flex items-start gap-2.5 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer group min-w-0',
-                                groupStyle.cardBg
-                              )}
+                              className="p-2 px-2.5 rounded-xl bg-white/95 dark:bg-slate-800/95 border border-slate-200/90 dark:border-white/10 shadow-2xs flex items-center gap-2 hover:shadow-xs  transition-all cursor-pointer group"
                               title={item.type === 'map' ? `Click để xem bản đồ: ${item.valueVi}` : `${item.labelVi}: ${item.valueVi}`}
                             >
                               <div
                                 className={cn(
-                                  'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-2xs mt-0.5',
+                                  'w-7.5 h-7.5 rounded-lg flex items-center justify-center shrink-0 shadow-2xs',
                                   item.colorTheme.iconBg
                                 )}
                               >
-                                <ItemIcon className={cn('w-4 h-4', item.colorTheme.iconColor)} />
+                                <ItemIcon className={cn('w-3.5 h-3.5', item.colorTheme.iconColor)} />
                               </div>
                               <div className="min-w-0 flex flex-col text-left flex-1">
-                                <div className="flex items-center justify-between gap-1">
-                                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-bold leading-snug">
-                                    {item.labelVi}
-                                  </span>
-                                  <span
-                                    className={cn(
-                                      'text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded-full border shrink-0',
-                                      groupStyle.badgeBg
-                                    )}
-                                  >
-                                    {groupStyle.groupLabel}
-                                  </span>
-                                </div>
-                                <span className="text-xs sm:text-[12.5px] font-black font-play text-slate-900 dark:text-white leading-snug break-words mt-0.5 group-hover:text-blue-600 dark:group-hover:text-cyan-300 transition-colors">
+                                <span className="text-[9.5px] text-slate-500 dark:text-slate-400 font-bold truncate">
+                                  {item.labelVi}
+                                </span>
+                                <span className="text-[11.5px] font-black font-play text-slate-800 dark:text-slate-100 truncate leading-tight group-hover:text-blue-600 dark:group-hover:text-cyan-300 transition-colors">
                                   {item.valueVi}
                                 </span>
                               </div>
                               {item.type === 'map' && (
-                                <ExternalLink className="w-3 h-3 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 shrink-0 mt-1" />
+                                <ExternalLink className="w-2.5 h-2.5 text-slate-400 group-hover:text-blue-500 shrink-0" />
                               )}
                             </div>
                           );
                         })}
-                      </div>
-
-                      {/* Thanh Lộ trình kết nối Quận 7 - Mỹ Tho & Nút chuyển sang Slide 2 */}
-                      <div className="pt-2 border-t border-slate-200/80 dark:border-white/10 flex flex-wrap items-center justify-between gap-2">
-                        <div
-                          onClick={() => handleOpenBentoFocus('demographics')}
-                          className="flex items-center gap-2 text-[11px] font-semibold text-slate-700 dark:text-slate-200 cursor-pointer hover:text-blue-600 dark:hover:text-cyan-300 transition"
-                        >
-                          <span className="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 flex items-center justify-center shrink-0">
-                            <Car className="w-3.5 h-3.5" />
-                          </span>
-                          <span className="break-words">
-                            Lộ trình kết nối: <strong className="text-emerald-700 dark:text-emerald-300">Quận 7, TP.HCM ⇄ Mỹ Tho, Tiền Giang</strong> (68km · 60-75 phút)
-                          </span>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => handleSelectSlide(1)}
-                          className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-[11px] font-bold font-play flex items-center gap-1.5 shadow-sm transition cursor-pointer shrink-0"
-                        >
-                          <span>Xem Slide 2: Trụ cột &amp; Triết lý</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </button>
                       </div>
                     </div>
                   </div>
@@ -1419,168 +1300,76 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
           </div>
         )}
 
-        {/* ========================================================================= */}
-        {/* SLIDE 2: TRỤ CỘT VẬN HÀNH, GIÁ TRỊ CỐT LÕI & TRIẾT LÝ (FULL CARD ĐA SẮC)  */}
-        {/* ========================================================================= */}
+        {/* SLIDE 2: TRỤ CỘT VẬN HÀNH & TRIẾT LÝ GIÁ TRỊ (GỘP SLIDE 3 & SLIDE 4 TRƯỚC ĐÂY) */}
         {viewMode === 'slides' && currentSlide === 1 && (
           <div
             key="about-slide-1"
-            className={`w-full h-full flex-1 min-h-0 flex flex-col justify-between ${
+            className={`w-full flex-1 min-h-0 flex flex-col justify-between gap-3 ${
               slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'
             }`}
           >
             <div
-              className={`w-full h-full flex-1 min-h-0 p-3.5 sm:p-5 lg:p-5 rounded-[14px] border flex flex-col justify-between gap-3 text-left overflow-y-auto lg:overflow-hidden glass-scrollbar ${glassCardClass}`}
+              className={`w-full p-4 sm:p-5 lg:p-6 rounded-[14px] border flex-1 min-h-0 flex flex-col justify-between gap-4 text-left ${glassCardClass}`}
             >
-              {/* Header Card Slide 2 đồng bộ Thanh Chuyển Đổi Slide & Nhóm Thông Tin */}
-              <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-200/80 dark:border-white/10 shrink-0">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                    <Target className="w-4 h-4 stroke-[2.4]" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm sm:text-base font-black font-play text-slate-900 dark:text-white leading-tight">
-                      {formatCardTitle('Trụ cột vận hành & Triết lý giá trị')}
-                    </h3>
-                    <p className="text-[10.5px] font-medium text-slate-500 dark:text-slate-400">
-                      Phân tách 4 nhóm: Chỉ số thực chiến · Câu chuyện &amp; Lộ trình · 3 Trụ cột · 3 Giá trị cốt lõi &amp; Tầm nhìn
-                    </p>
-                  </div>
+              {/* Header Card */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200/70 dark:border-white/10 shrink-0">
+                <div className="flex items-center gap-2.5 text-blue-600 dark:text-sky-400">
+                  <Target className="w-5 h-5 stroke-[2.4] shrink-0" />
+                  <h3 className="text-sm sm:text-base font-black font-play text-blue-600 dark:text-sky-400 leading-tight">
+                    {formatCardTitle('Trụ cột vận hành triết lý')}
+                  </h3>
                 </div>
-
-                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                  <button
-                    type="button"
-                    onClick={handleNarrateThreePillars}
-                    className={cn(
-                      'px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1.5 border transition cursor-pointer',
-                      isPillarsNarrating
-                        ? 'bg-amber-500 text-white border-amber-400 animate-pulse'
-                        : 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-300/80 dark:border-amber-700/60 hover:bg-amber-100'
-                    )}
-                    title="Nghe AI thuyết minh tổng quan 3 Trụ cột vận hành"
-                  >
-                    {isPillarsNarrating ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                    <span className="hidden sm:inline">{isPillarsNarrating ? 'Đang thuyết minh...' : 'Nghe AI thuyết minh'}</span>
-                  </button>
-
-                  <div className="inline-flex items-center p-0.5 rounded-full bg-slate-100 dark:bg-slate-800/90 border border-slate-300/80 dark:border-white/15">
-                    {ABOUT_SLIDES.map((s, idx) => {
-                      const SlideIcon = s.icon;
-                      const active = currentSlide === idx;
-                      return (
-                        <button
-                          key={s.id}
-                          type="button"
-                          onClick={() => handleSelectSlide(idx)}
-                          className={cn(
-                            'px-2.5 sm:px-3 py-1 rounded-full text-[11px] font-bold font-play flex items-center gap-1.5 transition-all cursor-pointer',
-                            active
-                              ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white shadow-xs'
-                              : 'text-slate-600 dark:text-slate-300 hover:text-blue-600'
-                          )}
-                        >
-                          <SlideIcon className="w-3 h-3" />
-                          <span>Slide {idx + 1}: {s.title}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                <span className="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800">
+                  Slide 2 / 2
+                </span>
               </div>
 
-              {/* Bento Grid Chính của Slide 2 */}
-              <div className="flex flex-col justify-between gap-3 flex-1 min-h-0">
-                {/* Dải Trên: 4 Thẻ Chỉ Số Thực Chiến Đa Sắc + Truy Cập Nhanh 7 Phân Hệ Hệ Sinh Thái */}
-                <div className="grid grid-cols-1 xl:grid-cols-12 gap-2.5 items-stretch shrink-0">
-                  {/* 4 Thẻ Chỉ Số Vận Hành Thực Chiến (xl:col-span-7) */}
-                  <div className="xl:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {ABOUT_PROFILE_STATS.map((stat, idx) => {
-                      const StatIcon = getLucideIcon(stat.iconName);
-                      const statGroupBgs = [
-                        'bg-gradient-to-br from-blue-50/95 to-sky-100/70 border-blue-200/90 dark:from-blue-950/50 dark:to-slate-900/90 dark:border-blue-500/35',
-                        'bg-gradient-to-br from-purple-50/95 to-fuchsia-100/70 border-purple-200/90 dark:from-purple-950/50 dark:to-slate-900/90 dark:border-purple-500/35',
-                        'bg-gradient-to-br from-emerald-50/95 to-teal-100/70 border-emerald-200/90 dark:from-emerald-950/50 dark:to-slate-900/90 dark:border-emerald-500/35',
-                        'bg-gradient-to-br from-amber-50/95 to-orange-100/70 border-amber-200/90 dark:from-amber-950/50 dark:to-slate-900/90 dark:border-amber-500/35',
-                      ];
-                      return (
+              {/* Bento Grid: Khối trên (Chỉ số + Chân dung + 3 Trụ Cột) & Khối dưới (Giá trị cốt lõi + Triết lý) */}
+              <div className="flex flex-col gap-3.5 flex-1 min-h-0">
+                {/* Khối 4 Thẻ Chỉ Số Vận Hành Thực Chiến chuyển qua Slide 3 */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 shrink-0">
+                  {ABOUT_PROFILE_STATS.map((stat) => {
+                    const StatIcon = getLucideIcon(stat.iconName);
+                    return (
+                      <div
+                        key={stat.id}
+                        onClick={() => {
+                          SoundEngine.playPop();
+                          showToast(`Chỉ số ${stat.labelVi}: ${stat.metric} ${stat.unitVi || ''}`);
+                        }}
+                        className="p-2 sm:p-2.5 rounded-xl bg-white/95 dark:bg-slate-800/95 border border-slate-200/90 dark:border-white/10 shadow-2xs flex items-center gap-2.5 hover:shadow-xs  transition-all cursor-pointer"
+                      >
                         <div
-                          key={stat.id}
-                          onClick={() => {
-                            SoundEngine.playPop();
-                            showToast(`Chỉ số ${stat.labelVi}: ${stat.metric} ${stat.unitVi || ''}`);
-                          }}
-                          className={cn(
-                            'p-2 sm:p-2.5 rounded-xl border shadow-2xs flex items-center gap-2 hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer',
-                            statGroupBgs[idx % statGroupBgs.length]
-                          )}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-2xs"
+                          style={{ backgroundColor: `${stat.color}18`, color: stat.color }}
                         >
-                          <div
-                            className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-2xs"
-                            style={{ backgroundColor: `${stat.color}20`, color: stat.color }}
-                          >
-                            <StatIcon className="w-4 h-4" />
-                          </div>
-                          <div className="min-w-0 flex flex-col text-left">
-                            <span className="text-[9.5px] sm:text-[10px] text-slate-600 dark:text-slate-300 font-bold truncate">
-                              {stat.labelVi}
-                            </span>
-                            <span
-                              className="text-xs sm:text-[13.5px] font-black font-mono leading-tight truncate"
-                              style={{ color: stat.color }}
-                            >
-                              {stat.metric} {stat.unitVi}
-                            </span>
-                          </div>
+                          <StatIcon className="w-4 h-4" />
                         </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Dải 7 Phân Hệ Hệ Sinh Thái (xl:col-span-5) - Tone Iris/Violet Glass */}
-                  <div className="xl:col-span-5 p-2 px-3 rounded-xl bg-gradient-to-r from-indigo-50/90 via-purple-50/85 to-pink-50/85 dark:from-indigo-950/45 dark:via-purple-950/35 dark:to-slate-900/80 border border-indigo-200/80 dark:border-indigo-500/30 flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <LayoutGrid className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                      <span className="text-[10px] font-mono font-bold uppercase text-indigo-700 dark:text-indigo-300">
-                        7 Phân hệ:
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
-                      {ECOSYSTEM_BANNERS.map((eco, idx) => (
-                        <button
-                          key={eco.id}
-                          type="button"
-                          onClick={() => {
-                            SoundEngine.playPop();
-                            setActiveBannerIndex(idx);
-                            if (onNavigatePage && eco.pageIndex !== undefined) {
-                              onNavigatePage(eco.pageIndex);
-                            } else {
-                              showToast(`${eco.badge}: ${eco.title}`);
-                            }
-                          }}
-                          className={cn(
-                            'px-2 py-1 rounded-lg text-[10px] font-bold font-play shrink-0 transition-all cursor-pointer border',
-                            activeBannerIndex === idx
-                              ? 'bg-indigo-600 text-white border-indigo-500 shadow-2xs'
-                              : 'bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border-indigo-200/70 dark:border-white/10 hover:border-indigo-400'
-                          )}
-                          title={`${eco.title} — ${eco.desc}`}
-                        >
-                          {eco.badge.replace(/^[^\s]+\s/, '')}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                        <div className="min-w-0 flex flex-col text-left">
+                          <span className="text-[9.5px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold truncate">
+                            {stat.labelVi}
+                          </span>
+                          <span
+                            className="text-[13px] sm:text-[14px] font-black font-mono leading-tight truncate"
+                            style={{ color: stat.color }}
+                          >
+                            {stat.metric} {stat.unitVi}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
-                {/* Row 1: Cột Trái Câu Chuyện Chuyên Gia (lg:col-span-5) + Cột Phải 3 Trụ Cột Vận Hành (lg:col-span-7) */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch flex-1 min-h-0">
-                  {/* Left: Nhóm Câu Chuyện Chuyên Gia & Kết Nối Q7 - Mỹ Tho (Tone Sapphire - Sky Glass) */}
+                {/* Row 1: Left Story Card (lg:col-span-5) + Right 3 Pillars (lg:col-span-7) */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch flex-1 min-h-0">
+                  {/* Left: Giới thiệu bản thân tôi với hình GIF làm nền card + Prismatic Border Shimmer */}
                   <div
-                    className="lg:col-span-5 rounded-[14px] border border-blue-200/95 dark:border-cyan-500/30 p-3.5 sm:p-4 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-500 relative overflow-hidden group select-none min-h-[165px]"
+                    className="lg:col-span-5 rounded-[14px] border border-blue-100/90 dark:border-white/10 p-4 sm:p-4.5 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-500 relative overflow-hidden group select-none min-h-[175px]"
                   >
+                    {/* Prismatic Border Shimmer: Ánh sáng phản chiếu quét viền lướt quanh mép kính khi hover */}
                     <div className="absolute inset-0 rounded-[14px] border border-transparent group-hover:border-cyan-400/80 dark:group-hover:border-cyan-300/80 transition-all duration-500 pointer-events-none z-20 shadow-[inset_0_0_18px_rgba(56,189,248,0.22)]" />
+                    <div className="absolute -inset-[1px] rounded-[15px] bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-500 opacity-0 group-hover:opacity-35 transition-opacity duration-700 blur-[2.5px] pointer-events-none z-0" />
 
                     {/* GIF Animation Background Layer */}
                     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -1590,79 +1379,69 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                         }}
-                        className="w-full h-full object-cover object-center opacity-25 dark:opacity-20 filter blur-[0.3px] scale-105 transition-transform duration-700 group-hover:scale-110"
+                        className="w-full h-full object-cover object-center opacity-30 dark:opacity-25 filter blur-[0.3px] scale-105 transition-transform duration-700 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/95 via-white/90 to-sky-100/85 dark:from-slate-900/95 dark:via-slate-900/90 dark:to-blue-950/85 backdrop-blur-[1px]" />
+                      {/* Soft Frosted Glass Scrim giúp văn bản tương phản cao, dễ đọc */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/85 to-blue-50/80 dark:from-slate-900/95 dark:via-slate-900/85 dark:to-slate-950/80 backdrop-blur-[1px]" />
                     </div>
 
                     <div className="relative z-10">
-                      <div className="flex items-center justify-between pb-2 border-b border-blue-200/70 dark:border-white/10">
-                        <div className="flex items-center gap-2">
-                          <span className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-2xs">
-                            <User className="w-3.5 h-3.5" />
-                          </span>
-                          <h4 className="text-xs sm:text-sm font-black font-play text-blue-700 dark:text-sky-300">
-                            {formatCardTitle('Giới thiệu bản thân')}
-                          </h4>
-                        </div>
-                        <span className="text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-950/70 dark:text-cyan-300 border border-blue-200 dark:border-blue-800">
-                          Nhóm Câu Chuyện CX
-                        </span>
+                      <div className="flex items-center gap-2 pb-2 border-b border-blue-200/60 dark:border-white/10">
+                        <User className="w-4.5 h-4.5 text-blue-600 dark:text-sky-400 shrink-0" />
+                        <h4 className="text-xs sm:text-sm font-black font-play text-blue-600 dark:text-sky-400">
+                          {formatCardTitle('Giới thiệu bản thân')}
+                        </h4>
                       </div>
 
-                      <p className="text-xs sm:text-[12.5px] text-slate-700 dark:text-slate-200 font-medium leading-relaxed mt-2">
+                      <p className="text-xs sm:text-[12.5px] text-slate-700 dark:text-slate-200 font-medium leading-relaxed mt-2.5">
                         Một chuyên gia dịch vụ khách hàng với hơn{' '}
-                        <strong className="font-bold text-blue-700 dark:text-cyan-300">22 năm kinh nghiệm</strong> thực chiến.
+                        <strong className="font-bold text-slate-950 dark:text-white">22 năm kinh nghiệm</strong> thực chiến.
                         Với tôi, Chăm Sóc Khách Hàng không chỉ là phục vụ, mà là sự đồng hành. Mỗi cuộc trò chuyện, mỗi khoảnh
                         khắc, dù là nhỏ nhất, đều là một cơ hội quý giá để lắng nghe, để thấu hiểu, và để tạo ra những trải
                         nghiệm vượt trên cả sự mong đợi.
                       </p>
+
+                      {/* Khối Kinh nghiệm CX & CS 22+ NĂM & Quy mô lớn 8+ MÔI TRƯỜNG tích hợp trực tiếp vào thẻ giới thiệu bản thân */}
+                      <div className="mt-2.5 p-2 rounded-xl bg-blue-50/90 dark:bg-slate-800/90 border border-blue-200/80 dark:border-white/10 flex items-center justify-around text-center shadow-2xs backdrop-blur-md">
+                        <div className="flex flex-col items-center">
+                          <span className="text-[10px] text-slate-600 dark:text-slate-300 font-bold block">Kinh nghiệm CX & CS</span>
+                          <span className="text-xs sm:text-sm font-black font-mono text-blue-600 dark:text-cyan-400">22+ NĂM</span>
+                        </div>
+                        <div className="w-[1px] h-7 bg-slate-300/80 dark:bg-white/15" />
+                        <div className="flex flex-col items-center">
+                          <span className="text-[10px] text-slate-600 dark:text-slate-300 font-bold block">Quy mô lớn</span>
+                          <span className="text-xs sm:text-sm font-black font-mono text-purple-600 dark:text-purple-400">8+ MÔI TRƯỜNG</span>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Signature & Quick Map Button */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 mt-2 border-t border-blue-200/60 dark:border-white/10 relative z-10">
+                    {/* Signature */}
+                    <div className="flex items-end justify-between pt-3 mt-2 relative z-10">
                       <span className="font-handwriting text-blue-600 dark:text-cyan-400 text-xl sm:text-2xl font-bold select-none leading-none drop-shadow-xs">
                         Luôn bên bạn ♡
                       </span>
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => handleOpenBentoFocus('map')}
-                          className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-full bg-emerald-100/90 dark:bg-emerald-950/70 border border-emerald-300/80 dark:border-emerald-700/50 hover:bg-emerald-200 transition flex items-center gap-1 cursor-pointer"
-                        >
-                          <MapPin className="w-3 h-3" />
-                          <span>Bản đồ Q7 ⇄ Mỹ Tho</span>
-                        </button>
-                        <span className="text-[10px] font-mono font-bold text-blue-700 dark:text-cyan-300 px-2 py-1 rounded-full bg-blue-100/90 dark:bg-blue-950/60 border border-blue-200/70 dark:border-blue-800/40">
-                          Chuyên gia CSKH
-                        </span>
-                      </div>
+                      <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-cyan-300 px-2 py-0.5 rounded-full bg-blue-100/80 dark:bg-blue-950/60 border border-blue-200/60 dark:border-blue-800/40">
+                        Chuyên gia CSKH
+                      </span>
                     </div>
                   </div>
 
-                  {/* Right: Nhóm 3 Trụ Cột Vận Hành Chiến Lược (lg:col-span-7) */}
-                  <div className="lg:col-span-7 flex flex-col justify-between gap-2 p-3 sm:p-3.5 rounded-[14px] bg-gradient-to-br from-slate-50/90 via-blue-50/50 to-emerald-50/50 dark:from-slate-900/70 dark:via-slate-900/50 dark:to-slate-900/70 border border-slate-200/90 dark:border-white/10">
+                  {/* Right: 3 Trụ Cột Vận Hành với icon hình nền watermark nằm dưới thẻ + Audio Narration + Cross Highlight */}
+                  <div className="lg:col-span-7 flex flex-col justify-between gap-2.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-lg bg-gradient-to-r from-blue-600 to-teal-500 text-white flex items-center justify-center shadow-2xs">
-                          <Target className="w-3.5 h-3.5" />
-                        </span>
-                        <h4 className="text-xs sm:text-sm font-black font-play text-slate-900 dark:text-white">
-                          {formatCardTitle('3 Trụ cột vận hành chiến lược')}
+                        <Target className="w-4 h-4 text-blue-600 dark:text-cyan-400 shrink-0" />
+                        <h4 className="text-xs sm:text-sm font-black font-play text-blue-600 dark:text-cyan-400">
+                          {formatCardTitle('3 Trụ cột vận')}
                         </h4>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => handleOpenBentoFocus('pillars')}
-                        className="text-[10px] font-mono font-bold text-blue-600 dark:text-cyan-400 hover:underline flex items-center gap-1 cursor-pointer"
-                      >
-                        <span>Chi tiết 3 Trụ cột</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
+                      <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
+                        3 Trụ cột vận hành
+                      </span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 items-stretch flex-1">
-                      {/* Pillar 1: Hiệu Quả */}
+                      {/* Pillar 1: Hiệu Quả (Tương quan Giá trị Kịp Thời) */}
                       <div
                         onMouseEnter={() => setHoveredPillarOrValue('pillar-1')}
                         onMouseLeave={() => setHoveredPillarOrValue(null)}
@@ -1671,17 +1450,17 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           showToast('Trụ cột 01: Hiệu Quả - Tối ưu kết quả thực chiến');
                         }}
                         className={cn(
-                          'pillar-gradient-card rounded-[14px] bg-gradient-to-br from-blue-600 via-blue-500 to-sky-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[140px] relative overflow-hidden transition-all duration-300 hover:shadow-md border border-white/25 text-left group cursor-pointer',
+                          'pillar-gradient-card rounded-[14px] bg-gradient-to-br from-blue-600 via-blue-500 to-sky-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[145px] relative overflow-hidden transition-all duration-300  hover:shadow-md border border-white/20 text-left group cursor-pointer',
                           isPillarHighlighted('pillar-1') &&
-                            'ring-2 ring-cyan-300 dark:ring-cyan-400 shadow-[0_0_24px_rgba(56,189,248,0.7)] scale-[1.02] -translate-y-0.5'
+                            'ring-2 ring-cyan-300 dark:ring-cyan-400 shadow-[0_0_24px_rgba(56,189,248,0.7)] scale-[1.02] -translate-y-1'
                         )}
                       >
-                        <BarChart3 className="w-20 h-20 text-white/10 absolute -right-3 -bottom-3 pointer-events-none rotate-12" />
                         <div className="flex items-center justify-between relative z-10">
-                          <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
+                          <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
                             <BarChart3 className="w-4 h-4 text-white" />
                           </div>
                           <div className="flex items-center gap-1.5">
+                            {/* Nút nghe thuyết minh Audio Narration Pill */}
                             <button
                               type="button"
                               onClick={(e) =>
@@ -1734,7 +1513,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                         </div>
                       </div>
 
-                      {/* Pillar 2: Nhân Văn */}
+                      {/* Pillar 2: Nhân Văn (Tương quan Giá trị Đồng Cảm Chân Thành) */}
                       <div
                         onMouseEnter={() => setHoveredPillarOrValue('pillar-2')}
                         onMouseLeave={() => setHoveredPillarOrValue(null)}
@@ -1743,17 +1522,17 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           showToast('Trụ cột 02: Nhân Văn - Đồng cảm và thấu hiểu');
                         }}
                         className={cn(
-                          'pillar-gradient-card rounded-[14px] bg-gradient-to-br from-rose-500 via-rose-600 to-pink-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[140px] relative overflow-hidden transition-all duration-300 hover:shadow-md border border-white/25 text-left group cursor-pointer',
+                          'pillar-gradient-card rounded-[14px] bg-gradient-to-br from-rose-500 via-rose-600 to-pink-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[145px] relative overflow-hidden transition-all duration-300  hover:shadow-md border border-white/20 text-left group cursor-pointer',
                           isPillarHighlighted('pillar-2') &&
-                            'ring-2 ring-pink-300 dark:ring-pink-400 shadow-[0_0_24px_rgba(244,114,182,0.7)] scale-[1.02] -translate-y-0.5'
+                            'ring-2 ring-pink-300 dark:ring-pink-400 shadow-[0_0_24px_rgba(244,114,182,0.7)] scale-[1.02] -translate-y-1'
                         )}
                       >
-                        <Heart className="w-20 h-20 text-white/10 absolute -right-3 -bottom-3 pointer-events-none rotate-12" />
                         <div className="flex items-center justify-between relative z-10">
-                          <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
+                          <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
                             <Heart className="w-4 h-4 text-white" />
                           </div>
                           <div className="flex items-center gap-1.5">
+                            {/* Nút nghe thuyết minh Audio Narration Pill */}
                             <button
                               type="button"
                               onClick={(e) =>
@@ -1806,7 +1585,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                         </div>
                       </div>
 
-                      {/* Pillar 3: Bền Vững */}
+                      {/* Pillar 3: Bền Vững (Tương quan Giá trị Sự Tận Tâm) */}
                       <div
                         onMouseEnter={() => setHoveredPillarOrValue('pillar-3')}
                         onMouseLeave={() => setHoveredPillarOrValue(null)}
@@ -1815,17 +1594,17 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           showToast('Trụ cột 03: Bền Vững - Giá trị dài hạn và tin cậy');
                         }}
                         className={cn(
-                          'pillar-gradient-card rounded-[14px] bg-gradient-to-br from-emerald-600 via-teal-600 to-teal-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[140px] relative overflow-hidden transition-all duration-300 hover:shadow-md border border-white/25 text-left group cursor-pointer',
+                          'pillar-gradient-card rounded-[14px] bg-gradient-to-br from-emerald-600 via-teal-600 to-teal-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[145px] relative overflow-hidden transition-all duration-300  hover:shadow-md border border-white/20 text-left group cursor-pointer',
                           isPillarHighlighted('pillar-3') &&
-                            'ring-2 ring-emerald-300 dark:ring-emerald-400 shadow-[0_0_24px_rgba(52,211,153,0.7)] scale-[1.02] -translate-y-0.5'
+                            'ring-2 ring-emerald-300 dark:ring-emerald-400 shadow-[0_0_24px_rgba(52,211,153,0.7)] scale-[1.02] -translate-y-1'
                         )}
                       >
-                        <Leaf className="w-20 h-20 text-white/10 absolute -right-3 -bottom-3 pointer-events-none rotate-12" />
                         <div className="flex items-center justify-between relative z-10">
-                          <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
+                          <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
                             <Leaf className="w-4 h-4 text-white" />
                           </div>
                           <div className="flex items-center gap-1.5">
+                            {/* Nút nghe thuyết minh Audio Narration Pill */}
                             <button
                               type="button"
                               onClick={(e) =>
@@ -1881,32 +1660,30 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                   </div>
                 </div>
 
-                {/* Row 2: Cột Trái 3 Giá Trị Cốt Lõi Lật 3D (lg:col-span-7) + Cột Phải Triết Lý Tầm Nhìn CX 2026+ (lg:col-span-5) */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch flex-1 min-h-0">
-                  {/* Nhóm 3 Giá Trị Cốt Lõi Lật 3D (lg:col-span-7) */}
-                  <div className="lg:col-span-7 flex flex-col justify-between gap-2 p-3 sm:p-3.5 rounded-[14px] bg-gradient-to-br from-amber-50/75 via-rose-50/50 to-purple-50/75 dark:from-slate-900/70 dark:via-slate-900/50 dark:to-slate-900/70 border border-amber-200/80 dark:border-white/10">
+                {/* Row 2: Bento 2 Columns: Giá trị cốt lõi (lg:col-span-7) + Triết lý tầm nhìn (lg:col-span-5) */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch flex-1 min-h-0">
+                  {/* Giá trị cốt lõi (lg:col-span-7) với 3 thẻ Hologram lật 3D: Sự tận tâm, Kịp thời, Đồng cảm chân thành */}
+                  <div className="lg:col-span-7 flex flex-col justify-between gap-2.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-lg bg-gradient-to-r from-amber-500 to-rose-500 text-white flex items-center justify-center shadow-2xs">
-                          <Star className="w-3.5 h-3.5" />
-                        </span>
-                        <h4 className="text-xs sm:text-sm font-black font-play text-slate-900 dark:text-white">
-                          {formatCardTitle('3 Giá trị cốt lõi')}
+                        <Star className="w-4 h-4 text-amber-500 fill-current shrink-0" />
+                        <h4 className="text-xs sm:text-sm font-black font-play text-amber-600 dark:text-amber-400">
+                          {formatCardTitle('Giá trị cốt lõi')}
                         </h4>
                       </div>
-                      <span className="text-[10px] font-mono font-bold text-amber-700 dark:text-amber-300 bg-amber-100/80 dark:bg-amber-950/60 px-2 py-0.5 rounded-full">
-                        Nhấp lật 3D xem Case Study
+                      <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
+                        3 Cam kết vàng · Nhấp lật xem Case Study
                       </span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 items-stretch flex-1">
-                      {/* Core Value 1: Sự tận tâm */}
+                      {/* Core Value 1: Sự tận tâm (Tương quan Trụ Cột Bền Vững) */}
                       <div
                         onMouseEnter={() => setHoveredPillarOrValue('val-1')}
                         onMouseLeave={() => setHoveredPillarOrValue(null)}
                         className={cn(
-                          'relative min-h-[162px] sm:min-h-[168px] perspective-[1000px] transition-all duration-300',
-                          isValueHighlighted('val-1') && 'scale-[1.02] -translate-y-0.5'
+                          'relative min-h-[168px] sm:min-h-[175px] perspective-[1000px] transition-all duration-300',
+                          isValueHighlighted('val-1') && 'scale-[1.02] -translate-y-1'
                         )}
                       >
                         <div
@@ -1919,16 +1696,17 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           <div
                             onClick={() => toggleFlipCoreValue('val-1')}
                             className={cn(
-                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[14px] bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/25 text-left group cursor-pointer',
+                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[14px] bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/20 text-left group cursor-pointer',
                               isValueHighlighted('val-1') &&
                                 'ring-2 ring-amber-300 dark:ring-amber-400 shadow-[0_0_24px_rgba(245,158,11,0.75)]'
                             )}
                           >
                             <div className="flex items-center justify-between relative z-10">
-                              <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
+                              <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
                                 <Award className="w-4 h-4 text-white" />
                               </div>
                               <div className="flex items-center gap-1.5">
+                                {/* Nút nghe thuyết minh Audio Narration Pill */}
                                 <button
                                   type="button"
                                   onClick={(e) =>
@@ -1967,6 +1745,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                               </p>
                             </div>
 
+                            {/* Value Pulse Indicator: Tỷ lệ giải quyết FCR / SLAs */}
                             <div className="pt-1.5 border-t border-white/20 relative z-10">
                               <div className="flex items-center justify-between text-[9.5px] font-mono font-bold text-amber-100 mb-0.5">
                                 <span>FCR Cam kết</span>
@@ -1989,7 +1768,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                             </div>
                           </div>
 
-                          {/* MẶT SAU (Back: Case Study CSKH 01) */}
+                          {/* MẶT SAU (Back: Case Study CSKH) */}
                           <div
                             onClick={() => toggleFlipCoreValue('val-1')}
                             className={cn(
@@ -2032,13 +1811,13 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                         </div>
                       </div>
 
-                      {/* Core Value 2: Kịp thời */}
+                      {/* Core Value 2: Kịp thời (Tương quan Trụ Cột Hiệu Quả) */}
                       <div
                         onMouseEnter={() => setHoveredPillarOrValue('val-2')}
                         onMouseLeave={() => setHoveredPillarOrValue(null)}
                         className={cn(
-                          'relative min-h-[162px] sm:min-h-[168px] perspective-[1000px] transition-all duration-300',
-                          isValueHighlighted('val-2') && 'scale-[1.02] -translate-y-0.5'
+                          'relative min-h-[168px] sm:min-h-[175px] perspective-[1000px] transition-all duration-300',
+                          isValueHighlighted('val-2') && 'scale-[1.02] -translate-y-1'
                         )}
                       >
                         <div
@@ -2051,16 +1830,17 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           <div
                             onClick={() => toggleFlipCoreValue('val-2')}
                             className={cn(
-                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[14px] bg-gradient-to-br from-orange-500 via-rose-500 to-pink-600 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/25 text-left group cursor-pointer',
+                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[14px] bg-gradient-to-br from-orange-500 via-rose-500 to-pink-600 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/20 text-left group cursor-pointer',
                               isValueHighlighted('val-2') &&
                                 'ring-2 ring-pink-300 dark:ring-pink-400 shadow-[0_0_24px_rgba(244,114,182,0.75)]'
                             )}
                           >
                             <div className="flex items-center justify-between relative z-10">
-                              <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
+                              <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
                                 <Clock className="w-4 h-4 text-white" />
                               </div>
                               <div className="flex items-center gap-1.5">
+                                {/* Nút nghe thuyết minh Audio Narration Pill */}
                                 <button
                                   type="button"
                                   onClick={(e) =>
@@ -2099,6 +1879,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                               </p>
                             </div>
 
+                            {/* Value Pulse Indicator: Tỷ lệ đáp ứng SLA */}
                             <div className="pt-1.5 border-t border-white/20 relative z-10">
                               <div className="flex items-center justify-between text-[9.5px] font-mono font-bold text-rose-100 mb-0.5">
                                 <span>SLA Phản hồi (&lt;15p)</span>
@@ -2121,7 +1902,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                             </div>
                           </div>
 
-                          {/* MẶT SAU (Back: Case Study CSKH 02) */}
+                          {/* MẶT SAU (Back: Case Study CSKH) */}
                           <div
                             onClick={() => toggleFlipCoreValue('val-2')}
                             className={cn(
@@ -2164,13 +1945,13 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                         </div>
                       </div>
 
-                      {/* Core Value 3: Đồng cảm chân thành */}
+                      {/* Core Value 3: Đồng cảm chân thành (Tương quan Trụ Cột Nhân Văn) */}
                       <div
                         onMouseEnter={() => setHoveredPillarOrValue('val-3')}
                         onMouseLeave={() => setHoveredPillarOrValue(null)}
                         className={cn(
-                          'relative min-h-[162px] sm:min-h-[168px] perspective-[1000px] transition-all duration-300',
-                          isValueHighlighted('val-3') && 'scale-[1.02] -translate-y-0.5'
+                          'relative min-h-[168px] sm:min-h-[175px] perspective-[1000px] transition-all duration-300',
+                          isValueHighlighted('val-3') && 'scale-[1.02] -translate-y-1'
                         )}
                       >
                         <div
@@ -2183,16 +1964,17 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           <div
                             onClick={() => toggleFlipCoreValue('val-3')}
                             className={cn(
-                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[14px] bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/25 text-left group cursor-pointer',
+                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[14px] bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/20 text-left group cursor-pointer',
                               isValueHighlighted('val-3') &&
                                 'ring-2 ring-purple-300 dark:ring-purple-400 shadow-[0_0_24px_rgba(192,132,252,0.75)]'
                             )}
                           >
                             <div className="flex items-center justify-between relative z-10">
-                              <div className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
+                              <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xs">
                                 <HeartHandshake className="w-4 h-4 text-white" />
                               </div>
                               <div className="flex items-center gap-1.5">
+                                {/* Nút nghe thuyết minh Audio Narration Pill */}
                                 <button
                                   type="button"
                                   onClick={(e) =>
@@ -2231,6 +2013,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                               </p>
                             </div>
 
+                            {/* Value Pulse Indicator: Chỉ số CSAT */}
                             <div className="pt-1.5 border-t border-white/20 relative z-10">
                               <div className="flex items-center justify-between text-[9.5px] font-mono font-bold text-purple-100 mb-0.5">
                                 <span>Chỉ số CSAT Hài lòng</span>
@@ -2253,7 +2036,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                             </div>
                           </div>
 
-                          {/* MẶT SAU (Back: Case Study CSKH 03) */}
+                          {/* MẶT SAU (Back: Case Study CSKH) */}
                           <div
                             onClick={() => toggleFlipCoreValue('val-3')}
                             className={cn(
@@ -2298,52 +2081,42 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                     </div>
                   </div>
 
-                  {/* Nhóm Triết Lý Tầm Nhìn CX 2026+ (lg:col-span-5 - Tone Cyan - Mint - Iris Glass) */}
+                  {/* Triết lý và tầm nhìn (lg:col-span-5) - Nơi chuyển "Khách hàng là trung tâm ♡" sang */}
                   <div
-                    className="lg:col-span-5 p-4 sm:p-4.5 rounded-[14px] bg-gradient-to-br from-cyan-50/95 via-teal-50/80 to-indigo-100/80 dark:from-cyan-950/50 dark:via-teal-950/35 dark:to-indigo-950/50 border border-cyan-300/85 dark:border-cyan-500/35 shadow-sm flex flex-col justify-between relative hover:shadow-md transition-all duration-300 min-h-[168px]"
+                    className="lg:col-span-5 p-4 sm:p-5 rounded-[14px] bg-gradient-to-br from-sky-50/90 via-cyan-50/70 to-blue-100/60 dark:from-sky-950/40 dark:via-cyan-950/30 dark:to-blue-950/40 border border-sky-200/80 dark:border-sky-800/50 shadow-2xs flex flex-col justify-between relative hover:shadow-xs transition-all duration-300 min-h-[175px]"
                   >
                     <div>
-                      <div className="flex items-center justify-between pb-2 border-b border-cyan-200/80 dark:border-cyan-800/50">
+                      <div className="flex items-center justify-between pb-2 border-b border-sky-200/60 dark:border-sky-800/40">
                         <div className="flex items-center gap-2">
-                          <span className="w-6 h-6 rounded-lg bg-gradient-to-r from-cyan-600 to-teal-500 text-white flex items-center justify-center shadow-2xs">
-                            <Sparkles className="w-3.5 h-3.5" />
-                          </span>
-                          <h5 className="text-xs sm:text-sm font-black font-play text-cyan-800 dark:text-cyan-300">
+                          <Target className="w-4 h-4 text-blue-600 dark:text-sky-400 shrink-0" />
+                          <h5 className="text-xs sm:text-sm font-black font-play text-blue-600 dark:text-sky-400">
                             {formatCardTitle('Triết lý tầm nhìn')}
                           </h5>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleOpenBentoFocus('philosophy')}
-                          className="text-[10px] font-mono font-bold text-cyan-700 dark:text-cyan-300 bg-white/95 dark:bg-slate-800 px-2.5 py-0.5 rounded-full border border-cyan-300/80 dark:border-cyan-500/30 hover:bg-cyan-50 transition cursor-pointer"
-                        >
-                          CX 2026+ · Chi tiết
-                        </button>
+                        <span className="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-white/90 dark:bg-slate-800 px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/10">
+                          CX 2026+
+                        </span>
                       </div>
 
-                      <div className="my-2.5 p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/65 border border-cyan-200/70 dark:border-white/10 shadow-2xs">
-                        <p className="text-xs sm:text-[13px] font-black text-blue-700 dark:text-cyan-300 font-play leading-snug">
+                      <div className="my-2.5">
+                        <p className="text-xs sm:text-[12.5px] font-black text-blue-700 dark:text-cyan-300 font-play leading-snug">
                           “ Tận Tâm &amp; Đồng Hành Cùng Trải Nghiệm Khách Hàng ”.
                         </p>
-                        <p className="text-[11px] sm:text-[11.5px] text-slate-700 dark:text-slate-200 font-medium leading-relaxed mt-1.5">
+                        <p className="text-[11px] sm:text-[11.5px] text-slate-600 dark:text-slate-300 font-medium leading-relaxed mt-1.5">
                           Tôi luôn nỗ lực để mang lại sản phẩm, dịch vụ chất lượng cao với chi phí hợp lý. Và trên hết, để mỗi
                           khách hàng cảm nhận được một điều đơn giản mà rất lớn: họ luôn được lắng nghe.
                         </p>
                       </div>
                     </div>
 
-                    <div className="pt-2 flex items-center justify-between border-t border-cyan-200/80 dark:border-cyan-800/50">
-                      <span className="font-handwriting text-teal-700 dark:text-cyan-300 text-lg sm:text-xl font-bold select-none drop-shadow-xs">
+                    {/* Khách hàng là trung tâm ♡ chuyển sang đây */}
+                    <div className="pt-2.5 flex items-center justify-between border-t border-sky-200/60 dark:border-sky-800/40">
+                      <span className="font-handwriting text-cyan-600 dark:text-cyan-400 text-lg sm:text-xl font-bold select-none drop-shadow-xs">
                         Khách hàng là trung tâm ♡
                       </span>
-                      <button
-                        type="button"
-                        onClick={() => handleSelectSlide(0)}
-                        className="px-2.5 py-1 rounded-full bg-white/90 dark:bg-slate-800 text-blue-700 dark:text-cyan-300 border border-blue-200 dark:border-white/15 text-[10.5px] font-mono font-bold hover:bg-blue-50 transition cursor-pointer flex items-center gap-1"
-                      >
-                        <ChevronLeft className="w-3 h-3" />
-                        <span>Về Slide 1</span>
-                      </button>
+                      <div className="text-right text-[10.5px] text-slate-500 dark:text-slate-400 font-mono">
+                        <span className="text-blue-600 dark:text-cyan-300 font-bold block">22+ Năm Vận Hành</span>
+                      </div>
                     </div>
                   </div>
                 </div>

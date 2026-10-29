@@ -904,29 +904,7 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
         </motion.div>
       </div>
 
-      {/* 4. FOOTER STATUS BAR (Thông tin hướng dẫn tương tác & Gợi ý) */}
-      <div className="relative px-5 py-2.5 border-t flex flex-wrap items-center justify-between text-xs backdrop-blur-md bg-white/70 dark:bg-slate-950/70 border-slate-200/80 dark:border-slate-800/80 text-slate-500 dark:text-slate-400">
-        <div className="flex items-center gap-2">
-          <Info className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-          <span className="truncate">
-            Chạm vào từng kỹ năng để xem các dự án thực chiến đã áp dụng · Rê chuột để kích hoạt hạt năng lượng.
-          </span>
-        </div>
-        <div className="hidden sm:flex items-center gap-3 font-medium">
-          <span className="inline-flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-sky-500" /> Điểm mạnh
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-blue-500" /> Hoàn thiện
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-amber-500" /> Cơ hội
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-rose-500" /> Thách thức
-          </span>
-        </div>
-      </div>
+
 
       {/* ========================================================================= */}
       {/* YÊU CẦU 4: POPUP MODAL LIÊN KẾT NHANH ĐẾN DỰ ÁN THỰC CHIẾN (CROSS-LINK TO PROJECTS) */}

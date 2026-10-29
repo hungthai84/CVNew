@@ -2132,167 +2132,40 @@ export const LetterView: React.FC<LetterViewProps> = ({
             id="card-main-letter-content"
             className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-2 relative z-10 overflow-hidden"
           >
-            {/* 1. KHU VỰC TRÊN (HERO AREA): Chia tỷ lệ 5:7 giữa Khung Video Thuyết Minh và Khung Thư Ngỏ */}
+            {/* 1. KHU VỰC TRÊN (HERO AREA): Chia tỷ lệ 60:40 giữa Khung Video Nền và Khung Thư Ngỏ */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-2.5 items-stretch flex-1 min-h-0 w-full">
-              {/* 1.1 Khung Video Thuyết Minh (5 Cột) - Tràn viền, bo góc rounded-2xl, Glass Soft Controls & Real-time Kinetic Caption Overlay */}
+              {/* 1.1 Khung Video Nền (7 Cột ~ 60% chiều ngang) - Tràn viền, bo góc rounded-2xl, Không nút control */}
               <div
                 id="bento-letter-video"
-                className={`col-span-12 lg:col-span-5 rounded-2xl min-h-[230px] sm:min-h-[250px] lg:min-h-0 w-full h-full relative overflow-hidden flex flex-col justify-between border border-white/85 dark:border-white/10 bg-white/75 dark:bg-slate-900/60 backdrop-blur-xl shadow-[0_10px_30px_0_rgba(100,110,140,0.08)] dark:shadow-none transition-all duration-300 group/vcard ${
+                className={`col-span-12 lg:col-span-7 rounded-2xl min-h-[230px] sm:min-h-[250px] lg:min-h-0 w-full h-full relative overflow-hidden border border-white/85 dark:border-white/10 bg-white/75 dark:bg-slate-900/60 backdrop-blur-xl shadow-[0_10px_30px_0_rgba(100,110,140,0.08)] dark:shadow-none transition-all duration-300 group/vcard ${
                   activeTargetId === 'bento-experience-intro' || activeTargetId === 'callout-salutation'
                     ? 'ring-2 ring-cyan-500/80 shadow-[0_0_24px_rgba(6,182,212,0.3)]'
                     : 'hover:border-cyan-500/40'
                 }`}
               >
-                {/* Video lấp đầy toàn bộ thẻ - Tối ưu tốc độ tải với preload="metadata" */}
+                {/* Video làm hình nền bao phủ hoàn toàn - Tự động phát mượt mà, không nút bấm */}
                 <video
                   ref={floatingVideoRef}
                   src={LETTER_SLIDE_1_VIDEO_URL}
-                  preload="metadata"
-                  playsInline
+                  autoPlay
                   loop
+                  playsInline
                   muted={isVideoMuted}
                   onTimeUpdate={handleFloatingVideoTimeUpdate}
                   onLoadedMetadata={handleFloatingVideoLoadedMetadata}
                   onPlay={() => setIsVideoPlaying(true)}
                   onPause={() => setIsVideoPlaying(false)}
-                  className="absolute inset-0 w-full h-full object-cover object-center z-0 pointer-events-none"
+                  className="absolute inset-0 w-full h-full object-cover object-center z-0"
                 />
 
-                {/* Lớp phủ gradient mờ bảo đảm text và controls luôn sắc nét trên nền video */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-slate-950/60 z-10 pointer-events-none" />
-
-                {/* Header Video Top Bar: Micro-badge Scena AI & Nhãn Thuyết Minh */}
-                <div className="relative z-20 p-2 sm:p-2.5 flex items-center justify-between gap-2 shrink-0">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-6 h-6 rounded-lg bg-cyan-500/85 text-white flex items-center justify-center shrink-0 shadow-xs ring-1 ring-cyan-300/40">
-                      <WebIcon name="play" className="w-3 h-3 ml-0.5" />
-                    </div>
-                    <span className="text-xs sm:text-[13px] font-bold text-white drop-shadow-sm truncate">
-                      Thuyết minh thư ngỏ
-                    </span>
-                  </div>
-
-                  {/* Micro-badge Scena AI & Sóng âm */}
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <span className="flex items-center gap-0.5 h-3">
-                      <span className={`w-0.5 h-2 bg-cyan-400 rounded-full ${isVideoPlaying ? 'animate-[pulse_0.5s_infinite]' : 'opacity-40'}`} />
-                      <span className={`w-0.5 h-3 bg-cyan-300 rounded-full ${isVideoPlaying ? 'animate-[pulse_0.35s_infinite]' : 'opacity-40'}`} />
-                      <span className={`w-0.5 h-2 bg-cyan-400 rounded-full ${isVideoPlaying ? 'animate-[pulse_0.6s_infinite]' : 'opacity-40'}`} />
-                    </span>
-                    <span className="text-[10px] font-mono font-semibold text-cyan-200 bg-slate-950/70 px-2 py-0.5 rounded-full border border-cyan-400/30 backdrop-blur-md">
-                      Scena AI • {Math.round(videoProgressPct)}%
-                    </span>
-                  </div>
-                </div>
-
-                {/* Vùng giữa: Nhấp để Play/Pause */}
-                <div
-                  onClick={toggleFloatingVideoPlay}
-                  className="relative z-20 flex-1 flex items-center justify-center cursor-pointer min-h-[60px]"
-                  title={isVideoPlaying ? 'Bấm để tạm dừng video' : 'Bấm để phát video'}
-                >
-                  {!isVideoPlaying && (
-                    <div className="w-12 h-12 rounded-full bg-slate-900/80 hover:bg-cyan-600 text-white flex items-center justify-center shadow-xl backdrop-blur-md border border-white/25 transform hover:scale-105 active:scale-95 transition-all duration-200">
-                      <WebIcon name="play" className="w-5 h-5 ml-0.5" />
-                    </div>
-                  )}
-                </div>
-
-                {/* Vùng Safe Zone Overlay: Hiệu ứng chữ chuyển động theo thời gian thực (Real-time Kinetic Timecode Overlay) */}
-                <div className="relative z-20 px-2.5 sm:px-3 pb-1 shrink-0">
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-950/70 backdrop-blur-md border border-white/20 text-left space-y-1 transition-all duration-300">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/25 border border-cyan-300/40 text-cyan-200 text-[10px] font-bold">
-                        <span>{activeVideoCue.noteBadge}</span>
-                      </span>
-                      <span className="text-[10.5px] font-bold text-amber-300 truncate">
-                        {activeVideoCue.noteTitle}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-white/95 font-medium leading-snug line-clamp-2 break-words">
-                      {activeVideoCue.noteSummary}
-                    </p>
-                    {activeVideoCue.highlightKeywords && activeVideoCue.highlightKeywords.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-1 pt-0.5">
-                        {activeVideoCue.highlightKeywords.map((kw, kIdx) => (
-                          <span
-                            key={kIdx}
-                            className="px-1.5 py-0.5 rounded bg-white/15 text-cyan-200 text-[9.5px] font-bold border border-white/15"
-                          >
-                            #{kw}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Footer Controls: Thanh tua tiến trình tương tác & Nút điều khiển */}
-                <div className="relative z-20 p-2.5 sm:p-3 pt-1.5 flex flex-col gap-2 shrink-0">
-                  {/* Thanh Progress Bar cho phép click tua trực tiếp */}
-                  <div
-                    onClick={(e) => {
-                      if (!floatingVideoRef.current || !floatingVideoRef.current.duration) return;
-                      const rect = e.currentTarget.getBoundingClientRect();
-                      const clickPct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-                      floatingVideoRef.current.currentTime = clickPct * floatingVideoRef.current.duration;
-                      setVideoProgressPct(clickPct * 100);
-                    }}
-                    className="w-full h-1.5 bg-white/25 hover:h-2 rounded-full overflow-hidden cursor-pointer transition-all"
-                    title="Nhấp để tua nhanh tiến trình video thuyết minh"
-                  >
-                    <div
-                      className="h-full bg-gradient-to-r from-cyan-400 via-sky-400 to-amber-400 transition-all duration-150"
-                      style={{ width: `${videoProgressPct}%` }}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between gap-1.5 text-xs">
-                    <div className="flex items-center gap-1.5">
-                      {/* Nút Loa */}
-                      <button
-                        type="button"
-                        onClick={toggleFloatingVideoMute}
-                        className="px-2.5 py-1 rounded-xl bg-slate-950/65 hover:bg-slate-900/85 active:scale-95 text-white flex items-center gap-1.5 transition text-[11px] font-medium cursor-pointer border border-white/15 backdrop-blur-md"
-                        title={isVideoMuted ? 'Bấm để mở âm thanh video' : 'Bấm để tắt tiếng'}
-                      >
-                        <WebIcon name={isVideoMuted ? 'volume-x' : 'volume-2'} className="w-3.5 h-3.5 text-cyan-300" />
-                        <span>{isVideoMuted ? 'Mở loa' : 'Đang bật'}</span>
-                      </button>
-
-                      {/* Nút Play/Pause */}
-                      <button
-                        type="button"
-                        onClick={toggleFloatingVideoPlay}
-                        className="px-2.5 py-1 rounded-xl bg-slate-950/65 hover:bg-slate-900/85 active:scale-95 text-white flex items-center gap-1.5 transition text-[11px] font-medium cursor-pointer border border-white/15 backdrop-blur-md"
-                      >
-                        <WebIcon name={isVideoPlaying ? 'pause' : 'play'} className="w-3.5 h-3.5 text-cyan-300" />
-                        <span>{isVideoPlaying ? 'Tạm dừng' : 'Phát'}</span>
-                      </button>
-                    </div>
-
-                    {/* Nút Toggle Đồng Bộ Slide */}
-                    <button
-                      type="button"
-                      onClick={toggleAutoSyncVideoWithSlides}
-                      className={`px-2.5 py-1 rounded-xl flex items-center gap-1.5 transition text-[10.5px] font-medium cursor-pointer border backdrop-blur-md ${
-                        autoSyncVideoWithSlides
-                          ? 'bg-cyan-500/30 text-cyan-200 border-cyan-400/50 shadow-xs'
-                          : 'bg-slate-950/60 text-slate-300 hover:text-white border-white/15'
-                      }`}
-                      title="Tự động lật slide theo từng phân đoạn thuyết minh của video"
-                    >
-                      <span className={`w-1.5 h-1.5 rounded-full ${autoSyncVideoWithSlides ? 'bg-cyan-400 animate-pulse' : 'bg-slate-500'}`} />
-                      <span>Đồng bộ slide</span>
-                    </button>
-                  </div>
-                </div>
+                {/* Lớp phủ siêu nhẹ bảo đảm hiệu ứng thẩm mỹ tinh tế */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/10 z-10 pointer-events-none" />
               </div>
 
-              {/* 1.2 Khung Thư Ngỏ (7 Cột) - Bố cục chuẩn mực, Full chiều cao & chiều rộng */}
+              {/* 1.2 Khung Thư Ngỏ (5 Cột ~ 40% chiều ngang) - Bố cục chuẩn mực, Full chiều cao */}
               <div
                 id="bento-commitment"
-                className={`col-span-12 lg:col-span-7 p-3 sm:p-4 lg:p-4.5 rounded-2xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 shadow-xl shadow-slate-900/5 dark:shadow-none flex flex-col justify-between relative overflow-hidden transition-all duration-300 w-full h-full flex-1 min-h-0 ${
+                className={`col-span-12 lg:col-span-5 p-3 sm:p-4 lg:p-4.5 rounded-2xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 shadow-xl shadow-slate-900/5 dark:shadow-none flex flex-col justify-between relative overflow-hidden transition-all duration-300 w-full h-full flex-1 min-h-0 ${
                   activeTargetId === 'callout-salutation' || activeTargetId === 'bento-experience-intro' || activeTargetId === 'bento-commitment'
                     ? 'ring-2 ring-cyan-500/80 shadow-[0_0_24px_rgba(6,182,212,0.25)]'
                     : 'hover:border-cyan-500/40'
