@@ -49,9 +49,9 @@ export const Header: React.FC<HeaderProps> = ({
   // Chiều rộng đồng nhất cho tất cả các nút (lấy theo nút dài nhất làm chuẩn)
   const [longestWidth, setLongestWidth] = useState<number>(126);
 
-  // Trạng thái xếp chồng khi không hiển thị hết các nút trên thanh Header
-  const [isOverflowing, setIsOverflowing] = useState<boolean>(false);
-  const [overlapAmount, setOverlapAmount] = useState<number>(0);
+  // Mặc định các nút xếp chồng nằm gọn trong header ở mọi kích thước
+  const [isOverflowing, setIsOverflowing] = useState<boolean>(true);
+  const [overlapAmount, setOverlapAmount] = useState<number>(30);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   // Đo đạc kích thước của nút dài nhất trong DOM và tính toán hiệu ứng xếp chồng khi tràn
@@ -74,27 +74,17 @@ export const Header: React.FC<HeaderProps> = ({
         setLongestWidth(currentLongest);
       }
 
-      // Kiểm tra có hiển thị hết các nút trong nav hay không
+      // Mặc định luôn xếp chồng nằm gọn trong header ở mọi kích thước
       if (navRef.current) {
-        const availableWidth = navRef.current.clientWidth - 16; // trừ padding ngang
+        const availableWidth = navRef.current.clientWidth - 16;
         const count = headerPages.length;
         if (count > 1) {
-          const naturalTotalWidth = count * currentLongest + (count - 1) * 6; // 6px gap bình thường
-          if (naturalTotalWidth > availableWidth) {
-            setIsOverflowing(true);
-            // Tính toán mức độ xếp chồng cần thiết để các nút co giãn tối ưu
-            const neededOverlap = Math.ceil((naturalTotalWidth - availableWidth) / (count - 1));
-            // Giới hạn overlap để icon bên trái (28px) và phần đầu chữ luôn hiển thị rõ
-            const maxOverlap = Math.max(16, Math.min(currentLongest - 42, 65));
-            const overlap = Math.max(14, Math.min(neededOverlap, maxOverlap));
-            setOverlapAmount(overlap);
-          } else {
-            setIsOverflowing(false);
-            setOverlapAmount(0);
-          }
-        } else {
-          setIsOverflowing(false);
-          setOverlapAmount(0);
+          setIsOverflowing(true);
+          const naturalTotalWidth = count * currentLongest + (count - 1) * 6;
+          const neededOverlap = Math.ceil((naturalTotalWidth - availableWidth) / (count - 1));
+          const maxOverlap = Math.max(20, Math.min(currentLongest - 40, 70));
+          const overlap = Math.max(22, Math.min(Math.max(neededOverlap, 26), maxOverlap));
+          setOverlapAmount(overlap);
         }
       }
     };
@@ -148,10 +138,10 @@ export const Header: React.FC<HeaderProps> = ({
           return (
             <div
               key={`measure-${page.id}`}
-              className="neonav-measure-item h-[36px] sm:h-[38px] w-auto min-w-max flex items-center justify-center gap-1.5 px-3 rounded-xl border text-[11px] sm:text-[11.5px] font-bold"
+              className="neonav-measure-item h-[36px] sm:h-[38px] w-auto min-w-max flex items-center justify-start gap-1.5 px-3 rounded-xl border text-[15px] font-bold"
             >
               <div className="w-[24px] h-[24px] shrink-0" />
-              <span className="whitespace-nowrap font-bold text-[11px] sm:text-[11.5px] tracking-tight text-left">
+              <span className="whitespace-nowrap font-bold text-[15px] tracking-tight text-left" style={{ fontSize: '15px' }}>
                 {title}
               </span>
             </div>
@@ -177,10 +167,8 @@ export const Header: React.FC<HeaderProps> = ({
             const isHovered = hoveredId === page.id;
             const isSelected = currentPage === page.id;
             const baseZIndex = index + 1;
-            // Không tăng z-index khi được chọn để nút không nổi đè lên trên các nút khác
             const itemZIndex = isHovered ? 15 : baseZIndex;
 
-            // Format menu icon và item theo giao diện được chọn (currentTheme)
             let itemBg = page.bgNormal || page.bgLight || `${page.theme}15`;
             let itemBorder = page.borderColor || `${page.theme}45`;
             let itemBoxShadow = '0 1px 2px rgba(0,0,0,0.04)';
@@ -190,14 +178,12 @@ export const Header: React.FC<HeaderProps> = ({
             let titleTextShadow = 'none';
 
             if (currentTheme === 'dark-neon') {
-              // Giao diện tối Glass Neon: Mỗi nút menu icon có màu ánh sáng neon đèn riêng biệt độc bản
               const neonData = PAGE_NEON_COLORS[page.id] || { neon: page.theme, glow: `${page.theme}80` };
               iconColor = neonData.neon;
               iconGlowFilter = isHovered || isSelected
                 ? `drop-shadow(0 0 5px ${neonData.neon})`
                 : `drop-shadow(0 0 3px ${neonData.neon}B3)`;
 
-              // Khi trang được chọn: Màu nền đậm hơn chút nhưng phẳng, không nổi đè nút khác
               itemBg = isSelected
                 ? `${neonData.neon}32`
                 : isHovered
@@ -217,7 +203,6 @@ export const Header: React.FC<HeaderProps> = ({
                 ? `0 0 4px ${neonData.neon}80`
                 : 'none';
             } else {
-              // default: light-glass (Giao diện sáng kính đa sắc cao cấp)
               itemBg = isSelected
                 ? `${page.theme}22`
                 : isHovered
@@ -232,7 +217,8 @@ export const Header: React.FC<HeaderProps> = ({
                 ? `0 2px 10px -2px ${page.theme}40`
                 : '0 1px 2px rgba(0,0,0,0.04)';
 
-              titleColor = isSelected ? page.theme : '#334155';
+              // Tiêu đề có màu giống màu icon (page.theme) ở mọi trạng thái
+              titleColor = page.theme;
               titleTextShadow = 'none';
             }
 
@@ -250,7 +236,7 @@ export const Header: React.FC<HeaderProps> = ({
                 }}
                 onMouseEnter={() => setHoveredId(page.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className="neonav-item relative h-[36px] sm:h-[38px] flex items-center justify-center px-2 sm:px-2.5 rounded-xl border cursor-pointer select-none transition-colors duration-200 shrink-0 group/navitem overflow-hidden"
+                className="neonav-item relative h-[36px] sm:h-[38px] flex items-center justify-center px-2 sm:px-2.5 rounded-xl border cursor-pointer select-none transition-all duration-200 shrink-0 group/navitem overflow-hidden"
                 style={{
                   width: `${longestWidth}px`,
                   minWidth: `${longestWidth}px`,
@@ -264,61 +250,28 @@ export const Header: React.FC<HeaderProps> = ({
                 }}
                 title={pageFullName}
               >
-                {/* Khung nhóm icon và tiêu đề được căn giữa hoàn hảo trong nút menu */}
-                <div className="flex items-center justify-center gap-1.5 w-full mx-auto overflow-hidden">
-                  {/* Icon Menu: Bọc Khung Tròn Kính Mờ backdrop-blur-md Hào Quang Siêu Thực & Hiệu Ứng Nảy Nhẹ */}
-                  <div
-                    className="w-[22px] h-[22px] sm:w-[24px] sm:h-[24px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 relative overflow-hidden icon-spring-bounce group-hover/navitem:scale-115"
+                {/* Khung nhóm icon và tiêu đề được căn chỉnh bên trái trong nút menu (Đã xóa hiệu ứng line nằm dưới button) */}
+                <div className="flex items-center justify-start gap-1.5 w-full overflow-hidden px-1">
+                  <span
+                    className="w-[16px] h-[16px] sm:w-[18px] sm:h-[18px] flex items-center justify-center shrink-0 transition-all duration-300 group-hover/navitem:scale-115"
                     style={{
-                      background: isDark
-                        ? isSelected
-                          ? `${iconColor}35`
-                          : 'rgba(15, 23, 42, 0.7)'
-                        : isSelected
-                        ? `${iconColor}22`
-                        : 'rgba(255, 255, 255, 0.7)',
-                      border: `1px solid ${
-                        isSelected
-                          ? iconColor
-                          : isDark
-                          ? 'rgba(255, 255, 255, 0.18)'
-                          : 'rgba(255, 255, 255, 0.85)'
-                      }`,
-                      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
-                      backdropFilter: 'blur(8px)',
-                      WebkitBackdropFilter: 'blur(8px)',
+                      color: iconColor,
+                      filter: iconGlowFilter,
                     }}
                   >
-                    {/* Vệt sáng gradient siêu thực phản quang khi hover chuột */}
-                    <span
-                      className="absolute inset-0 rounded-full opacity-0 group-hover/navitem:opacity-100 transition-opacity duration-300 pointer-events-none"
-                      style={{
-                        background: `radial-gradient(circle at 35% 25%, ${iconColor}50 0%, transparent 70%)`,
-                      }}
-                    />
+                    {page.iconSvg}
+                  </span>
 
-                    {/* Icon vector bên trong */}
-                    <span
-                      className="w-[14px] h-[14px] sm:w-[15px] sm:h-[15px] flex items-center justify-center shrink-0 relative z-1 transition-transform duration-300 group-hover/navitem:scale-110"
-                      style={{
-                        color: iconColor,
-                        filter: iconGlowFilter,
-                      }}
-                    >
-                      {page.iconSvg}
-                    </span>
-                  </div>
-
-                  {/* Tiêu đề ngắn gọn căn giữa cân đối */}
                   <span
                     className={`whitespace-nowrap font-play tracking-tight transition-colors duration-200 truncate ${
                       isSelected
-                        ? 'font-black text-[11.5px] sm:text-[12px]'
-                        : 'font-bold text-[11px] sm:text-[11.5px]'
+                        ? 'font-black text-[15px]'
+                        : 'font-bold text-[15px]'
                     }`}
                     style={{
                       color: titleColor,
                       textShadow: titleTextShadow,
+                      fontSize: '15px',
                     }}
                   >
                     {pageTitle}

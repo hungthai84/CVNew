@@ -14,8 +14,10 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [visible, setVisible] = useState<boolean>(false);
 
   const showToast = useCallback((msg: string) => {
-    setMessage(msg);
-    setVisible(true);
+    setTimeout(() => {
+      setMessage(msg);
+      setVisible(true);
+    }, 0);
     const timer = setTimeout(() => {
       setVisible(false);
     }, 2400);

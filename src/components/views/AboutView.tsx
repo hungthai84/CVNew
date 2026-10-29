@@ -1090,9 +1090,25 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
               {/* Nội dung Slide 1 */}
               <div className="flex flex-col md:flex-row items-stretch justify-between gap-6 relative z-20 h-full">
                 {/* Left Column: Greeting, Name, Role, CTA Button */}
+                {isPlayingIntro && (
+                  <div className="absolute top-4 right-4 z-50">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCancelIntro();
+                      }}
+                      className="px-6 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-sm sm:text-base flex items-center gap-2.5 shadow-[0_0_30px_rgba(244,63,94,0.7)] backdrop-blur-xl border border-rose-400/80 transition cursor-pointer active:scale-95"
+                      title="Hủy video"
+                    >
+                      <X className="w-5 h-5 stroke-[3]" />
+                      <span>Hủy</span>
+                    </button>
+                  </div>
+                )}
                 <div
                   className={`flex flex-col justify-between z-20 ${
-                    isPlayingIntro ? 'max-w-full w-full' : 'max-w-full md:max-w-[340px] lg:max-w-[380px]'
+                    isPlayingIntro ? 'hidden' : 'max-w-full md:max-w-[340px] lg:max-w-[380px]'
                   }`}
                 >
                   <div>
@@ -1220,7 +1236,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
 
                 {/* Right Column: Thẻ Thông Tin Cá Nhân (Chỉ hiện khi idle) */}
                 {!isPlayingIntro && (
-                  <div className="flex flex-col gap-2 z-20 w-full sm:w-[320px] lg:w-[360px] shrink-0 justify-center">
+                  <div className="flex flex-col gap-2 z-20 w-full sm:w-[160px] lg:w-[180px] shrink-0 justify-center">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between px-0.5">
                         <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-white/90 drop-shadow-xs flex items-center gap-1.5">
@@ -1230,7 +1246,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                         <span className="text-[9.5px] text-white/70 font-mono">Hồ sơ C-Level</span>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 gap-2">
                         {PERSONAL_DEMOGRAPHICS.map((item) => {
                           const ItemIcon = getLucideIcon(item.iconName);
                           return (

@@ -28,7 +28,6 @@ import {
   normalizeCodepenUrl,
 } from '@/utils/wallpaperStorage';
 import { AiChatModal } from '@/components/ui/AiChatModal';
-import { ThemeSelectorModal } from '@/components/ui/ThemeSelectorModal';
 import { Pages3DCarouselModal } from '@/components/ui/Pages3DCarouselModal';
 import { XRayEditor } from '@/components/ui/XRayEditor';
 import { NetworkDebugModal } from '@/components/ui/NetworkDebugModal';
@@ -54,7 +53,6 @@ export default function HomePage() {
   const [currentTheme, setCurrentTheme] = useState<SiteTheme>('light-glass');
   const [isThemeTransitioning, setIsThemeTransitioning] = useState<boolean>(false);
   const [isAiChatOpen, setIsAiChatOpen] = useState<boolean>(false);
-  const [isThemeModalOpen, setIsThemeModalOpen] = useState<boolean>(false);
   const [isPagesCarouselOpen, setIsPagesCarouselOpen] = useState<boolean>(false);
   const [isNetworkDebugOpen, setIsNetworkDebugOpen] = useState<boolean>(false);
   const [wallpaperClass, setWallpaperClass] = useState<string>('prism-light-bg');
@@ -398,7 +396,7 @@ export default function HomePage() {
         let storedTheme: SiteTheme = 'light-glass';
         try {
           const saved = localStorage.getItem('hungthai_site_theme') as SiteTheme | null;
-          if (saved === 'dark-neon' || saved === 'light-glass' || saved === 'luminous-glass') {
+          if (saved) {
             storedTheme = saved;
           }
         } catch {}
@@ -486,12 +484,9 @@ export default function HomePage() {
 
   // Handle changing system theme (persistent in localStorage)
   const handleChangeTheme = (newTheme?: SiteTheme) => {
-    const validTheme: SiteTheme =
-      newTheme === 'dark-neon'
-        ? 'dark-neon'
-        : newTheme === 'luminous-glass'
-        ? 'luminous-glass'
-        : 'light-glass';
+    const nextTheme: SiteTheme =
+      newTheme || (currentTheme === 'dark-neon' ? 'light-glass' : 'dark-neon');
+    const validTheme: SiteTheme = nextTheme === 'dark-neon' ? 'dark-neon' : 'light-glass';
     
     // Trigger vivid dynamic transition wave
     setIsThemeTransitioning(true);
@@ -519,8 +514,6 @@ export default function HomePage() {
     if (!wallpaperVideo && Object.keys(wallpaperStyle).length === 0) {
       if (validTheme === 'dark-neon') {
         setWallpaperClass('dark-neon-bg');
-      } else if (validTheme === 'luminous-glass') {
-        setWallpaperClass('luminous-mesh-bg');
       } else {
         setWallpaperClass('prism-light-bg');
       }
@@ -713,7 +706,6 @@ export default function HomePage() {
               <WallpaperView
                 currentTheme={currentTheme}
                 onSelectTheme={handleChangeTheme}
-                onOpenThemeModal={() => setIsThemeModalOpen(true)}
                 onNavigatePage={setCurrentPage}
                 onSelectWallpaper={applyWallpaperOption}
                 activeWallpaperId={activeWallpaperId}
@@ -773,7 +765,6 @@ export default function HomePage() {
           onNextPage={handleNextPage}
           onSelectPage={setCurrentPage}
           onSelectTheme={handleChangeTheme}
-          onOpenThemeModal={() => setIsThemeModalOpen(true)}
           onOpenAiChat={() => setIsAiChatOpen(true)}
           onOpenPagesCarousel={() => setIsPagesCarouselOpen(true)}
           onOpenNetworkDebug={() => setIsNetworkDebugOpen(true)}
@@ -813,14 +804,6 @@ export default function HomePage() {
           })}
         </div>
       )}
-
-      {/* Theme Selector Modal */}
-      <ThemeSelectorModal
-        isOpen={isThemeModalOpen}
-        onClose={() => setIsThemeModalOpen(false)}
-        currentTheme={currentTheme}
-        onSelectTheme={handleChangeTheme}
-      />
 
       {/* AI Assistant Chat Glass Popup */}
       <AiChatModal

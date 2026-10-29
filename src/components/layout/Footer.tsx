@@ -7,7 +7,6 @@ import { WeatherWidget } from './WeatherWidget';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { SoundEngine } from '@/components/ui/SoundEngine';
-import { LiveDisplaySettings } from '@/components/ui/LiveDisplaySettings';
 import { useLanguage } from '@/context/LanguageContext';
 import { LanguageSelectorModal } from '@/components/ui/LanguageSelectorModal';
 
@@ -21,7 +20,6 @@ export interface FooterProps {
   onNextPage: () => void;
   onSelectPage: (index: number) => void;
   onSelectTheme?: (theme: SiteTheme) => void;
-  onOpenThemeModal?: () => void;
   onOpenAiChat?: () => void;
   onOpenPagesCarousel?: () => void;
   onOpenNetworkDebug?: () => void;
@@ -44,7 +42,6 @@ export const Footer: React.FC<FooterProps> = ({
   onNextPage,
   onSelectPage,
   onSelectTheme,
-  onOpenThemeModal,
   onOpenAiChat,
   onOpenPagesCarousel,
   onOpenNetworkDebug,
@@ -58,13 +55,11 @@ export const Footer: React.FC<FooterProps> = ({
   const [isPageMenuOpen, setIsPageMenuOpen] = useState<boolean>(false);
   const [isContactMenuOpen, setIsContactMenuOpen] = useState<boolean>(false);
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState<boolean>(false);
-  const [isDisplaySettingsOpen, setIsDisplaySettingsOpen] = useState<boolean>(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState<boolean>(false);
   const [currentFontScalePercent, setCurrentFontScalePercent] = useState<number>(100);
   const pageMenuContainerRef = useRef<HTMLDivElement>(null);
   const contactContainerRef = useRef<HTMLDivElement>(null);
   const themeMenuContainerRef = useRef<HTMLDivElement>(null);
-  const displaySettingsContainerRef = useRef<HTMLDivElement>(null);
   const languageMenuContainerRef = useRef<HTMLDivElement>(null);
 
   // Lắng nghe thay đổi kích thước hiển thị để cập nhật tỷ lệ mặc định trên nút Footer
@@ -101,20 +96,17 @@ export const Footer: React.FC<FooterProps> = ({
       if (themeMenuContainerRef.current && !themeMenuContainerRef.current.contains(event.target as Node)) {
         setIsThemeMenuOpen(false);
       }
-      if (displaySettingsContainerRef.current && !displaySettingsContainerRef.current.contains(event.target as Node)) {
-        setIsDisplaySettingsOpen(false);
-      }
       if (languageMenuContainerRef.current && !languageMenuContainerRef.current.contains(event.target as Node)) {
         setIsLanguageMenuOpen(false);
       }
     };
-    if (isPageMenuOpen || isContactMenuOpen || isThemeMenuOpen || isDisplaySettingsOpen || isLanguageMenuOpen) {
+    if (isPageMenuOpen || isContactMenuOpen || isThemeMenuOpen || isLanguageMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isPageMenuOpen, isContactMenuOpen, isThemeMenuOpen, isDisplaySettingsOpen, isLanguageMenuOpen]);
+  }, [isPageMenuOpen, isContactMenuOpen, isThemeMenuOpen, isLanguageMenuOpen]);
 
   return (
     <footer
@@ -454,81 +446,7 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
           </button>
 
-          {/* Tiện ích 2.5: Cài Đặt Hiển Thị (Màu 3: Xanh Da Trời Sky Blue - zIndex: 24) */}
-          <div ref={displaySettingsContainerRef} className="relative -ml-[64px] pointer-events-auto" style={{ zIndex: 24 }}>
-            <button
-              id="display-settings-footer-btn"
-              type="button"
-              onClick={() => {
-                SoundEngine.playTap();
-                setIsDisplaySettingsOpen((prev) => !prev);
-              }}
-              className={`footer-util-btn border transition-all duration-300 cursor-pointer ${
-                isDark
-                  ? 'border-sky-400/60 shadow-[0_0_12px_rgba(56,189,248,0.3)] hover:border-sky-300'
-                  : 'border-sky-300/90 shadow-xs hover:border-sky-400'
-              }`}
-              style={{
-                background: isDark
-                  ? 'linear-gradient(135deg, rgba(8, 47, 73, 0.92) 0%, rgba(12, 74, 110, 0.88) 100%)'
-                  : 'linear-gradient(135deg, rgba(224, 242, 254, 0.95) 0%, rgba(186, 230, 253, 0.88) 100%)',
-                color: isDark ? '#bae6fd' : '#075985',
-              }}
-              title="Cài Đặt Hiển Thị (Live Display Settings)"
-            >
-              <div
-                className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs"
-                style={{
-                  background: isDark ? 'rgba(56, 189, 248, 0.25)' : 'rgba(14, 165, 233, 0.2)',
-                  color: isDark ? '#bae6fd' : '#0284c7',
-                }}
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="w-[16px] h-[16px]">
-                  <circle cx="12" cy="4.5" r="2.2" fill="currentColor" />
-                  <path
-                    d="M4.5 8.5l7.5 1.5 7.5-1.5M12 10v5m0 0l-3.5 6.5M12 15l3.5 6.5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <div className="flex flex-col text-left leading-none">
-                <span
-                  className="text-[11px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play flex items-center gap-1"
-                  style={{ color: isDark ? '#bae6fd' : '#075985' }}
-                >
-                  <span>Hiển Thị</span>
-                  {currentFontScalePercent !== 100 && (
-                    <span className="px-1 py-0.5 rounded text-[8.5px] font-mono font-extrabold bg-sky-500/20 text-sky-600 dark:text-sky-300">
-                      {currentFontScalePercent}%
-                    </span>
-                  )}
-                </span>
-                <span
-                  className="text-[8px] font-semibold mt-0.5 opacity-80 select-none whitespace-nowrap"
-                  style={{ color: isDark ? '#7dd3fc' : '#0284c7' }}
-                >
-                  {currentFontScalePercent === 100 ? 'Mặc định: 100%' : `Mặc định: ${currentFontScalePercent}%`}
-                </span>
-              </div>
-            </button>
 
-            {/* Popup Bảng Cài Đặt Hiển Thị (Live Display Settings) */}
-            {isDisplaySettingsOpen && (
-              <div className="absolute bottom-[calc(100%+14px)] right-0 sm:-right-8 z-[120] animate-in fade-in zoom-in-95 duration-150 shadow-2xl rounded-[30px] overflow-hidden">
-                <LiveDisplaySettings
-                  onNavigatePage={(idx) => {
-                    onSelectPage(idx);
-                    setIsDisplaySettingsOpen(false);
-                  }}
-                  onClose={() => setIsDisplaySettingsOpen(false)}
-                />
-              </div>
-            )}
-          </div>
 
           {/* Tiện ích 3: Nút Giao Diện (Màu 4: Vàng Hổ Phách Amber Gold - zIndex: 30) */}
           <div ref={themeMenuContainerRef} className="relative -ml-[64px] z-30 pointer-events-auto" style={{ zIndex: 30 }}>
@@ -560,9 +478,8 @@ export const Footer: React.FC<FooterProps> = ({
                 }}
               >
                 <WebIcon
-                  name={isDark ? 'moon' : isLuminous ? 'sparkles' : 'sun'}
+                  name={isDark ? 'moon' : 'sun'}
                   className="w-[16px] h-[16px]"
-                  sparkle={isLuminous}
                   springBounce
                 />
               </div>
@@ -573,7 +490,7 @@ export const Footer: React.FC<FooterProps> = ({
                     color: isDark ? '#fde68a' : '#92400e',
                   }}
                 >
-                  {isDark ? 'Giao Diện Tối' : isLuminous ? 'Kính Quang Phổ' : 'Giao Diện Sáng'}
+                  {isDark ? 'Kính Tối Đa Sắc' : 'Kính Sáng Đa Sắc'}
                 </span>
                 <span
                   className="text-[8.5px] font-semibold mt-1 opacity-80 select-none whitespace-nowrap flex items-center gap-0.5"
@@ -581,7 +498,7 @@ export const Footer: React.FC<FooterProps> = ({
                     color: isDark ? '#fcd34d' : '#b45309',
                   }}
                 >
-                  <span>Chọn giao diện</span>
+                  <span>{isDark ? 'Giao diện tối neon' : 'Giao diện sáng glass'}</span>
                   <svg className={`w-2.5 h-2.5 transition-transform ${isThemeMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
@@ -592,7 +509,7 @@ export const Footer: React.FC<FooterProps> = ({
             {/* Popup Danh Sách Giao Diện Cho Chọn Lựa */}
             {isThemeMenuOpen && (
               <div
-                className={`absolute bottom-[calc(100%+14px)] right-0 w-[310px] sm:w-[330px] rounded-3xl backdrop-blur-2xl border shadow-2xl p-3 text-left z-[120] flex flex-col gap-2 font-play select-none animate-in fade-in zoom-in-95 duration-150 ${
+                className={`absolute bottom-[calc(100%+14px)] right-0 w-[300px] sm:w-[320px] rounded-3xl backdrop-blur-2xl border shadow-2xl p-3 text-left z-[120] flex flex-col gap-2 font-play select-none animate-in fade-in zoom-in-95 duration-150 ${
                   isDark
                     ? 'bg-slate-900/98 border-cyan-400/50 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_25px_rgba(34,211,238,0.25)]'
                     : 'bg-white/98 border-white/95 text-slate-800 shadow-[0_20px_50px_rgba(30,27,75,0.22),0_0_0_1px_rgba(255,255,255,0.9)]'
@@ -612,11 +529,7 @@ export const Footer: React.FC<FooterProps> = ({
                   <div className="flex items-center gap-2">
                     <span
                       className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                        isDark
-                          ? 'bg-cyan-950 text-cyan-300'
-                          : isLuminous
-                          ? 'bg-sky-100 text-sky-600'
-                          : 'bg-amber-100 text-amber-700'
+                        isDark ? 'bg-cyan-950 text-cyan-300' : 'bg-amber-100 text-amber-700'
                       }`}
                     >
                       <WebIcon name="palette" className="w-3.5 h-3.5" />
@@ -640,11 +553,11 @@ export const Footer: React.FC<FooterProps> = ({
                   </button>
                 </div>
 
-                {/* Danh Sách Giao Diện: Chỉ hiển thị icon và tiêu đề 4 chữ, không hiển thị sub tiêu đề */}
+                {/* Danh Sách Giao Diện */}
                 <div className="flex flex-col gap-1.5 py-0.5">
                   {THEME_LIST.map((theme) => {
                     const isActive = currentTheme === theme.id;
-                    const iconName = theme.id === 'light-glass' ? 'sun' : theme.id === 'luminous-glass' ? 'sparkles' : 'moon';
+                    const iconName = theme.id === 'light-glass' ? 'sun' : 'moon';
 
                     return (
                       <button
@@ -660,8 +573,6 @@ export const Footer: React.FC<FooterProps> = ({
                           isActive
                             ? isDark
                               ? 'bg-cyan-950/70 border-cyan-400/70 shadow-[0_0_12px_rgba(34,211,238,0.25)]'
-                              : theme.id === 'luminous-glass'
-                              ? 'bg-sky-50/90 border-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.25)]'
                               : 'bg-amber-50/90 border-amber-300 shadow-sm'
                             : isDark
                             ? 'bg-slate-800/60 hover:bg-slate-800 border-white/10 text-slate-300'
@@ -674,8 +585,6 @@ export const Footer: React.FC<FooterProps> = ({
                               isActive
                                 ? isDark
                                   ? 'bg-cyan-500/30 text-cyan-300 ring-1 ring-cyan-400'
-                                  : theme.id === 'luminous-glass'
-                                  ? 'bg-sky-200/80 text-sky-700 ring-1 ring-sky-400'
                                   : 'bg-amber-200/80 text-amber-800 ring-1 ring-amber-400'
                                 : isDark
                                 ? 'bg-slate-700/80 text-slate-300'
@@ -685,7 +594,6 @@ export const Footer: React.FC<FooterProps> = ({
                             <WebIcon
                               name={iconName}
                               className="w-4 h-4"
-                              sparkle={theme.id === 'luminous-glass'}
                               springBounce
                             />
                           </div>
@@ -695,8 +603,6 @@ export const Footer: React.FC<FooterProps> = ({
                                 isActive
                                   ? isDark
                                     ? 'text-cyan-300'
-                                    : theme.id === 'luminous-glass'
-                                    ? 'text-sky-800'
                                     : 'text-amber-900'
                                   : isDark
                                   ? 'text-slate-100'
@@ -709,8 +615,6 @@ export const Footer: React.FC<FooterProps> = ({
                               <span className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
                                 isDark
                                   ? 'bg-cyan-400/30 text-cyan-200'
-                                  : theme.id === 'luminous-glass'
-                                  ? 'bg-sky-200 text-sky-800'
                                   : 'bg-amber-200 text-amber-900'
                               }`}>
                                 Đang dùng
@@ -724,8 +628,6 @@ export const Footer: React.FC<FooterProps> = ({
                             className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
                               isDark
                                 ? 'bg-cyan-400 text-slate-950 shadow-xs'
-                                : theme.id === 'luminous-glass'
-                                ? 'bg-sky-500 text-white shadow-xs'
                                 : 'bg-amber-500 text-white shadow-xs'
                             }`}
                           >
@@ -738,27 +640,6 @@ export const Footer: React.FC<FooterProps> = ({
                     );
                   })}
                 </div>
-
-                {/* Footer xem modal so sánh chi tiết */}
-                {onOpenThemeModal && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsThemeMenuOpen(false);
-                      onOpenThemeModal();
-                    }}
-                    className={`w-full py-1.5 px-2 rounded-xl text-[10.5px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer border mt-0.5 ${
-                      isDark
-                        ? 'bg-slate-800/80 hover:bg-slate-700 text-cyan-300 border-white/10'
-                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
-                    }`}
-                  >
-                    <span>Mở bảng so sánh giao diện chi tiết</span>
-                    <svg className="w-3 h-3 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </button>
-                )}
               </div>
             )}
           </div>

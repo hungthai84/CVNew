@@ -755,7 +755,6 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
             </div>
           ))}
         </div>
-      </div>
     </div>
   );
 

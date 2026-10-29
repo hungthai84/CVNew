@@ -1293,77 +1293,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
             </div>
           </div>
 
-          {/* HÀNG 2: BỘ LỌC PHÂN HỆ TÁC NGHIỆP BẰNG ICON PHÁT SÁNG (ECOSYSTEM FILTER SEGMENT) */}
-          <div className="flex items-center justify-between gap-1.5 py-1.5 shrink-0 overflow-x-auto no-scrollbar">
-            <div className="flex items-center gap-1.5 flex-nowrap">
-              {ecosystemSegments.map((seg) => {
-                const isActive = activeCategory === seg.id;
-                return (
-                  <button
-                    key={seg.id}
-                    type="button"
-                    onClick={() => {
-                      SoundEngine.playTap();
-                      setActiveCategory(seg.id);
-                      setExpandedSystemId(null);
-                    }}
-                    className={`group relative inline-flex items-center gap-2 px-3 py-1 rounded-xl text-[11px] font-bold font-play transition-all duration-200 cursor-pointer border shrink-0 ${
-                      isActive
-                        ? 'text-white border-white/40 shadow-md scale-[1.01]'
-                        : 'bg-white/75 dark:bg-slate-900/65 hover:bg-white dark:hover:bg-slate-800/85 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
-                    }`}
-                    style={
-                      isActive
-                        ? {
-                            background: seg.activeGradient,
-                            boxShadow: '0 6px 18px -4px rgba(59, 130, 246, 0.45)',
-                          }
-                        : undefined
-                    }
-                  >
-                    <span
-                      className={`flex items-center justify-center transition-transform duration-200 group-hover:scale-110 ${
-                        isActive ? 'text-white' : seg.iconTextClass
-                      }`}
-                      style={{ filter: seg.glowStyle }}
-                    >
-                      <WebIcon name={seg.icon} className="w-3.5 h-3.5" />
-                    </span>
-                    <span className="tracking-tight">{seg.label}</span>
-                    <span
-                      className={`hidden sm:inline-block px-1.5 py-0.2 rounded-md text-[9.5px] font-mono font-extrabold ${
-                        isActive
-                          ? 'bg-black/25 text-white border border-white/25'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200/70 dark:border-white/10'
-                      }`}
-                    >
-                      {seg.codesLabel}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
 
-            {/* Ô tìm kiếm nhanh gọn */}
-            <div className="relative hidden md:flex items-center w-44 shrink-0">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm CRM, SDP, ERP..."
-                className="w-full pl-2.5 pr-6 py-1 rounded-xl text-[11px] font-medium bg-white/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-white/15 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-sky-400"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-          </div>
 
           {/* HÀNG 3 (KHI BẬT MÔ PHỎNG LUỒNG DỮ LIỆU TƯƠNG TÁC GIỮA 2 HỆ THỐNG): INTERACTIVE DATA FLOW CANVAS BAR */}
           {isFlowCanvasActive && viewMode === 'grid' && (

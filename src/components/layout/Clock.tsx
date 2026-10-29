@@ -102,6 +102,7 @@ const THEME_CLOCK_STYLES: Record<SiteTheme, ThemeClockStyle> = {
     badgeText: 'Quang phổ',
     dateShadow: '0 1px 2px rgba(255, 255, 255, 0.85)',
   },
+
 };
 
 export const Clock: React.FC<ClockProps> = ({ currentTheme = 'light-glass' }) => {

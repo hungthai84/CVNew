@@ -9,7 +9,6 @@ import { Clock, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { SoundEngine } from '@/components/ui/SoundEngine';
-import { LiveDisplaySettings } from '@/components/ui/LiveDisplaySettings';
 import { formatCardTitle } from '@/lib/utils';
 import {
   loadCustomWallpapers,
@@ -47,7 +46,6 @@ import { AMBIENT_TRACKS, AmbientTrackId } from '@/utils/ambientSoundEngine';
 export interface WallpaperViewProps {
   currentTheme?: SiteTheme;
   onSelectTheme?: (theme: SiteTheme) => void;
-  onOpenThemeModal?: () => void;
   onNavigatePage?: (pageIndex: number) => void;
   onSelectWallpaper: (option: WallpaperOption) => void;
   activeWallpaperId?: string;
@@ -166,7 +164,6 @@ const STUDIO_PRESETS: StudioPreset[] = [
 export const WallpaperView: React.FC<WallpaperViewProps> = ({
   currentTheme = 'light-glass',
   onSelectTheme,
-  onOpenThemeModal,
   onNavigatePage,
   onSelectWallpaper,
   activeWallpaperId = 'aurora',
@@ -191,7 +188,6 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
 
   // Dynamic Dark/Light mode tracking for pure glassmorphism compatibility
   const [isDark, setIsDark] = useState<boolean>(currentTheme === 'dark-neon');
-  const [isRightDisplaySettingsOpen, setIsRightDisplaySettingsOpen] = useState<boolean>(false);
   const [isRightThemeMenuOpen, setIsRightThemeMenuOpen] = useState<boolean>(false);
   const [isRightContactOpen, setIsRightContactOpen] = useState<boolean>(false);
   const [isRightLanguageOpen, setIsRightLanguageOpen] = useState<boolean>(false);
@@ -201,7 +197,6 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
 
   const rightDockRef = useRef<HTMLElement>(null);
   const rightThemeContainerRef = useRef<HTMLDivElement>(null);
-  const rightDisplayContainerRef = useRef<HTMLDivElement>(null);
   const rightContactContainerRef = useRef<HTMLDivElement>(null);
   const rightLanguageContainerRef = useRef<HTMLDivElement>(null);
 
@@ -220,9 +215,6 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
       const target = e.target as Node;
       if (rightThemeContainerRef.current && !rightThemeContainerRef.current.contains(target)) {
         setIsRightThemeMenuOpen(false);
-      }
-      if (rightDisplayContainerRef.current && !rightDisplayContainerRef.current.contains(target)) {
-        setIsRightDisplaySettingsOpen(false);
       }
       if (rightContactContainerRef.current && !rightContactContainerRef.current.contains(target)) {
         setIsRightContactOpen(false);

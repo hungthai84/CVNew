@@ -174,6 +174,11 @@ const HEROICONS_ALIAS_MAP: Record<string, string> = {
   factory: 'BuildingOfficeIcon',
   building: 'BuildingOfficeIcon',
   radio: 'SignalIcon',
+  printer: 'PrinterIcon',
+  compass: 'GlobeAltIcon',
+  activity: 'ChartBarIcon',
+  'arrow-right-left': 'ArrowsRightLeftIcon',
+  arrowrightleft: 'ArrowsRightLeftIcon',
 };
 
 /**

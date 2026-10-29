@@ -493,6 +493,90 @@
   --aurora-radial-6: rgba(250, 204, 21, 0.10); /* Yellow */
 }
 
+/* ========================================================
+   GIAO DIỆN PHẲNG FLAT UI ĐA MÀU SẮC CẦU VỒNG (flat-rainbow)
+   Thiết kế Flat UI hiện đại: Đường nét chuẩn xác, màu sắc rực rỡ dải cầu vồng,
+   độ tương phản cao, thẻ bo góc 14px tinh gọn, không đổ bóng mờ nặng nề.
+   ======================================================== */
+[data-theme="flat-rainbow"] {
+  color-scheme: light;
+
+  /* Nền chính & Bề mặt phẳng */
+  --page-bg: #FFF7ED;
+  --bg-main: #FFF7ED;
+  --bg-secondary: #FFFBEB;
+  --surface-bg: #FFFFFF;
+  --surface-strong: #FFFFFF;
+
+  /* Dải màu cầu vồng đa sắc hiện đại */
+  --rainbow-red: #EF4444;
+  --rainbow-orange: #F97316;
+  --rainbow-yellow: #F59E0B;
+  --rainbow-green: #10B981;
+  --rainbow-cyan: #06B6D4;
+  --rainbow-blue: #3B82F6;
+  --rainbow-indigo: #6366F1;
+  --rainbow-purple: #8B5CF6;
+  --rainbow-pink: #EC4899;
+
+  /* Aliases thương hiệu */
+  --color-primary: #EC4899;
+  --color-secondary: #8B5CF6;
+  --color-accent: #3B82F6;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+
+  /* Text & Độ tương phản */
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-disabled: #94A3B8;
+
+  /* Thẻ phẳng Flat Surface (Không blur nặng, viền sắc nét) */
+  --glass-bg: #FFFFFF;
+  --glass-bg-hover: #FFFFFF;
+  --glass-border: #FBCFE8;
+  --glass-border-subtle: #FCE7F3;
+  --glass-blur: 0px;
+  --glass-saturate: 100%;
+  --glass-shadow: 0 2px 8px rgba(244, 63, 94, 0.08);
+  --glass-shadow-hover: 0 4px 16px rgba(244, 63, 94, 0.14);
+
+  /* C-Level Wave Cards */
+  --card-theme-color: #EC4899;
+  --card-wave-color: rgba(236, 72, 153, 0.18);
+  --card-wave-soft: rgba(249, 115, 22, 0.08);
+  --card-wave-glow: rgba(139, 92, 246, 0.25);
+
+  /* Ambient Aurora Cầu Vồng Phẳng */
+  --aurora-base: #FFF7ED;
+  --aurora-radial-1: rgba(239, 68, 68, 0.12);
+  --aurora-radial-2: rgba(249, 115, 22, 0.12);
+  --aurora-radial-3: rgba(245, 158, 11, 0.10);
+  --aurora-radial-4: rgba(16, 185, 129, 0.10);
+  --aurora-radial-5: rgba(6, 182, 212, 0.10);
+  --aurora-radial-6: rgba(59, 130, 246, 0.12);
+  --aurora-radial-7: rgba(139, 92, 246, 0.12);
+  --aurora-radial-8: rgba(236, 72, 153, 0.14);
+}
+
+[data-theme="flat-rainbow"] body {
+  background: linear-gradient(135deg, #FFF1F2 0%, #FEF3C7 25%, #ECFDF5 50%, #EFF6FF 75%, #F5F3FF 100%) !important;
+  color: #0F172A !important;
+}
+
+[data-theme="flat-rainbow"] .glass-panel {
+  background: #FFFFFF !important;
+  border: 1.5px solid #FBCFE8 !important;
+  box-shadow: 0 2px 10px rgba(236, 72, 153, 0.08) !important;
+}
+
+[data-theme="flat-rainbow"] .theme-pastel-card {
+  box-shadow: 0 2px 10px rgba(236, 72, 153, 0.08) !important;
+  border-width: 1.5px !important;
+}
+
 /* Glass panel utility & Smooth Theme Transitions */
 html {
   transition: background-color 0.28s ease, color 0.22s ease;

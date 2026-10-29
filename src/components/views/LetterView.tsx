@@ -16,7 +16,6 @@ import {
   OPERATIONAL_PRINCIPLES_DATA,
   CareerMilestoneItem,
 } from '@/data/letterData';
-import { LetterBentoDashboard } from '@/components/views/LetterBentoDashboard';
 
 // Video thuyết minh Thư Ngỏ (Cloudinary Transition Studio)
 export const LETTER_SLIDE_1_VIDEO_URL =
@@ -343,8 +342,8 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
 
-  // Feature 1: Chế độ xem ('dashboard' = Bảng tổng quan Bento mới 100% như hình | 'slides' = Trình chiếu 4 slide | 'one-page' = Một trang)
-  const [viewMode, setViewMode] = useState<'dashboard' | 'slides' | 'one-page'>('dashboard');
+  // Chế độ xem mặc định duy nhất: Trình chiếu 4 Slide
+  const [viewMode] = useState<'slides'>('slides');
 
   // Current Theme detection
   const isDark = currentTheme === 'dark-neon';
@@ -560,10 +559,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
         setCompanyInputDraft(initialCompany);
       }
 
-      const urlMode = params.get('letterMode') || params.get('mode');
-      if (urlMode === 'one-page' || urlMode === 'full') {
-        setViewMode('one-page');
-      }
+
 
       const savedSlide = localStorage.getItem('hungthai_letter_active_slide');
       if (savedSlide !== null) {
@@ -1226,8 +1222,8 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
       showToast('Đã dừng chế độ Thuyết trình Tự động');
     } else {
       setIsAutoplayPresentation(true);
-      setViewMode('slides');
       setAutoSyncVideoWithSlides(true);
+
 
       // Bật nhạc nền Lo-Fi 'cosmos' 432Hz thư thái
       if (isLofiAudioEnabled) {
@@ -1618,8 +1614,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
         {CAREER_MILESTONES_DATA.map((m, idx) => {
           const targetSlideForMilestone = idx < 3 ? 1 : 2;
           const isBeingRead = activeTargetId === m.id;
-          const isCurrentSlideGroup =
-            viewMode === 'one-page' || currentSlide === targetSlideForMilestone;
+          const isCurrentSlideGroup = currentSlide === targetSlideForMilestone;
           const shortYear = m.yearLabelVi.replace('+', '');
 
           return (
@@ -1682,264 +1677,9 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
     </div>
   );
 
-  // Render unified executive glass navigation dock bám sát cạnh phải website
-  const renderTopNavigationBar = () => {
-    if (!isClientMounted || typeof document === 'undefined') return null;
-
-    const isExpanded = !isRightDockCollapsed || isNavHovered || isNavMenuOpen;
-
-    const navContent = (
-      <aside
-        ref={navContainerRef}
-        role="region"
-        aria-label="Thanh điều khiển bên phải trang thư ngỏ"
-        onMouseEnter={() => {
-          setIsNavHovered(true);
-        }}
-        onMouseLeave={() => {
-          if (!isNavMenuOpen) setIsNavHovered(false);
-        }}
-        onDoubleClick={() => {
-          SoundEngine.playGlassChime();
-          setIsRightDockCollapsed((prev) => !prev);
-        }}
-        title="Nhấp đúp chuột để thu gọn / mở rộng thanh tiện ích thư ngỏ"
-        style={
-          sideToolbarPos.height > 0
-            ? {
-                top: `${sideToolbarPos.top}px`,
-                height: `${sideToolbarPos.height}px`,
-                right: 0,
-              }
-            : { right: 0 }
-        }
-        className={`fixed right-0 ${
-          sideToolbarPos.height > 0 ? '' : 'top-1/2 -translate-y-1/2'
-        } z-40 flex flex-col justify-start items-center py-2.5 px-1.5 select-none transition-all duration-300 rounded-none rounded-tl-[20px] rounded-bl-[20px] border-0 pointer-events-auto font-play ${
-          !isExpanded
-            ? 'w-[48px]'
-            : 'w-[185px]'
-        } ${
-          isDark
-            ? 'bg-slate-950/85 backdrop-blur-xl shadow-[0_16px_45px_-6px_rgba(0,0,0,0.75),0_0_24px_rgba(34,211,238,0.22)]'
-            : 'bg-white/85 backdrop-blur-xl shadow-[0_14px_40px_-6px_rgba(30,27,75,0.18),0_4px_16px_rgba(0,0,0,0.06)]'
-        }`}
-      >
-
-        {/* Nút Thu Gọn / Mở Rộng Ở Đỉnh Thanh Dock */}
-        <div className="w-full flex items-center justify-between shrink-0 mb-1 px-1">
-          {isExpanded ? (
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shrink-0" />
-              <span className="text-xs font-black font-play tracking-wide text-slate-800 dark:text-slate-100 truncate">
-                {formatCardTitle('Điều khiển thư ngỏ')}
-              </span>
-            </div>
-          ) : (
-            <div className="w-full flex justify-center">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            </div>
-          )}
-
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              SoundEngine.playGlassChime();
-              setIsRightDockCollapsed((prev) => !prev);
-              if (isExpanded) {
-                setIsNavMenuOpen(false);
-                setIsNavHovered(false);
-              } else {
-                setIsNavMenuOpen(true);
-              }
-            }}
-            title={!isExpanded ? 'Bấm để mở rộng thanh điều khiển thư ngỏ' : 'Bấm để thu gọn thanh điều khiển'}
-            className={`w-6 h-5 rounded-md flex items-center justify-center transition hover:scale-115 active:scale-90 border cursor-pointer shrink-0 ${
-              isDark
-                ? 'bg-cyan-950/60 border-cyan-400/40 text-cyan-300 hover:bg-cyan-900/60'
-                : 'bg-white/80 border-slate-200 text-slate-600 hover:bg-white shadow-2xs'
-            }`}
-          >
-            {!isExpanded ? (
-              <WebIcon name="chevron-left" className="w-3.5 h-3.5 animate-pulse" />
-            ) : (
-              <WebIcon name="chevron-right" className="w-3.5 h-3.5" />
-            )}
-          </button>
-        </div>
-
-        {/* THÂN THANH DOCK: HIỂN THỊ THU GỌN HOẶC MỞ RỘNG (3 CHẾ ĐỘ: TỔNG QUAN, MỘT TRANG, TRÌNH CHIẾU) */}
-        {!isExpanded ? (
-          /* TRẠNG THÁI THU GỌN: 3 NÚT ICON NHANH (TỔNG QUAN, MỘT TRANG & TRÌNH CHIẾU) */
-          <div className="flex flex-col items-center justify-between flex-1 w-full py-2">
-            <div className="flex flex-col items-center gap-2.5">
-              {/* Nút Tổng quan (Bento Dashboard 100% theo hình mẫu) */}
-              <button
-                type="button"
-                onClick={() => {
-                  SoundEngine.playTap();
-                  setViewMode('dashboard');
-                }}
-                className={`w-8 h-8 rounded-xl flex items-center justify-center transition border cursor-pointer ${
-                  viewMode === 'dashboard'
-                    ? 'bg-gradient-to-tr from-emerald-500 to-teal-600 text-white border-emerald-400 shadow-md ring-1 ring-emerald-300'
-                    : 'bg-white/70 dark:bg-slate-800/70 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-emerald-50'
-                }`}
-                title="Chế độ Tổng quan Bento (Mẫu mới)"
-              >
-                <WebIcon name="layers" className="w-4 h-4 shrink-0" />
-              </button>
-
-              {/* Nút Một trang */}
-              <button
-                type="button"
-                onClick={() => {
-                  SoundEngine.playTap();
-                  setViewMode('one-page');
-                }}
-                className={`w-8 h-8 rounded-xl flex items-center justify-center transition border cursor-pointer ${
-                  viewMode === 'one-page'
-                    ? 'bg-gradient-to-tr from-purple-600 to-pink-600 text-white border-purple-400 shadow-md ring-1 ring-purple-300'
-                    : 'bg-white/70 dark:bg-slate-800/70 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-purple-50'
-                }`}
-                title="Chế độ Một trang"
-              >
-                <WebIcon name="book" className="w-4 h-4 shrink-0" />
-              </button>
-
-              {/* Nút Trình chiếu */}
-              <button
-                type="button"
-                onClick={() => {
-                  SoundEngine.playTap();
-                  setViewMode('slides');
-                }}
-                className={`w-8 h-8 rounded-xl flex items-center justify-center transition border cursor-pointer ${
-                  viewMode === 'slides'
-                    ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 text-white border-blue-400 shadow-md ring-1 ring-blue-300'
-                    : 'bg-white/70 dark:bg-slate-800/70 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-blue-50'
-                }`}
-                title="Chế độ Trình chiếu"
-              >
-                <WebIcon name="monitor" className="w-4 h-4 shrink-0" />
-              </button>
-            </div>
-
-            {/* Bottom Indicator */}
-            <div className="w-full flex flex-col items-center justify-center gap-1 pt-1 border-t border-slate-200/60 dark:border-white/10 shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  SoundEngine.playGlassChime();
-                  setIsRightDockCollapsed(false);
-                  setIsNavMenuOpen(true);
-                }}
-                className="text-[8.5px] font-mono font-bold text-slate-400 hover:text-cyan-500 transition cursor-pointer"
-                title="Mở rộng menu điều khiển"
-              >
-                «
-              </button>
-            </div>
-          </div>
-        ) : (
-          /* TRẠNG THÁI MỞ RỘNG: 3 nút chế độ (Tổng quan, Một trang & Trình chiếu) */
-          <div className="w-full flex-1 min-h-0 flex flex-col gap-2 pt-2 px-0.5">
-            {/* Nút 1: Tổng quan (Bento Dashboard 100% theo hình đính kèm) */}
-            <button
-              type="button"
-              onClick={() => {
-                SoundEngine.playTap();
-                setViewMode('dashboard');
-              }}
-              className={`w-full py-2 px-3 rounded-xl flex items-center gap-2.5 text-left transition-all duration-200 border cursor-pointer group shadow-2xs ${
-                viewMode === 'dashboard'
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-400 shadow-sm ring-1 ring-emerald-300'
-                  : 'bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-700/80'
-              }`}
-              title="Chế độ Bảng Tổng Quan Bento (Chuẩn mẫu thiết kế mới 100%)"
-            >
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-transform ${
-                viewMode === 'dashboard'
-                  ? 'bg-white/20 text-white'
-                  : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400'
-              }`}>
-                <WebIcon name="layers" className="w-4 h-4 shrink-0" />
-              </div>
-              <span className="text-[12px] font-bold font-play tracking-tight truncate flex-1">
-                Tổng quan
-              </span>
-              {viewMode === 'dashboard' && (
-                <span className="w-2 h-2 rounded-full bg-white shrink-0 animate-pulse" />
-              )}
-            </button>
-
-            {/* Nút 2: Một trang */}
-            <button
-              type="button"
-              onClick={() => {
-                SoundEngine.playTap();
-                setViewMode('one-page');
-              }}
-              className={`w-full py-2 px-3 rounded-xl flex items-center gap-2.5 text-left transition-all duration-200 border cursor-pointer group shadow-2xs ${
-                viewMode === 'one-page'
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white border-purple-400 shadow-sm ring-1 ring-purple-300'
-                  : 'bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-slate-700 hover:bg-purple-50 dark:hover:bg-slate-700/80'
-              }`}
-              title="Chuyển sang chế độ xem toàn văn Thư Ngỏ trên 1 trang"
-            >
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-transform ${
-                viewMode === 'one-page'
-                  ? 'bg-white/20 text-white'
-                  : 'bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400'
-              }`}>
-                <WebIcon name="book" className="w-4 h-4 shrink-0" />
-              </div>
-              <span className="text-[12px] font-bold font-play tracking-tight truncate flex-1">
-                Một trang
-              </span>
-              {viewMode === 'one-page' && (
-                <span className="w-2 h-2 rounded-full bg-white shrink-0 animate-pulse" />
-              )}
-            </button>
-
-            {/* Nút 3: Trình chiếu */}
-            <button
-              type="button"
-              onClick={() => {
-                SoundEngine.playTap();
-                setViewMode('slides');
-              }}
-              className={`w-full py-2 px-3 rounded-xl flex items-center gap-2.5 text-left transition-all duration-200 border cursor-pointer group shadow-2xs ${
-                viewMode === 'slides'
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-blue-400 shadow-sm ring-1 ring-blue-300'
-                  : 'bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700/80'
-              }`}
-              title="Chuyển sang chế độ thuyết trình trình chiếu 4 slide"
-            >
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-transform ${
-                viewMode === 'slides'
-                  ? 'bg-white/20 text-white'
-                  : 'bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400'
-              }`}>
-                <WebIcon name="monitor" className="w-4 h-4 shrink-0" />
-              </div>
-              <span className="text-[12px] font-bold font-play tracking-tight truncate flex-1">
-                Trình chiếu
-              </span>
-              {viewMode === 'slides' && (
-                <span className="w-2 h-2 rounded-full bg-white shrink-0 animate-pulse" />
-              )}
-            </button>
-          </div>
-        )}
-      </aside>
-    );
-
-    return createPortal(navContent, document.body);
-  };
-
-  const renderSectionSwitcher = () => renderTopNavigationBar();
+  // Thanh điều hướng bên phải đã được gỡ bỏ hoàn toàn theo yêu cầu người dùng
+  const renderTopNavigationBar = () => null;
+  const renderSectionSwitcher = () => null;
 
   // Subcomponent to render each career milestone as a responsive Bento View Card
   const renderCareerCard = (
@@ -2457,28 +2197,12 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
         </>
       )}
 
-      {/* ========================================================================= */}
-      {/* CHẾ ĐỘ BẢNG TỔNG QUAN BENTO (DASHBOARD MODE - GIỐNG 100% HÌNH THAM KHẢO)  */}
-      {/* ========================================================================= */}
-      {viewMode === 'dashboard' && (
-        <LetterBentoDashboard
-          currentTheme={currentTheme}
-          companyName={companyName}
-          companyDisplay={companyDisplay}
-          onOpenCompanyModal={() => {
-            setCompanyInputDraft(companyName);
-            setIsCompanyModalOpen(true);
-          }}
-          onSwitchToSlides={() => setViewMode('slides')}
-          onSwitchToOnePage={() => setViewMode('one-page')}
-          onSelectMilestoneModal={(item) => setSelectedMilestone(item)}
-        />
-      )}
+
 
       {/* ========================================================================= */}
       {/* FEATURE 1: CHẾ ĐỘ XEM TOÀN VĂN THƯ NGỎ TRÊN 1 TRANG CUỘN (ONE-PAGE MODE) THEO CHUẨN DESIGN REFERENCE */}
       {/* ========================================================================= */}
-      {viewMode === 'one-page' && (
+      {false && (
         <div
           id="card-main-letter-one-page"
           className="w-full h-full flex-1 min-h-0 overflow-y-auto glass-scrollbar p-2 sm:p-3 md:p-4 lg:p-5 pr-1.5 sm:pr-2.5 space-y-4 sm:space-y-5 animate-fadeIn select-none text-slate-800 dark:text-slate-100"

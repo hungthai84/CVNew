@@ -1,0 +1,14 @@
+{
+  "entities": {
+    "contactMessages": {
+      "title": "Contact Messages",
+      "description": "Messages sent from contact form",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string" }
+      }
+    }
+  }
+}

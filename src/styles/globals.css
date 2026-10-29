@@ -48,6 +48,71 @@ ul,
 ol,
 blockquote {
   font-family: 'Play', system-ui, -apple-system, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* =========================================================================
+   MASTER TYPOGRAPHY SCALE TỐI ƯU TOÀN BỘ WEBSITE (FLUID RESPONSIVE TYPOGRAPHY)
+   Cùng đối tượng = Cùng cấp bậc = Cùng kích thước = Cùng độ đậm
+   Line-height tối ưu bảo vệ đầy đủ dấu tiếng Việt: mũ, ngã, sắc, nặng, hỏi
+   ========================================================================= */
+h1 {
+  font-size: clamp(1.4rem, 1.15rem + 1vw, 2rem) !important;
+  line-height: 1.32 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.015em !important;
+}
+
+h2 {
+  font-size: clamp(1.2rem, 1.05rem + 0.65vw, 1.55rem) !important;
+  line-height: 1.36 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+}
+
+h3 {
+  font-size: clamp(1.05rem, 0.95rem + 0.45vw, 1.32rem) !important;
+  line-height: 1.38 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.005em !important;
+}
+
+h4 {
+  font-size: clamp(0.925rem, 0.85rem + 0.35vw, 1.125rem) !important;
+  line-height: 1.42 !important;
+  font-weight: 700 !important;
+}
+
+h5 {
+  font-size: clamp(0.85rem, 0.8rem + 0.25vw, 1rem) !important;
+  line-height: 1.45 !important;
+  font-weight: 700 !important;
+}
+
+h6 {
+  font-size: clamp(0.8rem, 0.76rem + 0.15vw, 0.875rem) !important;
+  line-height: 1.48 !important;
+  font-weight: 700 !important;
+}
+
+/* Thân bài & đoạn văn chuẩn mực rõ ràng */
+p {
+  line-height: 1.62 !important;
+  letter-spacing: 0.005em !important;
+}
+
+/* Tiêu đề thẻ Card đồng bộ 100% kích thước & độ đậm */
+.card-title,
+.theme-pastel-card h2,
+.theme-pastel-card h3,
+.theme-pastel-card h4,
+.card-system .card-title {
+  font-size: clamp(0.925rem, 0.85rem + 0.35vw, 1.125rem) !important;
+  line-height: 1.36 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
 }
 
 /* Cho phép chọn và sao chép văn bản trên toàn bộ website */

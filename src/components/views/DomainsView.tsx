@@ -1267,10 +1267,11 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                     onMouseEnter={() => setHoveredCardId(domain.id)}
                     onMouseLeave={() => setHoveredCardId(null)}
                     className={cn(
-                      'theme-pastel-card rounded-[14px] cursor-pointer group/card relative transition-all duration-300 ease-out flex flex-col h-full min-h-0 text-left',
+                      'theme-pastel-card rounded-[14px] cursor-pointer relative flex flex-col h-full min-h-0 text-left',
+                      domain.id !== '01' && 'group/card transition-all duration-300 ease-out',
                       isBrandMatched &&
                         'ring-2 ring-cyan-400 dark:ring-cyan-300 shadow-[0_0_32px_rgba(56,189,248,0.55)] scale-[1.015] z-20',
-                      isDimmed && 'opacity-35 grayscale-[50%] transition-opacity duration-300'
+                      isDimmed && 'opacity-35 grayscale-[50%]'
                     )}
                     style={{
                       perspective: '1200px',
@@ -1279,7 +1280,7 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                   >
                   {/* Container xoay lật 3D */}
                   <div
-                    className="w-full h-full relative transition-transform duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                    className={cn("w-full h-full relative", domain.id !== '01' && "transition-transform duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]")}
                     style={{
                       transformStyle: 'preserve-3d',
                       transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
@@ -1289,41 +1290,63 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                     {/* MẶT TRƯỚC (FRONT): BỐ CỤC CODEPEN + AUDIO 15S + NÚT LẬT KPI */}
                     {/* ========================================================= */}
                     <div
-                      className="w-full h-full rounded-[14px] p-3.5 sm:p-4 border border-white/60 dark:border-white/10 shadow-[0_12px_32px_-6px_rgba(28,7,8,0.12),0_4px_10px_rgba(28,7,8,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_var(--card-accent-color,rgba(56,189,248,0.25))] hover:shadow-[0_24px_50px_-8px_rgba(28,7,8,0.22),inset_0_1px_2px_rgba(255,255,255,1)] dark:hover:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_var(--card-accent-color,rgba(56,189,248,0.45))] flex flex-col justify-between overflow-hidden relative transition-all duration-300 ease-out"
+                      className={cn(
+                        "w-full h-full rounded-[14px] p-3.5 sm:p-4 border flex flex-col justify-between overflow-hidden relative",
+                        domain.id === '01'
+                          ? "bg-white/90 dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 shadow-sm"
+                          : "border-white/60 dark:border-white/10 shadow-[0_12px_32px_-6px_rgba(28,7,8,0.12),0_4px_10px_rgba(28,7,8,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_var(--card-accent-color,rgba(56,189,248,0.25))] hover:shadow-[0_24px_50px_-8px_rgba(28,7,8,0.22),inset_0_1px_2px_rgba(255,255,255,1)] dark:hover:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_var(--card-accent-color,rgba(56,189,248,0.45))] transition-all duration-300 ease-out"
+                      )}
                       style={{
                         backfaceVisibility: 'hidden',
                         WebkitBackfaceVisibility: 'hidden',
-                        background: isDark
+                        background: domain.id === '01'
+                          ? undefined
+                          : isDark
                           ? 'linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(10, 15, 30, 0.78) 100%)'
                           : 'linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.42) 100%)',
-                        backdropFilter: 'blur(0.65em)',
-                        WebkitBackdropFilter: 'blur(0.65em)',
+                        backdropFilter: domain.id === '01' ? undefined : 'blur(0.65em)',
+                        WebkitBackdropFilter: domain.id === '01' ? undefined : 'blur(0.65em)',
                         ['--card-accent-color' as string]: cfg.accentColor,
                       }}
                     >
                       {/* Soft ambient background */}
-                      <div
-                        className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full pointer-events-none transition-all duration-500 opacity-75 group-hover/card:opacity-100 group-hover/card:scale-120 blur-2xl"
-                        style={{ background: cfg.ambientGlow }}
-                      />
-                      <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-white/60 dark:bg-white/5 blur-xl pointer-events-none group-hover/card:scale-125 transition-transform duration-500" />
+                      {domain.id !== '01' && (
+                        <>
+                          <div
+                            className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full pointer-events-none transition-all duration-500 opacity-75 group-hover/card:opacity-100 group-hover/card:scale-120 blur-2xl"
+                            style={{ background: cfg.ambientGlow }}
+                          />
+                          <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-white/60 dark:bg-white/5 blur-xl pointer-events-none group-hover/card:scale-125 transition-transform duration-500" />
+                        </>
+                      )}
 
                       {/* Top Row: Huy hiệu 3D tròn + Số thứ tự 01..06 + Tiêu đề 4 chữ + Phụ đề & Cụm nút AI 15s / KPI */}
                       <div className="relative z-10 flex items-start justify-between gap-2 shrink-0 w-full">
                         {/* Left: 3D Glossy Circular Icon + Number + Title + Subtitle */}
                         <div className="flex items-start gap-2.5 min-w-0 flex-1">
-                          <ParallaxTiltIcon maxTilt={18} glowColor={cfg.accentColor} className="shrink-0">
-                            <motion.div
-                              layoutId={`domain-icon-${domain.id}`}
-                              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white shadow-md border border-white/60 shrink-0"
+                          {domain.id === '01' ? (
+                            <div
+                              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white shadow-sm shrink-0"
                               style={{
                                 background: cfg.arrowBg,
-                                boxShadow: `0 6px 14px -2px ${cfg.accentColor}66, inset 0 2px 3px rgba(255,255,255,0.65)`,
                               }}
                             >
                               {getDomainBadgeIcon(domain.id, 'w-5 h-5 text-white')}
-                            </motion.div>
-                          </ParallaxTiltIcon>
+                            </div>
+                          ) : (
+                            <ParallaxTiltIcon maxTilt={18} glowColor={cfg.accentColor} className="shrink-0">
+                              <motion.div
+                                layoutId={`domain-icon-${domain.id}`}
+                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white shadow-md border border-white/60 shrink-0"
+                                style={{
+                                  background: cfg.arrowBg,
+                                  boxShadow: `0 6px 14px -2px ${cfg.accentColor}66, inset 0 2px 3px rgba(255,255,255,0.65)`,
+                                }}
+                              >
+                                {getDomainBadgeIcon(domain.id, 'w-5 h-5 text-white')}
+                              </motion.div>
+                            </ParallaxTiltIcon>
+                          )}
 
                           <div className="min-w-0 flex-1">
                             <div className="flex items-baseline gap-1.5 min-w-0">
@@ -1345,44 +1368,6 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                               {domain.titleVi}
                             </p>
                           </div>
-                        </div>
-
-                        {/* Right: 2 Nút Pill Glass (AI 15s & KPI) giống 100% hình tham khảo */}
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <button
-                            type="button"
-                            onClick={(e) =>
-                              handleToggleAudio(
-                                domain.id,
-                                DOMAIN_AUDIO_SUMMARIES[domain.id]?.text || domain.orientationVi,
-                                e
-                              )
-                            }
-                            className={cn(
-                              'px-2.5 py-1 rounded-full text-[10.5px] font-bold border transition-all flex items-center gap-1 cursor-pointer shadow-2xs backdrop-blur-md',
-                              isPlayingAudio
-                                ? 'bg-cyan-600 text-white border-cyan-300 shadow-md scale-105'
-                                : 'bg-white/85 dark:bg-slate-800/85 hover:bg-white text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-white/15'
-                            )}
-                            title="Nghe tóm tắt AI 15 giây"
-                          >
-                            {isPlayingAudio ? (
-                              <VolumeX className="w-3 h-3 text-white animate-pulse" />
-                            ) : (
-                              <Volume2 className="w-3 h-3" style={{ color: cfg.accentColor }} />
-                            )}
-                            <span>AI 15s</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={(e) => toggleCardFlip(domain.id, e)}
-                            className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-white/85 dark:bg-slate-800/85 hover:bg-white text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-white/15 transition-all flex items-center gap-1 cursor-pointer shadow-2xs backdrop-blur-md"
-                            title="Lật thẻ xem nhanh 4 chỉ số KPI"
-                          >
-                            <BarChart3 className="w-3 h-3" style={{ color: cfg.accentColor }} />
-                            <span>KPI</span>
-                          </button>
                         </div>
                       </div>
 
@@ -1461,58 +1446,6 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                         </div>
                       </div>
 
-                      {/* Thanh Thuyết Minh AI 15s Floating Mini Bar (khi isPlayingAudio) */}
-                      {isPlayingAudio && (
-                        <div className="absolute inset-x-2.5 bottom-12 z-30 p-2 rounded-[10px] bg-slate-950/95 text-white border border-cyan-400/50 shadow-2xl backdrop-blur-md flex flex-col gap-1 animate-fadeIn">
-                          <div className="flex items-center justify-between gap-1.5">
-                            <div className="flex items-center gap-1 min-w-0">
-                              <Sparkles className="w-3 h-3 text-cyan-400 animate-spin shrink-0" />
-                              <span className="text-[9.5px] font-bold uppercase tracking-wider text-cyan-300 font-play truncate">
-                                AI 15s • {currentAiVoiceLabel}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-1.5 shrink-0">
-                              {/* 5 cột sóng âm waveform nhấp nhô */}
-                              <div className="flex items-end gap-0.5 h-3">
-                                {[35, 85, 55, 100, 45].map((h, i) => (
-                                  <span
-                                    key={i}
-                                    className="w-0.5 bg-cyan-400 rounded-full animate-pulse"
-                                    style={{
-                                      height: `${h}%`,
-                                      animationDelay: `${i * 0.12}s`,
-                                      animationDuration: '0.5s',
-                                    }}
-                                  />
-                                ))}
-                              </div>
-                              <span className="font-mono text-[9.5px] font-bold text-amber-300 bg-black/50 px-1 rounded">
-                                {audioTimeLeft}s
-                              </span>
-                              <button
-                                type="button"
-                                onClick={(e) => handleToggleAudio(domain.id, '', e)}
-                                className="text-slate-400 hover:text-white p-0.5 cursor-pointer"
-                                title="Đóng thuyết minh"
-                              >
-                                <X className="w-3 h-3" />
-                              </button>
-                            </div>
-                          </div>
-                          {/* Progress bar */}
-                          <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 transition-all duration-100 ease-linear"
-                              style={{ width: `${audioProgress}%` }}
-                            />
-                          </div>
-                          {/* Subtitle text */}
-                          <p className="text-[9.5px] leading-tight text-slate-200 line-clamp-2 italic font-play">
-                            &ldquo;{DOMAIN_AUDIO_SUMMARIES[domain.id]?.text}&rdquo;
-                          </p>
-                        </div>
-                      )}
-
                       {/* Bottom Row: CTA Button + Partner Brand Circular Medallions */}
                       <div className="relative z-10 pt-2 mt-0.5 border-t border-black/5 dark:border-white/10 flex items-center justify-between gap-2 shrink-0">
                         {/* CodePen Pill CTA Button */}
@@ -1540,8 +1473,8 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                           </span>
                         </div>
 
-                        {/* Partner logos: Hiệu ứng xếp chồng đan xen (Overlapping Stack), vầng hào quang thương hiệu, tooltip vai trò & huy hiệu bảo chứng */}
-                        <div className="group/stack flex items-center -space-x-2.5 sm:-space-x-3 hover:space-x-1.5 transition-all duration-300 ease-out ml-auto py-1">
+                        {/* Partner logos: Không tạo viền, thu nhỏ 1/3 kích thước (16px), xếp chồng nhẹ */}
+                        <div className="group/stack flex items-center -space-x-1.5 hover:space-x-1 transition-all duration-300 ease-out ml-auto py-1">
                           {domain.logos.map((logo, logoIdx) => {
                             const isSelectedLogo = selectedBrands.some(
                               (b) =>
@@ -1563,28 +1496,18 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                                 onMouseLeave={() => setHoveredLogoKey(null)}
                                 style={{
                                   zIndex: isHoveredLogo ? 50 : 10 + logoIdx,
-                                  borderColor: brandMeta.color,
-                                  boxShadow: isHoveredLogo || isSelectedLogo
-                                    ? `0 0 16px ${brandMeta.glow}, 0 0 0 2px ${brandMeta.color}`
-                                    : `0 0 0 2px ${brandMeta.color}, 0 2px 6px rgba(0,0,0,0.1)`,
                                 }}
                                 className={cn(
-                                  'logo-pill-light w-[44px] h-[44px] sm:w-[48px] sm:h-[48px] rounded-full bg-white p-0.5 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer group/logo relative border-2 shadow-md overflow-hidden',
-                                  isHoveredLogo ? 'scale-115 -translate-y-1' : 'hover:scale-110 hover:-translate-y-0.5',
-                                  isSelectedLogo && 'scale-110'
+                                  'w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full bg-transparent p-0 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer group/logo relative border-0 shadow-none overflow-hidden',
+                                  isHoveredLogo ? 'scale-125 -translate-y-0.5' : 'hover:scale-115',
+                                  isSelectedLogo && 'scale-115'
                                 )}
                                 title={`Đối tác: ${logo.name} • Bấm để lọc kết hợp`}
                               >
-                                {/* 1. Vầng Hào Quang Thương Hiệu (Brand Glow Aura) */}
-                                <span
-                                  className="absolute -inset-1 rounded-full opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300 blur-[8px] pointer-events-none"
-                                  style={{ backgroundColor: brandMeta.color }}
-                                />
-
                                 <img
                                   src={logoSrc}
                                   alt={logo.alt}
-                                  className="w-full h-full object-cover block rounded-full shrink-0 pointer-events-none select-none transition-transform duration-200 relative z-1"
+                                  className="w-full h-full object-contain block rounded-full shrink-0 pointer-events-none select-none transition-transform duration-200 relative z-1"
                                   loading="lazy"
                                 />
 

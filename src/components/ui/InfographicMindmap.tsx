@@ -672,17 +672,19 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                   onMouseLeave={() => setHoveredNodeId(null)}
                   onClick={() => setSelectedBranchId(isSelected ? null : card.id)}
                   className={cn(
-                    'group relative p-3.5 sm:p-4 rounded-2xl border-2 border-dashed backdrop-blur-xl transition-all duration-300 cursor-pointer shadow-sm w-full h-[180px] min-h-[180px] max-h-[180px] flex flex-col justify-between overflow-hidden',
-                    isDark
-                      ? 'bg-slate-900/85 hover:bg-slate-900'
-                      : 'bg-white/90 hover:bg-white',
+                    'group relative p-3.5 sm:p-4 rounded-2xl border backdrop-blur-xl transition-all duration-300 cursor-pointer w-full h-[180px] min-h-[180px] max-h-[180px] flex flex-col justify-between overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.06)] hover:-translate-y-1 hover:shadow-lg',
                     isSelected && 'ring-2 ring-offset-2 dark:ring-offset-slate-950',
                     isSelected && isDark && 'shadow-[0_0_20px_rgba(56,189,248,0.25)]',
                     isCardDimmed && 'opacity-40 grayscale-[40%]'
                   )}
                   style={{
-                    borderColor: card.themeColor,
-                    borderStyle: 'dashed',
+                    background: isDark
+                      ? card.cardDarkBg || 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.85) 100%)'
+                      : card.cardBg,
+                    borderColor: isDark ? `${card.themeColor}55` : `${card.themeColor}40`,
+                    boxShadow: isDark
+                      ? `0 10px 25px -5px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1)`
+                      : `0 10px 25px -5px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.85)`,
                   }}
                 >
                   {/* Nhãn Khung Hợp Nhất kèm Số thứ tự, Icon & Tên kỹ năng */}

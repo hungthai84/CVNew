@@ -111,24 +111,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
   const handlePrevVideoScreen = () => {
     SoundEngine.playGlassChime();
     setIsIntroMode(false);
-    setActiveVideoScreen((prev) => {
-      const next = prev === 1 ? 3 : prev - 1;
-      const target = VIDEO_SCREENS[next - 1];
-      showToast(`Đang phát ${target.label} · ${target.title}`);
-      return next;
-    });
+    const next = activeVideoScreen === 1 ? 3 : activeVideoScreen - 1;
+    setActiveVideoScreen(next);
+    const target = VIDEO_SCREENS[next - 1];
+    showToast(`Đang phát ${target.label} · ${target.title}`);
   };
 
   // Điều hướng màn hình video qua phải (Next)
   const handleNextVideoScreen = () => {
     SoundEngine.playGlassChime();
     setIsIntroMode(false);
-    setActiveVideoScreen((prev) => {
-      const next = prev === 3 ? 1 : prev + 1;
-      const target = VIDEO_SCREENS[next - 1];
-      showToast(`Đang phát ${target.label} · ${target.title}`);
-      return next;
-    });
+    const next = activeVideoScreen === 3 ? 1 : activeVideoScreen + 1;
+    setActiveVideoScreen(next);
+    const target = VIDEO_SCREENS[next - 1];
+    showToast(`Đang phát ${target.label} · ${target.title}`);
   };
 
   const formatTime = (seconds: number) => {

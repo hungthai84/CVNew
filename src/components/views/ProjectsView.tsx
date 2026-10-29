@@ -3,10 +3,8 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { 
   LayoutGrid, 
-  Layers, 
   Maximize2, 
   ChevronRight, 
-  ChevronLeft, 
   Volume2, 
   VolumeX, 
   FolderGit2, 
@@ -127,13 +125,11 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
   const isLight = currentTheme !== 'dark-neon';
 
   const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'carousel'>('grid');
   const [selectedGroup, setSelectedGroup] = useState<ProjectCardGroup | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<ProjectData | null>(null);
   const [mindmapProject, setMindmapProject] = useState<ProjectData | null>(null);
   const [activeSection, setActiveSection] = useState<string>('sec-overview');
   const [isBannerMuted, setIsBannerMuted] = useState<boolean>(true);
-  const [activeCarouselIdx, setActiveCarouselIdx] = useState<number>(0);
 
   const bannerVideoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -277,79 +273,14 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
     video.muted = next;
   };
 
-  const handlePrevCarousel = () => {
-    SoundEngine.playTap();
-    setActiveCarouselIdx((prev) => (prev > 0 ? prev - 1 : filteredProjects.length - 1));
-  };
-
-  const handleNextCarousel = () => {
-    SoundEngine.playTap();
-    setActiveCarouselIdx((prev) => (prev < filteredProjects.length - 1 ? prev + 1 : 0));
-  };
-
   return (
     <div className="w-full h-full flex flex-col gap-3.5 sm:gap-4 overflow-y-auto no-scrollbar pb-6 select-none text-left">
       {/* Khi chưa chọn xem chi tiết dự án: Hiển thị Hero Banner và Danh sách thẻ dự án */}
       {!selectedGroup && !selectedArticle ? (
         <>
-          {/* HEADER TOOLBAR & BỘ LỌC DỰ ÁN (ĐÃ BỎ BANNER) */}
-          <section className="relative w-full rounded-2xl p-3 sm:p-4 border border-cyan-500/25 dark:border-cyan-400/25 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white/75 dark:bg-slate-900/75 backdrop-blur-md shrink-0 text-left">
-            <div className="flex items-center gap-3 min-w-0 flex-wrap">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white flex items-center justify-center shadow-xs border border-cyan-300/40 shrink-0">
-                <FolderGit2 className="w-5 h-5" />
-              </div>
-              <div className="space-y-0.5 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-base sm:text-lg font-bold font-play text-slate-900 dark:text-white tracking-tight leading-tight">
-                    {formatCardTitle('Dự án thực chiến')}
-                  </h1>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-400/30">
-                    {PROJECTS_DATA.length} Dự Án &amp; Giải Pháp
-                  </span>
-                </div>
-                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
-                  21 Dự án Chuyên ngành • Chuẩn hóa quy trình SOP, kiến trúc dữ liệu CRM &amp; ứng dụng AI đa kênh.
-                </p>
-              </div>
-            </div>
+
 
             <div className="flex items-center gap-2 flex-wrap shrink-0">
-              {/* Chế độ xem: Lưới / Băng chuyền */}
-              <div className="bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200 dark:border-white/10 flex items-center gap-0.5">
-                <button
-                  type="button"
-                  onClick={() => {
-                    SoundEngine.playTap();
-                    setViewMode('grid');
-                  }}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
-                    viewMode === 'grid'
-                      ? 'bg-cyan-600 text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                  title="Xem dạng lưới"
-                >
-                  <LayoutGrid className="w-3.5 h-3.5" />
-                  <span className="text-[11px]">Lưới</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    SoundEngine.playTap();
-                    setViewMode('carousel');
-                  }}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
-                    viewMode === 'carousel'
-                      ? 'bg-cyan-600 text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                  title="Xem dạng băng chuyền"
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span className="text-[11px]">Trình chiếu</span>
-                </button>
-              </div>
-
               {/* Bộ lọc danh mục 5 nhóm dự án */}
               <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
                 {PROJECT_CATEGORIES.map((cat) => {
@@ -361,7 +292,6 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
                       onClick={() => {
                         SoundEngine.playTap();
                         setActiveCategory(cat.id);
-                        setActiveCarouselIdx(0);
                       }}
                       className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold whitespace-nowrap transition cursor-pointer border ${
                         isSelected
@@ -375,12 +305,9 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
                 })}
               </div>
             </div>
-          </section>
 
-          {/* 2. NỘI DUNG CHÍNH: CHẾ ĐỘ LƯỚI (GRID 4 CỘT) HOẶC BĂNG CHUYỀN (CAROUSEL) */}
-          {viewMode === 'grid' ? (
-            /* CHẾ ĐỘ 1: RESPONSIVE CARD GRID VIEW (LƯỚI 4 CỘT ĐỒNG BỘ 100% NHƯ THẺ HỌC VẤN) */
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4 items-stretch">
+          {/* NỘI DUNG CHÍNH: RESPONSIVE CARD GRID VIEW (LƯỚI 4 CỘT ĐỒNG BỘ 100% NHƯ THẺ HỌC VẤN) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4 items-stretch">
               {filteredProjects.map((proj) => {
                 const parentGroup = getParentGroupForProject(proj);
                 const cfg = getVisualConfigForProject(proj);
@@ -507,130 +434,6 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
                 );
               })}
             </div>
-          ) : (
-            /* CHẾ ĐỘ 2: TRÌNH CHIẾU / BĂNG CHUYỀN (CAROUSEL VIEW) */
-            <div className="flex flex-col gap-3">
-              {filteredProjects.length > 0 && (() => {
-                const curProj = filteredProjects[activeCarouselIdx];
-                const curGroup = getParentGroupForProject(curProj);
-                const curCfg = getVisualConfigForProject(curProj);
-                const cleanCurTitle = curProj.title.replace(/^[\d.]+\s*·\s*/, '').trim();
-
-                return (
-                  <div className={`p-4 sm:p-6 rounded-2xl border shadow-xl flex flex-col lg:flex-row gap-5 items-stretch ${
-                    isDark ? 'bg-slate-900/90 border-slate-700 text-white' : 'bg-white/95 border-slate-200 text-slate-900'
-                  }`}>
-                    {/* Cột trái: Ảnh dự án lớn */}
-                    <div className="lg:w-1/2 flex flex-col justify-between">
-                      <div
-                        onClick={() => {
-                          SoundEngine.playTap();
-                          setMindmapProject(curProj);
-                        }}
-                        className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-black shadow-md border border-white/20 cursor-pointer group"
-                      >
-                        <img
-                          src={curProj.image}
-                          alt={curProj.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = 'https://i.ibb.co/vzG7Z1z/hungthai-avatar.jpg';
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors flex items-center justify-center">
-                          <span className="px-3 py-1.5 rounded-full bg-black/70 text-white text-xs font-bold backdrop-blur-md opacity-0 group-hover:opacity-100 transition flex items-center gap-1.5">
-                            <Maximize2 className="w-3.5 h-3.5" />
-                            <span>Phóng to sơ đồ tư duy</span>
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Điều hướng Carousel mini */}
-                      <div className="flex items-center justify-between gap-2 pt-3">
-                        <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
-                          Dự án {activeCarouselIdx + 1} / {filteredProjects.length}
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            type="button"
-                            onClick={handlePrevCarousel}
-                            className="p-1.5 rounded-lg border border-slate-300 dark:border-white/20 bg-slate-100 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-cyan-950 text-slate-700 dark:text-white transition cursor-pointer"
-                          >
-                            <ChevronLeft className="w-4 h-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleNextCarousel}
-                            className="p-1.5 rounded-lg border border-slate-300 dark:border-white/20 bg-slate-100 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-cyan-950 text-slate-700 dark:text-white transition cursor-pointer"
-                          >
-                            <ChevronRight className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Cột phải: Thông tin sâu dự án */}
-                    <div className="lg:w-1/2 flex flex-col justify-between space-y-3">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <span
-                            style={{ color: curCfg.accentColor, borderColor: `${curCfg.accentColor}50` }}
-                            className="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-cyan-500/10 border"
-                          >
-                            {curGroup.fourWordTitle}
-                          </span>
-                          <span className="text-xs font-mono font-bold opacity-70">
-                            Mã {curProj.code} • {curProj.phase || 'Hoàn thành 100%'}
-                          </span>
-                        </div>
-
-                        <h2 className="text-xl sm:text-2xl font-black font-play tracking-tight text-cyan-700 dark:text-cyan-400">
-                          {formatCardTitle(cleanCurTitle)}
-                        </h2>
-
-                        <p className="text-xs font-bold font-mono opacity-80">
-                          Vai trò: {curProj.role || 'Trưởng Dự Án'}
-                        </p>
-
-                        <p className="text-xs sm:text-sm leading-relaxed font-medium">
-                          {curProj.description}
-                        </p>
-
-                        {/* STAR Actions nổi bật */}
-                        {curProj.star?.actions && (
-                          <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 space-y-1.5">
-                            <span className="text-xs font-bold uppercase tracking-wider block text-cyan-600 dark:text-cyan-400">
-                              Hạng mục thực thi cốt lõi (STAR Actions)
-                            </span>
-                            <ul className="space-y-1">
-                              {curProj.star.actions.slice(0, 3).map((act, aIdx) => (
-                                <li key={aIdx} className="text-xs flex items-start gap-1.5 font-medium">
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500 shrink-0 mt-0.5" />
-                                  <span>
-                                    <strong>{act.title}:</strong> {act.desc}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Nút xem chi tiết STAR */}
-                      <button
-                        type="button"
-                        onClick={() => handleOpenGroup(curGroup, curProj)}
-                        className="w-full py-2 px-3 rounded-xl text-xs font-bold font-play flex items-center justify-center gap-1.5 transition border bg-slate-900 text-white hover:bg-cyan-600 dark:bg-white dark:text-slate-900 dark:hover:bg-cyan-400 shadow-md cursor-pointer"
-                      >
-                        <span>Xem chi tiết hồ sơ dự án (STAR)</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-          )}
         </>
       ) : (
         /* 3. CHI TIẾT DỰ ÁN & HỒ SƠ STAR TOÀN DIỆN */

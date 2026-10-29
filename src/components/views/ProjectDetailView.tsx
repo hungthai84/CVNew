@@ -5,7 +5,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ProjectData } from '@/types';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { useToast } from '@/components/ui/Toast';
-import { Printer, Copy, FileText, Check, X } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
@@ -2192,7 +2191,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
                 title="Xuất tóm tắt dự án dạng Executive One-Pager (STAR Format)"
               >
                 <span className="shrink-0 flex items-center" style={{ color: isLightMode ? '#059669' : '#34d399' }}>
-                  <FileText className="w-3.5 h-3.5" />
+                  <WebIcon name="file-text" className="w-3.5 h-3.5" />
                 </span>
                 <span className="font-play" style={{ color: isLightMode ? '#059669' : '#34d399' }}>
                   Tóm Tắt Executive PDF
@@ -2254,7 +2253,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             {/* Modal Actions Header */}
             <div className="p-4 border-b border-slate-200 dark:border-white/10 flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-950">
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <WebIcon name="file-text" className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 <h4 className="font-black text-sm sm:text-base font-play">
                   Executive STAR One-Pager ({selectedArticle.code})
                 </h4>
@@ -2267,7 +2266,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
                   className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/15 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
                   title="Sao chép toàn bộ nội dung STAR"
                 >
-                  <Copy className="w-3.5 h-3.5" />
+                  <WebIcon name="copy" className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Sao chép STAR</span>
                 </button>
                 <button
@@ -2276,7 +2275,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
                   className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 transition cursor-pointer shadow-sm active:scale-95"
                   title="In hoặc Lưu thành tệp PDF"
                 >
-                  <Printer className="w-3.5 h-3.5" />
+                  <WebIcon name="printer" className="w-3.5 h-3.5" />
                   <span>In / Lưu PDF</span>
                 </button>
                 <button
@@ -2284,7 +2283,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
                   onClick={() => setIsExportModalOpen(false)}
                   className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-rose-500 hover:text-white transition flex items-center justify-center text-slate-400 cursor-pointer"
                 >
-                  <X className="w-4 h-4" />
+                  <WebIcon name="x" className="w-4 h-4" />
                 </button>
               </div>
             </div>

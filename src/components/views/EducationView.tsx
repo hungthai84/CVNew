@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   GraduationCap,
   CheckCircle2,
@@ -234,161 +235,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
 
   return (
     <div className="w-full h-full flex flex-col gap-3 sm:gap-3.5 overflow-y-auto no-scrollbar pb-6 select-none text-left">
-      {/* HEADER TOOLBAR & BỘ LỌC DANH MỤC (ĐÃ BỎ BANNER) */}
-      <section className="relative w-full rounded-2xl p-3 sm:p-4 border border-emerald-500/25 dark:border-emerald-400/25 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white/75 dark:bg-slate-900/75 backdrop-blur-md shrink-0 text-left">
-        <div className="flex items-center gap-3 min-w-0 flex-wrap">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-xs border border-emerald-300/40 shrink-0">
-            <GraduationCap className="w-5 h-5" />
-          </div>
-          <div className="space-y-0.5 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-base sm:text-lg font-bold font-play text-slate-900 dark:text-white tracking-tight leading-tight">
-                {formatCardTitle('Học vấn chứng chỉ')}
-              </h1>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                {filteredCourses.length} / {EDUCATION_COURSES.length} Văn bằng
-              </span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-400/30">
-                <ShieldCheck className="w-3 h-3 text-cyan-500 dark:text-cyan-300" />
-                <span>100% Xác thực số</span>
-              </span>
-            </div>
-            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
-              14 Chứng chỉ chuyên ngành (2003 – 2024) • Kết hợp nền tảng Công nghệ CNTT và Quản trị vận hành CX C-Level.
-            </p>
-          </div>
-        </div>
 
-        {/* Bộ lọc danh mục chuẩn 2 chữ có Icon */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 shrink-0">
-          {TWO_WORD_CATEGORIES.map((cat) => {
-            const isSelected = activeCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => {
-                  SoundEngine.playTap();
-                  setActiveCategory(cat.id);
-                  setActiveCarouselIdx(0);
-                }}
-                className={`px-3 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition cursor-pointer border inline-flex items-center gap-1.5 ${
-                  isSelected
-                    ? 'bg-emerald-600 text-white font-bold border-emerald-500 shadow-xs'
-                    : 'bg-white/80 dark:bg-slate-800/80 hover:bg-emerald-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
-                }`}
-              >
-                {renderCategoryIcon(cat.id, 'w-3.5 h-3.5 shrink-0')}
-                <span>{cat.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 2. THANH KÉO THỜI GIAN TỐT NGHIỆP (TIMELINE GRADUATION FILTER 2003 - 2024) - NỀN TRONG SUỐT 50% */}
-      <section
-        className={`w-full rounded-2xl p-3 sm:px-4 sm:py-2.5 border shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 shrink-0 ${
-          isDark
-            ? 'bg-slate-900/50 border-slate-700/60 text-slate-100'
-            : 'bg-white/50 border-slate-200/80 text-slate-800'
-        }`}
-        style={{
-          backgroundColor: isDark ? 'rgba(15, 23, 42, 0.5)' : 'rgba(255, 255, 255, 0.5)',
-          backdropFilter: 'blur(16px)',
-        }}
-      >
-        {/* Cột trái: Nhãn & Thanh kéo Range 2003 - 2024 */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 shrink-0">
-            <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            <span className="text-xs font-black font-play tracking-tight">
-              Hành trình năm (2003 – {exactYearFilter ?? maxYearFilter}):
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 flex-1 max-w-xs">
-            <span className="text-[10px] font-mono font-bold opacity-75">2003</span>
-            <input
-              type="range"
-              min={2003}
-              max={2024}
-              value={exactYearFilter ?? maxYearFilter}
-              onChange={(e) => {
-                const yr = Number(e.target.value);
-                setExactYearFilter(null);
-                setMaxYearFilter(yr);
-                setActiveCarouselIdx(0);
-              }}
-              className="w-full h-1.5 bg-emerald-500/30 rounded-lg appearance-none cursor-pointer accent-emerald-500"
-              title="Kéo thanh thời gian để lọc hành trình nâng cấp bằng cấp từ 2003 đến 2024"
-            />
-            <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
-              {exactYearFilter ?? maxYearFilter}
-            </span>
-          </div>
-        </div>
-
-        {/* Cột phải: Các mốc năm tốt nghiệp nhanh */}
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
-          <button
-            type="button"
-            onClick={() => {
-              SoundEngine.playTap();
-              setExactYearFilter(null);
-              setMaxYearFilter(2024);
-              setActiveCarouselIdx(0);
-            }}
-            className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border transition cursor-pointer shrink-0 ${
-              exactYearFilter === null && maxYearFilter === 2024
-                ? 'bg-emerald-600 text-white border-emerald-400 shadow-2xs'
-                : 'bg-white/50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 border-slate-300/70 dark:border-white/15 hover:border-emerald-400'
-            }`}
-          >
-            2003–2024
-          </button>
-          {GRADUATION_YEARS.map((yr) => {
-            const isExact = exactYearFilter === yr;
-            return (
-              <button
-                key={yr}
-                type="button"
-                onClick={() => {
-                  SoundEngine.playTap();
-                  if (exactYearFilter === yr) {
-                    setExactYearFilter(null);
-                    setMaxYearFilter(2024);
-                  } else {
-                    setExactYearFilter(yr);
-                  }
-                  setActiveCarouselIdx(0);
-                }}
-                className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border transition cursor-pointer shrink-0 ${
-                  isExact
-                    ? 'bg-emerald-500 text-slate-950 font-black border-emerald-300 shadow-2xs scale-105'
-                    : yr <= maxYearFilter && exactYearFilter === null
-                    ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/25'
-                    : 'bg-white/40 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 border-slate-300/50 dark:border-white/10'
-                }`}
-                title={`Lọc chứng chỉ tốt nghiệp năm ${yr}`}
-              >
-                {yr}
-              </button>
-            );
-          })}
-          {(exactYearFilter !== null || maxYearFilter < 2024 || activeCategory !== 'all' || selectedRadarAxisId !== null) && (
-            <button
-              type="button"
-              onClick={handleResetFilters}
-              className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-600 dark:text-rose-300 border border-rose-400/40 hover:bg-rose-500 hover:text-white transition cursor-pointer flex items-center gap-1 shrink-0"
-              title="Đặt lại toàn bộ bộ lọc"
-            >
-              <RotateCcw className="w-3 h-3" />
-              <span>Đặt lại</span>
-            </button>
-          )}
-        </div>
-      </section>
 
       {/* 3. BIỂU ĐỒ RADAR NĂNG LỰC HỌC VẤN (ACADEMIC COMPETENCY MATRIX) - HIỂN THỊ KHI CHỌN VIEW 'RADAR' HOẶC ĐANG LỌC TRỤC RADAR */}
       {(viewMode === 'radar' || selectedRadarAxisId !== null) && (
@@ -744,8 +591,9 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
               : formatCardTitle(course.title);
 
             return (
-              <article
+              <motion.article
                 key={course.id}
+                layoutId={`education-card-${course.id}`}
                 onClick={() => handleOpenDetail(course)}
                 className={`group relative rounded-2xl overflow-hidden p-3 sm:p-3.5 flex flex-col justify-between border select-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${
                   isDark
@@ -875,7 +723,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                     </div>
                   </div>
                 </div>
-              </article>
+              </motion.article>
             );
           })}
         </div>
@@ -1000,64 +848,90 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
         );
       })()}
 
-      {/* 6. MODAL CHI TIẾT BẰNG CẤP CHUYÊN SÂU (COURSE DETAIL MODAL) */}
-      {selectedCourse && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-300">
-          <div
-            className={`relative w-full max-w-2xl max-h-[90vh] rounded-2xl overflow-y-auto no-scrollbar border shadow-2xl flex flex-col justify-between p-4 sm:p-6 ${
-              isDark
-                ? 'bg-slate-900 border-emerald-400/50 text-white shadow-[0_0_50px_rgba(16,185,129,0.25)]'
-                : 'bg-white border-emerald-300 text-slate-900 shadow-2xl'
+      {/* 6. EXPANDED COURSE DETAIL CARD (Kích thước chiếm chính xác toàn bộ vùng lưới, hiệu ứng Card Expansion Transition như thẻ dịch vụ) */}
+      {selectedCourse && (() => {
+        const course = selectedCourse;
+        const verifyInfo = CREDENTIAL_VERIFICATION_MAP[course.id];
+        return (
+          <motion.div
+            key={`education-detail-${course.id}`}
+            layoutId={`education-card-${course.id}`}
+            initial={{ opacity: 0.95 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.25 } }}
+            transition={{
+              duration: 0.55,
+              ease: [0.25, 1, 0.5, 1],
+            }}
+            className={`theme-pastel-card w-full h-full flex-1 min-h-0 rounded-[14px] border p-3.5 sm:p-4 lg:p-5 shadow-[0_16px_40px_-6px_rgba(15,23,42,0.18),0_6px_16px_-2px_rgba(15,23,42,0.08),inset_0_1px_2px_rgba(255,255,255,0.95)] dark:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_rgba(16,185,129,0.35),inset_0_1px_1.5px_rgba(255,255,255,0.18)] relative overflow-hidden flex flex-col justify-between text-left font-play transition-all duration-300 ${
+              isDark ? 'bg-slate-900 border-emerald-400/50 text-white' : 'bg-white border-emerald-300 text-slate-900'
             }`}
           >
-            {/* Header Modal */}
-            <div className="flex items-start justify-between gap-3 pb-3 border-b border-black/10 dark:border-white/10 shrink-0">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-2 py-0.5 rounded-full text-[10.5px] font-mono font-bold bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-400/30">
-                    {getShortCategoryLabel(selectedCourse.category)}
-                  </span>
-                  <span className="text-[11px] font-mono font-bold opacity-75">
-                    Năm {selectedCourse.year} • Mã: {selectedCourse.code}
-                  </span>
-                  {CREDENTIAL_VERIFICATION_MAP[selectedCourse.id] && (
-                    <button
-                      type="button"
-                      onClick={(e) => handleOpenVerifyModal(selectedCourse, e)}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-400/40 hover:bg-cyan-500 hover:text-white transition cursor-pointer"
-                    >
-                      <ShieldCheck className="w-3 h-3" />
-                      <span>Mã số: {CREDENTIAL_VERIFICATION_MAP[selectedCourse.id].credentialId}</span>
-                    </button>
-                  )}
-                </div>
-                <h3 className="text-lg sm:text-xl font-black font-play text-emerald-700 dark:text-emerald-400">
-                  {formatCardTitle(selectedCourse.title)}
-                </h3>
-                <p className="text-xs font-bold opacity-80">
-                  {selectedCourse.issuer}
-                </p>
+            {/* Soft ambient background glows */}
+            <div className="absolute -right-16 -bottom-16 w-80 h-80 rounded-full pointer-events-none opacity-80 blur-3xl bg-emerald-500/20" />
+            <div className="absolute -left-12 -top-12 w-64 h-64 rounded-full bg-white/40 dark:bg-white/5 blur-2xl pointer-events-none" />
+
+            {/* Header Bar: Huy hiệu tròn + Tiêu đề + Mũi tên > + Nút Quay lại & Đóng X */}
+            <div className="w-full flex items-center justify-between gap-3 shrink-0 pb-2.5 border-b border-black/10 dark:border-white/10 relative z-10 flex-wrap sm:flex-nowrap">
+              <div className="flex items-center gap-2.5 min-w-0 flex-wrap sm:flex-nowrap">
+                <motion.div
+                  layoutId={`education-icon-${course.id}`}
+                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full shrink-0 flex items-center justify-center text-white shadow-md border border-white/60 bg-emerald-600"
+                >
+                  <GraduationCap className="w-5 h-5 text-white" />
+                </motion.div>
+
+                <motion.h3
+                  layoutId={`education-title-${course.id}`}
+                  className="text-[18px] sm:text-[21px] lg:text-[23px] font-black font-play leading-none tracking-tight truncate flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"
+                  title={course.title}
+                >
+                  <span>{formatCardTitle(course.title)}</span>
+                  <ChevronRight className="w-4 h-4 opacity-70 shrink-0" />
+                </motion.h3>
+
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border shadow-2xs bg-emerald-100/90 dark:bg-slate-800/90 border-emerald-300/80 dark:border-white/15 text-emerald-800 dark:text-emerald-300 shrink-0">
+                  <span>Năm {course.year} • {course.code}</span>
+                </span>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setSelectedCourse(null)}
-                className="p-1.5 rounded-lg border border-slate-300 dark:border-white/20 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 dark:bg-slate-800 dark:hover:bg-rose-950 dark:text-slate-300 transition cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              {/* Right: Quay lại & Đóng X */}
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    SoundEngine.playTap();
+                    setSelectedCourse(null);
+                  }}
+                  className="px-4 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0"
+                  title="Quay lại danh sách học vấn"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>Quay lại danh sách</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    SoundEngine.playTap();
+                    setSelectedCourse(null);
+                  }}
+                  className="w-8 h-8 rounded-full bg-slate-200/80 dark:bg-white/10 hover:bg-rose-500 hover:text-white dark:hover:bg-rose-500 dark:hover:text-white text-slate-700 dark:text-slate-200 transition-all flex items-center justify-center cursor-pointer active:scale-95 shrink-0 border border-slate-300/60 dark:border-white/15"
+                  title="Đóng thẻ (Esc)"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
-            {/* Body Modal */}
-            <div className="py-3 space-y-3.5 flex-1 min-h-0 overflow-y-auto no-scrollbar">
-              {/* Hình bằng cấp có thể bấm phóng to */}
+            {/* Body of detail view */}
+            <div className="py-3 space-y-3.5 flex-1 min-h-0 overflow-y-auto no-scrollbar relative z-10">
               <div
-                onClick={() => handleOpenLightbox(selectedCourse.image, selectedCourse.title)}
+                onClick={() => handleOpenLightbox(course.image, course.title)}
                 className="relative aspect-[16/10] w-full rounded-xl overflow-hidden bg-black shadow-md border border-black/15 dark:border-white/15 cursor-pointer group"
               >
                 <img
-                  src={selectedCourse.image}
-                  alt={selectedCourse.title}
+                  src={course.image}
+                  alt={course.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition flex items-center justify-center">
@@ -1068,23 +942,21 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                 </div>
               </div>
 
-              {/* Tóm tắt mô tả */}
               <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50">
                 <span className="text-[10px] font-black uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400">
                   Tổng quan mục tiêu giá trị
                 </span>
                 <p className="text-xs leading-relaxed font-medium">
-                  {selectedCourse.desc}
+                  {course.desc}
                 </p>
               </div>
 
-              {/* Danh sách chuyên đề */}
               <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 space-y-2">
                 <span className="text-[10px] font-black uppercase tracking-wider block text-emerald-600 dark:text-emerald-400">
                   Học phần chuyên đề đào tạo
                 </span>
                 <ul className="space-y-1.5">
-                  {selectedCourse.modules.map((mod, idx) => (
+                  {course.modules.map((mod, idx) => (
                     <li key={idx} className="text-xs leading-snug flex items-start gap-2 font-medium">
                       <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                       <span>{mod}</span>
@@ -1093,23 +965,21 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                 </ul>
               </div>
 
-              {/* Ứng dụng thực tế */}
               <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50">
                 <span className="text-[10px] font-black uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400">
                   Ứng dụng trong thực chiến quản trị
                 </span>
                 <p className="text-xs leading-relaxed font-medium">
-                  {selectedCourse.application}
+                  {course.application}
                 </p>
               </div>
 
-              {/* Kỹ năng đạt được */}
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider block mb-1.5 text-slate-500 dark:text-slate-400">
                   Năng lực kỹ năng đạt được:
                 </span>
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  {selectedCourse.skills.map((sk, idx) => (
+                  {course.skills.map((sk, idx) => (
                     <span
                       key={idx}
                       className="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700"
@@ -1121,22 +991,22 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
               </div>
             </div>
 
-            {/* Footer Modal */}
-            <div className="pt-3 border-t border-black/10 dark:border-white/10 flex items-center justify-between gap-3 shrink-0 flex-wrap">
+            {/* Footer */}
+            <div className="pt-3 border-t border-black/10 dark:border-white/10 flex items-center justify-between gap-3 shrink-0 flex-wrap relative z-10">
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => handleOpenLightbox(selectedCourse.image, selectedCourse.title)}
+                  onClick={() => handleOpenLightbox(course.image, course.title)}
                   className="px-3.5 py-1.5 rounded-xl text-xs font-bold font-play flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer shadow-sm"
                 >
                   <Maximize2 className="w-3.5 h-3.5" />
                   <span>Xem ảnh bằng cấp</span>
                 </button>
 
-                {CREDENTIAL_VERIFICATION_MAP[selectedCourse.id] && (
+                {CREDENTIAL_VERIFICATION_MAP[course.id] && (
                   <button
                     type="button"
-                    onClick={(e) => handleOpenVerifyModal(selectedCourse, e)}
+                    onClick={(e) => handleOpenVerifyModal(course, e)}
                     className="px-3.5 py-1.5 rounded-xl text-xs font-bold font-play flex items-center gap-1.5 bg-cyan-600 hover:bg-cyan-700 text-white transition cursor-pointer shadow-sm"
                   >
                     <ShieldCheck className="w-3.5 h-3.5" />
@@ -1153,9 +1023,9 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                 Đóng
               </button>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        );
+      })()}
 
       {/* 7. LIGHTBOX PHÓNG TO ẢNH BẰNG CẤP FULL MÀN HÌNH */}
       {isLightboxOpen && (
