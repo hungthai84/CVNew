@@ -25,7 +25,6 @@ import {
   Layers,
   ArrowRight,
   Filter,
-  Activity,
 } from 'lucide-react';
 import { cn, formatCardTitle } from '@/lib/utils';
 import { SoundEngine } from '@/components/ui/SoundEngine';
@@ -42,46 +41,6 @@ const SKILL_ILLUSTRATIONS: Record<string, string> = {
   'skill-05': 'https://i.ibb.co/B8K1Gwr/D-ch-v-b-o-hi-m-removebg-preview.png',
   'skill-06': 'https://i.ibb.co/4RYYfBvx/D-ch-v-vi-n-th-ng-removebg-preview.png',
 };
-
-// TÍNH NĂNG 2: Dữ liệu 4 Trục Khung Năng Lực CX (Interactive CX Competency Radar)
-export const CX_RADAR_DIMENSIONS = [
-  {
-    name: 'Quản trị vận hành',
-    score: 96,
-    sub: 'SOP, KPI, Contact Center 130+ nhân sự',
-    icon: 'layers',
-    color: '#0284c7',
-    glow: 'rgba(2, 132, 199, 0.4)',
-    desc: 'Hơn 22 năm thiết lập quy trình vận hành SOP, kiểm soát chất lượng QA/QC, tối ưu SLA 98.6% và giải quyết khiếu nại lần đầu FCR > 90%.',
-  },
-  {
-    name: 'Thiết kế CX',
-    score: 98,
-    sub: 'Hành trình khách hàng, NPS & CSAT',
-    icon: 'sparkles',
-    color: '#ec4899',
-    glow: 'rgba(236, 72, 153, 0.4)',
-    desc: 'Kiến tạo hành trình trải nghiệm khách hàng đa kênh (Omnichannel), khảo sát VOC thời gian thực, duy trì tỷ lệ hài lòng CSAT > 98.2%.',
-  },
-  {
-    name: 'AI Contact Center',
-    score: 94,
-    sub: 'GenAI Agent, CRM & Automation',
-    icon: 'bot',
-    color: '#8b5cf6',
-    glow: 'rgba(139, 92, 246, 0.4)',
-    desc: 'Tích hợp AI Agents tự động hóa hỗ trợ 24/7, chatbot định tuyến thông minh, tối ưu 40% thời gian xử lý cuộc gọi và tin nhắn.',
-  },
-  {
-    name: 'Lãnh đạo đội ngũ',
-    score: 97,
-    sub: 'Đào tạo, văn hóa dịch vụ & kế thừa',
-    icon: 'users',
-    color: '#10b981',
-    glow: 'rgba(16, 185, 129, 0.4)',
-    desc: 'Trực tiếp tuyển dụng, huấn luyện và truyền cảm hứng cho hàng trăm nhân viên CSKH, xây dựng văn hóa phục vụ từ tâm và lộ trình thăng tiến rõ ràng.',
-  },
-];
 
 // Thuật toán vẽ đường line kết nối chuẩn xác theo yêu cầu:
 // - Thẻ Hàng 1 (trên): Xuất phát từ TOP hình tròn (500, 220)
@@ -259,8 +218,7 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState<'all' | 'S' | 'W' | 'O' | 'T' | 'LANG'>('all');
 
-  // 2. YÊU CẦU 2: Bộ Lọc Cấp Độ Năng Lực (Skill Level Filter)
-  const [minProficiency, setMinProficiency] = useState<number>(0);
+
 
   // 4. YÊU CẦU 4: Liên Kết Nhanh Đến Dự Án Thực Chiến (Cross-link to Projects Modal)
   const [selectedSkillForProjects, setSelectedSkillForProjects] = useState<{
@@ -272,9 +230,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
     categoryFilter?: string;
   } | null>(null);
 
-  // Tính năng 2: Bộ Chỉ Số Trực Quan Radar Khung Năng Lực (Interactive CX Competency Radar)
-  const [showRadarModal, setShowRadarModal] = useState<boolean>(false);
-  const [activeRadarDimension, setActiveRadarDimension] = useState<number | null>(null);
 
   // Helper icons cho từng nhánh
   const getBranchIcon = (cardId: string, className = 'w-4 h-4') => {
@@ -368,64 +323,7 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
           </span>
         </div>
 
-        {/* Center: YÊU CẦU 2 — Bộ Lọc Cấp Độ Năng Lực (Skill Level Filter Slider) */}
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full border backdrop-blur-xl pointer-events-auto shadow-sm bg-white/85 dark:bg-slate-900/85 border-slate-200/80 dark:border-slate-800">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 font-play">
-            <Zap className="w-3.5 h-3.5 text-amber-500 animate-pulse shrink-0" />
-            <span className="hidden md:inline">Tinh thông</span>
-            <span className="font-mono text-sky-600 dark:text-sky-400">≥{minProficiency}%</span>
-          </div>
 
-          <input
-            type="range"
-            min={0}
-            max={95}
-            step={5}
-            value={minProficiency}
-            onChange={(e) => {
-              setMinProficiency(Number(e.target.value));
-              SoundEngine.playPop();
-            }}
-            className="w-16 sm:w-24 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500"
-            title="Thanh trượt lọc kỹ năng theo tỷ lệ tinh thông"
-          />
-
-          {minProficiency > 0 && (
-            <button
-              type="button"
-              onClick={() => {
-                SoundEngine.playTap();
-                setMinProficiency(0);
-              }}
-              className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-500 transition-colors"
-              title="Đặt lại bộ lọc (hiển thị tất cả)"
-            >
-              ✕
-            </button>
-          )}
-
-          {/* Quick presets */}
-          <div className="hidden lg:flex items-center gap-1 border-l border-slate-200 dark:border-slate-800 pl-1.5 ml-1">
-            {[85, 90, 95].map((level) => (
-              <button
-                key={level}
-                type="button"
-                onClick={() => {
-                  SoundEngine.playTap();
-                  setMinProficiency(level);
-                }}
-                className={cn(
-                  'px-1.5 py-0.5 text-[10px] font-mono font-bold rounded transition-colors',
-                  minProficiency === level
-                    ? 'bg-sky-500 text-white'
-                    : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-                )}
-              >
-                {level}%+
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Right: Zoom Controls & YÊU CẦU 3 — Nút Xuất Ảnh Sơ Đồ */}
         <div className="flex items-center gap-2 pointer-events-auto">
@@ -457,19 +355,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
             </button>
           </div>
 
-          {/* TÍNH NĂNG 2: Nút Mở Biểu Đồ Radar Khung Năng Lực CX */}
-          <button
-            type="button"
-            onClick={() => {
-              SoundEngine.playTap();
-              setShowRadarModal(true);
-            }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border backdrop-blur-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white shadow-md hover:brightness-110 active:scale-95 transition-all text-xs font-bold cursor-pointer"
-            title="Mở biểu đồ Radar Khung Năng Lực CX (Interactive CX Competency Radar)"
-          >
-            <Activity className="w-3.5 h-3.5 animate-pulse" />
-            <span className="hidden sm:inline">Radar Năng Lực</span>
-          </button>
         </div>
       </div>
 
@@ -657,12 +542,7 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
               const isPlayingAudio = playingAudioId === card.id;
               const cardOrder = idx === 0 ? '01' : idx === 1 ? '02' : '03';
 
-              // Kiểm tra số lượng kỹ năng đạt chuẩn lọc minProficiency
-              const qualifyingPills = card.pills.filter((p) => {
-                const scoreNum = parseInt(p.score.replace(/\D/g, '')) || 0;
-                return scoreNum >= minProficiency;
-              });
-              const isCardDimmed = minProficiency > 0 && qualifyingPills.length === 0;
+              const isCardDimmed = false;
 
               return (
                 <motion.div
@@ -713,7 +593,7 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                       >
                         <span style={{ color: card.themeColor }}>{getBranchIcon(card.id, 'w-3.5 h-3.5')}</span>
                         <span
-                          className="text-xs font-bold tracking-tight truncate"
+                          className="text-[17px] sm:text-[18.5px] lg:text-[19.5px] font-black font-play leading-tight tracking-tight truncate"
                           style={{ color: card.themeColor }}
                         >
                           {formatCardTitle(card.title)}
@@ -768,10 +648,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                   {/* Danh sách kỹ năng: Có số thứ tự, icon, tên kỹ năng và % điểm */}
                   <div className="flex flex-wrap items-center gap-1.5 overflow-hidden">
                     {card.pills.slice(0, 4).map((pill, pIdx) => {
-                      const scoreNum = parseInt(pill.score.replace(/\D/g, '')) || 0;
-                      const isHighlighted = minProficiency > 0 && scoreNum >= minProficiency;
-                      const isFaded = minProficiency > 0 && scoreNum < minProficiency;
-
                       return (
                         <button
                           key={pIdx}
@@ -792,9 +668,7 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                             'inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-medium border transition-all duration-200 cursor-pointer',
                             isDark
                               ? 'bg-slate-800/80 border-slate-700/80 text-slate-200 hover:border-slate-600'
-                              : 'bg-slate-50 border-slate-200/90 text-slate-800 hover:border-slate-300',
-                            isHighlighted && 'ring-1 ring-sky-400 font-bold shadow-xs',
-                            isFaded && 'opacity-25'
+                              : 'bg-slate-50 border-slate-200/90 text-slate-800 hover:border-slate-300'
                           )}
                           title={`Bấm để xem các dự án thực tế đã áp dụng: ${pill.name}`}
                         >
@@ -884,12 +758,7 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
               const isPlayingAudio = playingAudioId === card.id;
               const cardOrder = idx === 0 ? '04' : idx === 1 ? '05' : '06';
 
-              // Kiểm tra số lượng kỹ năng đạt chuẩn lọc minProficiency
-              const qualifyingPills = card.pills.filter((p) => {
-                const scoreNum = parseInt(p.score.replace(/\D/g, '')) || 0;
-                return scoreNum >= minProficiency;
-              });
-              const isCardDimmed = minProficiency > 0 && qualifyingPills.length === 0;
+              const isCardDimmed = false;
 
               return (
                 <motion.div
@@ -993,10 +862,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                   {/* Danh sách kỹ năng: Có số thứ tự, icon, tên kỹ năng và % điểm */}
                   <div className="flex flex-wrap items-center gap-1.5 overflow-hidden">
                     {card.pills.slice(0, 4).map((pill, pIdx) => {
-                      const scoreNum = parseInt(pill.score.replace(/\D/g, '')) || 0;
-                      const isHighlighted = minProficiency > 0 && scoreNum >= minProficiency;
-                      const isFaded = minProficiency > 0 && scoreNum < minProficiency;
-
                       return (
                         <button
                           key={pIdx}
@@ -1017,9 +882,7 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                             'inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-medium border transition-all duration-200 cursor-pointer',
                             isDark
                               ? 'bg-slate-800/80 border-slate-700/80 text-slate-200 hover:border-slate-600'
-                              : 'bg-slate-50 border-slate-200/90 text-slate-800 hover:border-slate-300',
-                            isHighlighted && 'ring-1 ring-sky-400 font-bold shadow-xs',
-                            isFaded && 'opacity-25'
+                              : 'bg-slate-50 border-slate-200/90 text-slate-800 hover:border-slate-300'
                           )}
                           title={`Bấm để xem các dự án thực tế đã áp dụng: ${pill.name}`}
                         >
@@ -1221,288 +1084,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
           </div>
         )}
 
-        {/* TÍNH NĂNG 2: INTERACTIVE CX COMPETENCY RADAR SPIDER CHART MODAL */}
-        {showRadarModal && (
-          <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-md animate-fadeIn"
-            onClick={() => setShowRadarModal(false)}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94, y: 16 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.94, y: 16 }}
-              transition={{ duration: 0.28, ease: 'easeOut' }}
-              onClick={(e) => e.stopPropagation()}
-              className={cn(
-                'w-full max-w-4xl max-h-[90vh] rounded-3xl border shadow-2xl backdrop-blur-2xl p-5 sm:p-6 flex flex-col gap-4 overflow-hidden relative',
-                isDark
-                  ? 'bg-slate-900/95 border-slate-700 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(56,189,248,0.2)]'
-                  : 'bg-white/95 border-slate-200 text-slate-800 shadow-[0_20px_50px_rgba(15,23,42,0.18)]'
-              )}
-            >
-              {/* Header Modal */}
-              <div className="flex items-center justify-between pb-3 border-b border-black/5 dark:border-white/10 shrink-0">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-cyan-500 text-white flex items-center justify-center shadow-md">
-                    <Activity className="w-5 h-5 animate-pulse" />
-                  </div>
-                  <div>
-                    <h3 className="text-base sm:text-lg font-black font-play tracking-tight text-slate-900 dark:text-white">
-                      Radar Khung Năng Lực
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                      Đo lường định lượng 4 trụ cột chuyên môn CX & Vận hành thực chiến
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    SoundEngine.playTap();
-                    setShowRadarModal(false);
-                  }}
-                  className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-rose-500 hover:text-white text-slate-400 dark:text-slate-300 transition-colors cursor-pointer"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              {/* Body: 2 Cột (Trái: SVG Spider Radar Chart, Phải: Thẻ Chi Tiết Năng Lực) */}
-              <div className="flex-1 min-h-0 overflow-y-auto glass-scrollbar grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
-                {/* Cột Trái: SVG Spider Radar Chart (5/12) */}
-                <div className="md:col-span-5 flex flex-col items-center justify-center relative p-2">
-                  <svg
-                    viewBox="0 0 360 360"
-                    className="w-full max-w-[320px] aspect-square drop-shadow-lg select-none"
-                  >
-                    <defs>
-                      <radialGradient id="radarBgGrad" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.18" />
-                        <stop offset="70%" stopColor="#818cf8" stopOpacity="0.08" />
-                        <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-                      </radialGradient>
-                      <linearGradient id="radarAreaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.65" />
-                        <stop offset="50%" stopColor="#818cf8" stopOpacity="0.55" />
-                        <stop offset="100%" stopColor="#ec4899" stopOpacity="0.65" />
-                      </linearGradient>
-                    </defs>
-
-                    {/* Vùng nền quầng sáng */}
-                    <circle cx="180" cy="180" r="130" fill="url(#radarBgGrad)" />
-
-                    {/* 4 Vòng lưới đa giác đồng tâm (25%, 50%, 75%, 100%) */}
-                    {[0.25, 0.5, 0.75, 1.0].map((level, lIdx) => {
-                      const r = 125 * level;
-                      const polyPoints = [
-                        `${180},${180 - r}`,
-                        `${180 + r},${180}`,
-                        `${180},${180 + r}`,
-                        `${180 - r},${180}`,
-                      ].join(' ');
-                      return (
-                        <g key={lIdx}>
-                          <polygon
-                            points={polyPoints}
-                            fill="none"
-                            stroke={isDark ? 'rgba(255,255,255,0.14)' : 'rgba(15,23,42,0.1)'}
-                            strokeWidth="1.2"
-                            strokeDasharray={lIdx < 3 ? '3 3' : 'none'}
-                          />
-                          <text
-                            x={183}
-                            y={180 - r + 10}
-                            fill={isDark ? 'rgba(255,255,255,0.35)' : 'rgba(15,23,42,0.4)'}
-                            fontSize="8"
-                            fontFamily="monospace"
-                            fontWeight="bold"
-                          >
-                            {Math.round(level * 100)}%
-                          </text>
-                        </g>
-                      );
-                    })}
-
-                    {/* 4 Trục tia phân kỳ (Cross Axes) */}
-                    <line x1="180" y1="55" x2="180" y2="305" stroke={isDark ? 'rgba(255,255,255,0.2)' : 'rgba(15,23,42,0.15)'} strokeWidth="1.2" />
-                    <line x1="55" y1="180" x2="305" y2="180" stroke={isDark ? 'rgba(255,255,255,0.2)' : 'rgba(15,23,42,0.15)'} strokeWidth="1.2" />
-
-                    {/* Vùng Polygon Diện Tích Khung Năng Lực (Competency Covered Polygon) */}
-                    {(() => {
-                      const R = 125;
-                      const s0 = CX_RADAR_DIMENSIONS[0].score / 100; // Quản trị vận hành (Top)
-                      const s1 = CX_RADAR_DIMENSIONS[1].score / 100; // Thiết kế CX (Right)
-                      const s2 = CX_RADAR_DIMENSIONS[2].score / 100; // AI Contact Center (Bottom)
-                      const s3 = CX_RADAR_DIMENSIONS[3].score / 100; // Lãnh đạo đội ngũ (Left)
-
-                      const p0 = `${180},${180 - R * s0}`;
-                      const p1 = `${180 + R * s1},${180}`;
-                      const p2 = `${180},${180 + R * s2}`;
-                      const p3 = `${180 - R * s3},${180}`;
-                      const allPoints = `${p0} ${p1} ${p2} ${p3}`;
-
-                      return (
-                        <>
-                          <polygon
-                            points={allPoints}
-                            fill="url(#radarAreaGrad)"
-                            stroke="#38bdf8"
-                            strokeWidth="2.5"
-                            className="transition-all duration-300"
-                            style={{ filter: 'drop-shadow(0 0 10px rgba(56,189,248,0.5))' }}
-                          />
-
-                          {/* 4 Điểm chốt tương tác */}
-                          {[
-                            { x: 180, y: 180 - R * s0, dim: CX_RADAR_DIMENSIONS[0], idx: 0 },
-                            { x: 180 + R * s1, y: 180, dim: CX_RADAR_DIMENSIONS[1], idx: 1 },
-                            { x: 180, y: 180 + R * s2, dim: CX_RADAR_DIMENSIONS[2], idx: 2 },
-                            { x: 180 - R * s3, y: 180, dim: CX_RADAR_DIMENSIONS[3], idx: 3 },
-                          ].map((pt) => {
-                            const isDimActive = activeRadarDimension === pt.idx;
-                            return (
-                              <g
-                                key={pt.idx}
-                                onMouseEnter={() => setActiveRadarDimension(pt.idx)}
-                                onMouseLeave={() => setActiveRadarDimension(null)}
-                                className="cursor-pointer group/dot"
-                              >
-                                <circle
-                                  cx={pt.x}
-                                  cy={pt.y}
-                                  r={isDimActive ? 7.5 : 5}
-                                  fill={pt.dim.color}
-                                  stroke="#ffffff"
-                                  strokeWidth="2"
-                                  className="transition-all duration-200"
-                                  style={{ filter: `drop-shadow(0 0 8px ${pt.dim.glow})` }}
-                                />
-                                {isDimActive && (
-                                  <circle
-                                    cx={pt.x}
-                                    cy={pt.y}
-                                    r={12}
-                                    fill="none"
-                                    stroke={pt.dim.color}
-                                    strokeWidth="1.5"
-                                    className="animate-ping"
-                                    opacity="0.8"
-                                  />
-                                )}
-                              </g>
-                            );
-                          })}
-                        </>
-                      );
-                    })()}
-
-                    {/* Nhãn 4 Trục */}
-                    <text x="180" y="42" textAnchor="middle" fill="#0284c7" fontSize="10.5" fontWeight="900" fontFamily="sans-serif">
-                      Quản trị vận hành ({CX_RADAR_DIMENSIONS[0].score}%)
-                    </text>
-                    <text x="312" y="184" textAnchor="start" fill="#ec4899" fontSize="10.5" fontWeight="900" fontFamily="sans-serif">
-                      Thiết kế CX ({CX_RADAR_DIMENSIONS[1].score}%)
-                    </text>
-                    <text x="180" y="325" textAnchor="middle" fill="#8b5cf6" fontSize="10.5" fontWeight="900" fontFamily="sans-serif">
-                      AI Contact Center ({CX_RADAR_DIMENSIONS[2].score}%)
-                    </text>
-                    <text x="48" y="184" textAnchor="end" fill="#10b981" fontSize="10.5" fontWeight="900" fontFamily="sans-serif">
-                      Lãnh đạo ({CX_RADAR_DIMENSIONS[3].score}%)
-                    </text>
-                  </svg>
-                </div>
-
-                {/* Cột Phải: Bảng Chi Tiết 4 Nhóm Năng Lực Thực Chiến (7/12) */}
-                <div className="md:col-span-7 flex flex-col gap-2.5">
-                  <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-between">
-                    <span>Đánh giá chuẩn hóa 4 trụ cột:</span>
-                    <span className="font-mono text-emerald-600 dark:text-emerald-400">Trung bình: 96.3%</span>
-                  </div>
-
-                  {CX_RADAR_DIMENSIONS.map((dim, dIdx) => {
-                    const isHovered = activeRadarDimension === dIdx;
-                    return (
-                      <div
-                        key={dIdx}
-                        onMouseEnter={() => setActiveRadarDimension(dIdx)}
-                        onMouseLeave={() => setActiveRadarDimension(null)}
-                        style={{
-                          borderColor: isHovered ? dim.color : undefined,
-                          backgroundColor: isHovered
-                            ? isDark
-                              ? 'rgba(15, 23, 42, 0.9)'
-                              : 'rgba(255, 255, 255, 0.95)'
-                            : undefined,
-                          boxShadow: isHovered ? `0 0 16px ${dim.glow}` : undefined,
-                        }}
-                        className={cn(
-                          'p-3 sm:p-3.5 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col gap-1.5',
-                          isDark
-                            ? 'bg-slate-800/60 border-slate-700/80'
-                            : 'bg-slate-50/80 border-slate-200/80'
-                        )}
-                      >
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <span
-                              className="w-2.5 h-2.5 rounded-full shrink-0"
-                              style={{ backgroundColor: dim.color }}
-                            />
-                            <h4
-                              className="text-xs sm:text-sm font-black font-play tracking-tight"
-                              style={{ color: dim.color }}
-                            >
-                              {dim.name}
-                            </h4>
-                            <span className="text-[10px] text-slate-400 dark:text-slate-400 hidden sm:inline">
-                              · {dim.sub}
-                            </span>
-                          </div>
-                          <span
-                            className="font-mono font-black text-sm px-2 py-0.5 rounded-md text-white shrink-0"
-                            style={{ backgroundColor: dim.color }}
-                          >
-                            {dim.score}%
-                          </span>
-                        </div>
-
-                        {/* Thanh đo tiến độ (Score Progress Bar) */}
-                        <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                          <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{
-                              width: `${dim.score}%`,
-                              backgroundColor: dim.color,
-                            }}
-                          />
-                        </div>
-
-                        <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                          {dim.desc}
-                        </p>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Footer Modal */}
-              <div className="flex items-center justify-between pt-3 border-t border-black/5 dark:border-white/10 text-xs shrink-0">
-                <span className="text-slate-400 font-mono text-[11px]">
-                  * Dữ liệu dựa trên 22+ năm lãnh đạo thực tế và 21 dự án trọng điểm
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setShowRadarModal(false)}
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs hover:brightness-105 transition cursor-pointer shadow-sm"
-                >
-                  Đóng Biểu Đồ Radar
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
       </AnimatePresence>
     </div>
   );

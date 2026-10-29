@@ -132,6 +132,49 @@ const SystemCardVideoPlayer: React.FC<SystemCardVideoPlayerProps> = ({
   );
 };
 
+// Full-card video player: Khi rê chuột vào thẻ hệ thống sẽ hiển thị video toàn thẻ hệ thống, video hiển thị rõ ràng không hiển thị gì khác ngoài video
+interface FullCardVideoPlayerProps {
+  videoUrl: string;
+  isHovered: boolean;
+}
+
+const FullCardVideoPlayer: React.FC<FullCardVideoPlayerProps> = ({ videoUrl, isHovered }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (isHovered) {
+      video.currentTime = 0;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
+    } else {
+      video.pause();
+      video.currentTime = 0;
+    }
+  }, [isHovered]);
+
+  return (
+    <div
+      className={`absolute inset-0 z-30 w-full h-full rounded-[14px] overflow-hidden bg-black transition-opacity duration-200 pointer-events-none ${
+        isHovered ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
+      <video
+        ref={videoRef}
+        src={videoUrl}
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="w-full h-full object-cover rounded-[14px]"
+      />
+    </div>
+  );
+};
+
 // Thông số kỹ thuật chi tiết cho Chế Độ Xem Bảng Ma Trận Tính Năng (Compact Comparison Matrix View) & Live Health Pulse
 interface SystemTechSpecItem {
   database: string;
@@ -1676,7 +1719,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                     }}
                     className={`system-flip-wrap ${
                       isExpanded
-                        ? 'col-span-1 row-span-3 min-h-[460px] sm:min-h-[490px] z-20'
+                        ? 'col-span-1 row-span-4 min-h-[600px] sm:min-h-[640px] z-20'
                         : 'col-span-1 row-span-1 min-h-[138px] sm:min-h-[148px] z-1'
                     } ${
                       isFlowNodeSelected
@@ -1685,7 +1728,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                     } transition-all duration-500 ease-out`}
                   >
                     {isExpanded ? (
-                      /* THẺ MỞ RỘNG THEO CHIỀU DỌC: Kích thước tăng cộng 2 thẻ theo chiều dọc (row-span-3) */
+                      /* THẺ MỞ RỘNG THEO CHIỀU DỌC: Kích thước bằng 4 thẻ theo chiều dọc (row-span-4) */
                       <article
                         onClick={(e) => e.stopPropagation()}
                         className="relative w-full h-full rounded-[14px] overflow-hidden p-3 sm:p-4 flex flex-col justify-between select-none border transition-all duration-500 shadow-2xl backdrop-blur-xl"
@@ -1861,6 +1904,8 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                             }
                             handleToggleExpandCard(item.id, e);
                           }}
+                          onMouseEnter={() => setHoveredCardId(item.id)}
+                          onMouseLeave={() => setHoveredCardId(null)}
                           title={
                             isFlowCanvasActive
                               ? `Nhấp chọn ${item.abbr} để nối đường truyền dữ liệu thời gian thực`
@@ -1880,6 +1925,14 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                             color: isVividDarkFace ? '#ffffff' : config.lightAccent,
                           }}
                         >
+                          {/* KHI RÊ CHUỘT VÀO THẺ HỆ THỐNG: HIỂN THỊ VIDEO TOÀN THẺ HỆ THỐNG, VIDEO HIỂN THỊ RÕ RÀNG KHÔNG HIỂN THỊ GÌ KHÁC NGOÀI VIDEO */}
+                          {item.videoUrl && (
+                            <FullCardVideoPlayer
+                              videoUrl={item.videoUrl}
+                              isHovered={hoveredCardId === item.id}
+                            />
+                          )}
+
                           {/* Ambient Glow Orb */}
                           <div
                             className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full pointer-events-none blur-2xl"

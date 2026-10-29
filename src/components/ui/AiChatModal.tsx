@@ -591,12 +591,12 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end select-none">
+    <div className="fixed bottom-2 right-2 left-2 sm:left-auto sm:bottom-6 sm:right-6 z-50 flex flex-col items-end select-none max-w-full">
       {/* Cửa sổ Chat Glass UI */}
       <div
         ref={modalContainerRef}
-        className={`w-[92vw] sm:w-[420px] rounded-[22px] border border-white/80 dark:border-slate-700/80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl transition-all duration-300 flex flex-col overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.18),0_10px_25px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] ${
-          isMinimized ? 'h-[64px]' : 'h-[590px] max-h-[85vh]'
+        className={`w-full sm:w-[420px] max-w-[calc(100vw-16px)] sm:max-w-[440px] rounded-[22px] border border-white/80 dark:border-slate-700/80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl transition-all duration-300 flex flex-col overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.18),0_10px_25px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] ${
+          isMinimized ? 'h-[64px]' : 'h-[590px] max-h-[calc(100dvh-20px)] sm:max-h-[85vh]'
         }`}
       >
         {/* Header Thanh Tiêu Đề Glass UI Hiện Đại */}

@@ -50,7 +50,7 @@ import { WallpaperView } from '@/components/views/WallpaperView';
 
 export default function HomePage() {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [currentTheme, setCurrentTheme] = useState<SiteTheme>('light-glass');
+  const [currentTheme, setCurrentTheme] = useState<SiteTheme>('dark-neon');
   const [isThemeTransitioning, setIsThemeTransitioning] = useState<boolean>(false);
   const [isAiChatOpen, setIsAiChatOpen] = useState<boolean>(false);
   const [isPagesCarouselOpen, setIsPagesCarouselOpen] = useState<boolean>(false);
@@ -388,15 +388,15 @@ export default function HomePage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNextSlideshowWallpaper]);
 
-  // On mount: Default to light-glass (Glass UI Light Multicolor), clear legacy theme cache
+  // On mount: Default to dark-neon (Glass UI Dark Neon Multicolor), clear legacy theme cache
   useEffect(() => {
     (async () => {
       try {
         // 1. Load persistent theme from localStorage
-        let storedTheme: SiteTheme = 'light-glass';
+        let storedTheme: SiteTheme = 'dark-neon';
         try {
           const saved = localStorage.getItem('hungthai_site_theme') as SiteTheme | null;
-          if (saved) {
+          if (saved && saved !== 'light-glass') {
             storedTheme = saved;
           }
         } catch {}
@@ -618,15 +618,8 @@ export default function HomePage() {
       {/* Main UI Root Layout (Header bám sát mép trên, Footer bám sát mép dưới) */}
       <div
         id="app-root-layout"
-        data-responsive-viewport={responsiveViewport}
         className={`w-full h-full h-[100dvh] max-h-[100dvh] flex flex-col justify-between items-center relative z-10 overflow-hidden transition-all duration-500 py-0 pt-0 pb-0 ${
           isZenMode ? 'opacity-0 scale-[0.985] pointer-events-none select-none' : 'opacity-100 scale-100'
-        } ${
-          responsiveViewport === 'tablet'
-            ? 'max-w-[820px] mx-auto shadow-[0_0_60px_rgba(0,0,0,0.45)] border-x border-white/30'
-            : responsiveViewport === 'mobile'
-            ? 'max-w-[430px] mx-auto shadow-[0_0_60px_rgba(0,0,0,0.55)] border-x border-white/30'
-            : ''
         }`}
       >
         {/* 
@@ -771,39 +764,6 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Thanh Chuyển Đổi Kích Thước Responsive Web Trực Tiếp (Desktop / Tablet / Mobile Simulator) */}
-      {!isZenMode && (
-        <div className="fixed bottom-2.5 left-2.5 z-50 hidden lg:flex items-center gap-1 p-1 rounded-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-slate-200/90 dark:border-cyan-400/30 shadow-lg select-none">
-          {(
-            [
-              { id: 'desktop', label: 'Desktop', icon: 'monitor' },
-              { id: 'tablet', label: 'Tablet', icon: 'tablet' },
-              { id: 'mobile', label: 'Mobile', icon: 'smartphone' },
-            ] as const
-          ).map((vp) => {
-            const isActive = responsiveViewport === vp.id;
-            return (
-              <button
-                key={vp.id}
-                type="button"
-                onClick={() => {
-                  SoundEngine.playTap();
-                  setResponsiveViewport(vp.id);
-                }}
-                title={`Chế độ hiển thị ${vp.label}`}
-                className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
-                  isActive
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-                }`}
-              >
-                <WebIcon name={vp.icon} className="w-3 h-3" />
-                <span>{vp.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
 
       {/* AI Assistant Chat Glass Popup */}
       <AiChatModal

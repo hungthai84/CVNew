@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Fleur+De+Leah&family=Italianno&family=Play:ital,wght@0,400;0,700;1,400;1,700&family=Playwrite+NZ+Guides&family=Playwrite+New+Zealand+Guides&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Fleur+De+Leah&family=Inter:wght@300;400;500;600;700&family=Italianno&family=Play:ital,wght@0,400;0,700;1,400;1,700&family=Playwrite+NZ+Guides&family=Playwrite+New+Zealand+Guides&display=swap');
 @import './variables.css';
 @import './cursors.css';
 @import './lucian/tokens.css';
@@ -103,17 +103,26 @@ p {
   letter-spacing: 0.005em !important;
 }
 
-/* Tiêu đề thẻ Card đồng bộ 100% kích thước & độ đậm */
+/* Tiêu đề thẻ Card đồng bộ 100% kích thước thẻ dịch vụ (17px -> 18.5px -> 19.5px) */
 .card-title,
+.domain-card-title,
 .theme-pastel-card h2,
 .theme-pastel-card h3,
 .theme-pastel-card h4,
 .card-system .card-title {
-  font-size: clamp(0.925rem, 0.85rem + 0.35vw, 1.125rem) !important;
-  line-height: 1.36 !important;
+  font-size: clamp(1.0625rem, 0.95rem + 0.55vw, 1.22rem) !important;
+  line-height: 1.32 !important;
   font-weight: 700 !important;
   letter-spacing: -0.01em !important;
 }
+
+/* Kiểu dáng full chiều cao và full chiều rộng đồng nhất cho các khối thẻ trên toàn website */
+.theme-pastel-card {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
 
 /* Cho phép chọn và sao chép văn bản trên toàn bộ website */
 html,
@@ -228,9 +237,9 @@ div#app-root-layout main#center-card div#content-display h4 svg {
 }
 
 /* =========================================================================
-   HỆ THỐNG ICON LUCIDE MẢNG ĐẶC (LUCIDE SOLID / FILLED ICONS SYSTEM)
-   Đồng bộ toàn bộ biểu tượng trên website sang phong cách khối mảng đặc (Solid Fill),
-   tăng cường độ tương phản, đầy đặn, sang trọng trên cả giao diện Light Glass và Dark Neon.
+   HỆ THỐNG ICON DẠNG LINE ICON THANH MẢNH HIỆN ĐẠI (VECTOR OUTLINE LINE ICONS)
+   Đồng bộ toàn bộ biểu tượng trên website sang phong cách nét vẽ Line Icon (Outline),
+   nét vẽ sắc sảo, tinh tế, trong suốt, tương thích hoàn hảo cả Giao diện Sáng và Tối.
    ========================================================================= */
 .lucide,
 svg.lucide,
@@ -242,105 +251,53 @@ svg[class*="lucide"],
 .animated-service-icon svg,
 .edu-stack-card h3 svg,
 .theme-pastel-card svg {
+  fill: none !important;
+  stroke: currentColor !important;
   stroke-linejoin: round !important;
   stroke-linecap: round !important;
-  stroke-width: 2.75px !important;
+  stroke-width: 2px !important;
 }
 
-/* 1. Đổ màu mảng đặc cho các hình học khép kín nguyên thủy trong SVG (Polygon, Rect, Circle, Ellipse) */
+/* Đảm bảo toàn bộ các hình học và đường path bên trong SVG giữ đúng kiểu dáng nét vẽ Line Icon */
 svg.lucide polygon,
 svg.lucide rect,
 svg.lucide circle,
 svg.lucide ellipse,
+svg.lucide path,
 svg[class*="lucide"] polygon,
 svg[class*="lucide"] rect,
 svg[class*="lucide"] circle,
 svg[class*="lucide"] ellipse,
+svg[class*="lucide"] path,
 .web-icon-solid polygon,
 .web-icon-solid rect,
 .web-icon-solid circle,
 .web-icon-solid ellipse,
+.web-icon-solid path,
 .card-title-icon polygon,
 .card-title-icon rect,
 .card-title-icon circle,
-.card-title-icon ellipse {
-  fill: currentColor !important;
-  fill-opacity: 0.88 !important;
-}
-
-/* 2. Đổ màu mảng đặc cho tất cả các đường Path khép kín (kết thúc bằng lệnh ClosePath Z hoặc z) */
-svg.lucide path[d*="Z"],
-svg.lucide path[d*="z"],
-svg[class*="lucide"] path[d*="Z"],
-svg[class*="lucide"] path[d*="z"],
-.web-icon-solid path[d*="Z"],
-.web-icon-solid path[d*="z"],
-.card-title-icon path[d*="Z"],
-.card-title-icon path[d*="z"],
-.theme-card-icon svg path[d*="Z"],
-.theme-card-icon svg path[d*="z"],
-.animated-service-icon svg path[d*="Z"],
-.animated-service-icon svg path[d*="z"] {
-  fill: currentColor !important;
-  fill-opacity: 0.88 !important;
-}
-
-/* 3. Tối ưu mảng đặc 100% cho các biểu tượng danh mục trọng điểm của Lucide */
-svg.lucide-star,
-svg.lucide-heart,
-svg.lucide-bookmark,
-svg.lucide-award,
-svg.lucide-shield,
-svg.lucide-shield-check,
-svg.lucide-trophy,
-svg.lucide-sparkles,
-svg.lucide-flame,
-svg.lucide-zap,
-svg.lucide-bell,
-svg.lucide-check-circle,
-svg.lucide-check-circle-2,
-svg.lucide-folder,
-svg.lucide-mail,
-svg.lucide-user,
-svg.lucide-users,
-svg.lucide-graduation-cap,
-svg.lucide-briefcase,
-svg.lucide-play,
-svg.lucide-pause,
-svg.lucide-circle-check,
-svg.lucide-square {
-  fill: currentColor !important;
-}
-svg.lucide-star path,
-svg.lucide-heart path,
-svg.lucide-bookmark path,
-svg.lucide-award path,
-svg.lucide-shield path,
-svg.lucide-shield-check path,
-svg.lucide-trophy path,
-svg.lucide-sparkles path,
-svg.lucide-flame path,
-svg.lucide-zap path,
-svg.lucide-bell path,
-svg.lucide-check-circle path,
-svg.lucide-check-circle-2 path,
-svg.lucide-folder path,
-svg.lucide-mail path,
-svg.lucide-user path,
-svg.lucide-users path,
-svg.lucide-graduation-cap path,
-svg.lucide-briefcase path,
-svg.lucide-play path,
-svg.lucide-pause path,
-svg.lucide-circle-check path {
-  fill: currentColor !important;
-}
-
-/* 4. Giữ nét vẽ trong suốt không fill cho các đường kẻ mở (Line, Polyline) để tránh biến dạng */
-svg.lucide line,
-svg[class*="lucide"] line,
-.web-icon-solid line {
+.card-title-icon ellipse,
+.card-title-icon path,
+.theme-card-icon svg path,
+.animated-service-icon svg path {
   fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2px !important;
+  stroke-linejoin: round !important;
+  stroke-linecap: round !important;
+}
+
+/* Riêng các điểm tròn chấm nhỏ (Dots, bullet indicators) giữ fill mảng đặc để rõ nét */
+svg.lucide circle[r="1"],
+svg.lucide circle[r="1.5"],
+svg.lucide circle[r="2"],
+svg[class*="lucide"] circle[r="1"],
+svg[class*="lucide"] circle[r="1.5"],
+svg[class*="lucide"] circle[r="2"],
+.card-system .dot,
+.card-dot-indicator {
+  fill: currentColor !important;
 }
 
 /* =========================================================================
@@ -2145,3 +2102,94 @@ img, video {
     gap: 10px !important;
   }
 }
+
+/* =========================================================================
+   HIGH-CONTRAST DARK MODE SPECIFICATION (Inter Font, Grain Overlay, 40px/20px Radii)
+   ========================================================================= */
+
+/* Fixed Noise Grain Overlay for Dark Theme (15% opacity texture) */
+[data-theme="dark-neon"]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.15;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Inter Typography for Dark Theme */
+[data-theme="dark-neon"] h1,
+[data-theme="dark-neon"] h2,
+[data-theme="dark-neon"] h3,
+[data-theme="dark-neon"] h4,
+[data-theme="dark-neon"] h5,
+[data-theme="dark-neon"] h6 {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.05em !important;
+  line-height: 1.05 !important;
+  color: #F4F4F5 !important;
+}
+
+[data-theme="dark-neon"] p,
+[data-theme="dark-neon"] body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #71717A;
+}
+
+[data-theme="dark-neon"] .label-uppercase,
+[data-theme="dark-neon"] .label-badge,
+[data-theme="dark-neon"] .badge-uppercase {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+}
+
+/* Standardized Corner Radii: 40px large container, 16px-24px internal cards */
+[data-theme="dark-neon"] #center-card,
+[data-theme="dark-neon"] .main-container {
+  border-radius: 40px !important;
+}
+
+[data-theme="dark-neon"] .bento-card,
+[data-theme="dark-neon"] .card-system,
+[data-theme="dark-neon"] .theme-pastel-card,
+[data-theme="dark-neon"] .edu-stack-card,
+[data-theme="dark-neon"] .glass-panel {
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Entry & Hover Animations from Spec */
+@keyframes fadeInUpSpec {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up,
+.animate-fade-in-up,
+[data-theme="dark-neon"] #content-display > * {
+  animation: fadeInUpSpec 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-theme="dark-neon"] .card-system:hover,
+[data-theme="dark-neon"] .theme-pastel-card:hover,
+[data-theme="dark-neon"] .bento-card:hover {
+  transform: scale(1.05) !important;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), background-color 300ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+

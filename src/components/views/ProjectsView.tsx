@@ -311,6 +311,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
               {filteredProjects.map((proj) => {
                 const parentGroup = getParentGroupForProject(proj);
                 const cfg = getVisualConfigForProject(proj);
+                const orderNumber = proj.number || (proj.title.match(/^[\d.]+/)?.[0]) || '';
                 const cleanTitle = proj.title.replace(/^[\d.]+\s*·\s*/, '').trim();
 
                 return (
@@ -375,7 +376,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
                       </span>
                     </div>
 
-                    {/* Phần Thân Card: Tiêu đề 4 từ, Phân loại & Tóm tắt */}
+                    {/* Phần Thân Card: Tiêu đề 2 dòng có số thứ tự, Phân loại & Tóm tắt */}
                     <div className="flex-1 flex flex-col justify-between space-y-2">
                       <div>
                         <div className="flex items-center gap-1.5 mb-1">
@@ -394,12 +395,21 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
                           </span>
                         </div>
 
+                        {/* Tiêu đề 2 dòng: Dòng 1 có số thứ tự dự án, Dòng 2 là tên dự án */}
                         <h3
-                          className="font-black font-play text-sm sm:text-[14.5px] leading-tight tracking-wide group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-2"
+                          className="font-black font-play text-[17px] sm:text-[18.5px] lg:text-[19.5px] leading-tight tracking-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors flex flex-col justify-center"
                           style={{ color: isDark ? '#ffffff' : '#0f172a' }}
-                          title={cleanTitle}
+                          title={`${orderNumber ? `${orderNumber} · ` : ''}${cleanTitle}`}
                         >
-                          {formatCardTitle(cleanTitle)}
+                          <div className="flex items-center gap-1 font-mono text-[10.5px] font-bold text-cyan-600 dark:text-cyan-400 leading-tight">
+                            <span className="px-1.5 py-0.2 rounded bg-cyan-500/15 border border-cyan-400/30">
+                              #{orderNumber || proj.code || proj.number}
+                            </span>
+                            <span className="truncate">{parentGroup.fourWordTitle}</span>
+                          </div>
+                          <div className="line-clamp-1 truncate font-play font-black text-[17px] sm:text-[18.5px] lg:text-[19.5px] leading-tight mt-0.5">
+                            {formatCardTitle(cleanTitle)}
+                          </div>
                         </h3>
 
                         <p className={`text-[11px] leading-snug line-clamp-2 mt-1.5 font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>

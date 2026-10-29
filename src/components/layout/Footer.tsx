@@ -151,9 +151,9 @@ export const Footer: React.FC<FooterProps> = ({
             }`}
           />
 
-          {/* Glassmorphism Inner Capsule (114px × 46px, bo cong 4 góc 999px hài hòa với Footer) */}
+          {/* Glassmorphism Inner Capsule (122px × 46px, bo cong 4 góc 999px hài hòa với Footer) */}
           <div
-            className={`relative z-10 w-[114px] h-[46px] flex items-center justify-between px-1 rounded-[999px] backdrop-blur-xl border shadow-inner transition-colors duration-300 ${
+            className={`relative z-10 w-[122px] h-[46px] flex items-center justify-between px-1 rounded-[999px] backdrop-blur-xl border shadow-inner transition-colors duration-300 ${
               isDark
                 ? 'bg-slate-900/95 border-cyan-400/40 text-cyan-300 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)]'
                 : 'bg-white/90 border-white/90 text-indigo-900'
@@ -175,7 +175,7 @@ export const Footer: React.FC<FooterProps> = ({
               </svg>
             </button>
 
-            {/* Nút Hiển thị số trang & Mở Menu */}
+            {/* Nút Hiển thị số trang & Mở Menu (Định dạng chuẩn 01/14) */}
             <button
               id="footer-center-btn"
               type="button"
@@ -183,13 +183,13 @@ export const Footer: React.FC<FooterProps> = ({
                 e.stopPropagation();
                 setIsPageMenuOpen((prev) => !prev);
               }}
-              title={`Đang ở ${activePage.shortTitle} (${currentPage + 1}/${pages.length}) — Nhấp để tới trang nhanh`}
+              title={`Đang ở ${activePage.shortTitle} (${String(currentPage + 1).padStart(2, '0')}/${String(pages.length).padStart(2, '0')}) — Nhấp để tới trang nhanh`}
               className="flex-1 h-[34px] flex items-center justify-center cursor-pointer transition-transform hover:scale-105 px-0.5"
             >
               {currentPage === 6 ? (
                 <div
                   id="domains-page-counter-badge"
-                  className={`px-2 py-0.5 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                  className={`px-1.5 py-0.5 rounded-lg flex items-center justify-center transition-all duration-300 ${
                     isDark
                       ? 'bg-cyan-950/80 border border-cyan-400/60 shadow-[0_0_10px_rgba(34,211,238,0.3)] text-cyan-300'
                       : 'bg-indigo-50/90 border border-indigo-200/90 shadow-2xs text-indigo-700'
@@ -199,7 +199,7 @@ export const Footer: React.FC<FooterProps> = ({
                     id="footer-page-counter"
                     className="text-xs sm:text-[13px] font-mono font-black tracking-tight whitespace-nowrap leading-none select-none text-center"
                   >
-                    {currentPage + 1}/{pages.length}
+                    {String(currentPage + 1).padStart(2, '0')}/{String(pages.length).padStart(2, '0')}
                   </span>
                 </div>
               ) : (
@@ -209,7 +209,7 @@ export const Footer: React.FC<FooterProps> = ({
                     isDark ? 'text-cyan-300 drop-shadow-[0_0_6px_rgba(34,211,238,0.5)]' : 'text-indigo-700'
                   }`}
                 >
-                  {currentPage + 1}/{pages.length}
+                  {String(currentPage + 1).padStart(2, '0')}/{String(pages.length).padStart(2, '0')}
                 </span>
               )}
             </button>
@@ -255,7 +255,7 @@ export const Footer: React.FC<FooterProps> = ({
                   <WebIcon name="compass" className="w-3.5 h-3.5" />
                 </span>
                 <span className={`text-xs font-black ${isDark ? 'text-white' : 'text-slate-800'}`}>
-                  {language === 'en' ? 'Quick Jump' : 'Đi Tới Trang Nhanh'} ({currentPage + 1}/{pages.length})
+                  {language === 'en' ? 'Quick Jump' : 'Đi Tới Trang Nhanh'} ({String(currentPage + 1).padStart(2, '0')}/{String(pages.length).padStart(2, '0')})
                 </span>
               </div>
               <button

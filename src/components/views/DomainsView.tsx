@@ -1267,8 +1267,7 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                     onMouseEnter={() => setHoveredCardId(domain.id)}
                     onMouseLeave={() => setHoveredCardId(null)}
                     className={cn(
-                      'theme-pastel-card rounded-[14px] cursor-pointer relative flex flex-col h-full min-h-0 text-left',
-                      domain.id !== '01' && 'group/card transition-all duration-300 ease-out',
+                      'theme-pastel-card w-full h-full min-h-0 rounded-[14px] cursor-pointer relative flex flex-col text-left group/card transition-all duration-300 ease-out',
                       isBrandMatched &&
                         'ring-2 ring-cyan-400 dark:ring-cyan-300 shadow-[0_0_32px_rgba(56,189,248,0.55)] scale-[1.015] z-20',
                       isDimmed && 'opacity-35 grayscale-[50%]'
@@ -1280,7 +1279,7 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                   >
                   {/* Container xoay lật 3D */}
                   <div
-                    className={cn("w-full h-full relative", domain.id !== '01' && "transition-transform duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]")}
+                    className="w-full h-full relative transition-transform duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
                     style={{
                       transformStyle: 'preserve-3d',
                       transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
@@ -1290,83 +1289,47 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                     {/* MẶT TRƯỚC (FRONT): BỐ CỤC CODEPEN + AUDIO 15S + NÚT LẬT KPI */}
                     {/* ========================================================= */}
                     <div
-                      className={cn(
-                        "w-full h-full rounded-[14px] p-3.5 sm:p-4 border flex flex-col justify-between overflow-hidden relative",
-                        domain.id === '01'
-                          ? "bg-white/90 dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 shadow-sm"
-                          : "border-white/60 dark:border-white/10 shadow-[0_12px_32px_-6px_rgba(28,7,8,0.12),0_4px_10px_rgba(28,7,8,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_var(--card-accent-color,rgba(56,189,248,0.25))] hover:shadow-[0_24px_50px_-8px_rgba(28,7,8,0.22),inset_0_1px_2px_rgba(255,255,255,1)] dark:hover:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_var(--card-accent-color,rgba(56,189,248,0.45))] transition-all duration-300 ease-out"
-                      )}
+                      className="w-full h-full rounded-[14px] p-3.5 sm:p-4 border border-white/60 dark:border-white/10 shadow-[0_12px_32px_-6px_rgba(28,7,8,0.12),0_4px_10px_rgba(28,7,8,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_var(--card-accent-color,rgba(56,189,248,0.25))] hover:shadow-[0_24px_50px_-8px_rgba(28,7,8,0.22),inset_0_1px_2px_rgba(255,255,255,1)] dark:hover:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_var(--card-accent-color,rgba(56,189,248,0.45))] transition-all duration-300 ease-out flex flex-col justify-between overflow-hidden relative"
                       style={{
                         backfaceVisibility: 'hidden',
                         WebkitBackfaceVisibility: 'hidden',
-                        background: domain.id === '01'
-                          ? undefined
-                          : isDark
-                          ? 'linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(10, 15, 30, 0.78) 100%)'
-                          : 'linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.42) 100%)',
-                        backdropFilter: domain.id === '01' ? undefined : 'blur(0.65em)',
-                        WebkitBackdropFilter: domain.id === '01' ? undefined : 'blur(0.65em)',
+                        background: cfg.cardBg,
+                        backdropFilter: 'blur(0.65em)',
+                        WebkitBackdropFilter: 'blur(0.65em)',
                         ['--card-accent-color' as string]: cfg.accentColor,
                       }}
                     >
                       {/* Soft ambient background */}
-                      {domain.id !== '01' && (
-                        <>
-                          <div
-                            className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full pointer-events-none transition-all duration-500 opacity-75 group-hover/card:opacity-100 group-hover/card:scale-120 blur-2xl"
-                            style={{ background: cfg.ambientGlow }}
-                          />
-                          <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-white/60 dark:bg-white/5 blur-xl pointer-events-none group-hover/card:scale-125 transition-transform duration-500" />
-                        </>
-                      )}
+                      <div
+                        className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full pointer-events-none transition-all duration-500 opacity-75 group-hover/card:opacity-100 group-hover/card:scale-120 blur-2xl"
+                        style={{ background: cfg.ambientGlow }}
+                      />
+                      <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-white/60 dark:bg-white/5 blur-xl pointer-events-none group-hover/card:scale-125 transition-transform duration-500" />
 
-                      {/* Top Row: Huy hiệu 3D tròn + Số thứ tự 01..06 + Tiêu đề 4 chữ + Phụ đề & Cụm nút AI 15s / KPI */}
-                      <div className="relative z-10 flex items-start justify-between gap-2 shrink-0 w-full">
-                        {/* Left: 3D Glossy Circular Icon + Number + Title + Subtitle */}
-                        <div className="flex items-start gap-2.5 min-w-0 flex-1">
-                          {domain.id === '01' ? (
-                            <div
-                              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white shadow-sm shrink-0"
-                              style={{
-                                background: cfg.arrowBg,
-                              }}
+                      {/* Top Row: Icon (không khung tròn) + Tiêu đề 4 chữ */}
+                      <div className="relative z-10 flex items-center justify-between gap-2 shrink-0 w-full">
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                          <ParallaxTiltIcon maxTilt={18} glowColor={cfg.accentColor} className="shrink-0">
+                            <motion.div
+                              layoutId={`domain-icon-${domain.id}`}
+                              className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center shrink-0"
+                              style={{ color: cfg.accentColor }}
                             >
-                              {getDomainBadgeIcon(domain.id, 'w-5 h-5 text-white')}
-                            </div>
-                          ) : (
-                            <ParallaxTiltIcon maxTilt={18} glowColor={cfg.accentColor} className="shrink-0">
-                              <motion.div
-                                layoutId={`domain-icon-${domain.id}`}
-                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white shadow-md border border-white/60 shrink-0"
-                                style={{
-                                  background: cfg.arrowBg,
-                                  boxShadow: `0 6px 14px -2px ${cfg.accentColor}66, inset 0 2px 3px rgba(255,255,255,0.65)`,
-                                }}
-                              >
-                                {getDomainBadgeIcon(domain.id, 'w-5 h-5 text-white')}
-                              </motion.div>
-                            </ParallaxTiltIcon>
-                          )}
+                              {getDomainBadgeIcon(domain.id, 'w-6 h-6')}
+                            </motion.div>
+                          </ParallaxTiltIcon>
 
                           <div className="min-w-0 flex-1">
-                            <div className="flex items-baseline gap-1.5 min-w-0">
-                              <span className="text-base sm:text-lg font-black font-play text-slate-800 dark:text-slate-100 shrink-0">
-                                {domain.id}
-                              </span>
-                              <motion.h2
-                                layoutId={`domain-title-${domain.id}`}
-                                className="domain-card-title text-[17px] sm:text-[18.5px] lg:text-[19.5px] font-black font-play leading-tight tracking-tight truncate"
-                                style={{
-                                  color: cfg.accentColor,
-                                }}
-                                title={domain.titleVi}
-                              >
-                                {formatCardTitle(cfg.fourWordTitle || domain.titleVi)}
-                              </motion.h2>
-                            </div>
-                            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                              {domain.titleVi}
-                            </p>
+                            <motion.h2
+                              layoutId={`domain-title-${domain.id}`}
+                              className="domain-card-title text-[17px] sm:text-[18.5px] lg:text-[19.5px] font-black font-play leading-tight tracking-tight truncate"
+                              style={{
+                                color: cfg.accentColor,
+                              }}
+                              title={domain.titleVi}
+                            >
+                              {formatCardTitle(cfg.fourWordTitle || domain.titleVi)}
+                            </motion.h2>
                           </div>
                         </div>
                       </div>
@@ -1881,13 +1844,9 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                             onMouseLeave={() => setHoveredLogoKey(null)}
                             style={{
                               zIndex: isHovered ? 50 : 10 + lIdx,
-                              borderColor: brandMeta.color,
-                              boxShadow: isHovered
-                                ? `0 0 14px ${brandMeta.glow}, 0 0 0 2px ${brandMeta.color}`
-                                : `0 0 0 2px ${brandMeta.color}, 0 2px 6px rgba(0,0,0,0.1)`,
                             }}
                             className={cn(
-                              'logo-pill-light w-[42px] h-[42px] sm:w-[46px] sm:h-[46px] rounded-full bg-white p-0.5 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer relative border-2 shadow-sm overflow-hidden',
+                              'w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full bg-white p-0 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer relative shadow-md overflow-hidden border-0',
                               isHovered ? 'scale-110 -translate-y-0.5' : 'hover:scale-105'
                             )}
                             title={`${logo.name} — ${brandMeta.role}`}

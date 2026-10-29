@@ -8,7 +8,7 @@
     "dev:raw": "next dev -p 3000 -H 0.0.0.0",
     "build": "next build",
     "start": "next start -p 3000 -H 0.0.0.0",
-    "lint": "next lint"
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@animate-ui/react": "^2.3.0",
@@ -30,6 +30,8 @@
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "autoprefixer": "^10.4.20",
+    "eslint": "8.57.1",
+    "eslint-config-next": "^16.4.3",
     "postcss": "^8.4.49",
     "qrcode": "^1.5.4",
     "qrcode-terminal": "^0.12.0",

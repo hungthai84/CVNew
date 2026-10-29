@@ -339,9 +339,6 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
               sandbox="allow-scripts allow-same-origin"
             />
           </div>
-          {/* Subtle contrast tint overlay */}
-          <div className="absolute inset-0 bg-black/15 pointer-events-none" />
-
           {/* Cinematic LUT Split-Tone Color Grading Overlay */}
           {activeLutPreset.id !== 'none' && (
             <div
@@ -380,9 +377,6 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
               className="w-full h-full object-cover"
             />
           </div>
-          {/* Subtle contrast tint overlay */}
-          <div className="absolute inset-0 bg-black/25 pointer-events-none" />
-
           {/* Cinematic LUT Split-Tone Color Grading Overlay */}
           {activeLutPreset.id !== 'none' && (
             <div

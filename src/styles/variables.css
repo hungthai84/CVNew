@@ -432,28 +432,30 @@
 [data-theme="dark-neon"] {
   color-scheme: dark;
 
-  /* Color System — Backgrounds */
-  --page-bg: #070A14;
-  --bg-main: #070A14;
-  --bg-secondary: #0B1020;
-  --bg-elevated: #11182B;
-  --bg-deep: #080D19;
-  --surface-bg: rgba(20, 28, 48, 0.62);
+  /* Master Color Palette - Spec Alignment */
+  --page-bg: #000000;
+  --bg-main: #000000;
+  --bg-secondary: #09090B;
+  --bg-elevated: #18181B;
+  --bg-deep: #000000;
+  --surface-bg: rgba(255, 255, 255, 0.05);
 
-  /* Glass Surfaces */
-  --glass-bg: rgba(20, 28, 48, 0.62);
-  --glass-bg-hover: rgba(30, 42, 70, 0.78);
-  --glass-border: rgba(255, 255, 255, 0.12);
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-bg-hover: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.1);
   --glass-highlight: rgba(255, 255, 255, 0.08);
-  --glass-blur: 16px;
+  --glass-blur: 12px;
   --glass-saturate: 180%;
   --glass-shadow: 
-    0 16px 40px -8px rgba(7, 10, 20, 0.85),
-    0 0 24px 0 rgba(34, 211, 238, 0.12),
-    inset 0 1px 1px rgba(255, 255, 255, 0.12);
+    0 16px 40px -8px rgba(0, 0, 0, 0.95),
+    0 0 24px 0 rgba(52, 211, 153, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
 
-  /* Neon Palette */
-  --neon-cyan: #22D3EE;
+  /* Accents & Emerald Highlight */
+  --zinc-accent: #18181B;
+  --emerald-highlight: #34D399;
+  --neon-cyan: #34D399;
   --electric-blue: #3B82F6;
   --neon-purple: #A855F7;
   --neon-pink: #F472B6;
@@ -462,35 +464,42 @@
   --neon-orange: #FB923C;
 
   /* Primary Accent Aliases */
-  --color-primary: #22D3EE;
+  --color-primary: #34D399;
   --color-secondary: #A855F7;
-  --color-accent: #3B82F6;
+  --color-accent: #18181B;
   --color-success: #34D399;
   --color-warning: #FACC15;
   --color-danger: #F472B6;
 
-  /* Text Colors */
-  --text-primary: #F8FAFC;
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --text-disabled: #64748B;
+  /* Text Colors - Zinc-500 Body (#71717A), Light zinc primary (#F4F4F5) */
+  --text-primary: #F4F4F5;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
+  --text-disabled: #52525B;
+
+  /* Standardized Corner Radii (Containers: 40px, Cards: 20px) */
+  --container-radius: 40px;
+  --card-radius: 20px;
+  --radius-2xl: 40px;
+  --radius-xl: 20px;
+  --radius-lg: 16px;
 
   /* Card Themes */
-  --card-theme-color: #22D3EE;
-  --card-wave-color: rgba(34, 211, 238, 0.28);
-  --card-wave-soft: rgba(59, 130, 246, 0.12);
-  --card-wave-glow: rgba(168, 85, 247, 0.35);
-  --book-card-bg: rgba(20, 28, 48, 0.85);
-  --book-border: rgba(255, 255, 255, 0.14);
+  --card-theme-color: #34D399;
+  --card-wave-color: rgba(52, 211, 153, 0.28);
+  --card-wave-soft: rgba(24, 24, 27, 0.5);
+  --card-wave-glow: rgba(52, 211, 153, 0.35);
+  --book-card-bg: rgba(255, 255, 255, 0.05);
+  --book-border: rgba(255, 255, 255, 0.1);
 
   /* Ambient Glow Variables */
-  --aurora-base: #070A14;
-  --aurora-radial-1: rgba(34, 211, 238, 0.18);  /* Cyan */
-  --aurora-radial-2: rgba(59, 130, 246, 0.16);  /* Blue */
-  --aurora-radial-3: rgba(168, 85, 247, 0.18); /* Purple */
-  --aurora-radial-4: rgba(244, 114, 182, 0.14); /* Pink */
-  --aurora-radial-5: rgba(52, 211, 153, 0.12); /* Green */
-  --aurora-radial-6: rgba(250, 204, 21, 0.10); /* Yellow */
+  --aurora-base: #000000;
+  --aurora-radial-1: rgba(52, 211, 153, 0.15);  /* Emerald */
+  --aurora-radial-2: rgba(24, 24, 27, 0.35);    /* Zinc */
+  --aurora-radial-3: rgba(168, 85, 247, 0.12); /* Purple */
+  --aurora-radial-4: rgba(244, 114, 182, 0.10); /* Pink */
+  --aurora-radial-5: rgba(52, 211, 153, 0.12);  /* Green */
+  --aurora-radial-6: rgba(250, 204, 21, 0.08);  /* Yellow */
 }
 
 /* ========================================================

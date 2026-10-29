@@ -720,7 +720,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
     },
   ];
 
-  const renderCardMilestoneIcon = (iconName: (typeof roadmapCards)[number]['iconName'], color: string) => {
+  const renderCardMilestoneIcon = (iconName: string, color: string) => {
     const props = { className: 'w-4 h-4 sm:w-[18px] sm:h-[18px] stroke-[2]', style: { color } };
     switch (iconName) {
       case 'tower':
@@ -739,6 +739,8 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
         return <Megaphone {...props} />;
       case 'clipboard':
         return <ClipboardCheck {...props} />;
+      default:
+        return <RadioTower {...props} />;
     }
   };
 
@@ -1171,14 +1173,9 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
 
                           {/* Circular Logo Medallion */}
                           <div
-                            className={`relative z-10 w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full overflow-hidden bg-white p-0.5 ring-3 ring-white/95 shadow-lg transition-all duration-300 flex items-center justify-center shrink-0 ${
+                            className={`relative z-10 w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full overflow-hidden bg-white p-0 shadow-md transition-all duration-300 flex items-center justify-center shrink-0 ${
                               isSelected ? 'scale-105' : 'group-hover/logo:scale-105'
                             }`}
-                            style={{
-                              boxShadow: isSelected
-                                ? `0 8px 22px -3px ${item.glowColor}, 0 0 0 2px ${item.primaryColor}`
-                                : '0 4px 14px rgba(0,0,0,0.18)',
-                            }}
                           >
                             <img
                               src={item.logo}
@@ -1445,80 +1442,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
               </div>
             </div>
 
-            {/* THANH TOÀN CẢNH THỜI GIAN DƯỚI ĐÁY CHUẨN HÌNH THAM KHẢO */}
-            <div className="w-full mt-3 p-3 sm:px-4 sm:py-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/90 dark:border-white/10 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5 shrink-0">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xs">
-                  <Calendar className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="text-xs sm:text-[13px] font-black font-play text-slate-800 dark:text-white leading-tight">
-                    Toàn cảnh thời gian
-                  </h4>
-                  <span className="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono">
-                    Mốc:{' '}
-                    <strong className="text-blue-600 dark:text-cyan-400">
-                      {filteredRoadmapCards[sliderYearIndex]?.yearBadge}
-                    </strong>{' '}
-                    · {filteredRoadmapCards[sliderYearIndex]?.shortName}
-                  </span>
-                </div>
-              </div>
 
-              {/* Thanh Slider tương tác kéo rê mượt mà */}
-              <div className="flex-1 w-full max-w-2xl flex flex-col gap-1.5 px-1 sm:px-3">
-                <input
-                  type="range"
-                  min={0}
-                  max={filteredRoadmapCards.length - 1}
-                  step={1}
-                  value={sliderYearIndex}
-                  onChange={(e) => handleSliderChange(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:accent-cyan-400"
-                  title="Kéo thanh trượt để di chuyển nhanh qua các mốc 2003 - 2026+"
-                />
-                {/* Nhãn các năm dưới slider */}
-                <div className="w-full flex items-center justify-between text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
-                  {filteredRoadmapCards.map((c, cIdx) => (
-                    <button
-                      key={c.key}
-                      type="button"
-                      onClick={() => handleSliderChange(cIdx)}
-                      className={`transition-all cursor-pointer hover:text-blue-600 dark:hover:text-cyan-400 ${
-                        cIdx === sliderYearIndex
-                          ? 'text-blue-600 dark:text-cyan-400 font-black scale-110'
-                          : ''
-                      }`}
-                    >
-                      {c.key}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Nút chuyển nhanh cột mốc & So sánh */}
-              <div className="flex items-center gap-2 shrink-0">
-                {benchmarkKeys.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setIsBenchmarkModalOpen(true)}
-                    className="shrink-0 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-sm hover:scale-105 active:scale-95 transition cursor-pointer animate-pulse"
-                  >
-                    <Scale className="w-3.5 h-3.5 stroke-[2.4]" />
-                    <span>So sánh ({benchmarkKeys.length}/2)</span>
-                  </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={handleScrollNextLogo}
-                  title="Chuyển sang cột mốc tiếp theo"
-                  className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/15 shadow-xs flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 transition cursor-pointer"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
           </div>
 
           {/* TÍNH NĂNG 5: DUAL-MILESTONE BENCHMARK MODAL (SO SÁNH 2 CỘT MỐC SỰ NGHIỆP ĐỐI ĐẦU) */}
