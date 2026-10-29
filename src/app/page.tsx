@@ -718,11 +718,7 @@ export default function HomePage() {
             onScrollCapture={handleContentScrollCapture}
             key={`content-${currentPage}`}
             id="content-display"
-            className={`animate-page-enter ${
-              currentPage === 0 || currentPage === 1 || currentPage === 2 || currentPage === 10
-                ? 'flex-1 p-0 overflow-hidden relative flex flex-col h-full w-full min-w-0'
-                : 'flex-1 p-4 sm:p-5 md:p-[24px] overflow-y-auto snap-y snap-proximity scroll-pt-[24px] scroll-smooth glass-scrollbar relative flex flex-col gap-4 sm:gap-5 md:gap-[24px] h-full w-full min-w-0'
-            }`}
+            className="animate-page-enter flex-1 p-[15px] overflow-y-auto snap-y snap-proximity scroll-pt-[15px] scroll-smooth glass-scrollbar relative flex flex-col gap-[15px] h-full w-full min-w-0"
           >
             {currentPage === 0 && (
               <HomeView

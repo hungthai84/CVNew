@@ -101,10 +101,7 @@ export const SkillsView: React.FC<SkillsViewProps> = ({ currentTheme = 'light-gl
   };
 
   return (
-    <div
-      id="skills"
-      className="relative w-full h-full min-h-full flex flex-col justify-start items-stretch p-2 sm:p-3 md:p-4 font-sans text-slate-900 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-y-auto no-scrollbar font-play flex-1"
-    >
+    <>
       <div className="w-full h-full min-h-full flex-1 flex flex-col gap-[15px] max-w-none mx-auto justify-start">
         {/* Header Card */}
         <PageCardHeader pageId="skills" className="w-full mb-1" />
@@ -528,7 +525,7 @@ export const SkillsView: React.FC<SkillsViewProps> = ({ currentTheme = 'light-gl
         </motion.div>
 
       </div>
-    </div>
+    </>
   );
 };
 

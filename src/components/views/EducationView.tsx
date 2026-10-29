@@ -636,7 +636,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                       </div>
 
                       {/* Phần Thân Card: Phân loại 2 chữ, Huy hiệu Xác thực số, Tiêu đề & Tóm tắt */}
-                      <div className="flex-1 flex flex-col justify-between space-y-1.5 min-h-0">
+                      <div className={`flex-1 flex flex-col justify-between space-y-1.5 min-h-0 ${course.id === 'edu-07' ? 'p-[5px]' : ''}`}>
                         <div>
                           <div className="flex items-center justify-between gap-1.5 mb-1">
                             <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 min-w-0">
@@ -688,7 +688,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                             ))}
                           </div>
 
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-1.5" style={course.id === 'edu-07' ? { height: '30.4375px' } : undefined}>
                             <button
                               type="button"
                               onClick={() => handleOpenDetail(course)}
