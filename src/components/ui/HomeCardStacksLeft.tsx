@@ -524,6 +524,51 @@ export const HomeCardStacksLeft: React.FC<HomeCardStacksLeftProps> = ({
             transformStyle = `translate(calc(-50% + ${dragOffset.x * 0.75}px), calc(-50% + 15px + ${dragOffset.y * 0.85}px)) scale(${scale}) rotate(${rotation}deg)`;
           }
 
+          const CARD_COLOR_PALETTES = [
+            {
+              lightBg: 'linear-gradient(135deg, rgba(239, 246, 255, 0.96) 0%, rgba(219, 234, 254, 0.92) 55%, rgba(191, 219, 254, 0.88) 100%)',
+              darkBg: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 58, 138, 0.78) 60%, rgba(29, 78, 216, 0.45) 100%)',
+              accentGlow: 'rgba(59, 130, 246, 0.28)',
+            },
+            {
+              lightBg: 'linear-gradient(135deg, rgba(245, 243, 255, 0.96) 0%, rgba(237, 233, 254, 0.92) 55%, rgba(221, 214, 254, 0.88) 100%)',
+              darkBg: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(76, 29, 149, 0.78) 60%, rgba(124, 58, 237, 0.45) 100%)',
+              accentGlow: 'rgba(139, 92, 246, 0.28)',
+            },
+            {
+              lightBg: 'linear-gradient(135deg, rgba(236, 253, 245, 0.96) 0%, rgba(209, 250, 229, 0.92) 55%, rgba(167, 243, 208, 0.88) 100%)',
+              darkBg: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(6, 78, 59, 0.78) 60%, rgba(16, 185, 129, 0.45) 100%)',
+              accentGlow: 'rgba(16, 185, 129, 0.28)',
+            },
+            {
+              lightBg: 'linear-gradient(135deg, rgba(255, 251, 235, 0.96) 0%, rgba(254, 243, 199, 0.92) 55%, rgba(253, 230, 138, 0.88) 100%)',
+              darkBg: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(120, 53, 15, 0.78) 60%, rgba(245, 158, 11, 0.45) 100%)',
+              accentGlow: 'rgba(245, 158, 11, 0.28)',
+            },
+            {
+              lightBg: 'linear-gradient(135deg, rgba(255, 241, 242, 0.96) 0%, rgba(255, 228, 230, 0.92) 55%, rgba(254, 205, 211, 0.88) 100%)',
+              darkBg: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(136, 19, 55, 0.78) 60%, rgba(244, 63, 94, 0.45) 100%)',
+              accentGlow: 'rgba(244, 63, 94, 0.28)',
+            },
+            {
+              lightBg: 'linear-gradient(135deg, rgba(236, 254, 255, 0.96) 0%, rgba(207, 250, 254, 0.92) 55%, rgba(165, 243, 252, 0.88) 100%)',
+              darkBg: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(22, 78, 99, 0.78) 60%, rgba(6, 182, 212, 0.45) 100%)',
+              accentGlow: 'rgba(6, 182, 212, 0.28)',
+            },
+            {
+              lightBg: 'linear-gradient(135deg, rgba(253, 242, 248, 0.96) 0%, rgba(252, 231, 243, 0.92) 55%, rgba(249, 168, 212, 0.82) 100%)',
+              darkBg: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(131, 24, 67, 0.78) 60%, rgba(236, 72, 153, 0.45) 100%)',
+              accentGlow: 'rgba(236, 72, 153, 0.28)',
+            },
+            {
+              lightBg: 'linear-gradient(135deg, rgba(238, 242, 255, 0.96) 0%, rgba(224, 231, 255, 0.92) 55%, rgba(199, 210, 254, 0.88) 100%)',
+              darkBg: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(49, 46, 129, 0.78) 60%, rgba(99, 102, 241, 0.45) 100%)',
+              accentGlow: 'rgba(99, 102, 241, 0.28)',
+            },
+          ];
+          const paletteIndex = Math.abs(item.pageId) % CARD_COLOR_PALETTES.length;
+          const cardPalette = CARD_COLOR_PALETTES[paletteIndex];
+
           return (
             <div
               key={item.pageId}
@@ -532,8 +577,8 @@ export const HomeCardStacksLeft: React.FC<HomeCardStacksLeftProps> = ({
                 isDragging && isTop ? 'cursor-grabbing transition-none' : 'transition-all duration-300 cursor-grab'
               } ${isSwapping ? 'animate-card-stack-swap' : ''} ${
                 isDark
-                  ? 'bg-slate-900/90 text-white border-white/20'
-                  : 'bg-white/92 text-slate-800 border-white/80'
+                  ? 'text-white border-white/25'
+                  : 'text-slate-800 border-white/90'
               }`}
               style={{
                 transform: isSwapping ? undefined : transformStyle,
@@ -541,27 +586,19 @@ export const HomeCardStacksLeft: React.FC<HomeCardStacksLeftProps> = ({
                 opacity: isSwapping ? undefined : opacity,
                 boxShadow: shadow,
                 borderTopColor: item.theme,
-                borderTopWidth: isTop ? '3.5px' : '2px',
+                borderTopWidth: isTop ? '4px' : '2.5px',
+                background: isDark ? cardPalette.darkBg : cardPalette.lightBg,
               }}
               title={isTop ? 'Vuốt lên hoặc nhấp thẻ để đổi trang tiếp theo' : undefined}
             >
-              {/* Lớp ảnh nền mờ ảo của trang */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-18 dark:opacity-22">
-                <img
-                  src={item.image}
-                  alt={item.shortTitle}
-                  className="w-full h-full object-cover object-center scale-110"
-                />
-              </div>
-
-              {/* Lớp phủ chuyển sắc nhẹ làm rõ nội dung chữ */}
+              {/* Đốm sáng trang trí góc thẻ (Không dùng hình nền) */}
               <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background: isDark
-                    ? `linear-gradient(135deg, rgba(15,23,42,0.92) 0%, rgba(30,41,59,0.85) 60%, ${item.theme}22 100%)`
-                    : `linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.9) 60%, ${item.theme}18 100%)`,
-                }}
+                className="absolute -top-12 -right-12 w-36 h-36 rounded-full blur-2xl pointer-events-none"
+                style={{ background: cardPalette.accentGlow }}
+              />
+              <div
+                className="absolute -bottom-10 -left-10 w-28 h-28 rounded-full blur-2xl pointer-events-none"
+                style={{ background: `${item.theme}22` }}
               />
 
               {/* Nội Dung Mặt Thẻ Trang */}

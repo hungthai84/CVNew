@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import * as HeroSolidIcons from '@heroicons/react/24/solid';
 import * as HeroOutlineIcons from '@heroicons/react/24/outline';
 import * as LucideIcons from 'lucide-react';
 import { LucideProps } from 'lucide-react';
@@ -179,14 +180,16 @@ const HEROICONS_ALIAS_MAP: Record<string, string> = {
  * Tự động chuyển đổi tên bất kỳ sang component icon @heroicons/react/24/outline
  */
 function resolveHeroIcon(rawName: string): React.ComponentType<any> {
-  if (!rawName) return HeroOutlineIcons.SparklesIcon;
+  if (!rawName) return HeroSolidIcons.SparklesIcon || HeroOutlineIcons.SparklesIcon;
   const clean = rawName.trim().toLowerCase();
 
-  // 1. Tra trong bảng alias Heroicons
+  // 1. Tra trong bảng alias Heroicons (Ưu tiên Solid -> Outline)
   if (HEROICONS_ALIAS_MAP[clean]) {
     const iconName = HEROICONS_ALIAS_MAP[clean];
-    const component = (HeroOutlineIcons as Record<string, any>)[iconName];
-    if (component) return component;
+    const solidComp = (HeroSolidIcons as Record<string, any>)[iconName];
+    if (solidComp) return solidComp;
+    const outlineComp = (HeroOutlineIcons as Record<string, any>)[iconName];
+    if (outlineComp) return outlineComp;
   }
 
   // 2. Chuyển kebab-case / snake-case sang PascalCase kèm hậu tố 'Icon'
@@ -197,6 +200,13 @@ function resolveHeroIcon(rawName: string): React.ComponentType<any> {
 
   const pascalWithIcon = pascal.endsWith('Icon') ? pascal : `${pascal}Icon`;
 
+  if ((HeroSolidIcons as Record<string, any>)[pascalWithIcon]) {
+    return (HeroSolidIcons as Record<string, any>)[pascalWithIcon];
+  }
+  if ((HeroSolidIcons as Record<string, any>)[pascal]) {
+    return (HeroSolidIcons as Record<string, any>)[pascal];
+  }
+
   if ((HeroOutlineIcons as Record<string, any>)[pascalWithIcon]) {
     return (HeroOutlineIcons as Record<string, any>)[pascalWithIcon];
   }
@@ -206,10 +216,16 @@ function resolveHeroIcon(rawName: string): React.ComponentType<any> {
   }
 
   // 3. Tra exact name
+  if ((HeroSolidIcons as Record<string, any>)[rawName]) {
+    return (HeroSolidIcons as Record<string, any>)[rawName];
+  }
+  const rawWithIcon = rawName.endsWith('Icon') ? rawName : `${rawName}Icon`;
+  if ((HeroSolidIcons as Record<string, any>)[rawWithIcon]) {
+    return (HeroSolidIcons as Record<string, any>)[rawWithIcon];
+  }
   if ((HeroOutlineIcons as Record<string, any>)[rawName]) {
     return (HeroOutlineIcons as Record<string, any>)[rawName];
   }
-  const rawWithIcon = rawName.endsWith('Icon') ? rawName : `${rawName}Icon`;
   if ((HeroOutlineIcons as Record<string, any>)[rawWithIcon]) {
     return (HeroOutlineIcons as Record<string, any>)[rawWithIcon];
   }
@@ -220,7 +236,7 @@ function resolveHeroIcon(rawName: string): React.ComponentType<any> {
     return (LucideIcons as Record<string, any>)[lucidePascal];
   }
 
-  return HeroOutlineIcons.SparklesIcon;
+  return HeroSolidIcons.SparklesIcon || HeroOutlineIcons.SparklesIcon;
 }
 
 /**
@@ -235,7 +251,7 @@ function resolveHeroIcon(rawName: string): React.ComponentType<any> {
 export const WebIcon: React.FC<WebIconProps> = ({
   name,
   className = 'w-4 h-4',
-  strokeWidth = 1.85,
+  strokeWidth = 2.75,
   category,
   sparkle,
   springBounce,
@@ -280,7 +296,7 @@ export const WebIcon: React.FC<WebIconProps> = ({
   const iconClasses = [
     className,
     className.includes('shrink-') ? '' : 'shrink-0',
-    'web-icon-solid',
+    'web-icon-solid web-icon-ultimate-bold',
     isSparkle ? 'icon-sparkle-twinkle' : '',
     springBounce ? 'icon-spring-bounce' : '',
     shouldRotate ? 'icon-rotate-click' : '',

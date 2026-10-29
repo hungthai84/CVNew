@@ -1278,48 +1278,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                   <LayoutGrid className="w-3 h-3" />
                   <span>Dạng thẻ</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    SoundEngine.playTap();
-                    setViewMode('matrix');
-                  }}
-                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold font-play transition cursor-pointer ${
-                    viewMode === 'matrix'
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                  title="Chế độ xem Bảng ma trận so sánh thông số kỹ thuật (CSDL, API, SLA, ISO 27001) của cả 12 phần mềm"
-                >
-                  <Table2 className="w-3 h-3" />
-                  <span>Bảng ma trận</span>
-                </button>
               </div>
-
-              {/* 3. Nút bật/tắt Mô Phỏng Luồng Dữ Liệu Tương Tác Giữa 2 Thẻ (Interactive Data Flow Canvas) */}
-              <button
-                type="button"
-                onClick={() => {
-                  SoundEngine.playTap();
-                  setViewMode('grid');
-                  setIsFlowCanvasActive((prev) => {
-                    const next = !prev;
-                    if (next && flowPairIds.length < 2) {
-                      setFlowPairIds(['crm', 'sdp']);
-                    }
-                    return next;
-                  });
-                }}
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold font-play transition-all duration-300 cursor-pointer border active:scale-95 ${
-                  isFlowCanvasActive
-                    ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white border-cyan-300 shadow-[0_0_16px_rgba(6,182,212,0.5)]'
-                    : 'bg-white/80 dark:bg-slate-800/80 text-indigo-700 dark:text-cyan-300 border-indigo-300/60 dark:border-cyan-400/40 hover:bg-indigo-50 dark:hover:bg-slate-700'
-                }`}
-                title="Nhấp chọn 2 hệ thống bất kỳ trên lưới để vẽ đường truyền dữ liệu thời gian thực nối giữa 2 thẻ"
-              >
-                <Network className="w-3.5 h-3.5" />
-                <span>Nối luồng 2 thẻ</span>
-              </button>
 
               {/* Nút mở Modal Sơ Đồ Ma Trận Dòng Chảy Toàn Cục */}
               <button

@@ -217,21 +217,22 @@ export const Header: React.FC<HeaderProps> = ({
                 ? `0 0 4px ${neonData.neon}80`
                 : 'none';
             } else {
-              // default: light-glass (Giao diện sáng kính đa sắc)
-              // Khi trang được chọn: Màu nền đậm hơn chút nhưng phẳng, không nổi đè nút khác
+              // default: light-glass (Giao diện sáng kính đa sắc cao cấp)
               itemBg = isSelected
-                ? `${page.theme}26`
+                ? `${page.theme}22`
                 : isHovered
-                ? `${page.theme}16`
-                : 'rgba(255, 255, 255, 0.75)';
+                ? `${page.theme}12`
+                : 'rgba(255, 255, 255, 0.85)';
               itemBorder = isSelected
                 ? page.theme
                 : isHovered
-                ? `${page.theme}80`
+                ? `${page.theme}75`
                 : page.borderColor || `${page.theme}35`;
-              itemBoxShadow = '0 1px 2px rgba(0,0,0,0.04)';
+              itemBoxShadow = isSelected
+                ? `0 2px 10px -2px ${page.theme}40`
+                : '0 1px 2px rgba(0,0,0,0.04)';
 
-              titleColor = iconColor;
+              titleColor = isSelected ? page.theme : '#334155';
               titleTextShadow = 'none';
             }
 
@@ -310,7 +311,11 @@ export const Header: React.FC<HeaderProps> = ({
 
                   {/* Tiêu đề ngắn gọn căn giữa cân đối */}
                   <span
-                    className="whitespace-nowrap font-bold text-[11px] sm:text-[11.5px] tracking-tight transition-colors duration-200 truncate"
+                    className={`whitespace-nowrap font-play tracking-tight transition-colors duration-200 truncate ${
+                      isSelected
+                        ? 'font-black text-[11.5px] sm:text-[12px]'
+                        : 'font-bold text-[11px] sm:text-[11.5px]'
+                    }`}
                     style={{
                       color: titleColor,
                       textShadow: titleTextShadow,

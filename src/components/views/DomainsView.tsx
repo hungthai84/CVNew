@@ -1215,124 +1215,7 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
     <div
       className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden"
     >
-      {/* THANH ĐIỀU KHIỂN & BỘ LỌC LĨNH VỰC (ĐÃ XÓA BANNER VÀ TABS PHÂN LOẠI) */}
-      {!selectedDomain && (
-        <div className="w-full flex flex-wrap items-center justify-between gap-2.5 pb-2 border-b border-slate-200/70 dark:border-white/10 shrink-0">
-          {/* 2. Brand Interactive Filter Bar */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-            <span className="text-[10.5px] font-bold tracking-wider text-slate-600 dark:text-slate-300 shrink-0 flex items-center gap-1 font-play">
-              <Sparkles className="w-3 h-3 text-cyan-500 animate-spin" />
-              Lọc đối tác:
-            </span>
-            <button
-              type="button"
-              onClick={handleClearBrands}
-              className={cn(
-                'px-2 py-0.5 rounded-full text-[10px] font-bold transition-all border cursor-pointer shrink-0',
-                selectedBrands.length === 0
-                  ? 'bg-cyan-500/25 text-cyan-700 dark:text-cyan-300 border-cyan-400/60 shadow-xs'
-                  : 'bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 border-black/5 dark:border-white/10 hover:border-cyan-400/30'
-              )}
-            >
-              Tất cả
-            </button>
-            {PARTNER_BRANDS.map((brand) => {
-              const isBrandActive = selectedBrands.includes(brand);
-              const meta = getBrandMeta(brand);
-              return (
-                <button
-                  key={brand}
-                  type="button"
-                  onClick={(e) => handleToggleBrand(brand, e)}
-                  style={{
-                    backgroundColor: isBrandActive ? meta.color : undefined,
-                    borderColor: isBrandActive ? `${meta.color}` : undefined,
-                    boxShadow: isBrandActive ? `0 0 14px ${meta.glow}` : undefined,
-                  }}
-                  className={cn(
-                    'px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all border cursor-pointer shrink-0 flex items-center gap-1.5 relative group/filter',
-                    isBrandActive
-                      ? 'text-white font-black scale-105 shadow-md'
-                      : 'bg-white/85 dark:bg-slate-800/85 text-slate-700 dark:text-slate-300 border-black/5 dark:border-white/10 hover:border-cyan-400/50 '
-                  )}
-                  title={`Lọc thẻ liên quan đến đối tác ${brand} (${meta.partnerType})`}
-                >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full shrink-0"
-                    style={{ backgroundColor: isBrandActive ? '#ffffff' : meta.color }}
-                  />
-                  <span>{brand}</span>
-                  {isBrandActive && <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />}
-                </button>
-              );
-            })}
-            {selectedBrands.length > 0 && (
-              <button
-                type="button"
-                onClick={handleClearBrands}
-                className="px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-400/40 hover:bg-rose-500 hover:text-white transition-all cursor-pointer shrink-0 flex items-center gap-1 ml-1"
-                title="Bỏ lọc tất cả đối tác"
-              >
-                <X className="w-3 h-3" />
-                <span>Xóa lọc ({selectedBrands.length})</span>
-              </button>
-            )}
-          </div>
-
-          {/* 5. Bộ lọc Lĩnh vực theo Quy mô Đội ngũ & Chỉ số KPI (KPI Threshold Filter) */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-            <span className="text-[10.5px] font-bold tracking-wider text-slate-600 dark:text-slate-300 shrink-0 flex items-center gap-1 font-play">
-              <BarChart3 className="w-3 h-3 text-emerald-500" />
-              <span>Ngưỡng KPI:</span>
-            </span>
-            {[
-              { id: 'all', label: 'Tất cả (6)' },
-              { id: 'team-100', label: 'Quy mô 100+ nhân sự' },
-              { id: 'csat-98', label: 'CSAT ≥ 98%' },
-              { id: 'both', label: '100+ NS & CSAT ≥ 98%' },
-            ].map((item) => {
-              const isActive = kpiFilter === item.id;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => {
-                    SoundEngine.playTap();
-                    setKpiFilter(item.id as 'all' | 'team-100' | 'csat-98' | 'both');
-                  }}
-                  className={cn(
-                    'px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all border cursor-pointer shrink-0 flex items-center gap-1',
-                    isActive
-                      ? 'bg-emerald-600 text-white border-emerald-400 shadow-xs'
-                      : 'bg-white/85 dark:bg-slate-800/85 text-slate-700 dark:text-slate-300 border-black/5 dark:border-white/10 hover:border-emerald-400/50'
-                  )}
-                >
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Brand Interactive Showcase Status Bar */}
-          {selectedBrands.length > 0 && (
-            <div className="w-full mt-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/15 via-blue-500/10 to-indigo-500/15 border border-cyan-400/30 backdrop-blur-md flex items-center justify-between gap-2 text-xs font-play animate-fadeIn">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
-                <span className="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate">
-                  Showcase thương hiệu: <span className="text-cyan-600 dark:text-cyan-300 font-black">{selectedBrands.join(', ')}</span> — Làm nổi bật các dự án, KPI thành tựu và câu chuyện thành công hợp tác.
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleClearBrands}
-                className="text-[10.5px] font-bold text-cyan-700 dark:text-cyan-300 hover:underline shrink-0 cursor-pointer"
-              >
-                Xem tất cả lĩnh vực ➔
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+      {/* ĐÃ XÓA KHỐI LỌC ĐỐI TÁC THEO YÊU CẦU NGƯỜI DÙNG */}
 
       {/* 3. VÙNG HIỂN THỊ NỘI DUNG LĨNH VỰC (GRID CARD EXPANSION TRANSITION - THẺ MỞ RỘNG TOÀN BỘ LƯỚI) */}
       <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
@@ -1425,92 +1308,137 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                       />
                       <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-white/60 dark:bg-white/5 blur-xl pointer-events-none group-hover/card:scale-125 transition-transform duration-500" />
 
-                      {/* Top Row: Tiêu đề Thẻ Lĩnh Vực */}
-                      <div className="relative z-10 flex items-center justify-between gap-2 shrink-0 w-full">
-                        {/* Tiêu đề & Icon với Hiệu Ứng 3D Parallax Tilt */}
-                        <div
-                          className="flex items-center gap-2.5 transition-all duration-300 group-hover/card:translate-x-0.5 min-w-0 flex-1"
-                          style={{ color: cfg.accentColor }}
-                        >
+                      {/* Top Row: Huy hiệu 3D tròn + Số thứ tự 01..06 + Tiêu đề 4 chữ + Phụ đề & Cụm nút AI 15s / KPI */}
+                      <div className="relative z-10 flex items-start justify-between gap-2 shrink-0 w-full">
+                        {/* Left: 3D Glossy Circular Icon + Number + Title + Subtitle */}
+                        <div className="flex items-start gap-2.5 min-w-0 flex-1">
                           <ParallaxTiltIcon maxTilt={18} glowColor={cfg.accentColor} className="shrink-0">
                             <motion.div
                               layoutId={`domain-icon-${domain.id}`}
-                              className="w-[20px] h-[20px] sm:w-[22px] sm:h-[22px] shrink-0 flex items-center justify-center animate-icon-floating"
+                              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white shadow-md border border-white/60 shrink-0"
+                              style={{
+                                background: cfg.arrowBg,
+                                boxShadow: `0 6px 14px -2px ${cfg.accentColor}66, inset 0 2px 3px rgba(255,255,255,0.65)`,
+                              }}
                             >
-                              {getDomainBadgeIcon(domain.id, 'w-[20px] h-[20px] sm:w-[22px] sm:h-[22px]')}
+                              {getDomainBadgeIcon(domain.id, 'w-5 h-5 text-white')}
                             </motion.div>
                           </ParallaxTiltIcon>
-                          <motion.h2
-                            layoutId={`domain-title-${domain.id}`}
-                            className="domain-card-title text-[18px] sm:text-[19px] lg:text-[20px] font-black font-play leading-tight tracking-tight truncate flex items-center"
-                            style={{
-                              color: cfg.accentColor,
-                              textShadow: isDark
-                                ? '0 2px 8px rgba(0,0,0,0.6)'
-                                : '-0.5px -0.5px 0.5px rgba(0,0,0,0.12), 1px 1px 2px rgba(255,255,255,0.8)',
-                            }}
-                            title={domain.titleVi}
+
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-baseline gap-1.5 min-w-0">
+                              <span className="text-base sm:text-lg font-black font-play text-slate-800 dark:text-slate-100 shrink-0">
+                                {domain.id}
+                              </span>
+                              <motion.h2
+                                layoutId={`domain-title-${domain.id}`}
+                                className="domain-card-title text-[17px] sm:text-[18.5px] lg:text-[19.5px] font-black font-play leading-tight tracking-tight truncate"
+                                style={{
+                                  color: cfg.accentColor,
+                                }}
+                                title={domain.titleVi}
+                              >
+                                {formatCardTitle(cfg.fourWordTitle || domain.titleVi)}
+                              </motion.h2>
+                            </div>
+                            <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                              {domain.titleVi}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Right: 2 Nút Pill Glass (AI 15s & KPI) giống 100% hình tham khảo */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={(e) =>
+                              handleToggleAudio(
+                                domain.id,
+                                DOMAIN_AUDIO_SUMMARIES[domain.id]?.text || domain.orientationVi,
+                                e
+                              )
+                            }
+                            className={cn(
+                              'px-2.5 py-1 rounded-full text-[10.5px] font-bold border transition-all flex items-center gap-1 cursor-pointer shadow-2xs backdrop-blur-md',
+                              isPlayingAudio
+                                ? 'bg-cyan-600 text-white border-cyan-300 shadow-md scale-105'
+                                : 'bg-white/85 dark:bg-slate-800/85 hover:bg-white text-slate-700 dark:text-slate-200 border-slate-200/90 dark:border-white/15'
+                            )}
+                            title="Nghe tóm tắt AI 15 giây"
                           >
-                            {formatCardTitle(cfg.fourWordTitle || domain.titleVi)}
-                          </motion.h2>
+                            {isPlayingAudio ? (
+                              <VolumeX className="w-3 h-3 text-white animate-pulse" />
+                            ) : (
+                              <Volume2 className="w-3 h-3" style={{ color: cfg.accentColor }} />
+                            )}
+                            <span>AI 15s</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => toggleCardFlip(domain.id, e)}
+                            className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-white/85 dark:bg-slate-800/85 hover:bg-white text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-white/15 transition-all flex items-center gap-1 cursor-pointer shadow-2xs backdrop-blur-md"
+                            title="Lật thẻ xem nhanh 4 chỉ số KPI"
+                          >
+                            <BarChart3 className="w-3 h-3" style={{ color: cfg.accentColor }} />
+                            <span>KPI</span>
+                          </button>
                         </div>
                       </div>
 
                       {/* Middle Section: Left Content (7 cols) + Right 3D Illustration (5 cols) */}
                       <div className="relative z-10 grid grid-cols-12 gap-2 items-center flex-1 min-h-0 my-1">
-                        {/* Left 7 cols: Tag Lines + Font mô tả */}
+                        {/* Left 7 cols: Experience Pill + 3 Tag Pills + Mô tả */}
                         <div className="col-span-7 flex flex-col justify-center gap-1.5 pr-0.5 min-w-0">
-                          {/* CodePen Tag Lines (.tag-lines & span.tag) */}
-                          <div className="tag-lines flex items-center gap-1.5 flex-wrap">
+                          {/* Row 1: Experience Pill */}
+                          <div className="flex items-center">
                             <span
-                              className="tag inline-flex items-center gap-1 px-2 py-0.5 rounded-[5px] text-[10.5px] font-bold border transition-all duration-200"
+                              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10.5px] font-bold border shadow-2xs"
                               style={{
-                                backgroundColor: isDark ? 'rgba(30, 41, 59, 0.85)' : 'hsl(0deg 0% 96% / 90%)',
-                                color: isDark ? '#e2e8f0' : '#4a4a4a',
-                                borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.06)',
-                                textShadow: isDark ? 'none' : '0.5px 0.5px 0.5px rgba(255,255,255,0.6)',
+                                backgroundColor: isDark ? 'rgba(30, 41, 59, 0.85)' : 'rgba(255, 255, 255, 0.92)',
+                                color: isDark ? '#f8fafc' : '#1e293b',
+                                borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(15,23,42,0.08)',
                               }}
                             >
                               <svg
-                                className="w-2.5 h-2.5 shrink-0"
+                                className="w-3 h-3 shrink-0"
                                 style={{ color: cfg.accentColor }}
                                 fill="none"
                                 stroke="currentColor"
-                                strokeWidth="2.4"
+                                strokeWidth="2.5"
                                 viewBox="0 0 24 24"
                               >
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-7-7 7 7-7 7" />
                               </svg>
                               <span className="truncate">{domain.experienceVi}</span>
                             </span>
-
-                            {detail.heroTags
-                              .split('•')
-                              .slice(0, 2)
-                              .map((tag, idx) => (
-                                <span
-                                  key={idx}
-                                  className="tag hidden sm:inline-flex items-center px-1.5 py-0.5 rounded-[5px] text-[10px] font-medium border"
-                                  style={{
-                                    backgroundColor: isDark ? 'rgba(30, 41, 59, 0.7)' : 'hsl(0deg 0% 96% / 80%)',
-                                    color: isDark ? '#cbd5e1' : '#57534e',
-                                    borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
-                                  }}
-                                >
-                                  {tag.trim()}
-                                </span>
-                              ))}
                           </div>
 
-                          {/* CodePen p.text-sm: Orientation Description */}
+                          {/* Row 2: 3 Tag Pills */}
+                          <div className="flex items-center gap-1 flex-wrap">
+                            {detail.heroTags.split('•').map((tag, idx) => (
+                              <span
+                                key={idx}
+                                className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border"
+                                style={{
+                                  backgroundColor: isDark ? 'rgba(30, 41, 59, 0.72)' : 'rgba(255, 255, 255, 0.82)',
+                                  color: isDark ? '#cbd5e1' : '#334155',
+                                  borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.08)',
+                                }}
+                              >
+                                {tag.trim()}
+                              </span>
+                            ))}
+                          </div>
+
+                          {/* Row 3: Orientation Description */}
                           <p
-                            className="text-[11px] sm:text-[11.5px] leading-relaxed break-words line-clamp-3"
+                            className="text-[11px] sm:text-[11.5px] leading-relaxed break-words line-clamp-3 mt-0.5"
                             style={{
-                              color: isDark ? 'rgba(226, 232, 240, 0.88)' : 'rgba(28, 7, 8, 0.72)',
-                              textShadow: isDark ? 'none' : '0.25px 0.25px 0.25px rgba(255,255,255,0.5)',
+                              color: isDark ? 'rgba(226, 232, 240, 0.92)' : '#1e293b',
                             }}
                           >
-                            <span className="font-bold text-slate-800 dark:text-slate-100 font-play">Mô tả : </span>
+                            <span className="font-bold text-slate-900 dark:text-white font-play">Mô tả : </span>
                             “{domain.orientationVi.replace(/^[“"']+|[”"']+$/g, '')}”
                           </p>
                         </div>
@@ -1869,95 +1797,62 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
               />
               <div className="absolute -left-12 -top-12 w-64 h-64 rounded-full bg-white/40 dark:bg-white/5 blur-2xl pointer-events-none" />
 
-              {/* 1. Header Bar: Tiêu đề không đóng khung, icon & tiêu đề cùng màu, pill & nút quay lại */}
-              <div className="w-full flex items-center justify-between gap-3 shrink-0 pb-2.5 border-b border-black/5 dark:border-white/10 relative z-10 flex-wrap sm:flex-nowrap">
-                {/* Left: Icon & 4-word Title & Pills */}
+              {/* 1. Header Bar: Huy hiệu tròn 3D + Tiêu đề + Mũi tên > + Pill kinh nghiệm + Pill Tags + Nút Quay lại 6 lĩnh vực & X */}
+              <div className="w-full flex items-center justify-between gap-3 shrink-0 pb-2.5 border-b border-black/10 dark:border-white/10 relative z-10 flex-wrap sm:flex-nowrap">
+                {/* Left: 3D Circular Icon & Title & Chevron & Pills */}
                 <div className="flex items-center gap-2.5 min-w-0 flex-wrap sm:flex-nowrap">
                   <motion.div
                     layoutId={`domain-icon-${selectedDomain.id}`}
-                    className="w-[20px] h-[20px] sm:w-[22px] sm:h-[22px] shrink-0 flex items-center justify-center animate-icon-floating"
-                    style={{ color: cfg.accentColor }}
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full shrink-0 flex items-center justify-center text-white shadow-md border border-white/60"
+                    style={{
+                      background: cfg.arrowBg,
+                      boxShadow: `0 6px 14px -2px ${cfg.accentColor}66, inset 0 2px 3px rgba(255,255,255,0.65)`,
+                    }}
                   >
-                    {getDomainBadgeIcon(selectedDomain.id, 'w-[20px] h-[20px] sm:w-[22px] sm:h-[22px]')}
+                    {getDomainBadgeIcon(selectedDomain.id, 'w-5 h-5 text-white')}
                   </motion.div>
+
                   <motion.h3
                     layoutId={`domain-title-${selectedDomain.id}`}
-                    className="text-[18px] sm:text-[20px] lg:text-[22px] font-black font-play leading-none tracking-tight truncate flex items-center"
+                    className="text-[18px] sm:text-[21px] lg:text-[23px] font-black font-play leading-none tracking-tight truncate flex items-center gap-1.5"
                     style={{ color: cfg.accentColor }}
                     title={selectedDomain.titleVi}
                   >
-                    {formatCardTitle(cfg.fourWordTitle || selectedDomain.titleVi)}
+                    <span>{formatCardTitle(cfg.fourWordTitle || selectedDomain.titleVi)}</span>
+                    <ChevronRight className="w-4 h-4 opacity-70 shrink-0" />
                   </motion.h3>
 
-                  {/* Pill Badge */}
+                  {/* Pill Badge Kinh nghiệm */}
                   <span
-                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold border shadow-2xs ${cfg.pillBg} shrink-0`}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border shadow-2xs bg-sky-100/90 dark:bg-slate-800/90 border-sky-300/80 dark:border-white/15 text-sky-800 dark:text-sky-300 shrink-0"
                   >
-                    <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.4" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-7-7 7 7-7 7" />
                     </svg>
                     <span>{detail.roleBadge || selectedDomain.experienceVi}</span>
                   </span>
 
-                  {/* Tags */}
-                  <span className="hidden md:inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-white/10 text-slate-600 dark:text-slate-300 shadow-2xs">
+                  {/* Tags Pill */}
+                  <span className="hidden md:inline-flex px-3 py-1 rounded-full text-[11px] font-semibold bg-white/85 dark:bg-slate-800/85 border border-slate-200/90 dark:border-white/15 text-slate-700 dark:text-slate-200 shadow-2xs">
                     {detail.heroTags}
                   </span>
                 </div>
 
-                {/* Right: Cụm Tab chuyển đổi & Cụm nút đóng / quay lại danh sách 6 lĩnh vực (Hỗ trợ phím Escape) */}
-                <div className="flex items-center gap-2 shrink-0 flex-wrap sm:flex-nowrap">
-                  {/* Cụm 3 Tabs Chuyển Đổi: Trụ cột vận hành | Case study thực chiến | Đo lường trước sau */}
-                  <div className="flex items-center gap-1 bg-white/70 dark:bg-slate-800/80 p-0.5 rounded-full border border-black/5 dark:border-white/10 shadow-2xs">
+                {/* Right: Nút Quay lại 6 lĩnh vực & Nút Đóng X chuẩn hình tham khảo */}
+                <div className="flex items-center gap-2 shrink-0">
+                  {activeDetailTab !== 'overview' && (
                     <button
                       type="button"
                       onClick={() => {
                         SoundEngine.playTap();
                         setActiveDetailTab('overview');
                       }}
-                      className={cn(
-                        "px-2.5 py-1 rounded-full text-[10.5px] font-bold transition-all flex items-center gap-1 cursor-pointer",
-                        activeDetailTab === 'overview'
-                          ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xs"
-                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                      )}
+                      className="px-3 py-1.5 rounded-full bg-white/85 dark:bg-slate-800/85 text-slate-800 dark:text-slate-100 border border-slate-300 dark:border-white/15 text-xs font-bold shadow-xs hover:bg-white transition-all flex items-center gap-1.5 cursor-pointer"
                     >
-                      <Layers className="w-3 h-3" />
+                      <Layers className="w-3.5 h-3.5" style={{ color: cfg.accentColor }} />
                       <span>Trụ cột vận hành</span>
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        SoundEngine.playTap();
-                        setActiveDetailTab('casestudy');
-                      }}
-                      className={cn(
-                        "px-2.5 py-1 rounded-full text-[10.5px] font-bold transition-all flex items-center gap-1 cursor-pointer",
-                        activeDetailTab === 'casestudy'
-                          ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xs"
-                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                      )}
-                    >
-                      <BookOpen className="w-3 h-3" />
-                      <span>Case study thực chiến</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        SoundEngine.playTap();
-                        setActiveDetailTab('impact');
-                      }}
-                      className={cn(
-                        "px-2.5 py-1 rounded-full text-[10.5px] font-bold transition-all flex items-center gap-1 cursor-pointer",
-                        activeDetailTab === 'impact'
-                          ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-2xs"
-                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                      )}
-                    >
-                      <SlidersHorizontal className="w-3 h-3" />
-                      <span>Đo lường trước sau</span>
-                    </button>
-                  </div>
+                  )}
 
                   <button
                     type="button"
@@ -1965,10 +1860,10 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                       SoundEngine.playTap();
                       setSelectedDomain(null);
                     }}
-                    className="px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0"
+                    className="px-4 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0"
                     title="Quay lại 6 lĩnh vực ban đầu (Phím Esc)"
                   >
-                    <ArrowLeft className="w-3.5 h-3.5 stroke-[2.4]" />
+                    <ArrowLeft className="w-3.5 h-3.5 stroke-[2.5]" />
                     <span>Quay lại 6 lĩnh vực</span>
                   </button>
                   <button
@@ -1977,42 +1872,58 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                       SoundEngine.playTap();
                       setSelectedDomain(null);
                     }}
-                    className="w-7 h-7 rounded-full bg-black/10 dark:bg-white/10 hover:bg-rose-500 hover:text-white dark:hover:bg-rose-500 dark:hover:text-white text-slate-700 dark:text-slate-200 transition-all flex items-center justify-center cursor-pointer active:scale-95 shrink-0"
+                    className="w-8 h-8 rounded-full bg-slate-200/80 dark:bg-white/10 hover:bg-rose-500 hover:text-white dark:hover:bg-rose-500 dark:hover:text-white text-slate-700 dark:text-slate-200 transition-all flex items-center justify-center cursor-pointer active:scale-95 shrink-0 border border-slate-300/60 dark:border-white/15"
                     title="Đóng thẻ (Esc)"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
-              {/* 2. Main Content Grid (Tối ưu hóa bố cục nằm gọn trong thẻ chi tiết) */}
-              <div className="w-full flex-1 min-h-0 my-2 grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-3.5 items-stretch relative z-10 overflow-y-auto lg:overflow-hidden glass-scrollbar pr-0.5">
-                {/* Left Area (4 cols on lg): Hình 3D, Tầm nhìn chiến lược & Đối tác */}
-                <div className="col-span-12 lg:col-span-4 flex flex-col justify-between gap-2.5 h-full min-h-0">
-                  {/* Khối hình 3D và Tầm nhìn định hướng */}
-                  <div className="p-3.5 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-white/80 dark:border-white/10 backdrop-blur-md shadow-2xs flex flex-col justify-between flex-1 min-h-0 relative overflow-hidden">
-                    {/* Visual Illustration & Quote */}
+              {/* 2. Main Content Grid (Chuẩn 100% bố cục hình tham khảo Chi tiết thẻ dịch vụ) */}
+              <div className="w-full flex-1 min-h-0 my-2 grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch relative z-10 overflow-y-auto lg:overflow-hidden glass-scrollbar pr-0.5">
+                {/* Left Area (4 cols on lg): Định hướng chiến lược + Hình 3D có 4 icon vệ tinh + Đối tác tiêu biểu */}
+                <div className="col-span-12 lg:col-span-4 flex flex-col justify-between gap-3 h-full min-h-0">
+                  {/* Khối Định hướng chiến lược & Minh họa 3D */}
+                  <div className="p-4 rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 backdrop-blur-md shadow-sm flex flex-col justify-between flex-1 min-h-0 relative overflow-hidden">
                     <div className="relative z-10 flex flex-col justify-between h-full">
                       <div>
-                        <div className="flex items-center gap-2 mb-1.5">
+                        <div className="flex items-center gap-2 mb-2">
                           <span
-                            className="w-2 h-2 rounded-full animate-ping shrink-0"
+                            className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs"
                             style={{ backgroundColor: cfg.accentColor }}
                           />
-                          <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                            Định hướng chiến lược
+                          <span className="text-[11px] font-mono font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                            ĐỊNH HƯỚNG CHIẾN LƯỢC
                           </span>
                         </div>
-                        <h4 className="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white leading-snug font-play">
+                        <h4
+                          className="text-sm sm:text-[15.5px] font-black leading-snug font-play"
+                          style={{ color: cfg.accentColor }}
+                        >
                           “{detail.heroSubtitle}”
                         </h4>
-                        <p className="text-[11px] font-medium text-slate-600 dark:text-slate-300 leading-relaxed mt-2 line-clamp-3 sm:line-clamp-4">
+                        <p className="text-[11.5px] font-medium text-slate-700 dark:text-slate-300 leading-relaxed mt-2.5">
                           {detail.description}
                         </p>
                       </div>
 
-                      {/* 3D illustration centered với Parallax 3D Tilt mượt mà */}
-                      <div className="w-full h-28 sm:h-32 flex items-center justify-center my-auto overflow-visible">
+                      {/* Hình 3D trung tâm kèm 4 nút icon tròn nổi xung quanh chuẩn hình mẫu */}
+                      <div className="relative w-full h-36 sm:h-40 flex items-center justify-center my-auto overflow-visible">
+                        {/* 4 Floating Satellite Glass Badges */}
+                        <div className="absolute left-3 top-2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 border border-sky-200 dark:border-white/15 shadow-md flex items-center justify-center text-sky-600 dark:text-sky-400 pointer-events-none z-20">
+                          <Radio className="w-4 h-4" />
+                        </div>
+                        <div className="absolute right-3 top-2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 border border-sky-200 dark:border-white/15 shadow-md flex items-center justify-center text-blue-600 dark:text-sky-400 pointer-events-none z-20">
+                          <ShieldCheck className="w-4 h-4" />
+                        </div>
+                        <div className="absolute left-4 bottom-2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 border border-sky-200 dark:border-white/15 shadow-md flex items-center justify-center text-indigo-600 dark:text-indigo-400 pointer-events-none z-20">
+                          <Activity className="w-4 h-4" />
+                        </div>
+                        <div className="absolute right-4 bottom-2 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-800/90 border border-sky-200 dark:border-white/15 shadow-md flex items-center justify-center text-emerald-600 dark:text-emerald-400 pointer-events-none z-20">
+                          <BarChart3 className="w-4 h-4" />
+                        </div>
+
                         <ParallaxTiltIcon maxTilt={16} glowColor={cfg.accentColor} scaleOnHover={1.06} className="w-full h-full">
                           <motion.div
                             layoutId={`domain-illustration-${selectedDomain.id}`}
@@ -2025,21 +1936,17 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                     </div>
                   </div>
 
-                  {/* Khối logo đối tác tiêu biểu: Xếp chồng Avatar Stack, vầng hào quang, tooltip vai trò & huy hiệu bảo chứng */}
-                  <div className="p-2.5 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-white/80 dark:border-white/10 shadow-2xs flex items-center justify-between gap-2 shrink-0">
-                    <span className="text-[10.5px] font-bold text-slate-600 dark:text-slate-300 font-play shrink-0">
-                      Đối tác tiêu biểu:
+                  {/* Khối logo đối tác tiêu biểu: Đối tác tiêu biểu > + Hàng logo tròn */}
+                  <div className="p-3 rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 shadow-sm flex items-center justify-between gap-2 shrink-0">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-200 font-play shrink-0 flex items-center gap-1">
+                      <span>Đối tác tiêu biểu</span>
+                      <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                     </span>
-                    <div className="group/stack-detail flex items-center -space-x-2.5 sm:-space-x-3 hover:space-x-1.5 transition-all duration-300 ease-out overflow-x-auto no-scrollbar py-1">
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
                       {selectedDomain.logos.map((logo, lIdx) => {
                         const brandMeta = getBrandMeta(logo.name);
                         const detailLogoKey = `detail-${selectedDomain.id}-${logo.name}`;
                         const isHovered = hoveredLogoKey === detailLogoKey;
-                        const isSelected = selectedBrands.some(
-                          (b) =>
-                            logo.name.toLowerCase().includes(b.toLowerCase()) ||
-                            b.toLowerCase().includes(logo.name.toLowerCase())
-                        );
                         const logoSrc = logo.src.includes('Logo-VED.gif')
                           ? 'https://i.ibb.co/fYPJLfbw/VED.png'
                           : logo.src.replace(/\.gif$/i, '.png');
@@ -2047,95 +1954,27 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                         return (
                           <div
                             key={logo.name}
-                            onClick={(e) => handleToggleBrand(logo.name, e)}
                             onMouseEnter={() => setHoveredLogoKey(detailLogoKey)}
                             onMouseLeave={() => setHoveredLogoKey(null)}
                             style={{
                               zIndex: isHovered ? 50 : 10 + lIdx,
                               borderColor: brandMeta.color,
-                              boxShadow: isHovered || isSelected
-                                ? `0 0 16px ${brandMeta.glow}, 0 0 0 2px ${brandMeta.color}`
+                              boxShadow: isHovered
+                                ? `0 0 14px ${brandMeta.glow}, 0 0 0 2px ${brandMeta.color}`
                                 : `0 0 0 2px ${brandMeta.color}, 0 2px 6px rgba(0,0,0,0.1)`,
                             }}
                             className={cn(
-                              'logo-pill-light w-[44px] h-[44px] sm:w-[48px] sm:h-[48px] rounded-full bg-white p-0.5 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer group/logo relative border-2 shadow-md overflow-hidden',
-                              isHovered ? 'scale-115 -translate-y-1' : 'hover:scale-110 hover:-translate-y-0.5',
-                              isSelected && 'scale-110'
+                              'logo-pill-light w-[42px] h-[42px] sm:w-[46px] sm:h-[46px] rounded-full bg-white p-0.5 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer relative border-2 shadow-sm overflow-hidden',
+                              isHovered ? 'scale-110 -translate-y-0.5' : 'hover:scale-105'
                             )}
-                            title={`Đối tác: ${logo.name} • Bấm để lọc kết hợp`}
+                            title={`${logo.name} — ${brandMeta.role}`}
                           >
-                            {/* 1. Vầng Hào Quang Thương Hiệu (Brand Glow Aura) */}
-                            <span
-                              className="absolute -inset-1 rounded-full opacity-0 group-hover/logo:opacity-100 transition-opacity duration-300 blur-[8px] pointer-events-none"
-                              style={{ backgroundColor: brandMeta.color }}
-                            />
-
                             <img
                               src={logoSrc}
                               alt={logo.alt}
-                              className="w-full h-full object-cover block rounded-full shrink-0 pointer-events-none select-none transition-transform duration-200 relative z-1"
+                              className="w-full h-full object-cover block rounded-full shrink-0 pointer-events-none select-none"
                               loading="lazy"
                             />
-
-                            {/* 2. Tooltip Thông Tin Vai Trò Dự Án Với Thương Hiệu (Brand Project Role Tooltip) */}
-                            <AnimatePresence>
-                              {isHovered && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: 6, scale: 0.92 }}
-                                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                                  exit={{ opacity: 0, y: 4, scale: 0.92 }}
-                                  transition={{ duration: 0.16, ease: "easeOut" }}
-                                  className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 z-50 w-56 sm:w-64 p-2.5 rounded-xl bg-slate-900/95 dark:bg-slate-950/95 text-white border shadow-2xl backdrop-blur-xl pointer-events-none text-left"
-                                  style={{ borderColor: `${brandMeta.color}80` }}
-                                >
-                                  {/* Header: Dot + Short name + Type Badge */}
-                                  <div className="flex items-center justify-between pb-1.5 border-b border-white/10 gap-1.5">
-                                    <div className="flex items-center gap-1.5 min-w-0">
-                                      <span
-                                        className="w-2 h-2 rounded-full shrink-0 shadow-xs animate-pulse"
-                                        style={{ backgroundColor: brandMeta.color }}
-                                      />
-                                      <span className="text-[11px] font-black font-play text-white truncate">
-                                        {brandMeta.shortName || logo.name}
-                                      </span>
-                                    </div>
-                                    {brandMeta.verified && (
-                                      <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center gap-0.5 shrink-0">
-                                        <Check className="w-2.5 h-2.5 stroke-[3]" />
-                                        <span>Đối tác</span>
-                                      </span>
-                                    )}
-                                  </div>
-
-                                  {/* Vai trò dự án thực chiến */}
-                                  <div className="py-1.5 space-y-0.5">
-                                    <span className="text-[9px] font-mono uppercase font-bold text-slate-400 block tracking-wider">
-                                      Vai trò thực chiến:
-                                    </span>
-                                    <p className="text-[10.5px] text-slate-100 font-semibold leading-snug">
-                                      {brandMeta.role}
-                                    </p>
-                                  </div>
-
-                                  {/* Giải thưởng / Chứng nhận nếu có */}
-                                  {brandMeta.awardText && (
-                                    <div className="pt-1 border-t border-white/5 flex items-center gap-1 text-[9px] text-amber-300 font-bold">
-                                      <Trophy className="w-2.5 h-2.5 text-amber-400 shrink-0" />
-                                      <span className="truncate">{brandMeta.awardText}</span>
-                                    </div>
-                                  )}
-
-                                  {/* Footer hint */}
-                                  <div className="pt-1 text-[8.5px] text-cyan-300/90 font-mono font-medium flex items-center justify-between border-t border-white/5">
-                                    <span>✦ Nhấp để lọc</span>
-                                    <span style={{ color: brandMeta.color }}>● {brandMeta.partnerType}</span>
-                                  </div>
-
-                                  {/* Arrow mũi tên */}
-                                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900 border-r border-b border-white/20 rotate-45 -mt-1" />
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
                           </div>
                         );
                       })}
@@ -2143,9 +1982,8 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                   </div>
                 </div>
 
-                {/* Right Area (8 cols on lg): 3 Trụ cột vận hành | Case Study thực chiến | Before/After Slider */}
-                <div className="col-span-12 lg:col-span-8 flex flex-col justify-between gap-2.5 h-full min-h-0">
-                  {/* TAB 1: TRỤ CỘT VẬN HÀNH (OVERVIEW) */}
+                {/* Right Area (8 cols on lg): 3 Trụ cột vận hành + Kết quả & Thành tựu nổi bật */}
+                <div className="col-span-12 lg:col-span-8 flex flex-col justify-between gap-3 h-full min-h-0">
                   {activeDetailTab === 'overview' && (
                     <motion.div
                       key="tab-overview"
@@ -2153,28 +1991,32 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
-                      className="flex flex-col justify-between gap-2.5 h-full min-h-0"
+                      className="flex flex-col justify-between gap-3 h-full min-h-0"
                     >
-                      {/* Top: 3 Trụ Cột Vận Hành Cốt Lõi */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 flex-1 min-h-0 items-stretch">
-                        {/* Trụ cột 1: Vai trò trách nhiệm thực thi */}
-                        <div className="rounded-2xl bg-white/75 dark:bg-slate-900/75 border border-white/80 dark:border-white/10 p-3 shadow-2xs flex flex-col justify-between gap-1.5">
+                      {/* Top: 3 Trụ Cột Vận Hành Cốt Lõi chuẩn hình tham khảo */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-1 min-h-0 items-stretch">
+                        {/* Trụ cột 1: Vai trò trách nhiệm */}
+                        <div className="rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 p-3.5 shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden">
                           <div>
-                            <div className="flex items-center gap-1.5 pb-1 border-b border-slate-100 dark:border-white/5">
-                              <User className="w-3.5 h-3.5 text-blue-600 dark:text-sky-400 stroke-[2.2] shrink-0" />
-                              <h4 className="text-xs font-black font-play text-blue-600 dark:text-sky-400 leading-tight">
-                                {formatCardTitle("Vai trò trách nhiệm thực thi")}
+                            <div className="flex items-center gap-2 pb-2 border-b border-slate-200/70 dark:border-white/10">
+                              <div className="w-6 h-6 rounded-lg bg-blue-500/15 text-blue-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                                <User className="w-3.5 h-3.5 stroke-[2.5]" />
+                              </div>
+                              <h4 className="text-xs sm:text-[13px] font-black font-play text-blue-700 dark:text-sky-400 leading-tight">
+                                {formatCardTitle('Vai trò trách nhiệm')}
                               </h4>
                             </div>
-                            <div className="my-1.5">
-                              <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-sky-300 border border-blue-200/80 dark:border-blue-800">
+
+                            <div className="my-2">
+                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[9.5px] font-mono font-bold bg-blue-100/90 dark:bg-blue-950/70 text-blue-800 dark:text-sky-300 border border-blue-200 dark:border-blue-800">
                                 {detail.roleBadge}
                               </span>
                             </div>
-                            <ul className="space-y-1 text-[10.5px] sm:text-[11px] text-slate-700 dark:text-slate-200 font-medium">
+
+                            <ul className="space-y-2 text-[11px] sm:text-[11.5px] text-slate-700 dark:text-slate-200 font-medium">
                               {detail.roleBullets.map((b, i) => (
-                                <li key={i} className="flex items-start gap-1 leading-snug">
-                                  <span className="text-blue-500 dark:text-sky-400 shrink-0">•</span>
+                                <li key={i} className="flex items-start gap-2 leading-snug">
+                                  <CheckCircle2 className="w-4 h-4 text-blue-500 dark:text-sky-400 shrink-0 mt-0.5" />
                                   <span>{b}</span>
                                 </li>
                               ))}
@@ -2182,68 +2024,76 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                           </div>
                         </div>
 
-                        {/* Trụ cột 2: Quy mô đội ngũ */}
-                        <div className="rounded-2xl bg-white/75 dark:bg-slate-900/75 border border-white/80 dark:border-white/10 p-3 shadow-2xs flex flex-col justify-between gap-1.5">
+                        {/* Trụ cột 2: Quy mô đội ngũ (Kèm hình minh họa đội ngũ ở đáy thẻ) */}
+                        <div className="rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 p-3.5 shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden">
                           <div>
-                            <div className="flex items-center gap-1.5 pb-1 border-b border-slate-100 dark:border-white/5">
-                              <Users className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 stroke-[2.2] shrink-0" />
-                              <h4 className="text-xs font-black font-play text-emerald-600 dark:text-emerald-400 leading-tight">
-                                {formatCardTitle("Quy mô đội ngũ")}
+                            <div className="flex items-center gap-2 pb-2 border-b border-slate-200/70 dark:border-white/10">
+                              <div className="w-6 h-6 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                                <Users className="w-3.5 h-3.5 stroke-[2.5]" />
+                              </div>
+                              <h4 className="text-xs sm:text-[13px] font-black font-play text-emerald-700 dark:text-emerald-400 leading-tight">
+                                {formatCardTitle('Quy mô đội ngũ')}
                               </h4>
                             </div>
-                            <div className="my-1.5">
-                              <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800">
+
+                            <div className="my-2">
+                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[9.5px] font-mono font-bold bg-emerald-100/90 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                                 {detail.teamBadge}
                               </span>
                             </div>
-                            <ul className="space-y-1 text-[10.5px] sm:text-[11px] text-slate-700 dark:text-slate-200 font-medium">
+
+                            <ul className="space-y-2 text-[11px] sm:text-[11.5px] text-slate-700 dark:text-slate-200 font-medium">
                               {detail.teamBullets.map((b, i) => (
-                                <li key={i} className="flex items-start gap-1 leading-snug">
-                                  <span className="text-emerald-500 dark:text-emerald-400 shrink-0">•</span>
+                                <li key={i} className="flex items-start gap-2 leading-snug">
+                                  <CheckCircle2 className="w-4 h-4 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" />
                                   <span>{b}</span>
                                 </li>
                               ))}
                             </ul>
                           </div>
+
+                          {/* Minh họa đội ngũ điều hành dưới đáy thẻ giống hình tham khảo */}
+                          <div className="mt-auto pt-2 flex items-center justify-center">
+                            <div className="w-full h-14 rounded-xl bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-blue-500/10 border border-emerald-500/20 flex items-center justify-between px-3 py-1.5">
+                              <div className="flex -space-x-2">
+                                <span className="w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
+                                  OP
+                                </span>
+                                <span className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
+                                  QA
+                                </span>
+                                <span className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
+                                  CS
+                                </span>
+                              </div>
+                              <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 font-play">
+                                Đa phòng ban 24/7
+                              </span>
+                            </div>
+                          </div>
                         </div>
 
-                        {/* Trụ cột 3: Công nghệ hệ thống vận hành (Bấm vào mục bất kỳ để mở Sơ đồ kiến trúc luồng xử lý) */}
-                        <div className="rounded-2xl bg-white/75 dark:bg-slate-900/75 border border-white/80 dark:border-white/10 p-3 shadow-2xs flex flex-col justify-between gap-1.5">
+                        {/* Trụ cột 3: Công nghệ hệ thống (Kèm minh họa hạ tầng Cloud/Server ở đáy thẻ) */}
+                        <div className="rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 p-3.5 shadow-sm flex flex-col justify-between gap-2 relative overflow-hidden">
                           <div>
-                            <div className="flex items-center justify-between gap-1.5 pb-1 border-b border-slate-100 dark:border-white/5">
-                              <div className="flex items-center gap-1.5 min-w-0">
-                                <Settings className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 stroke-[2.2] shrink-0" />
-                                <h4 className="text-xs font-black font-play text-purple-600 dark:text-purple-400 leading-tight truncate">
-                                  {formatCardTitle("Công nghệ hệ thống vận hành")}
+                            <div className="flex items-center justify-between gap-1.5 pb-2 border-b border-slate-200/70 dark:border-white/10">
+                              <div className="flex items-center gap-2 min-w-0">
+                                <div className="w-6 h-6 rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                                  <Settings className="w-3.5 h-3.5 stroke-[2.5]" />
+                                </div>
+                                <h4 className="text-xs sm:text-[13px] font-black font-play text-purple-700 dark:text-purple-400 leading-tight truncate">
+                                  {formatCardTitle('Công nghệ hệ thống')}
                                 </h4>
                               </div>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  SoundEngine.playTap();
-                                  setTechExplorerState({
-                                    domainId: selectedDomain.id,
-                                    bullet: detail.techBullets[0],
-                                    allBullets: detail.techBullets,
-                                    accentColor: cfg.accentColor,
-                                  });
-                                }}
-                                className="px-1.5 py-0.5 rounded-md text-[8.5px] font-mono font-bold bg-purple-500/15 hover:bg-purple-600 text-purple-700 dark:text-purple-300 hover:text-white border border-purple-400/30 transition cursor-pointer shrink-0 flex items-center gap-0.5"
-                                title="Mở Bản đồ Hệ sinh thái Công nghệ & Sơ đồ luồng xử lý cuộc gọi/ticket"
-                              >
-                                <Activity className="w-2.5 h-2.5" />
-                                <span>Sơ đồ luồng</span>
-                              </button>
                             </div>
-                            <div className="my-1.5 flex items-center justify-between gap-1">
-                              <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800">
+
+                            <div className="my-2">
+                              <span className="inline-block px-2.5 py-0.5 rounded-full text-[9.5px] font-mono font-bold bg-purple-100/90 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
                                 {detail.techBadge}
                               </span>
-                              <span className="text-[8.5px] font-mono text-purple-600 dark:text-purple-400 italic">
-                                Nhấp mục để xem luồng
-                              </span>
                             </div>
-                            <ul className="space-y-1 text-[10.5px] sm:text-[11px] text-slate-700 dark:text-slate-200 font-medium">
+
+                            <ul className="space-y-2 text-[11px] sm:text-[11.5px] text-slate-700 dark:text-slate-200 font-medium">
                               {detail.techBullets.map((b, i) => (
                                 <li
                                   key={i}
@@ -2257,32 +2107,71 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                                     });
                                   }}
                                   title={`Nhấp để xem sơ đồ kiến trúc luồng xử lý của: ${b}`}
-                                  className="group/tech flex items-start justify-between gap-1 leading-snug p-1 -mx-1 rounded-lg hover:bg-purple-500/15 dark:hover:bg-purple-500/20 border border-transparent hover:border-purple-400/40 transition-all cursor-pointer"
+                                  className="group/tech flex items-start gap-2 leading-snug cursor-pointer hover:text-purple-600 dark:hover:text-purple-300 transition-colors"
                                 >
-                                  <div className="flex items-start gap-1 min-w-0">
-                                    <span className="text-purple-500 dark:text-purple-400 shrink-0 font-bold">•</span>
-                                    <span className="group-hover/tech:text-purple-700 dark:group-hover/tech:text-purple-300 group-hover/tech:font-bold transition-colors">
-                                      {b}
-                                    </span>
-                                  </div>
-                                  <ExternalLink className="w-3 h-3 text-purple-500 opacity-60 group-hover/tech:opacity-100 shrink-0 mt-0.5" />
+                                  <CheckCircle2 className="w-4 h-4 text-purple-500 dark:text-purple-400 shrink-0 mt-0.5" />
+                                  <span>{b}</span>
                                 </li>
                               ))}
                             </ul>
                           </div>
+
+                          {/* Minh họa hạ tầng Server/Cloud dưới đáy thẻ giống hình tham khảo */}
+                          <div className="mt-auto pt-2 flex items-center justify-center">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                SoundEngine.playTap();
+                                setTechExplorerState({
+                                  domainId: selectedDomain.id,
+                                  bullet: detail.techBullets[0],
+                                  allBullets: detail.techBullets,
+                                  accentColor: cfg.accentColor,
+                                });
+                              }}
+                              className="w-full h-14 rounded-xl bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-sky-500/10 hover:from-purple-500/20 hover:to-sky-500/20 border border-purple-500/25 flex items-center justify-between px-3 py-1.5 transition cursor-pointer"
+                            >
+                              <div className="flex items-center gap-1.5">
+                                <span className="px-1.5 py-0.5 rounded bg-sky-500 text-white text-[9px] font-mono font-black">
+                                  CRM
+                                </span>
+                                <span className="px-1.5 py-0.5 rounded bg-indigo-500 text-white text-[9px] font-mono font-black">
+                                  5G/VoIP
+                                </span>
+                              </div>
+                              <span className="text-[10px] font-bold text-purple-700 dark:text-purple-300 font-play flex items-center gap-0.5">
+                                <span>Sơ đồ luồng</span>
+                                <ChevronRight className="w-3 h-3" />
+                              </span>
+                            </button>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Bottom: 4 Chỉ số thành tựu nổi bật */}
-                      <div className="p-2.5 sm:p-3 rounded-2xl bg-white/75 dark:bg-slate-900/75 border border-white/80 dark:border-white/10 shadow-2xs shrink-0 flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                          <Trophy className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                          <h4 className="text-xs sm:text-sm font-black font-play text-amber-600 dark:text-amber-400">
-                            Kết quả &amp; Thành tựu nổi bật
-                          </h4>
+                      {/* Bottom: Kết quả & Thành tựu nổi bật + Nút Xem chi tiết báo cáo > + 4 Thẻ KPI có biểu đồ mini */}
+                      <div className="p-3 sm:p-3.5 rounded-2xl bg-white/80 dark:bg-slate-900/75 border border-white/90 dark:border-white/10 shadow-sm shrink-0 flex flex-col gap-2.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <Trophy className="w-4 h-4 text-amber-500 shrink-0" />
+                            <h4 className="text-xs sm:text-sm font-black font-play text-amber-600 dark:text-amber-400">
+                              Kết quả &amp; Thành tựu nổi bật
+                            </h4>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              SoundEngine.playTap();
+                              setActiveDetailTab('casestudy');
+                            }}
+                            className="px-3 py-1 rounded-full text-[11px] font-bold bg-white/90 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/90 dark:border-white/15 shadow-2xs flex items-center gap-1 transition cursor-pointer"
+                          >
+                            <span>Xem chi tiết báo cáo</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </button>
                         </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                           {detail.achievements.map((item, idx) => {
                             let IconComp = TrendingUp;
                             if (item.iconType === 'shield') IconComp = ShieldCheck;
@@ -2293,26 +2182,47 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                               <div
                                 key={idx}
                                 className={cn(
-                                  "p-2 sm:p-2.5 rounded-xl border flex flex-col justify-between gap-1 shadow-2xs transition-all",
+                                  'p-2.5 sm:p-3 rounded-xl border flex flex-col justify-between gap-1 shadow-2xs relative overflow-hidden transition-all',
                                   item.cardBg,
                                   item.borderColor
                                 )}
                               >
-                                <div className="flex items-center justify-between">
-                                  <span className="text-[10px] font-bold text-slate-700 dark:text-slate-300 truncate leading-tight">
+                                <div className="flex items-start justify-between gap-1">
+                                  <span className="text-[10.5px] font-bold text-slate-700 dark:text-slate-200 leading-tight">
                                     {item.label}
                                   </span>
-                                  <div className={cn("w-5 h-5 rounded-full flex items-center justify-center shrink-0 shadow-2xs", item.iconBg)}>
-                                    <IconComp className="w-3 h-3" />
+                                  <div
+                                    className={cn(
+                                      'w-6 h-6 rounded-full flex items-center justify-center shrink-0 shadow-2xs',
+                                      item.iconBg
+                                    )}
+                                  >
+                                    <IconComp className="w-3.5 h-3.5" />
                                   </div>
                                 </div>
-                                <div className="mt-0.5">
-                                  <span className={cn("text-base sm:text-lg font-black font-mono leading-tight block", item.metricColor)}>
-                                    {item.value}
-                                  </span>
-                                  <span className="text-[9px] text-slate-400 dark:text-slate-500 font-medium block truncate mt-0.5">
-                                    {item.sub}
-                                  </span>
+
+                                <div className="mt-1 flex items-end justify-between gap-1">
+                                  <div>
+                                    <span
+                                      className={cn(
+                                        'text-lg sm:text-xl font-black font-play leading-none block',
+                                        item.metricColor
+                                      )}
+                                    >
+                                      {item.value}
+                                    </span>
+                                    <span className="text-[9.5px] text-slate-500 dark:text-slate-400 font-medium block truncate mt-1">
+                                      {item.sub}
+                                    </span>
+                                  </div>
+
+                                  {/* Mini decorative sparkline / bar chart graphic matching Reference Image 3 */}
+                                  <div className="flex items-end gap-0.5 h-5 opacity-75 shrink-0">
+                                    <span className={cn('w-1 rounded-t bg-current h-2', item.metricColor)} />
+                                    <span className={cn('w-1 rounded-t bg-current h-3', item.metricColor)} />
+                                    <span className={cn('w-1 rounded-t bg-current h-4', item.metricColor)} />
+                                    <span className={cn('w-1 rounded-t bg-current h-5', item.metricColor)} />
+                                  </div>
                                 </div>
                               </div>
                             );

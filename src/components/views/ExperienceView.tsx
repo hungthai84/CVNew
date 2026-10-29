@@ -42,6 +42,7 @@ import {
   Rocket,
   BookOpen,
   Zap,
+  Check,
   CheckCircle2,
   Globe,
   RefreshCw,
@@ -1106,18 +1107,30 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                 }}
                 className="w-full h-full flex-1 min-h-0 overflow-x-auto overflow-y-hidden custom-scrollbar pb-2 pt-1 px-3 flex items-stretch gap-4 scroll-smooth"
               >
-                {filteredRoadmapCards.map((item, idx) => {
+                {filteredRoadmapCards.map((item) => {
                   const isSelected =
                     activeKey === item.key || (item.key === '2013' && is2013GroupActive);
                   const isLbcCard = item.key === '2011';
                   const isHighlightedInStory = isStoryActive && STORY_KEYS[storyIndex] === item.key;
                   const isBenchmarkSelected = benchmarkKeys.includes(item.key);
 
+                  const SCENIC_BANNERS: Record<string, string> = {
+                    '2003': 'https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042029/Mobifone-1.webp',
+                    '2007': 'https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042038/V247-1.jpg',
+                    '2011': 'https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042015/HTVC-1.webp',
+                    '2013': 'https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042039/VED-1.webp',
+                    '2016': 'https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042034/Prudential-1.webp',
+                    '2018': 'https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042030/Momo-1.webp',
+                    '2023': 'https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042014/Finviet-1.webp',
+                    '2026': 'https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042018/Kinh_nghi%E1%BB%87m.png',
+                  };
+                  const bannerImg = SCENIC_BANNERS[item.key] || SCENIC_BANNERS['2003'];
+
                   return (
                     <div
                       key={item.key}
                       id={`milestone-card-${item.key}`}
-                      className={`relative flex flex-col items-center h-full w-[285px] sm:w-[305px] lg:w-[325px] shrink-0 select-none transition-all duration-300 justify-between ${
+                      className={`relative flex flex-col items-center h-full w-[275px] sm:w-[290px] lg:w-[300px] shrink-0 select-none transition-all duration-300 justify-between ${
                         isHighlightedInStory ? 'scale-[1.02] z-30' : ''
                       } ${isBenchmarkSelected ? 'ring-2 ring-amber-400 rounded-2xl p-1 bg-amber-500/10' : ''}`}
                     >
@@ -1128,21 +1141,22 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                           e.stopPropagation();
                           handleToggleBenchmark(item.key);
                         }}
-                        className={`absolute top-0 right-1 z-30 p-1 sm:p-1.5 rounded-full transition-all cursor-pointer shadow-xs border ${
+                        className={`absolute top-0.5 right-1 z-30 w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-xs border ${
                           isBenchmarkSelected
                             ? 'bg-amber-500 text-slate-950 border-amber-300 ring-2 ring-amber-400 scale-110 font-bold'
-                            : 'bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:text-amber-500 hover:scale-105'
+                            : 'bg-white/95 dark:bg-slate-800/95 text-slate-500 dark:text-slate-300 border-slate-200/90 dark:border-white/15 hover:text-amber-500 hover:scale-105'
                         }`}
                         title={isBenchmarkSelected ? 'Bỏ chọn so sánh' : 'Thêm vào so sánh 2 cột mốc'}
                       >
-                        <Scale className="w-3 h-3 stroke-[2.4]" />
+                        <Scale className="w-3.5 h-3.5 stroke-[2.2]" />
                       </button>
+
                       {/* TIER 1: Top Year Pill Badge + Downward Pointer + Vertical Stem + Node Dot */}
                       <div className="flex flex-col items-center shrink-0 z-20 w-full">
                         <button
                           type="button"
                           onClick={() => handleSelectMilestone(item.key)}
-                          className={`w-[85%] max-w-[140px] py-1 sm:py-1.5 px-3 rounded-full text-white font-black font-play text-xs sm:text-[12.5px] tracking-tight shadow-xs flex items-center justify-center transition-all duration-300 whitespace-nowrap cursor-pointer ${
+                          className={`w-[78%] max-w-[145px] py-1.5 px-3.5 rounded-full text-white font-black font-play text-xs sm:text-[13px] tracking-tight shadow-sm flex items-center justify-center transition-all duration-300 whitespace-nowrap cursor-pointer ${
                             isSelected ? 'scale-105 ring-2 ring-white shadow-md' : 'hover:scale-105'
                           } ${isHighlightedInStory ? 'ring-2 ring-amber-300 shadow-lg' : ''}`}
                           style={{ background: item.badgeBg }}
@@ -1151,45 +1165,60 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                         </button>
                         {/* Downward pointer triangle */}
                         <div
-                          className="w-0 h-0 border-x-[4.5px] border-x-transparent border-t-[4.5px] -mt-[0.5px]"
+                          className="w-0 h-0 border-x-[5px] border-x-transparent border-t-[5px] -mt-[0.5px]"
                           style={{ borderTopColor: item.primaryColor }}
                         />
-                        {/* Vertical stem to Medallion - Đường đứt khúc */}
+                        {/* Vertical stem to Scenic Banner */}
                         <div
-                          className="w-0 h-2.5 sm:h-3 border-l-[2px] border-dashed"
+                          className="w-0 h-2 border-l-[2px] border-dashed"
                           style={{ borderColor: item.primaryColor }}
                         />
-                        {/* Node dot touching top of Medallion */}
+                        {/* Node dot touching top of Banner */}
                         <div
                           className="w-2 h-2 rounded-full -mb-1 z-20 shadow-2xs"
                           style={{ backgroundColor: item.primaryColor }}
                         />
                       </div>
 
-                      {/* TIER 2: 3-Ring Circular Logo Medallion */}
-                      <div className="relative w-full flex items-center justify-center shrink-0 my-1">
+                      {/* TIER 2: Scenic Company Banner + Circular Logo Medallion */}
+                      <div className="relative w-full flex items-center justify-center shrink-0 my-0.5">
                         {/* Đường trục thời gian ngang nối kết xuyên suốt các mốc */}
-                        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[2.5px] bg-gradient-to-r from-blue-400/40 via-indigo-400/60 to-purple-400/40 dark:from-cyan-400/40 dark:via-indigo-500/40 dark:to-purple-500/40 z-0 pointer-events-none" />
-                        {/* Circular Logo Medallion: Image fills circle completely, NO borders */}
+                        <div className="absolute -left-4 -right-4 top-1/2 -translate-y-1/2 h-[2.5px] bg-gradient-to-r from-blue-400/50 via-indigo-400/60 to-purple-400/50 dark:from-cyan-400/40 dark:via-indigo-500/40 dark:to-purple-500/40 z-0 pointer-events-none" />
+
+                        {/* Scenic Banner Frame with centered Circular Medallion matching Reference Image 1 */}
                         <div
                           onMouseEnter={() => setHoveredMilestoneKey(item.key)}
                           onMouseLeave={() => setHoveredMilestoneKey((cur) => (cur === item.key ? null : cur))}
                           onClick={() => handleOpenJobCard(item.key)}
-                          title={`Click logo để mở chi tiết công tác ${item.shortName}`}
-                          className={`relative z-10 w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] lg:w-[78px] lg:h-[78px] rounded-full overflow-hidden bg-white p-0 border-0 outline-none transition-all duration-300 cursor-pointer group/logo flex items-center justify-center shrink-0 ${
-                            isSelected ? 'scale-105 shadow-md' : 'hover:scale-105 shadow-sm'
-                          } ${isHighlightedInStory ? 'scale-110 shadow-xl' : ''}`}
-                          style={{
-                            boxShadow: isSelected
-                              ? `0 8px 22px -3px ${item.glowColor}`
-                              : `0 3px 12px -2px rgba(0,0,0,0.12)`,
-                          }}
+                          title={`Click để mở chi tiết công tác ${item.shortName}`}
+                          className="relative z-10 w-full h-[76px] sm:h-[82px] rounded-xl overflow-hidden border border-white/90 dark:border-white/15 shadow-sm flex items-center justify-center cursor-pointer group/logo"
                         >
+                          {/* Scenic Background Photo */}
                           <img
-                            src={item.logo}
-                            alt={item.shortName}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover/logo:scale-105 pointer-events-none select-none"
+                            src={bannerImg}
+                            alt={`${item.shortName} banner`}
+                            className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 group-hover/logo:scale-105 pointer-events-none select-none opacity-85"
+                            loading="lazy"
                           />
+                          <div className="absolute inset-0 bg-gradient-to-t from-white/35 via-transparent to-white/15 dark:from-slate-950/55 dark:to-transparent pointer-events-none" />
+
+                          {/* Circular Logo Medallion */}
+                          <div
+                            className={`relative z-10 w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full overflow-hidden bg-white p-0.5 ring-3 ring-white/95 shadow-lg transition-all duration-300 flex items-center justify-center shrink-0 ${
+                              isSelected ? 'scale-105' : 'group-hover/logo:scale-105'
+                            }`}
+                            style={{
+                              boxShadow: isSelected
+                                ? `0 8px 22px -3px ${item.glowColor}, 0 0 0 2px ${item.primaryColor}`
+                                : '0 4px 14px rgba(0,0,0,0.18)',
+                            }}
+                          >
+                            <img
+                              src={item.logo}
+                              alt={item.shortName}
+                              className="w-full h-full object-cover rounded-full pointer-events-none select-none"
+                            />
+                          </div>
 
                           {/* LBC Secondary HTVC Floating Mini-Medallion */}
                           {isLbcCard && (
@@ -1199,20 +1228,15 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                                 handleOpenJobCard(item.key);
                               }}
                               title="Sản phẩm HTVC - Click để mở chi tiết công tác LBC"
-                              className="absolute -bottom-0.5 -right-0.5 z-30 w-5.5 h-5.5 sm:w-6 sm:h-6 rounded-full bg-white shadow-md overflow-hidden p-0 border-0 flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"
+                              className="absolute bottom-1 right-2 z-30 w-6 h-6 rounded-full bg-white shadow-md overflow-hidden p-0.5 border border-emerald-400 flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"
                             >
                               <img
                                 src="https://i.ibb.co/1fNw0hBq/HTVC.png"
                                 alt="Sản phẩm HTVC"
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover rounded-full"
                               />
                             </div>
                           )}
-
-                          {/* Hover Tooltip */}
-                          <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-[8px] font-bold bg-slate-900/90 text-white px-2 py-0.5 rounded-full opacity-0 group-hover/logo:opacity-100 transition-opacity whitespace-nowrap shadow-xs pointer-events-none z-30">
-                            Xem chi tiết
-                          </span>
                         </div>
 
                         {/* QUICK KPI POPOVER */}
@@ -1222,10 +1246,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                             onMouseLeave={() => setHoveredMilestoneKey(null)}
                             className="absolute z-50 w-68 p-3.5 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/95 dark:border-white/20 shadow-[0_18px_45px_rgba(15,23,42,0.25)] flex flex-col gap-2.5 transition-all duration-200 pointer-events-auto animate-fadeIn left-1/2 -translate-x-1/2 top-full mt-2"
                           >
-                            {/* Arrow pointer */}
                             <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-slate-900 border-t border-l border-white/90 dark:border-white/20 rotate-45" />
-
-                            {/* Header: Company + Year badge */}
                             <div className="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
                               <div className="flex items-center gap-2 min-w-0">
                                 <img
@@ -1250,10 +1271,9 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                               </span>
                             </div>
 
-                            {/* Top 3 KPI Pills */}
                             <div className="flex flex-col gap-1.5">
                               <span className="text-[9.5px] font-mono font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                                {formatCardTitle("Chỉ số KPI nổi bật")}
+                                {formatCardTitle('Chỉ số KPI nổi bật')}
                               </span>
                               {(EXPERIENCE_MILESTONES[item.key]?.kpis || [])
                                 .slice(0, 3)
@@ -1281,7 +1301,6 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                                 })}
                             </div>
 
-                            {/* Direct Action Button */}
                             <button
                               type="button"
                               onClick={(e) => {
@@ -1299,26 +1318,23 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                         )}
                       </div>
 
-                      {/* Vertical Connector Stem from Medallion to Bottom Card */}
+                      {/* Vertical Connector Stem from Banner to Bottom Card */}
                       <div className="flex flex-col items-center shrink-0 z-20">
-                        {/* Top dot */}
                         <div
                           className="w-2 h-2 rounded-full -mt-1 shadow-2xs"
                           style={{ backgroundColor: item.primaryColor }}
                         />
-                        {/* Vertical stem line */}
                         <div
-                          className="w-[2px] h-2.5 sm:h-3.5"
+                          className="w-[2px] h-2"
                           style={{ backgroundColor: item.primaryColor }}
                         />
-                        {/* Bottom dot */}
                         <div
                           className="w-2 h-2 rounded-full -mb-1 z-20 shadow-2xs"
                           style={{ backgroundColor: item.primaryColor }}
                         />
                       </div>
 
-                      {/* TIER 3: Soft Pastel Info Card with distinct Company & Product sections (Bo góc chuẩn 14px) */}
+                      {/* TIER 3: Soft Pastel Info Card matching Reference Image 1 */}
                       <div
                         onClick={() => handleSelectMilestone(item.key)}
                         style={{
@@ -1332,17 +1348,16 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                             : undefined,
                           ['--card-accent-color' as string]: item.primaryColor,
                         }}
-                        className={`theme-pastel-card w-full flex-1 min-h-[220px] rounded-[14px] p-3 sm:p-3.5 border backdrop-blur-md transition-all duration-300 cursor-pointer flex flex-col items-center text-center justify-between gap-2 relative group ${
+                        className={`theme-pastel-card w-full flex-1 min-h-[230px] rounded-[16px] p-3 sm:p-3.5 border backdrop-blur-md transition-all duration-300 cursor-pointer flex flex-col items-center text-center justify-between gap-2 relative group ${
                           !isDark ? item.borderColor : ''
                         } ${
                           isSelected
-                            ? `ring-2 ${item.activeRing} shadow-[0_14px_34px_-4px_rgba(30,27,75,0.18)] dark:shadow-[0_16px_36px_-4px_rgba(0,0,0,0.7),0_0_20px_${item.glowColor}] -translate-y-1`
-                            : 'shadow-[0_8px_24px_-4px_rgba(30,27,75,0.08),0_2px_8px_rgba(15,23,42,0.04)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.65),0_0_14px_rgba(56,189,248,0.15)] hover:shadow-[0_16px_36px_-4px_rgba(30,27,75,0.16)] dark:hover:shadow-[0_18px_38px_-6px_rgba(0,0,0,0.8),0_0_24px_rgba(56,189,248,0.35)] '
+                            ? `ring-2 ${item.activeRing} shadow-[0_14px_34px_-4px_rgba(30,27,75,0.18)] dark:shadow-[0_16px_36px_-4px_rgba(0,0,0,0.7),0_0_20px_${item.glowColor}] -translate-y-0.5`
+                            : 'shadow-[0_8px_24px_-4px_rgba(30,27,75,0.08),0_2px_8px_rgba(15,23,42,0.04)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.65)] hover:shadow-[0_16px_36px_-4px_rgba(30,27,75,0.16)]'
                         } ${isHighlightedInStory ? 'ring-2 ring-amber-400 shadow-md' : ''}`}
                       >
                         {/* KHỐI 1: CÔNG TY LÀM */}
-                        <div className="w-full flex flex-col items-center gap-1 shrink-0 pb-1 border-b border-black/5 dark:border-white/5">
-                          {/* Tiêu đề Công ty: Icon + Tên công ty viết hoa chuẩn mực */}
+                        <div className="w-full flex flex-col items-center gap-1 shrink-0 pb-1.5 border-b border-black/5 dark:border-white/10">
                           <div
                             className="flex items-center justify-center gap-1.5 w-full max-w-[98%]"
                             style={{ color: item.primaryColor }}
@@ -1351,7 +1366,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                               {renderCardMilestoneIcon(item.iconName, item.primaryColor)}
                             </div>
                             <h4
-                              className="text-xs sm:text-[13px] font-black font-play tracking-tight truncate leading-tight"
+                              className="text-sm sm:text-[14.5px] font-black font-play tracking-tight truncate leading-tight"
                               style={{ color: isDark ? (isSelected ? '#38bdf8' : '#f8fafc') : item.primaryColor }}
                               title={item.shortName}
                             >
@@ -1359,51 +1374,52 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                             </h4>
                           </div>
 
-                          {/* Vị trí đảm nhiệm (Có icon trước vị trí) */}
-                          <div className="flex items-center justify-center gap-1 text-[10px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-300 leading-tight truncate max-w-[98%]">
+                          {/* Vị trí đảm nhiệm */}
+                          <div className="flex items-center justify-center gap-1 text-[11px] font-bold text-slate-700 dark:text-slate-200 leading-tight truncate max-w-[98%]">
                             <Briefcase className="w-3 h-3 text-slate-500 dark:text-slate-400 shrink-0" />
                             <span className="truncate">{item.roleSummary}</span>
                           </div>
 
                           {/* Số lượng nhân viên quản lý */}
-                          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/85 dark:bg-slate-800/85 border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 text-[9px] font-bold font-mono shadow-2xs">
-                            <Users className="w-2.5 h-2.5 text-blue-600 dark:text-cyan-400 shrink-0" />
+                          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/90 dark:bg-slate-800/90 border border-slate-200/90 dark:border-white/15 text-slate-700 dark:text-slate-200 text-[9.5px] font-bold font-mono shadow-2xs">
+                            <Users className="w-2.5 h-2.5 shrink-0" style={{ color: item.primaryColor }} />
                             <span>Quản lý: {item.headcountLabel}</span>
                           </div>
                         </div>
 
-                        {/* KHỐI 2: SẢN PHẨM CỦA CÔNG TY (Tăng kích thước logo to rõ nét) */}
+                        {/* KHỐI 2: SẢN PHẨM CỦA CÔNG TY */}
                         {item.products && item.products.length > 0 && (
-                          <div className="w-full py-1.5 px-1 flex items-center justify-center gap-2.5 sm:gap-3 flex-wrap shrink-0">
+                          <div className="w-full py-1 px-1 flex items-center justify-center gap-2 flex-wrap shrink-0">
                             {item.products.map((p, pIdx) => (
                               <div
                                 key={pIdx}
-                                className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-white p-1 border border-white/80 shadow-[0_4px_14px_rgba(0,0,0,0.12)] shrink-0 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:shadow-lg cursor-pointer"
+                                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white p-0.5 border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.12)] shrink-0 flex items-center justify-center transition-all duration-300 hover:scale-110 cursor-pointer"
+                                style={{ borderColor: `${item.primaryColor}45` }}
                                 title={p.name}
                               >
                                 <img
                                   src={p.logo}
                                   alt={p.name}
-                                  className="w-full h-full object-contain select-none pointer-events-none drop-shadow-xs"
+                                  className="w-full h-full object-contain rounded-full select-none pointer-events-none"
                                 />
                               </div>
                             ))}
                           </div>
                         )}
 
-                        {/* KHỐI 3: 3 NHIỆM VỤ CỐT LÕI */}
+                        {/* KHỐI 3: 3 NHIỆM VỤ CỐT LÕI VỚI NÚT TRÒN ĐẶC MÀU CHUẨN HÌNH THAM KHẢO */}
                         {item.bullets && item.bullets.length > 0 && (
-                          <div className="w-full flex-1 flex flex-col justify-center gap-1 my-0.5 px-0.5 text-left">
+                          <div className="w-full flex-1 flex flex-col justify-center gap-1.5 my-0.5 px-1 text-left">
                             {item.bullets.map((b, bIdx) => (
                               <div
                                 key={bIdx}
-                                className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-semibold text-slate-700 dark:text-slate-300 leading-tight"
+                                className="flex items-center gap-2 text-[10.5px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-200 leading-tight"
                               >
                                 <div
-                                  className="w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 shadow-2xs"
-                                  style={{ backgroundColor: `${item.primaryColor}18` }}
+                                  className="w-4 h-4 rounded-full flex items-center justify-center shrink-0 text-white shadow-2xs"
+                                  style={{ backgroundColor: item.primaryColor }}
                                 >
-                                  {renderBulletIcon(b.icon, item.primaryColor)}
+                                  <Check className="w-2.5 h-2.5 stroke-[3]" />
                                 </div>
                                 <span className="truncate flex-1">{b.text}</span>
                               </div>
@@ -1411,14 +1427,26 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                           </div>
                         )}
 
-                        {/* KHỐI 4: QUY MÔ ĐỘI NGŨ & NÚT CHI TIẾT */}
-                        <div className="w-full shrink-0 mt-auto flex flex-col gap-1.5">
-                          <div
-                            className={`w-full py-1 px-2 rounded-full border text-[9px] sm:text-[9.5px] font-extrabold flex items-center justify-center gap-1.5 shadow-2xs ${item.pillBg}`}
+                        {/* KHỐI 4: 2 NÚT HÀNH ĐỘNG (QUY MÔ ĐỘI NGŨ > & XEM CHI TIẾT →) CHUẨN HÌNH THAM KHẢO */}
+                        <div className="w-full shrink-0 mt-auto flex flex-col gap-1.5 pt-1">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenJobCard(item.key);
+                            }}
+                            style={{
+                              borderColor: `${item.primaryColor}55`,
+                              color: isDark ? '#f8fafc' : item.primaryColor,
+                            }}
+                            className="w-full py-1 px-3 rounded-full bg-white/90 dark:bg-slate-800/90 border text-[10.5px] font-extrabold flex items-center justify-between shadow-2xs hover:brightness-95 transition cursor-pointer"
                           >
-                            <Users className="w-3 h-3 shrink-0" />
-                            <span className="truncate">{item.headcountLabel}</span>
-                          </div>
+                            <span className="flex items-center gap-1.5 truncate">
+                              <Users className="w-3 h-3 shrink-0" style={{ color: item.primaryColor }} />
+                              <span className="truncate">{item.headcountLabel}</span>
+                            </span>
+                            <ChevronRight className="w-3 h-3 shrink-0 opacity-75" />
+                          </button>
 
                           <button
                             type="button"
@@ -1426,16 +1454,21 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                               e.stopPropagation();
                               handleOpenJobCard(item.key);
                             }}
-                            className="w-full py-1 px-2 rounded-lg bg-black/5 dark:bg-white/10 hover:bg-blue-600 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-slate-950 text-[9.5px] font-bold font-play text-slate-600 dark:text-slate-300 transition-all flex items-center justify-center gap-1 cursor-pointer"
+                            style={{
+                              backgroundColor: isDark ? `${item.primaryColor}30` : `${item.primaryColor}20`,
+                              color: isDark ? '#ffffff' : item.primaryColor,
+                              borderColor: `${item.primaryColor}40`,
+                            }}
+                            className="w-full py-1.5 px-3 rounded-full border text-[10.5px] font-black font-play transition-all flex items-center justify-center gap-1.5 cursor-pointer hover:brightness-95 shadow-2xs"
                           >
                             <span>Xem Chi Tiết</span>
-                            <ArrowRight className="w-2.5 h-2.5" />
+                            <ArrowRight className="w-3 h-3" />
                           </button>
                         </div>
 
                         {/* Bottom Accent Capsule Bar */}
                         <div
-                          className="w-10 sm:w-12 h-[3.5px] rounded-full mt-0.5 shrink-0 transition-all duration-300 group-hover:w-16"
+                          className="w-12 h-[4px] rounded-full mt-0.5 shrink-0 transition-all duration-300 group-hover:w-16"
                           style={{ backgroundColor: item.primaryColor }}
                         />
                       </div>
@@ -1445,54 +1478,59 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
               </div>
             </div>
 
-            {/* TÍNH NĂNG 1: CHẾ ĐỘ XEM TOÀN CẢNH TIMELINE LỊCH SỬ BẰNG SLIDER TƯƠNG TÁC (PANORAMIC HISTORY SLIDER) */}
-              <div className="w-full mt-3 p-3 sm:p-3.5 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/90 dark:border-white/10 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div className="flex items-center gap-2 shrink-0">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-2xs">
-                    <Calendar className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-black font-play text-slate-800 dark:text-white leading-tight">
-                      Toàn cảnh thời gian
-                    </h4>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                      Mốc: <strong className="text-blue-600 dark:text-cyan-400">{filteredRoadmapCards[sliderYearIndex]?.yearBadge}</strong> · {filteredRoadmapCards[sliderYearIndex]?.shortName}
-                    </span>
-                  </div>
+            {/* THANH TOÀN CẢNH THỜI GIAN DƯỚI ĐÁY CHUẨN HÌNH THAM KHẢO */}
+            <div className="w-full mt-3 p-3 sm:px-4 sm:py-3 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/90 dark:border-white/10 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 shrink-0">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-xs">
+                  <Calendar className="w-4 h-4" />
                 </div>
-
-                {/* Thanh Slider tương tác kéo rê mượt mà */}
-                <div className="flex-1 w-full max-w-xl flex flex-col gap-1.5 px-1 sm:px-3">
-                  <input
-                    type="range"
-                    min={0}
-                    max={filteredRoadmapCards.length - 1}
-                    step={1}
-                    value={sliderYearIndex}
-                    onChange={(e) => handleSliderChange(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:accent-cyan-400"
-                    title="Kéo thanh trượt để di chuyển nhanh qua các mốc 2003 - 2026+"
-                  />
-                  {/* Nhãn các năm dưới slider */}
-                  <div className="w-full flex items-center justify-between text-[9.5px] font-mono font-bold text-slate-500 dark:text-slate-400">
-                    {filteredRoadmapCards.map((c, cIdx) => (
-                      <button
-                        key={c.key}
-                        type="button"
-                        onClick={() => handleSliderChange(cIdx)}
-                        className={`transition-all cursor-pointer hover:text-blue-600 dark:hover:text-cyan-400 ${
-                          cIdx === sliderYearIndex
-                            ? 'text-blue-600 dark:text-cyan-400 font-black scale-110'
-                            : ''
-                        }`}
-                      >
-                        {c.key}
-                      </button>
-                    ))}
-                  </div>
+                <div>
+                  <h4 className="text-xs sm:text-[13px] font-black font-play text-slate-800 dark:text-white leading-tight">
+                    Toàn cảnh thời gian
+                  </h4>
+                  <span className="text-[10.5px] text-slate-500 dark:text-slate-400 font-mono">
+                    Mốc:{' '}
+                    <strong className="text-blue-600 dark:text-cyan-400">
+                      {filteredRoadmapCards[sliderYearIndex]?.yearBadge}
+                    </strong>{' '}
+                    · {filteredRoadmapCards[sliderYearIndex]?.shortName}
+                  </span>
                 </div>
+              </div>
 
-                {/* Quick Benchmark Button if items selected */}
+              {/* Thanh Slider tương tác kéo rê mượt mà */}
+              <div className="flex-1 w-full max-w-2xl flex flex-col gap-1.5 px-1 sm:px-3">
+                <input
+                  type="range"
+                  min={0}
+                  max={filteredRoadmapCards.length - 1}
+                  step={1}
+                  value={sliderYearIndex}
+                  onChange={(e) => handleSliderChange(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:accent-cyan-400"
+                  title="Kéo thanh trượt để di chuyển nhanh qua các mốc 2003 - 2026+"
+                />
+                {/* Nhãn các năm dưới slider */}
+                <div className="w-full flex items-center justify-between text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
+                  {filteredRoadmapCards.map((c, cIdx) => (
+                    <button
+                      key={c.key}
+                      type="button"
+                      onClick={() => handleSliderChange(cIdx)}
+                      className={`transition-all cursor-pointer hover:text-blue-600 dark:hover:text-cyan-400 ${
+                        cIdx === sliderYearIndex
+                          ? 'text-blue-600 dark:text-cyan-400 font-black scale-110'
+                          : ''
+                      }`}
+                    >
+                      {c.key}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Nút chuyển nhanh cột mốc & So sánh */}
+              <div className="flex items-center gap-2 shrink-0">
                 {benchmarkKeys.length > 0 && (
                   <button
                     type="button"
@@ -1503,8 +1541,18 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                     <span>So sánh ({benchmarkKeys.length}/2)</span>
                   </button>
                 )}
+
+                <button
+                  type="button"
+                  onClick={handleScrollNextLogo}
+                  title="Chuyển sang cột mốc tiếp theo"
+                  className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/15 shadow-xs flex items-center justify-center text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 transition cursor-pointer"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
+          </div>
 
           {/* TÍNH NĂNG 5: DUAL-MILESTONE BENCHMARK MODAL (SO SÁNH 2 CỘT MỐC SỰ NGHIỆP ĐỐI ĐẦU) */}
           {isBenchmarkModalOpen && (() => {

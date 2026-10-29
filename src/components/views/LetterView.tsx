@@ -381,20 +381,13 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
   // Collapse/Expand state for career milestones inline bilingual view
   const [expandedCard, setExpandedCard] = useState<Record<string, boolean>>({});
 
-  // Dynamic position tracking for Right-Side Center Toolbar (Cách mép phải #center-card đúng 24px, căn giữa theo chiều dọc)
+  // Dynamic position tracking for Right-Side Toolbar (Bám sát mép phải website right: 0, chiều cao bằng #center-card)
   const [sideToolbarPos, setSideToolbarPos] = useState<{
-    left: number;
     top: number;
-    right?: number;
-    isDockedRight: boolean;
-    availableRight: number;
-    isMobile: boolean;
+    height: number;
   }>({
-    left: 0,
     top: 0,
-    isDockedRight: false,
-    availableRight: 0,
-    isMobile: false,
+    height: 0,
   });
   const [isClientMounted, setIsClientMounted] = useState<boolean>(false);
   const [isNavMenuOpen, setIsNavMenuOpen] = useState<boolean>(false);
@@ -403,31 +396,12 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
     setIsClientMounted(true);
     const updateSideToolbarPosition = () => {
       const centerCard = document.getElementById('center-card');
-      const isMobileScreen = window.innerWidth < 1280;
       if (centerCard) {
         const rect = centerCard.getBoundingClientRect();
-        const availableRight = window.innerWidth - rect.right;
-        const targetLeft = rect.right + 24;
-        const targetTop = rect.top + rect.height / 2;
-
-        if (availableRight >= 70 && !isMobileScreen) {
-          setSideToolbarPos({
-            left: targetLeft,
-            top: targetTop,
-            availableRight,
-            isDockedRight: false,
-            isMobile: false,
-          });
-        } else {
-          setSideToolbarPos({
-            left: 0,
-            top: targetTop,
-            right: 12,
-            availableRight,
-            isDockedRight: true,
-            isMobile: isMobileScreen,
-          });
-        }
+        setSideToolbarPos({
+          top: rect.top,
+          height: rect.height,
+        });
       }
     };
 
@@ -1730,19 +1704,27 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
           setIsRightDockCollapsed((prev) => !prev);
         }}
         title="Nhấp đúp chuột để thu gọn / mở rộng thanh tiện ích thư ngỏ"
-        className={`fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col justify-start items-center py-2.5 px-1.5 select-none transition-all duration-300 rounded-none rounded-tl-[20px] rounded-bl-[20px] border-r-0 border-y-2 border-l-2 pointer-events-auto font-play ${
+        style={
+          sideToolbarPos.height > 0
+            ? {
+                top: `${sideToolbarPos.top}px`,
+                height: `${sideToolbarPos.height}px`,
+                right: 0,
+              }
+            : { right: 0 }
+        }
+        className={`fixed right-0 ${
+          sideToolbarPos.height > 0 ? '' : 'top-1/2 -translate-y-1/2'
+        } z-40 flex flex-col justify-start items-center py-2.5 px-1.5 select-none transition-all duration-300 rounded-none rounded-tl-[20px] rounded-bl-[20px] border-0 pointer-events-auto font-play ${
           !isExpanded
             ? 'w-[48px]'
             : 'w-[185px]'
         } ${
           isDark
-            ? 'border-cyan-400/35 bg-slate-950/85 backdrop-blur-xl shadow-[0_16px_45px_-6px_rgba(0,0,0,0.75),0_0_24px_rgba(34,211,238,0.22),inset_0_1px_1px_rgba(255,255,255,0.15)]'
-            : 'border-white/85 bg-white/85 backdrop-blur-xl shadow-[0_14px_40px_-6px_rgba(30,27,75,0.18),0_4px_16px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)]'
+            ? 'bg-slate-950/85 backdrop-blur-xl shadow-[0_16px_45px_-6px_rgba(0,0,0,0.75),0_0_24px_rgba(34,211,238,0.22)]'
+            : 'bg-white/85 backdrop-blur-xl shadow-[0_14px_40px_-6px_rgba(30,27,75,0.18),0_4px_16px_rgba(0,0,0,0.06)]'
         }`}
       >
-        {/* HIỆU ỨNG GLOW ĐÈN NEON QUANH VIỀN THANH BÊN PHẢI (Ambient Neon Edge Pulse: Vệt sáng chạy dọc góc trên-trái và dưới-trái) */}
-        <div className="absolute -left-[2px] top-0 w-[3.5px] h-[70px] rounded-tl-[22px] bg-gradient-to-b from-cyan-400 via-indigo-500 to-transparent shadow-[0_0_14px_rgba(34,211,238,0.9)] pointer-events-none animate-pulse" />
-        <div className="absolute -left-[2px] bottom-0 w-[3.5px] h-[70px] rounded-bl-[22px] bg-gradient-to-t from-cyan-400 via-indigo-500 to-transparent shadow-[0_0_14px_rgba(34,211,238,0.9)] pointer-events-none animate-pulse" />
 
         {/* Nút Thu Gọn / Mở Rộng Ở Đỉnh Thanh Dock */}
         <div className="w-full flex items-center justify-between shrink-0 mb-1 px-1">
@@ -2550,51 +2532,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
               </div>
             </div>
 
-            {/* 1. KHỐI BANNER THÔNG ĐIỆP HỢP TÁC (TOP HERO BANNER) */}
-            <div className="p-5 sm:p-7 rounded-3xl bg-gradient-to-r from-teal-500/10 via-sky-400/15 to-blue-500/10 dark:from-teal-950/35 dark:via-sky-950/30 dark:to-blue-950/35 border border-sky-200/80 dark:border-sky-800/60 shadow-sm relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-5">
-              {/* Cột trái: Loa phát thanh + Lời chào + Đoạn giới thiệu */}
-              <div className="flex items-start gap-4 min-w-0 flex-1 z-10 text-left">
-                {/* Icon Loa phát thanh lớn màu ngọc lam */}
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-teal-500 to-emerald-400 text-white flex items-center justify-center shrink-0 shadow-md ring-2 ring-teal-300/40">
-                  <WebIcon name="volume-2" className="w-6 h-6 sm:w-7 sm:h-7" />
-                </div>
 
-                <div className="space-y-1.5 min-w-0 flex-1">
-                  <h1 className="text-2xl sm:text-3xl font-black font-play tracking-tight text-slate-900 dark:text-white leading-tight">
-                    Thông điệp hợp tác
-                  </h1>
-                  <p className="text-sm sm:text-base font-bold text-[#E15A2B] dark:text-[#FB923C] font-play">
-                    Kính gửi Quý đối tác, Quý khách hàng và nhà tuyển dụng{companyName ? ` (${companyName})` : ''}!
-                  </p>
-                  <p className="text-xs sm:text-[13.5px] text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
-                    Với hơn 22 năm kinh nghiệm trong lĩnh vực xây dựng, vận hành và phát triển hệ thống dịch vụ khách hàng, tôi luôn sẵn sàng đồng hành và hợp tác để mang lại những giá trị thiết thực, bền vững và hiệu quả cho Quý vị.
-                  </p>
-                </div>
-              </div>
-
-              {/* Cột phải: Minh họa 3D mềm mại với bong bóng tin nhắn đa sắc */}
-              <div className="relative z-10 shrink-0 w-full md:w-auto flex items-center justify-center">
-                <div className="relative w-44 h-28 sm:w-56 sm:h-32 flex items-center justify-center">
-                  {/* Bong bóng xanh dương lớn */}
-                  <div className="absolute right-3 top-2 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-sky-400 to-blue-500 opacity-90 blur-xs shadow-lg flex items-center justify-center animate-pulse">
-                    <WebIcon name="chat" className="w-8 h-8 text-white drop-shadow-sm" />
-                  </div>
-                  {/* Bong bóng hồng nhỏ */}
-                  <div className="absolute right-20 -top-1 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-pink-400 to-rose-500 shadow-md flex items-center justify-center">
-                    <WebIcon name="heart" className="w-4 h-4 text-white" />
-                  </div>
-                  {/* Bong bóng xanh ngọc */}
-                  <div className="absolute right-1 bottom-1 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-500 shadow-md flex items-center justify-center">
-                    <WebIcon name="user" className="w-5 h-5 text-white" />
-                  </div>
-                  {/* Khung tin nhắn chữ nhật nhỏ */}
-                  <div className="absolute left-4 top-6 px-3 py-1.5 rounded-xl bg-white/90 dark:bg-slate-800/90 shadow-md border border-slate-200/80 dark:border-slate-700 flex items-center gap-1.5 backdrop-blur-md">
-                    <WebIcon name="mail" className="w-3.5 h-3.5 text-blue-600 dark:text-cyan-400" />
-                    <span className="text-[10px] font-bold text-slate-700 dark:text-slate-200 font-mono">22+ Years CX</span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             {/* 2. KHỐI LĨNH VỰC HOẠT ĐỘNG CHÍNH (4 CARDS NGANG ĐA SẮC) */}
             <div className="space-y-2.5">
@@ -2992,27 +2930,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
               </div>
             </div>
 
-            {/* 6. KHỐI BANNER BOTTOM QUOTE (CHÂN TRANG XANH HOÀNG GIA) */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 text-white shadow-md flex items-center justify-between gap-4 overflow-hidden relative text-left">
-              <div className="flex items-center gap-3 relative z-10 min-w-0">
-                <span className="text-3xl sm:text-4xl font-black text-sky-300 leading-none select-none shrink-0">““</span>
-                <div className="space-y-0.5 min-w-0">
-                  <p className="text-xs sm:text-sm font-bold font-play text-white truncate">
-                    “Hành trình hôm nay – Giá trị ngày mai.”
-                  </p>
-                  <p className="text-[11px] sm:text-xs text-sky-100 font-medium truncate">
-                    Cùng khách hàng kiến tạo những thành công bền vững.
-                  </p>
-                </div>
-              </div>
 
-              {/* Lưới chấm bi Dot Matrix trang trí bên phải */}
-              <div className="hidden sm:grid grid-cols-6 gap-1.5 opacity-30 shrink-0 select-none">
-                {Array.from({ length: 18 }).map((_, dIdx) => (
-                  <span key={dIdx} className="w-1.5 h-1.5 rounded-full bg-white" />
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       )}

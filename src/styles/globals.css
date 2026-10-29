@@ -171,13 +171,15 @@ div#app-root-layout main#center-card div#content-display h4 svg {
 svg.lucide,
 svg[class*="lucide"],
 .web-icon-solid,
+.web-icon-ultimate-bold,
 .card-title-icon,
 .theme-card-icon svg,
 .animated-service-icon svg,
 .edu-stack-card h3 svg,
 .theme-pastel-card svg {
-  stroke-linejoin: round;
-  stroke-linecap: round;
+  stroke-linejoin: round !important;
+  stroke-linecap: round !important;
+  stroke-width: 2.75px !important;
 }
 
 /* 1. Đổ màu mảng đặc cho các hình học khép kín nguyên thủy trong SVG (Polygon, Rect, Circle, Ellipse) */
@@ -1893,14 +1895,188 @@ samp {
   letter-spacing: var(--tracking-overline) !important;
 }
 
+/* =========================================================================
+   5. HỆ THỐNG TYPOGRAPHY SCALE TOÀN DIỆN (/typography - RULE 30)
+   - Giữ nguyên font Play mặc định, hiển thị đầy đủ dấu Tiếng Việt
+   - Chuẩn hóa kích thước theo vai trò đồng nhất trên Desktop, Tablet, Mobile
+   ========================================================================= */
+:root {
+  --font-size-display: clamp(1.85rem, 1.35rem + 2.2vw, 2.65rem);
+  --font-size-h1: clamp(1.5rem, 1.15rem + 1.6vw, 2.125rem);
+  --font-size-h2: clamp(1.25rem, 1rem + 1.1vw, 1.625rem);
+  --font-size-h3: clamp(1.0625rem, 0.95rem + 0.65vw, 1.3125rem);
+  --font-size-h4: clamp(0.95rem, 0.875rem + 0.4vw, 1.125rem);
+  --font-size-body: clamp(0.8125rem, 0.785rem + 0.15vw, 0.9375rem);
+  --font-size-body-sm: clamp(0.75rem, 0.725rem + 0.12vw, 0.875rem);
+  --font-size-label: clamp(0.75rem, 0.725rem + 0.12vw, 0.84375rem);
+  --font-size-button: clamp(0.75rem, 0.725rem + 0.15vw, 0.875rem);
+  --font-size-caption: clamp(0.6875rem, 0.65rem + 0.12vw, 0.78125rem);
+  --font-size-metric: clamp(1.4rem, 1.1rem + 1.6vw, 2.25rem);
+  --line-height-heading: 1.28;
+  --line-height-body: 1.6;
+}
 
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
 
+/* Bảo đảm tiêu đề thẻ Card tuân thủ Sentence case, không viết hoa toàn bộ (Rule 8) */
+.typo-card-title,
+.domain-card-title,
+.edu-card-title,
+.skill-card-title,
+.system-card-title,
+.project-card-title,
+.card-title {
+  text-transform: none !important;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
 
+/* =========================================================================
+   6. ĐỒNG BỘ GIAO DIỆN SÁNG / TỐI TOÀN DIỆN (/theme - RULE 31)
+   - Đảm bảo tương phản cao, đồng bộ toàn bộ Card, Modal, Dropdown, Input, Badge
+   ========================================================================= */
+[data-theme="light-glass"] {
+  --theme-surface-card: rgba(255, 255, 255, 0.85);
+  --theme-surface-border: rgba(226, 232, 240, 0.9);
+  --theme-text-main: #0f172a;
+  --theme-text-sub: #334155;
+  --theme-text-muted: #64748b;
+}
 
+[data-theme="dark-neon"] {
+  color-scheme: dark;
+  --theme-surface-card: rgba(15, 23, 42, 0.88);
+  --theme-surface-border: rgba(56, 189, 248, 0.28);
+  --theme-text-main: #f8fafc;
+  --theme-text-sub: #cbd5e1;
+  --theme-text-muted: #94a3b8;
+}
 
+[data-theme="dark-neon"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+[data-theme="dark-neon"] textarea,
+[data-theme="dark-neon"] select {
+  background-color: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  border-color: rgba(56, 189, 248, 0.35);
+}
 
+[data-theme="light-glass"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+[data-theme="light-glass"] textarea,
+[data-theme="light-glass"] select {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  border-color: rgba(203, 213, 225, 0.95);
+}
 
+/* =========================================================================
+   7. CHUẨN HÓA THIẾT KẾ THẺ CARD & CHỐNG TRÀN (/card & /responsive - RULE 6, 7)
+   - Chống tràn nội dung (anti-overflow) trên mọi kích thước màn hình (320px -> 4K)
+   - Hỗ trợ giả lập trực tiếp Desktop / Tablet / Mobile và @media thực tế
+   ========================================================================= */
+.bento-card,
+.bento-view-card,
+.theme-pastel-card,
+.card-104,
+.edu-stack-card,
+.system-item,
+article,
+section {
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
 
+p, span, h1, h2, h3, h4, h5, h6, a, li, td, th {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
 
+img, video {
+  max-width: 100%;
+}
 
+/* Chế độ giả lập Tablet trực tiếp (data-responsive-viewport="tablet") */
+#app-root-layout[data-responsive-viewport="tablet"] header,
+#app-root-layout[data-responsive-viewport="tablet"] main#center-card,
+#app-root-layout[data-responsive-viewport="tablet"] footer {
+  width: calc(100% - 20px) !important;
+  max-width: 796px !important;
+}
 
+#app-root-layout[data-responsive-viewport="tablet"] #content-display .lg\:grid-cols-3,
+#app-root-layout[data-responsive-viewport="tablet"] #content-display .lg\:grid-cols-4 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+/* Chế độ giả lập Mobile trực tiếp (data-responsive-viewport="mobile") */
+#app-root-layout[data-responsive-viewport="mobile"] header,
+#app-root-layout[data-responsive-viewport="mobile"] main#center-card,
+#app-root-layout[data-responsive-viewport="mobile"] footer {
+  width: calc(100% - 12px) !important;
+  max-width: 414px !important;
+}
+
+#app-root-layout[data-responsive-viewport="mobile"] #content-display {
+  padding: 12px !important;
+  overflow-y: auto !important;
+}
+
+#app-root-layout[data-responsive-viewport="mobile"] #content-display .grid-cols-2,
+#app-root-layout[data-responsive-viewport="mobile"] #content-display .sm\:grid-cols-2,
+#app-root-layout[data-responsive-viewport="mobile"] #content-display .md\:grid-cols-2,
+#app-root-layout[data-responsive-viewport="mobile"] #content-display .md\:grid-cols-3,
+#app-root-layout[data-responsive-viewport="mobile"] #content-display .lg\:grid-cols-3,
+#app-root-layout[data-responsive-viewport="mobile"] #content-display .lg\:grid-cols-4,
+#app-root-layout[data-responsive-viewport="mobile"] #content-display .lg\:grid-cols-12 {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* Responsive Breakpoints Thực Tế (1440px, 1280px, 1024px, 768px, 430px, 390px, 375px, 320px) */
+@media (max-width: 1280px) {
+  main#center-card,
+  #app-root-layout > header,
+  #app-root-layout > footer {
+    width: calc(100% - 24px) !important;
+    max-width: 1160px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  main#center-card,
+  #app-root-layout > header,
+  #app-root-layout > footer {
+    width: calc(100% - 20px) !important;
+    max-width: 984px !important;
+  }
+  #content-display {
+    overflow-y: auto !important;
+  }
+}
+
+@media (max-width: 768px) {
+  main#center-card,
+  #app-root-layout > header,
+  #app-root-layout > footer {
+    width: calc(100% - 16px) !important;
+  }
+  #content-display {
+    padding: 14px !important;
+    gap: 14px !important;
+    overflow-y: auto !important;
+  }
+}
+
+@media (max-width: 430px) {
+  main#center-card,
+  #app-root-layout > header,
+  #app-root-layout > footer {
+    width: calc(100% - 10px) !important;
+  }
+  #content-display {
+    padding: 10px !important;
+    gap: 10px !important;
+  }
+}

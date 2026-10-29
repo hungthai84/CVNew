@@ -74,13 +74,12 @@ export default function HomePage() {
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
   const [isZenMode, setIsZenMode] = useState<boolean>(false);
   const [zenCountdown, setZenCountdown] = useState<number | null>(null);
+  const [responsiveViewport, setResponsiveViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
 
-  // Wallpaper Slideshow Live State & Dynamic Island Pill Toast
+  // Wallpaper Slideshow Live State
   const [slideshowProgress, setSlideshowProgress] = useState<number>(0);
   const [slideshowSecondsLeft, setSlideshowSecondsLeft] = useState<number>(30);
-  const [pillToast, setPillToast] = useState<{ name: string; tag: string; type: string } | null>(null);
-  const pillToastTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const slideshowStartTimeRef = useRef<number>(Date.now());
+  const slideshowStartTimeRef = useRef<number>(0);
   const contentDisplayRef = useRef<HTMLDivElement | null>(null);
   const activeScrollTargetRef = useRef<HTMLElement | null>(null);
   const activeWallpaperIdRef = useRef<string>(activeWallpaperId);
@@ -199,20 +198,6 @@ export default function HomePage() {
 
     // Reset countdown clock upon applying a wallpaper
     slideshowStartTimeRef.current = Date.now();
-
-    // Subtle Dynamic Island Pill Toast trigger
-    if (wallpaperSettingsRef.current.slideshowPillToastEnabled ?? true) {
-      const isBlurred = isBlurredWallpaper(wp);
-      setPillToast({
-        name: wp.name,
-        tag: isBlurred ? '🌫️ Nền Mờ' : getWallpaperTone(wp) === 'light' ? 'Nền Sáng' : 'Nền Tối',
-        type: wp.type.toUpperCase(),
-      });
-      if (pillToastTimerRef.current) clearTimeout(pillToastTimerRef.current);
-      pillToastTimerRef.current = setTimeout(() => {
-        setPillToast(null);
-      }, 2400);
-    }
 
     if (wp.type === 'video') {
       setWallpaperVideo(wp.value);
@@ -392,13 +377,6 @@ export default function HomePage() {
           const nextEnabled = !prev.slideshowEnabled;
           const updated = { ...prev, slideshowEnabled: nextEnabled };
           saveWallpaperSettings(updated);
-          setPillToast({
-            name: nextEnabled ? 'Đã bật Trình Chiếu Nền' : 'Đã tạm dừng Trình Chiếu',
-            tag: nextEnabled ? 'Phím tắt [P/Space]' : 'Tạm dừng',
-            type: 'SLIDESHOW',
-          });
-          if (pillToastTimerRef.current) clearTimeout(pillToastTimerRef.current);
-          pillToastTimerRef.current = setTimeout(() => setPillToast(null), 2400);
           return updated;
         });
       } else if (e.key === 'ArrowRight' && !e.altKey && !e.ctrlKey && !e.metaKey) {
@@ -593,43 +571,6 @@ export default function HomePage() {
         transitionEffect={wallpaperSettings.slideshowTransitionEffect}
       />
 
-      {/* Thông Báo Mini Khi Đổi Nền (Subtle Dynamic Island Pill Toast) */}
-      {pillToast && (wallpaperSettings.slideshowPillToastEnabled ?? true) && (
-        <div className="fixed top-3.5 sm:top-4 inset-x-0 z-50 flex justify-center pointer-events-none px-4 animate-fade-in transition-all duration-300">
-          <div className="pointer-events-auto flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-950/85 text-white border border-white/20 backdrop-blur-2xl shadow-[0_16px_40px_rgba(0,0,0,0.55)]">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee] animate-pulse" />
-            <div className="flex items-center gap-2 text-xs">
-              <span className="font-bold tracking-wide text-white">{pillToast.name}</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/15 text-cyan-300">
-                {pillToast.tag}
-              </span>
-              <span className="px-1.5 py-0.5 rounded text-[9px] font-mono uppercase bg-cyan-500/20 text-cyan-200 border border-cyan-400/30">
-                {pillToast.type}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Thanh Tiến Trình Đếm Ngược Hình Nền (Live Countdown Progress Bar) */}
-      {wallpaperSettings.slideshowEnabled && (wallpaperSettings.slideshowShowCountdown ?? true) && (
-        <div
-          className="fixed bottom-0 inset-x-0 z-40 pointer-events-none group"
-          title={`Trình chiếu hình nền tự động: còn ${slideshowSecondsLeft}s`}
-        >
-          <div className="w-full h-[3px] bg-black/20 backdrop-blur-sm overflow-hidden relative">
-            <div
-              className="h-full bg-gradient-to-r from-cyan-400 via-indigo-500 to-fuchsia-500 transition-[width] duration-100 ease-linear shadow-[0_0_8px_rgba(34,211,238,0.7)]"
-              style={{ width: `${slideshowProgress}%` }}
-            />
-          </div>
-          <div className="absolute bottom-1.5 right-3 pointer-events-auto flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold backdrop-blur-xl bg-slate-900/70 text-slate-200 border border-white/15 shadow-md select-none transition-opacity duration-200 hover:opacity-100 opacity-75">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Nền kế tiếp: {slideshowSecondsLeft}s</span>
-          </div>
-        </div>
-      )}
-
       {/* Floating Zen Mode HUD Bar (Appears when Header, Footer & Center Card are hidden) */}
       {isZenMode && (
         <div className="fixed bottom-6 inset-x-0 z-50 flex justify-center px-4 pointer-events-none animate-fade-in">
@@ -684,8 +625,15 @@ export default function HomePage() {
       {/* Main UI Root Layout (Header bám sát mép trên, Footer bám sát mép dưới) */}
       <div
         id="app-root-layout"
+        data-responsive-viewport={responsiveViewport}
         className={`w-full h-full h-[100dvh] max-h-[100dvh] flex flex-col justify-between items-center relative z-10 overflow-hidden transition-all duration-500 py-0 pt-0 pb-0 ${
           isZenMode ? 'opacity-0 scale-[0.985] pointer-events-none select-none' : 'opacity-100 scale-100'
+        } ${
+          responsiveViewport === 'tablet'
+            ? 'max-w-[820px] mx-auto shadow-[0_0_60px_rgba(0,0,0,0.45)] border-x border-white/30'
+            : responsiveViewport === 'mobile'
+            ? 'max-w-[430px] mx-auto shadow-[0_0_60px_rgba(0,0,0,0.55)] border-x border-white/30'
+            : ''
         }`}
       >
         {/* 
@@ -831,6 +779,40 @@ export default function HomePage() {
           onOpenNetworkDebug={() => setIsNetworkDebugOpen(true)}
         />
       </div>
+
+      {/* Thanh Chuyển Đổi Kích Thước Responsive Web Trực Tiếp (Desktop / Tablet / Mobile Simulator) */}
+      {!isZenMode && (
+        <div className="fixed bottom-2.5 left-2.5 z-50 hidden lg:flex items-center gap-1 p-1 rounded-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-slate-200/90 dark:border-cyan-400/30 shadow-lg select-none">
+          {(
+            [
+              { id: 'desktop', label: 'Desktop', icon: 'monitor' },
+              { id: 'tablet', label: 'Tablet', icon: 'tablet' },
+              { id: 'mobile', label: 'Mobile', icon: 'smartphone' },
+            ] as const
+          ).map((vp) => {
+            const isActive = responsiveViewport === vp.id;
+            return (
+              <button
+                key={vp.id}
+                type="button"
+                onClick={() => {
+                  SoundEngine.playTap();
+                  setResponsiveViewport(vp.id);
+                }}
+                title={`Chế độ hiển thị ${vp.label}`}
+                className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold flex items-center gap-1 transition-all cursor-pointer ${
+                  isActive
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <WebIcon name={vp.icon} className="w-3 h-3" />
+                <span>{vp.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Theme Selector Modal */}
       <ThemeSelectorModal

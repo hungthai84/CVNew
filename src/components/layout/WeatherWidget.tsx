@@ -121,7 +121,10 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ currentPreset, onC
   const [isBursting, setIsBursting] = useState<boolean>(false);
 
   // State cấu hình ánh sáng mặt trời theo giờ thực tế (Sun Position Ambient Glow)
-  const [sunConfig, setSunConfig] = useState<SunAmbientConfig>(() => getSunAmbientConfig());
+  // Khởi tạo giá trị cố định lúc SSR để tránh lệch Hydration giữa Server và Client, sau đó cập nhật ngay trong useEffect
+  const [sunConfig, setSunConfig] = useState<SunAmbientConfig>(() =>
+    getSunAmbientConfig(new Date(2026, 0, 1, 9, 0, 0))
+  );
 
   // Tự động cập nhật ánh sáng mặt trời theo thời gian thực mỗi 30 giây
   useEffect(() => {

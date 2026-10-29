@@ -727,23 +727,7 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
         </h2>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-y-auto glass-scrollbar pt-3 pr-0.5 space-y-3">
-        {/* Banner Châm Ngôn Dẫn Mệnh tái cấu trúc sang trọng */}
-        <div className="relative overflow-hidden rounded-2xl p-3.5 sm:p-4 bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 text-white border border-amber-400/40 shadow-md">
-          <div className="relative z-10 flex flex-col gap-1.5">
-            <div className="flex items-center gap-1.5 text-amber-300 text-[10px] font-mono font-black uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Châm Ngôn Điều Hành</span>
-            </div>
-            <p className="font-serif italic text-xs sm:text-sm text-slate-100 leading-relaxed">
-              “Lãnh đạo bằng bản lĩnh Kim kiên định – Đồng hành cùng nhân sự bằng tấm lòng thấu cảm – Vận hành chuẩn hóa SOP và làm chủ công nghệ AI kiến tạo giá trị phụng sự bền vững.”
-            </p>
-            <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[9.5px] font-mono">
-              <span className="text-amber-300 font-bold">Nguyễn Hùng Thái · Giáp Tý 1984</span>
-              <span className="text-slate-400">Hải Trung Kim · Đoài Kim Tây Tứ Mệnh</span>
-            </div>
-          </div>
-        </div>
+
 
         {/* 6 Thẻ Triết Lý Hành Động */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 w-full items-stretch">

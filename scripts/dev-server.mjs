@@ -3,7 +3,7 @@ import os from 'os';
 import { execSync, spawn } from 'child_process';
 import qrcodeTerminal from 'qrcode-terminal';
 
-const DEFAULT_PORT = 3001;
+const DEFAULT_PORT = Number(process.env.PORT) || 3000;
 
 // Lấy IPv4 cục bộ trong mạng Wi-Fi/Ethernet
 function getLocalIpAddress() {
@@ -128,8 +128,8 @@ async function startServer() {
   console.log(`\x1b[32m🚀 Đang khởi động Next.js Dev Server trên cổng ${port}...\x1b[0m\n`);
 
   const isWin = process.platform === 'win32';
-  const bin = isWin ? 'pnpm.cmd' : 'pnpm';
-  const args = ['exec', 'next', 'dev', '-p', String(port)];
+  const bin = isWin ? 'npx.cmd' : 'npx';
+  const args = ['next', 'dev', '-p', String(port), '-H', '0.0.0.0'];
 
   const nextProcess = spawn(bin, args, {
     stdio: 'inherit',
