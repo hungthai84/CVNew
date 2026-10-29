@@ -273,7 +273,12 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
 
   const showFilterOverlay = dimmerOpacity > 0 || blurAmount > 0;
   const filterOverlayStyle: React.CSSProperties = {
-    backgroundColor: dimmerOpacity > 0 ? `rgba(5, 8, 20, ${(dimmerOpacity / 100).toFixed(2)})` : 'transparent',
+    backgroundColor:
+      dimmerOpacity > 0
+        ? theme === 'dark-neon'
+          ? `rgba(5, 8, 20, ${(dimmerOpacity / 100).toFixed(2)})`
+          : `rgba(245, 247, 253, ${(Math.min(dimmerOpacity, 45) / 100).toFixed(2)})`
+        : 'transparent',
     backdropFilter: blurAmount > 0 ? `blur(${blurAmount}px)` : undefined,
     WebkitBackdropFilter: blurAmount > 0 ? `blur(${blurAmount}px)` : undefined,
   };

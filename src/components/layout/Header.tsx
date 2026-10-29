@@ -219,22 +219,22 @@ export const Header: React.FC<HeaderProps> = ({
                 : 'none';
             } else {
               itemBg = isSelected
-                ? `${page.theme}22`
+                ? `linear-gradient(135deg, #FFFFFF 0%, ${page.bgNormal || `${page.theme}24`} 100%)`
                 : isHovered
-                ? `${page.theme}16`
-                : 'rgba(255, 255, 255, 0.9)';
+                ? `linear-gradient(135deg, #FFFFFF 0%, ${page.bgLight || `${page.theme}18`} 100%)`
+                : `linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, ${page.bgLight || `${page.theme}12`} 100%)`;
               itemBorder = isSelected
                 ? page.theme
                 : isHovered
                 ? `${page.theme}85`
-                : page.borderColor || `${page.theme}35`;
+                : page.borderColor || `${page.theme}45`;
               itemBoxShadow = isHovered
                 ? `0 8px 20px -3px ${page.theme}55`
                 : isSelected
-                ? `0 3px 12px -2px ${page.theme}45`
-                : '0 1px 2px rgba(0,0,0,0.06)';
+                ? `0 4px 14px -2px ${page.theme}45`
+                : `0 2px 6px -1px ${page.theme}20`;
 
-              titleColor = page.theme;
+              titleColor = iconColor;
               titleTextShadow = 'none';
             }
 
@@ -254,6 +254,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onMouseLeave={() => setHoveredId(null)}
                 className="neonav-item relative h-[36px] sm:h-[38px] p-[2px] rounded-xl border cursor-pointer select-none transition-all duration-200 shrink-0 group/navitem flex items-center justify-center backdrop-blur-md"
                 style={{
+                  ['--nav-item-color' as string]: iconColor,
                   width: `${buttonWidth}px`,
                   minWidth: `${buttonWidth}px`,
                   maxWidth: `${buttonWidth}px`,
@@ -262,6 +263,7 @@ export const Header: React.FC<HeaderProps> = ({
                   boxShadow: itemBoxShadow,
                   borderColor: itemBorder,
                   background: itemBg,
+                  color: iconColor,
                   transform: isHovered
                     ? 'translateY(-3px) scale(1.05)'
                     : isSelected
@@ -283,13 +285,13 @@ export const Header: React.FC<HeaderProps> = ({
                   </span>
 
                   <span
-                    className={`truncate font-play tracking-tight transition-colors duration-200 ${
+                    className={`neonav-item-title truncate font-play tracking-tight transition-colors duration-200 ${
                       isSelected
                         ? 'font-black text-[13.5px] sm:text-[14px]'
                         : 'font-bold text-[13.5px] sm:text-[14px]'
                     }`}
                     style={{
-                      color: titleColor,
+                      color: iconColor,
                       textShadow: titleTextShadow,
                     }}
                   >

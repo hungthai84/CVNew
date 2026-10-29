@@ -154,6 +154,42 @@ class CustomSoundEngine {
   }
 
   /**
+   * Âm Thanh Chuyển Giao Diện Tự Nhiên (Ambient Crystal Theme Chime)
+   */
+  public playThemeChime() {
+    if (!this.enabled) return;
+    try {
+      this.initCtx();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+
+      // Create 3 soft harmonic sine oscillators for a sparkling crystal chime
+      const frequencies = [1318.51, 1975.53, 2959.96]; // E6, B6, F#7
+      frequencies.forEach((freq, idx) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+
+        const startTime = now + idx * 0.04;
+        gain.gain.setValueAtTime(0.001, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.08 / (idx + 1), startTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.45);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+
+        osc.start(startTime);
+        osc.stop(startTime + 0.45);
+      });
+    } catch {
+      // Audio autoplay policy
+    }
+  }
+
+  /**
    * Hiệu Ứng Âm Thanh Kính Nhẹ Khi Bật / Đóng Thanh Dock (Crystal Panel Sound Effect)
    */
   public playGlassChime(volume: number = 0.15) {

@@ -21,7 +21,6 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
   const [message, setMessage] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'message' | 'schedule' | 'faq' | 'card'>('message');
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   // Appointment Scheduling State (Tính năng chọn lịch & thời gian)
   const [selectedDate, setSelectedDate] = useState<string>(() => {
@@ -185,10 +184,6 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
     window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
   };
 
-  const toggleFaq = (idx: number) => {
-    setOpenFaq((prev) => (prev === idx ? null : idx));
-  };
-
   return (
     <div className="w-full h-full flex-1 min-h-0 flex flex-col gap-[15px] max-w-7xl mx-auto justify-start select-none relative text-slate-800 dark:text-slate-100 text-left overflow-hidden">
       {/* 2. Hai Thẻ Liên Hệ Side-by-Side (5 cols & 7 cols) - Căn chỉnh chiều cao nằm gọn trong thẻ chính */}
@@ -214,18 +209,18 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
             </p>
           </div>
 
-          {/* 3 Kênh Liên Hệ Trực Tiếp */}
+          {/* 3 Kênh Liên Hệ Trực Tiếp Đa Sắc (Multicolor Glass Cards) */}
           <div className="space-y-2 relative z-10 flex-1 flex flex-col justify-center min-h-0">
             {/* Email Direct Card */}
-            <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex items-center justify-between gap-2.5 hover:border-sky-400 dark:hover:border-sky-400 transition-all">
+            <div className="p-2.5 rounded-xl bg-gradient-to-r from-sky-50/90 via-white/95 to-cyan-50/80 dark:from-slate-800/90 dark:via-slate-800/80 dark:to-sky-950/30 border border-sky-200/80 dark:border-sky-500/30 flex items-center justify-between gap-2.5 hover:border-sky-400 dark:hover:border-sky-400 transition-all shadow-2xs">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-sky-500/15 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-sky-500/15 dark:bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-300/50 dark:border-sky-500/30 flex items-center justify-center shrink-0">
                   <svg className="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[9px] font-extrabold tracking-wider text-slate-400 dark:text-slate-500 block font-mono uppercase">
+                  <span className="text-[9px] font-extrabold tracking-wider text-sky-700 dark:text-sky-400 block font-mono uppercase">
                     Email Direct
                   </span>
                   <a
@@ -261,16 +256,16 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
             </div>
 
             {/* Location */}
-            <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex items-center justify-between gap-2.5">
+            <div className="p-2.5 rounded-xl bg-gradient-to-r from-rose-50/90 via-white/95 to-pink-50/80 dark:from-slate-800/90 dark:via-slate-800/80 dark:to-rose-950/30 border border-rose-200/80 dark:border-rose-500/30 flex items-center justify-between gap-2.5 shadow-2xs">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-rose-500/15 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-rose-500/15 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-300/50 dark:border-rose-500/30 flex items-center justify-center shrink-0">
                   <svg className="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[9px] font-extrabold tracking-wider text-slate-400 dark:text-slate-500 block font-mono uppercase">
+                  <span className="text-[9px] font-extrabold tracking-wider text-rose-700 dark:text-rose-400 block font-mono uppercase">
                     Trụ sở làm việc
                   </span>
                   <p className="text-xs sm:text-[13px] font-extrabold text-slate-800 dark:text-slate-100 truncate">
@@ -284,15 +279,15 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
             </div>
 
             {/* Office Hours */}
-            <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50/90 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 flex items-center justify-between gap-2.5">
+            <div className="p-2.5 rounded-xl bg-gradient-to-r from-emerald-50/90 via-white/95 to-teal-50/80 dark:from-slate-800/90 dark:via-slate-800/80 dark:to-emerald-950/30 border border-emerald-200/80 dark:border-emerald-500/30 flex items-center justify-between gap-2.5 shadow-2xs">
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-300/50 dark:border-emerald-500/30 flex items-center justify-center shrink-0">
                   <svg className="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[9px] font-extrabold tracking-wider text-slate-400 dark:text-slate-500 block font-mono uppercase">
+                  <span className="text-[9px] font-extrabold tracking-wider text-emerald-700 dark:text-emerald-400 block font-mono uppercase">
                     Khung giờ hỗ trợ
                   </span>
                   <p className="text-xs sm:text-[13px] font-extrabold text-slate-800 dark:text-slate-100 truncate">
@@ -431,8 +426,8 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
                       <option value="Partnership">Hợp tác chiến lược</option>
                       <option value="Feedback & Bug">Góp ý & Báo lỗi</option>
                     </select>
-                    <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-[10px]">
-                      ▼
+                    <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                      <WebIcon name="chevron-down" className="w-3.5 h-3.5" />
                     </div>
                   </div>
                 </div>
@@ -458,8 +453,8 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
                         Tích hợp AI & Omnichannel AICC
                       </option>
                     </select>
-                    <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-[10px]">
-                      ▼
+                    <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                      <WebIcon name="chevron-down" className="w-3.5 h-3.5" />
                     </div>
                   </div>
                 </div>

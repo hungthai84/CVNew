@@ -50,7 +50,7 @@ import { WallpaperView } from '@/components/views/WallpaperView';
 
 export default function HomePage() {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [currentTheme, setCurrentTheme] = useState<SiteTheme>('dark-neon');
+  const [currentTheme, setCurrentTheme] = useState<SiteTheme>('light-glass');
   const [isThemeTransitioning, setIsThemeTransitioning] = useState<boolean>(false);
   const [isAiChatOpen, setIsAiChatOpen] = useState<boolean>(false);
   const [isPagesCarouselOpen, setIsPagesCarouselOpen] = useState<boolean>(false);
@@ -82,6 +82,7 @@ export default function HomePage() {
   const activeScrollTargetRef = useRef<HTMLElement | null>(null);
   const activeWallpaperIdRef = useRef<string>(activeWallpaperId);
   const wallpaperSettingsRef = useRef<WallpaperAdvancedSettings>(wallpaperSettings);
+  const activeViewTransitionRef = useRef<any>(null);
   useEffect(() => {
     activeWallpaperIdRef.current = activeWallpaperId;
   }, [activeWallpaperId]);
@@ -388,15 +389,15 @@ export default function HomePage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNextSlideshowWallpaper]);
 
-  // On mount: Default to dark-neon (Glass UI Dark Neon Multicolor), clear legacy theme cache
+  // On mount: Default to light-glass (Giao diện Sáng Glass UI Đa Màu Sắc)
   useEffect(() => {
     (async () => {
       try {
-        // 1. Load persistent theme from localStorage
-        let storedTheme: SiteTheme = 'dark-neon';
+        // 1. Load persistent theme from localStorage (Mặc định là light-glass)
+        let storedTheme: SiteTheme = 'light-glass';
         try {
           const saved = localStorage.getItem('hungthai_site_theme') as SiteTheme | null;
-          if (saved && saved !== 'light-glass') {
+          if (saved) {
             storedTheme = saved;
           }
         } catch {}
@@ -482,44 +483,92 @@ export default function HomePage() {
     })();
   }, [applyWallpaperOption]);
 
-  // Handle changing system theme (persistent in localStorage)
-  const handleChangeTheme = (newTheme?: SiteTheme) => {
-    const nextTheme: SiteTheme =
-      newTheme || (currentTheme === 'dark-neon' ? 'light-glass' : 'dark-neon');
-    const validTheme: SiteTheme = nextTheme === 'dark-neon' ? 'dark-neon' : 'light-glass';
-    
-    // Trigger vivid dynamic transition wave
-    setIsThemeTransitioning(true);
-    if (typeof document !== 'undefined') {
-      document.documentElement.classList.add('theme-transitioning');
+  // Handle changing system theme seamlessly with cross-fade animation (persistent in localStorage)
+  const handleChangeTheme = useCallback(
+    () => {
+      // Force light-glass only
+      const validTheme: SiteTheme = 'light-glass';
+      if (validTheme === currentTheme && isThemeTransitioning) return;
+
+      const performThemeDOMUpdate = () => {
+        setCurrentTheme(validTheme);
+        try {
+          localStorage.setItem('hungthai_site_theme', 'light-glass');
+          document.documentElement.setAttribute('data-theme', 'light-glass');
+          document.documentElement.classList.remove('dark');
+        } catch {
+          // ignore
+        }
+
+        if (!wallpaperVideo && Object.keys(wallpaperStyle).length === 0) {
+          setWallpaperClass('prism-light-bg');
+          setWallpaperStyle({});
+        }
+      };
+
+      setIsThemeTransitioning(true);
+      if (typeof document !== 'undefined') {
+        document.documentElement.classList.add('theme-transitioning');
+      }
+
+      // 1. Modern View Transitions API (if supported by browser)
+      if (
+        typeof document !== 'undefined' &&
+        'startViewTransition' in document &&
+        !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ) {
+        try {
+          // Skip previous pending transition if running to prevent error
+          if (activeViewTransitionRef.current && typeof activeViewTransitionRef.current.skipTransition === 'function') {
+            try {
+              activeViewTransitionRef.current.skipTransition();
+            } catch {
+              // ignore
+            }
+          }
+
+          const transition = (document as any).startViewTransition(() => {
+            performThemeDOMUpdate();
+          });
+          activeViewTransitionRef.current = transition;
+
+          // Catch any promise rejections when skipped by browser so they don't trigger unhandled rejection error
+          if (transition.ready && typeof transition.ready.catch === 'function') {
+            transition.ready.catch(() => {});
+          }
+          if (transition.finished && typeof transition.finished.catch === 'function') {
+            transition.finished
+              .catch(() => {})
+              .finally(() => {
+                if (activeViewTransitionRef.current === transition) {
+                  activeViewTransitionRef.current = null;
+                }
+                if (typeof document !== 'undefined') {
+                  document.documentElement.classList.remove('theme-transitioning');
+                }
+                setIsThemeTransitioning(false);
+              });
+          }
+          return;
+        } catch {
+          // fallback if View Transitions API fails
+        }
+      }
+
+      // 2. Smooth Cross-Fade Overlay & CSS Fallback Transition
       setTimeout(() => {
-        document.documentElement.classList.remove('theme-transitioning');
+        performThemeDOMUpdate();
+      }, 180);
+
+      setTimeout(() => {
+        if (typeof document !== 'undefined') {
+          document.documentElement.classList.remove('theme-transitioning');
+        }
         setIsThemeTransitioning(false);
-      }, 750);
-    }
-
-    setCurrentTheme(validTheme);
-    try {
-      localStorage.setItem('hungthai_site_theme', validTheme);
-      document.documentElement.setAttribute('data-theme', validTheme);
-      if (validTheme === 'dark-neon') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    } catch {
-      // ignore
-    }
-
-    if (!wallpaperVideo && Object.keys(wallpaperStyle).length === 0) {
-      if (validTheme === 'dark-neon') {
-        setWallpaperClass('dark-neon-bg');
-      } else {
-        setWallpaperClass('prism-light-bg');
-      }
-      setWallpaperStyle({});
-    }
-  };
+      }, 600);
+    },
+    [currentTheme, isThemeTransitioning, wallpaperVideo, wallpaperStyle]
+  );
 
   // Keyboard shortcut: Alt+Q mở nhanh mã QR Debug Mạng Wi-Fi
   useEffect(() => {
@@ -670,7 +719,7 @@ export default function HomePage() {
             key={`content-${currentPage}`}
             id="content-display"
             className={`animate-page-enter ${
-              currentPage === 0 || currentPage === 1
+              currentPage === 0 || currentPage === 1 || currentPage === 2
                 ? 'flex-1 p-0 overflow-hidden relative flex flex-col h-full w-full min-w-0'
                 : 'flex-1 p-4 sm:p-5 md:p-[24px] overflow-y-auto snap-y snap-proximity scroll-pt-[24px] scroll-smooth glass-scrollbar relative flex flex-col gap-4 sm:gap-5 md:gap-[24px] h-full w-full min-w-0'
             }`}
@@ -683,7 +732,11 @@ export default function HomePage() {
                 onOpenPagesCarousel={() => setIsPagesCarouselOpen(true)}
               />
             )}
-            {currentPage === 1 && <LetterView currentTheme={currentTheme} />}
+            {currentPage === 1 && (
+              <LetterView
+                currentTheme={currentTheme}
+              />
+            )}
             {currentPage === 2 && <AboutView currentTheme={currentTheme} onNavigatePage={setCurrentPage} />}
             {currentPage === 3 && <EducationView currentTheme={currentTheme} />}
             {currentPage === 4 && <DomainsView currentTheme={currentTheme} />}

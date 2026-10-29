@@ -14,7 +14,6 @@ import {
 import { useToast } from '@/components/ui/Toast';
 import { SiteTheme } from '@/types';
 import { SoundEngine } from '@/components/ui/SoundEngine';
-import { HomeCardStacksLeft } from '@/components/ui/HomeCardStacksLeft';
 
 export interface HomeViewProps {
   slideIndex?: number;
@@ -36,9 +35,6 @@ export interface VideoScreenItem {
 
 export const HomeView: React.FC<HomeViewProps> = ({
   currentTheme = 'light-glass',
-  onNavigateContact,
-  onNavigatePage,
-  onOpenPagesCarousel,
 }) => {
   const { showToast } = useToast();
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -358,17 +354,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       )}
 
-      {/* 4. Main Body: Card bên dưới góc trái & Nút Giới Thiệu bên dưới góc phải */}
-      <div className="relative z-20 w-full flex-1 min-h-0 flex items-end justify-between pointer-events-none px-2 sm:px-3 md:px-4 pb-2 sm:pb-3">
-        {/* Góc dưới bên trái (Bottom Left): Xấp Thẻ 14 Trang (Tắt auto change) */}
-        <div className="pointer-events-auto flex flex-col items-start">
-          <HomeCardStacksLeft
-            currentTheme={currentTheme}
-            onNavigatePage={onNavigatePage}
-            onOpenPagesCarousel={onOpenPagesCarousel}
-          />
-        </div>
-
+      {/* 4. Main Body: Nút Giới Thiệu bên dưới góc phải */}
+      <div className="relative z-20 w-full flex-1 min-h-0 flex items-end justify-end pointer-events-none px-2 sm:px-3 md:px-4 pb-2 sm:pb-3">
         {/* Góc dưới bên phải (Bottom Right): Nút Giới Thiệu (Laser Beam Capsule Button) */}
         <div className="pointer-events-auto flex items-end justify-end mb-1">
           <div className="relative inline-flex items-center justify-between rounded-full p-[2px] select-none group/container transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] h-[34px] sm:h-[38px] overflow-hidden shadow-[0_0_20px_rgba(78,86,246,0.5)] ring-2 ring-indigo-400/50 pointer-events-auto shrink-0">

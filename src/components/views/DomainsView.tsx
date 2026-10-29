@@ -501,18 +501,18 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
       case '01': // Viễn thông - Radio Signal Tower (( A ))
         return (
           <svg className={cn(sizeClass, 'shrink-0')} viewBox="0 0 24 24" fill="none">
-            <path d="M4.8 6.2a9 9 0 0 0 0 10.6M19.2 6.2a9 9 0 0 1 0 10.6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-            <path d="M7.6 8.5a5.2 5.2 0 0 0 0 6M16.4 8.5a5.2 5.2 0 0 1 0 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-            <circle cx="12" cy="10.5" r="1.9" fill="currentColor" />
-            <path d="M12 12.2L8.8 20M12 12.2L15.2 20M10 17h4" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4.8 6.2a9 9 0 0 0 0 10.6M19.2 6.2a9 9 0 0 1 0 10.6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <path d="M7.6 8.5a5.2 5.2 0 0 0 0 6M16.4 8.5a5.2 5.2 0 0 1 0 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="12" cy="10.5" r="1.9" fill="none" stroke="currentColor" strokeWidth="2" />
+            <path d="M12 12.4L8.8 20M12 12.4L15.2 20M10 17h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         );
-      case '02': // E-Commerce - Bold Shopping Cart
+      case '02': // E-Commerce - Line Shopping Cart
         return (
-          <svg className={cn(sizeClass, 'shrink-0')} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+          <svg className={cn(sizeClass, 'shrink-0')} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h2.2l2.2 9.5a1.5 1.5 0 0 0 1.5 1.2h8.2a1.5 1.5 0 0 0 1.4-1l1.8-6.7H6.2" />
-            <circle cx="9.5" cy="18.5" r="1.8" fill="currentColor" stroke="none" />
-            <circle cx="16.5" cy="18.5" r="1.8" fill="currentColor" stroke="none" />
+            <circle cx="9.5" cy="18.5" r="1.6" fill="none" stroke="currentColor" strokeWidth="2" />
+            <circle cx="16.5" cy="18.5" r="1.6" fill="none" stroke="currentColor" strokeWidth="2" />
           </svg>
         );
       case '03': // Bảo hiểm - Shield with Checkmark
@@ -521,13 +521,13 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
             <path
               d="M12 2.8L19 5.6v5.6c0 5-3 8.8-7 10.2-4-1.4-7-5.2-7-10.2V5.6L12 2.8z"
               stroke="currentColor"
-              strokeWidth="2.3"
+              strokeWidth="2"
               strokeLinejoin="round"
             />
             <path
               d="M9.2 12.2l2 2 4-4.2"
               stroke="currentColor"
-              strokeWidth="2.5"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -539,29 +539,29 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
             <path
               d="M6 7.5h12c2.2 0 3.8 2 3.4 4.2l-.7 4.2c-.3 1.8-2.1 2.7-3.6 1.7l-2.1-1.5H9l-2.1 1.5c-1.5 1-3.3.1-3.6-1.7l-.7-4.2C2.2 9.5 3.8 7.5 6 7.5z"
               stroke="currentColor"
-              strokeWidth="2.2"
+              strokeWidth="2"
               strokeLinejoin="round"
             />
-            <path d="M8 10.5v3.5M6.25 12.25h3.5" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" />
-            <circle cx="15.5" cy="11" r="1" fill="currentColor" />
-            <circle cx="17.5" cy="13" r="1" fill="currentColor" />
+            <path d="M8 10.5v3.5M6.25 12.25h3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="15.5" cy="11" r="0.9" fill="none" stroke="currentColor" strokeWidth="1.8" />
+            <circle cx="17.5" cy="13" r="0.9" fill="none" stroke="currentColor" strokeWidth="1.8" />
           </svg>
         );
       case '05': // FinTech - Wallet
         return (
           <svg className={cn(sizeClass, 'shrink-0')} viewBox="0 0 24 24" fill="none">
-            <path d="M6.5 7.5V6a1.5 1.5 0 0 1 1.5-1.5h8.5A1.5 1.5 0 0 1 18 6v1.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-            <rect x="3.5" y="7.5" width="17" height="12" rx="2.5" stroke="currentColor" strokeWidth="2.2" />
-            <circle cx="16.5" cy="13.5" r="1.5" fill="currentColor" />
+            <path d="M6.5 7.5V6a1.5 1.5 0 0 1 1.5-1.5h8.5A1.5 1.5 0 0 1 18 6v1.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <rect x="3.5" y="7.5" width="17" height="12" rx="2.5" stroke="currentColor" strokeWidth="2" />
+            <circle cx="16.5" cy="13.5" r="1.4" fill="none" stroke="currentColor" strokeWidth="2" />
           </svg>
         );
       case '06': // Hệ thống CSKH - Globe
       default:
         return (
           <svg className={cn(sizeClass, 'shrink-0')} viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.2" />
+            <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
             <ellipse cx="12" cy="12" rx="4" ry="9" stroke="currentColor" strokeWidth="2" />
-            <path d="M3.5 12h17M4.8 8.2h14.4M4.8 15.8h14.4" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+            <path d="M3.5 12h17M4.8 8.2h14.4M4.8 15.8h14.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
           </svg>
         );
     }
@@ -1362,23 +1362,6 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                             </span>
                           </div>
 
-                          {/* Row 2: 3 Tag Pills */}
-                          <div className="flex items-center gap-1 flex-wrap">
-                            {detail.heroTags.split('•').map((tag, idx) => (
-                              <span
-                                key={idx}
-                                className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border"
-                                style={{
-                                  backgroundColor: isDark ? 'rgba(30, 41, 59, 0.72)' : 'rgba(255, 255, 255, 0.82)',
-                                  color: isDark ? '#cbd5e1' : '#334155',
-                                  borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(15,23,42,0.08)',
-                                }}
-                              >
-                                {tag.trim()}
-                              </span>
-                            ))}
-                          </div>
-
                           {/* Row 3: Orientation Description */}
                           <p
                             className="text-[11px] sm:text-[11.5px] leading-relaxed break-words line-clamp-3 mt-0.5"
@@ -1461,7 +1444,7 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                                   zIndex: isHoveredLogo ? 50 : 10 + logoIdx,
                                 }}
                                 className={cn(
-                                  'w-4 h-4 sm:w-4.5 sm:h-4.5 rounded-full bg-transparent p-0 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer group/logo relative border-0 shadow-none overflow-hidden',
+                                  'w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-transparent p-0 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer group/logo relative border-0 shadow-none overflow-hidden',
                                   isHoveredLogo ? 'scale-125 -translate-y-0.5' : 'hover:scale-115',
                                   isSelectedLogo && 'scale-115'
                                 )}
@@ -1716,11 +1699,6 @@ export const DomainsView: React.FC<DomainsViewProps> = ({ currentTheme = 'light-
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-7-7 7 7-7 7" />
                     </svg>
                     <span>{detail.roleBadge || selectedDomain.experienceVi}</span>
-                  </span>
-
-                  {/* Tags Pill */}
-                  <span className="hidden md:inline-flex px-3 py-1 rounded-full text-[11px] font-semibold bg-white/85 dark:bg-slate-800/85 border border-slate-200/90 dark:border-white/15 text-slate-700 dark:text-slate-200 shadow-2xs">
-                    {detail.heroTags}
                   </span>
                 </div>
 

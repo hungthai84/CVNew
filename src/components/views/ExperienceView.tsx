@@ -285,30 +285,6 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
   // Tính năng 1: Panoramic History Slider
   const [sliderYearIndex, setSliderYearIndex] = useState<number>(3); // 2013 là mốc mặc định
 
-  // Tính năng 5: Dual-Milestone Benchmark (So sánh 2 cột mốc sự nghiệp)
-  const [benchmarkKeys, setBenchmarkKeys] = useState<string[]>([]);
-  const [isBenchmarkModalOpen, setIsBenchmarkModalOpen] = useState<boolean>(false);
-
-  const handleToggleBenchmark = (key: string) => {
-    setBenchmarkKeys((prev) => {
-      if (prev.includes(key)) {
-        return prev.filter((k) => k !== key);
-      }
-      if (prev.length >= 2) {
-        showToast('Đang đổi cột mốc so sánh thứ 2.');
-        return [prev[0], key];
-      }
-      const next = [...prev, key];
-      if (next.length === 2) {
-        showToast('Đã chọn đủ 2 cột mốc! Bạn có thể mở Bảng So Sánh Đối Đầu.');
-      } else {
-        const found = roadmapCards.find((c: { key: string }) => c.key === key);
-        showToast(`Đã chọn ${found?.shortName || key}. Chọn thêm 1 cột mốc nữa.`);
-      }
-      return next;
-    });
-  };
-
   const handleSliderChange = (newIdx: number) => {
     setSliderYearIndex(newIdx);
     const targetCard = filteredRoadmapCards[newIdx];
@@ -1081,7 +1057,6 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                     activeKey === item.key || (item.key === '2013' && is2013GroupActive);
                   const isLbcCard = item.key === '2011';
                   const isHighlightedInStory = isStoryActive && STORY_KEYS[storyIndex] === item.key;
-                  const isBenchmarkSelected = benchmarkKeys.includes(item.key);
 
                   const SCENIC_BANNERS: Record<string, string> = {
                     '2003': 'https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042029/Mobifone-1.webp',
@@ -1101,25 +1076,8 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                       id={`milestone-card-${item.key}`}
                       className={`relative flex flex-col items-center h-full w-[275px] sm:w-[290px] lg:w-[300px] shrink-0 select-none transition-all duration-300 justify-between ${
                         isHighlightedInStory ? 'scale-[1.02] z-30' : ''
-                      } ${isBenchmarkSelected ? 'ring-2 ring-amber-400 rounded-2xl p-1 bg-amber-500/10' : ''}`}
+                      }`}
                     >
-                      {/* Nút Chọn So Sánh (Dual-Milestone Benchmark Button) */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleToggleBenchmark(item.key);
-                        }}
-                        className={`absolute top-0.5 right-1 z-30 w-7 h-7 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-xs border ${
-                          isBenchmarkSelected
-                            ? 'bg-amber-500 text-slate-950 border-amber-300 ring-2 ring-amber-400 scale-110 font-bold'
-                            : 'bg-white/95 dark:bg-slate-800/95 text-slate-500 dark:text-slate-300 border-slate-200/90 dark:border-white/15 hover:text-amber-500 hover:scale-105'
-                        }`}
-                        title={isBenchmarkSelected ? 'Bỏ chọn so sánh' : 'Thêm vào so sánh 2 cột mốc'}
-                      >
-                        <Scale className="w-3.5 h-3.5 stroke-[2.2]" />
-                      </button>
-
                       {/* TIER 1: Top Year Pill Badge + Downward Pointer + Vertical Stem + Node Dot */}
                       <div className="flex flex-col items-center shrink-0 z-20 w-full">
                         <button
@@ -1444,172 +1402,6 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
 
 
           </div>
-
-          {/* TÍNH NĂNG 5: DUAL-MILESTONE BENCHMARK MODAL (SO SÁNH 2 CỘT MỐC SỰ NGHIỆP ĐỐI ĐẦU) */}
-          {isBenchmarkModalOpen && (() => {
-            const m1 = EXPERIENCE_MILESTONES[benchmarkKeys[0]] || null;
-            const m2 = EXPERIENCE_MILESTONES[benchmarkKeys[1]] || null;
-            const r1 = roadmapCards.find((c: { key: string }) => c.key === benchmarkKeys[0]) || null;
-            const r2 = roadmapCards.find((c: { key: string }) => c.key === benchmarkKeys[1]) || null;
-
-            return (
-              <div
-                className="fixed inset-0 z-[9999] bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-5"
-                onClick={() => setIsBenchmarkModalOpen(false)}
-              >
-                <div
-                  className="w-full max-w-4xl max-h-[90vh] rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 shadow-2xl overflow-hidden flex flex-col animate-fadeIn"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {/* Modal Header */}
-                  <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-white/10 flex items-center justify-between gap-3 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-transparent">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center shadow-xs">
-                        <Scale className="w-5 h-5 stroke-[2.4]" />
-                      </div>
-                      <div>
-                        <h3 className="text-base sm:text-lg font-black font-play text-slate-900 dark:text-white">
-                          So Sánh Cột Mốc
-                        </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
-                          Đối chiếu quy mô vận hành, chỉ số SLA/CSAT và chuyển đổi mô hình
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setIsBenchmarkModalOpen(false)}
-                      className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-rose-500 hover:text-white transition flex items-center justify-center text-slate-500 dark:text-slate-300 cursor-pointer"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                  {/* Benchmark Grid 2 Columns */}
-                  <div className="flex-1 min-h-0 overflow-y-auto glass-scrollbar p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                    {/* Cột 1 */}
-                    <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-slate-800/50 flex flex-col gap-4">
-                      {m1 && r1 ? (
-                        <>
-                          <div className="flex items-center gap-3 pb-3 border-b border-slate-200 dark:border-white/10">
-                            <img
-                              src={r1.logo}
-                              alt={r1.shortName}
-                              className="w-12 h-12 rounded-full object-cover bg-white shadow-xs p-1"
-                            />
-                            <div>
-                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-cyan-300">
-                                {r1.yearBadge}
-                              </span>
-                              <h4 className="text-sm sm:text-base font-black font-play text-slate-900 dark:text-white mt-0.5">
-                                {m1.company}
-                              </h4>
-                              <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
-                                {m1.roleTitle}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="space-y-2.5 text-xs text-slate-700 dark:text-slate-200">
-                            <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-black/5 dark:border-white/5 flex items-center justify-between">
-                              <span className="font-semibold text-slate-500">Quy mô nhân sự:</span>
-                              <strong className="font-mono text-sm text-blue-600 dark:text-cyan-400">{r1.headcountLabel}</strong>
-                            </div>
-
-                            <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-black/5 dark:border-white/5 flex items-center justify-between">
-                              <span className="font-semibold text-slate-500">Chỉ số nổi bật:</span>
-                              <div className="flex items-center gap-1.5 font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                                <span>{m1.kpis?.[0]?.label}: {m1.kpis?.[0]?.percent}%</span>
-                              </div>
-                            </div>
-
-                            <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-black/5 dark:border-white/5">
-                              <span className="font-semibold text-slate-500 block mb-1">Nhiệm vụ & Chiến lược:</span>
-                              <p className="line-clamp-3 leading-relaxed text-slate-600 dark:text-slate-300">
-                                {m1.cardDescription || r1.roleSummary}
-                              </p>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="text-center py-10 text-slate-400">Chưa chọn cột mốc 1</div>
-                      )}
-                    </div>
-
-                    {/* Cột 2 */}
-                    <div className="p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-slate-800/50 flex flex-col gap-4">
-                      {m2 && r2 ? (
-                        <>
-                          <div className="flex items-center gap-3 pb-3 border-b border-slate-200 dark:border-white/10">
-                            <img
-                              src={r2.logo}
-                              alt={r2.shortName}
-                              className="w-12 h-12 rounded-full object-cover bg-white shadow-xs p-1"
-                            />
-                            <div>
-                              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
-                                {r2.yearBadge}
-                              </span>
-                              <h4 className="text-sm sm:text-base font-black font-play text-slate-900 dark:text-white mt-0.5">
-                                {m2.company}
-                              </h4>
-                              <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
-                                {m2.roleTitle}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="space-y-2.5 text-xs text-slate-700 dark:text-slate-200">
-                            <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-black/5 dark:border-white/5 flex items-center justify-between">
-                              <span className="font-semibold text-slate-500">Quy mô nhân sự:</span>
-                              <strong className="font-mono text-sm text-purple-600 dark:text-purple-400">{r2.headcountLabel}</strong>
-                            </div>
-
-                            <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-black/5 dark:border-white/5 flex items-center justify-between">
-                              <span className="font-semibold text-slate-500">Chỉ số nổi bật:</span>
-                              <div className="flex items-center gap-1.5 font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                                <span>{m2.kpis?.[0]?.label}: {m2.kpis?.[0]?.percent}%</span>
-                              </div>
-                            </div>
-
-                            <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-black/5 dark:border-white/5">
-                              <span className="font-semibold text-slate-500 block mb-1">Nhiệm vụ & Chiến lược:</span>
-                              <p className="line-clamp-3 leading-relaxed text-slate-600 dark:text-slate-300">
-                                {m2.cardDescription || r2.roleSummary}
-                              </p>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="text-center py-10 text-slate-400">
-                          <p className="font-bold">Chưa chọn cột mốc thứ 2</p>
-                          <p className="text-xs mt-1">Bấm vào biểu tượng cân đong trên thẻ để chọn</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Modal Footer */}
-                  <div className="p-4 border-t border-slate-200 dark:border-white/10 flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-950">
-                    <button
-                      type="button"
-                      onClick={() => setBenchmarkKeys([])}
-                      className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
-                    >
-                      Xóa so sánh
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsBenchmarkModalOpen(false)}
-                      className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs hover:brightness-105 transition cursor-pointer shadow-sm"
-                    >
-                      Đóng bảng so sánh
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
 
           {/* 3 bottom modules (Thành tựu nổi bật, Từ trải nghiệm đến giá trị, Kỹ năng & Chuyên môn) đã được xóa theo yêu cầu */}
         </>

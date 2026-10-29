@@ -514,25 +514,25 @@ export const SkillsView: React.FC<SkillsViewProps> = ({
   const renderCardIcon = (cardId: string, className = 'w-[20px] h-[20px] sm:w-[22px] sm:h-[22px]') => {
     switch (cardId) {
       case 'skill-01':
-        return <Gem className={cn(className, 'stroke-[2.2] shrink-0')} />;
+        return <Gem className={cn(className, 'stroke-[2] shrink-0')} />;
       case 'skill-02':
-        return <BarChart3 className={cn(className, 'stroke-[2.2] shrink-0')} />;
+        return <BarChart3 className={cn(className, 'stroke-[2] shrink-0')} />;
       case 'skill-03':
-        return <Rocket className={cn(className, 'stroke-[2.2] shrink-0')} />;
+        return <Rocket className={cn(className, 'stroke-[2] shrink-0')} />;
       case 'skill-04':
-        return <Bot className={cn(className, 'stroke-[2.2] shrink-0')} />;
+        return <Bot className={cn(className, 'stroke-[2] shrink-0')} />;
       case 'skill-05':
-        return <ShieldCheck className={cn(className, 'stroke-[2.2] shrink-0')} />;
+        return <ShieldCheck className={cn(className, 'stroke-[2] shrink-0')} />;
       case 'skill-06':
       default:
-        return <MessageCircle className={cn(className, 'stroke-[2.2] shrink-0')} />;
+        return <MessageCircle className={cn(className, 'stroke-[2] shrink-0')} />;
     }
   };
 
   return (
-    <div className="w-full h-full flex-1 min-h-0 flex flex-col justify-between max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden">
-      {/* VÙNG HIỂN THỊ NỘI DUNG KỸ NĂNG: DUY NHẤT DẠNG SƠ ĐỒ TƯ DUY */}
-      <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
+    <div className="w-full h-full flex-1 min-h-0 flex flex-col justify-between select-none relative text-slate-800 dark:text-slate-100 overflow-hidden">
+      {/* VÙNG HIỂN THỊ NỘI DUNG KỸ NĂNG: DUY NHẤT DẠNG SƠ ĐỒ TƯ DUY FULL CHIỀU RỘNG & CHIỀU CAO */}
+      <div className="w-full h-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
         {!selectedCard ? (
           <InfographicMindmap
             cards={skillCards}
@@ -678,17 +678,13 @@ export const SkillsView: React.FC<SkillsViewProps> = ({
 
               {/* Right Area (8 cols on lg): Danh sách chi tiết từng kỹ năng (Tên + % + Thanh tiến độ + Mô tả đầy đủ 100%) */}
               <div className="col-span-12 lg:col-span-8 flex flex-col justify-between gap-2.5 h-full min-h-0">
-                <div
-                  className={`grid grid-cols-1 ${
-                    selectedCard.details.length > 3 ? 'sm:grid-cols-2' : 'sm:grid-cols-1'
-                  } gap-2.5 flex-1 min-h-0 items-stretch overflow-y-auto pr-0.5`}
-                >
+                <div className="grid grid-cols-1 sm:grid-cols-2 auto-rows-fr gap-2.5 flex-1 min-h-0 items-stretch overflow-y-auto pr-0.5">
                   {selectedCard.details.map((item, idx) => {
                     const isThreat = selectedCard.categoryFilter === 'T';
                     return (
                       <div
                         key={idx}
-                        className="rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-white/90 dark:border-white/10 p-3.5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between gap-2"
+                        className="rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-white/90 dark:border-white/10 p-3.5 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between gap-2 h-full"
                       >
                         <div className="space-y-1.5">
                           <div className="flex items-start justify-between gap-2">

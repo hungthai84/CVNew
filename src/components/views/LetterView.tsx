@@ -16,6 +16,7 @@ import {
   OPERATIONAL_PRINCIPLES_DATA,
   CareerMilestoneItem,
 } from '@/data/letterData';
+import { SiteTheme } from '@/types';
 
 // Video thuyết minh Thư Ngỏ (Cloudinary Transition Studio)
 export const LETTER_SLIDE_1_VIDEO_URL =
@@ -296,27 +297,27 @@ const AnimatedCardTitle: React.FC<{
   const scheme = colorMap[colorPreset] || colorMap.blue;
 
   return (
-    <div className="w-full flex flex-wrap items-center justify-between gap-2.5 mb-2">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-left min-w-0 flex-1">
+    <div className="w-full flex flex-wrap items-center justify-between gap-2 mb-1.5">
+      <div className="flex flex-col sm:flex-row sm:items-baseline gap-1.5 sm:gap-2 text-left min-w-0 flex-1">
         {/* Tiêu đề không đóng khung, icon & tiêu đề cùng màu và kích thước tương xứng */}
         <div
-          className={`flex items-center gap-2 ${scheme.text} max-w-full`}
+          className={`flex items-center gap-1.5 ${scheme.text} max-w-full`}
         >
           <span
             className={`shrink-0 ${
               animateIcon ? 'animate-[icon-floating_3s_ease-in-out_infinite]' : ''
             }`}
           >
-            <WebIcon name={iconName} className="w-4.5 h-4.5 card-title-icon" />
+            <WebIcon name={iconName} className="w-4 h-4 card-title-icon" />
           </span>
           <h3
-            className={`text-[17px] sm:text-[18.5px] lg:text-[19.5px] font-black font-play leading-tight tracking-tight ${scheme.text} truncate`}
+            className={`text-[15px] sm:text-[16px] lg:text-[17px] font-black font-play leading-tight tracking-tight ${scheme.text} truncate`}
           >
             {formatCardTitle(title)}
           </h3>
         </div>
         {subtitle && (
-          <p className={`typo-caption font-medium ${scheme.sub} truncate sm:ml-1`}>
+          <p className={`text-[11px] sm:text-[11.5px] font-medium ${scheme.sub} truncate`}>
             {subtitle}
           </p>
         )}
@@ -328,9 +329,13 @@ const AnimatedCardTitle: React.FC<{
 
 export interface LetterViewProps {
   currentTheme?: string;
+  onOpenBannerStudio?: (pageId: number) => void;
 }
 
-export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-glass' }) => {
+export const LetterView: React.FC<LetterViewProps> = ({
+  currentTheme = 'light-glass',
+  onOpenBannerStudio,
+}) => {
   const { showToast } = useToast();
 
   // Saved default voice URI synchronized with AI Assistant and global system
@@ -342,8 +347,8 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
 
-  // Chế độ xem mặc định duy nhất: Trình chiếu 4 Slide
-  const [viewMode] = useState<'slides'>('slides');
+  // Chế độ hiển thị cố định 4 Slide tương tác
+  const viewMode = 'slides' as const;
 
   // Current Theme detection
   const isDark = currentTheme === 'dark-neon';
@@ -1137,13 +1142,10 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
     }
   }, []);
 
-  // Tự động phát video thuyết minh nền mượt mà khi ở Slide 1
+  // Tắt chế độ thuyết trình tự động khi mở trang Thư Ngỏ (chỉ phát khi người dùng chủ động nhấn nút)
   useEffect(() => {
     setIsAutoplayPresentation(false);
-    if (viewMode === 'slides' && currentSlide === 0 && floatingVideoRef.current) {
-      floatingVideoRef.current.play().then(() => setIsVideoPlaying(true)).catch(() => {});
-    }
-  }, [viewMode, currentSlide]);
+  }, []);
 
   const handleFloatingVideoTimeUpdate = useCallback(() => {
     if (!floatingVideoRef.current) return;
@@ -1293,9 +1295,9 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
     ? Math.round(videoProgressPct)
     : 0;
 
-  // Dynamic theme-aware Glass Card classes
+  // Dynamic theme-aware Glass Soft Card classes (rgba(255,255,255,0.72), blur 20px, soft shadow)
   const getGlassCardClass = useCallback(() => {
-    return 'bg-white/85 dark:bg-[#121624]/90 border border-white/90 dark:border-white/15 backdrop-blur-[20px] backdrop-saturate-[180%] shadow-[0_10px_32px_-4px_rgba(31,38,135,0.09),0_4px_12px_-2px_rgba(15,23,42,0.04),inset_0_1px_1.5px_rgba(255,255,255,0.95)] dark:shadow-[0_14px_38px_-6px_rgba(0,0,0,0.7),0_0_20px_-2px_rgba(56,189,248,0.2),inset_0_1px_1.5px_rgba(255,255,255,0.15)] hover:shadow-[0_18px_42px_-6px_rgba(31,38,135,0.15)] dark:hover:shadow-[0_20px_45px_-6px_rgba(0,0,0,0.85),0_0_28px_rgba(56,189,248,0.35)] transition-all duration-300';
+    return 'bg-white/75 dark:bg-[#121624]/90 border border-white/88 dark:border-white/15 backdrop-blur-[20px] backdrop-saturate-[190%] shadow-[0_10px_30px_0_rgba(100,110,140,0.08),inset_0_1px_1.5px_rgba(255,255,255,0.95)] dark:shadow-[0_14px_38px_-6px_rgba(0,0,0,0.7),0_0_20px_-2px_rgba(56,189,248,0.2),inset_0_1px_1.5px_rgba(255,255,255,0.15)] hover:shadow-[0_16px_36px_-4px_rgba(100,110,140,0.14)] dark:hover:shadow-[0_20px_45px_-6px_rgba(0,0,0,0.85),0_0_28px_rgba(56,189,248,0.35)] transition-all duration-300';
   }, []);
 
   // Đếm tổng số cụm từ khóa in đậm (**...**) trong đoạn văn
@@ -1599,84 +1601,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
     }
   }, [companyDisplay, showToast]);
 
-  // Feature 4: Timeline Mini Tương Tác Ngay Trên Đầu Slide 2 & Slide 3 (2002 -> 2007 -> 2011 -> 2013 -> 2016 -> 2018 -> 2023)
-  const renderInteractiveMiniTimeline = () => (
-    <div className="w-full flex items-center justify-between gap-1.5 overflow-x-auto no-scrollbar py-1.5 px-2.5 rounded-xl bg-slate-100/85 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 shrink-0">
-      <div className="flex items-center gap-1.5 shrink-0 mr-1">
-        <WebIcon name="clock" className="w-3.5 h-3.5 text-blue-600 dark:text-cyan-400" />
-        <span className="text-[10.5px] font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 font-play">
-          Mốc Năm:
-        </span>
-      </div>
-
-      <div className="flex items-center gap-1 sm:gap-1.5 flex-1 justify-start sm:justify-between min-w-max">
-        {CAREER_MILESTONES_DATA.map((m, idx) => {
-          const targetSlideForMilestone = idx < 3 ? 1 : 2;
-          const isBeingRead = activeTargetId === m.id;
-          const isCurrentSlideGroup = currentSlide === targetSlideForMilestone;
-          const shortYear = m.yearLabelVi.replace('+', '');
-
-          return (
-            <React.Fragment key={m.id}>
-              <div
-                className={`inline-flex items-center rounded-full border transition-all duration-200 shadow-2xs overflow-hidden ${
-                  isBeingRead
-                    ? 'bg-emerald-600 text-white border-emerald-400 ring-2 ring-emerald-400/50 scale-105'
-                    : isCurrentSlideGroup
-                    ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-cyan-400'
-                    : 'bg-white/60 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 border-slate-200/70 dark:border-slate-800 opacity-75 hover:opacity-100'
-                }`}
-              >
-                {/* Bấm vào năm để mở Popup chi tiết & nhảy tới slide tương ứng */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    SoundEngine.playTap();
-                    if (viewMode === 'slides' && currentSlide !== targetSlideForMilestone) {
-                      setSlideDirection(targetSlideForMilestone > currentSlide ? 'next' : 'prev');
-                      setCurrentSlide(targetSlideForMilestone);
-                    }
-                    setSelectedMilestone(m);
-                  }}
-                  title={`Xem chi tiết cột mốc ${m.milestoneTitleVi || m.company}`}
-                  className="px-2 sm:px-2.5 py-0.5 flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-bold font-play cursor-pointer"
-                >
-                  <span
-                    className="w-2 h-2 rounded-full shrink-0"
-                    style={{ backgroundColor: isBeingRead ? '#ffffff' : m.color }}
-                  />
-                  <span className="font-mono font-bold">{shortYear}</span>
-                  <span className="hidden md:inline truncate max-w-[85px]">{m.company}</span>
-                </button>
-
-                {/* Nút loa nhỏ phát giọng đọc AI + Karaoke trực tiếp cho cột mốc năm đó */}
-                <button
-                  type="button"
-                  onClick={(e) => handleNarrateMilestone(m.id, e)}
-                  title={`Nghe thuyết minh AI & Highlight từ khóa mốc ${shortYear} - ${m.company}`}
-                  className={`px-1.5 py-0.5 border-l transition-colors cursor-pointer flex items-center justify-center ${
-                    isBeingRead
-                      ? 'border-emerald-400 bg-emerald-700 text-white'
-                      : 'border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-blue-600 dark:text-cyan-400'
-                  }`}
-                >
-                  <WebIcon name={isBeingRead && !isPaused ? 'pause' : 'volume-2'} className="w-2.5 h-2.5" />
-                </button>
-              </div>
-
-              {idx < CAREER_MILESTONES_DATA.length - 1 && (
-                <span className="text-[10px] text-slate-400 dark:text-slate-600 font-mono select-none">
-                  →
-                </span>
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
-    </div>
-  );
-
-  // Thanh điều hướng bên phải đã được gỡ bỏ hoàn toàn theo yêu cầu người dùng
+  const renderInteractiveMiniTimeline = () => null;
   const renderTopNavigationBar = () => null;
   const renderSectionSwitcher = () => null;
 
@@ -1688,7 +1613,6 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
   ) => {
     const roleIcon = getMilestoneIconName(item.roleIconName);
     const highlightIcon = getMilestoneIconName(item.highlightIconName || 'Sparkles');
-    const mainIcon = getMilestoneIconName(item.iconName);
     const isExpanded = !!expandedCard[item.id];
     const isCardBeingRead = activeTargetId === item.id;
     const part1KwCount = countBoldKeywords(item.descVi);
@@ -1699,23 +1623,23 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
     const cleanTitle = hideYear
       ? rawTitle.replace(/\s*\(\d{4}[^\)]*\)/g, '').trim()
       : rawTitle;
-    const displayTitle = formatCardTitle(cleanTitle);
+    const displayTitle = cleanTitle;
 
     return (
       <div
         key={item.id}
         id={item.id}
         onClick={() => setSelectedMilestone(item)}
-        className={`bento-view-card flex flex-col justify-between p-3.5 sm:p-4 relative transition-all duration-300 overflow-hidden group/mcard border w-full h-full min-h-0  hover:shadow-xl text-left rounded-[14px] cursor-pointer ${bentoSpan} ${getGlassCardClass()} ${
+        className={`bento-view-card flex flex-col justify-between p-2.5 sm:p-3 lg:p-3.5 relative transition-all duration-300 overflow-hidden group/mcard border w-full h-full min-h-0 hover:shadow-xl text-left rounded-2xl cursor-pointer ${bentoSpan} ${getGlassCardClass()} ${
           isCardBeingRead
-            ? 'ring-4 ring-offset-1 ring-emerald-500 dark:ring-cyan-400 shadow-[0_0_32px_rgba(16,185,129,0.35)] -translate-y-1'
+            ? 'ring-2 ring-emerald-500 dark:ring-cyan-400 shadow-[0_0_28px_rgba(16,185,129,0.3)] -translate-y-0.5'
             : ''
         }`}
       >
         {/* Floating Video Live Presentation Callout Badge on Card */}
         {isVideoPlaying && activeVideoCue?.targetId === item.id && (
-          <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white text-[10px] font-bold shadow-lg border border-white/30 animate-pulse">
-            <WebIcon name="sparkles" className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+          <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white text-[10px] font-bold shadow-md border border-white/30 animate-pulse">
+            <WebIcon name="sparkles" className="w-3 h-3 text-amber-300 shrink-0" />
             <span className="font-play">{activeVideoCue.noteBadge}</span>
             <span className="hidden sm:inline font-medium opacity-90 truncate max-w-[140px]">
               — {activeVideoCue.noteTitle}
@@ -1725,7 +1649,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
 
         {/* Active Voice Reading Indicator Badge on Card */}
         {isCardBeingRead && !isVideoPlaying && (
-          <div className="absolute top-2 right-2 z-20 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-600/95 text-white text-[10px] font-bold shadow-sm backdrop-blur-md">
+          <div className="absolute top-2 right-2 z-20 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-600/95 text-white text-[10px] font-bold shadow-xs backdrop-blur-md">
             <AudioWaveformVisualizer isPlaying={!isPaused} barCount={4} size="sm" />
             <span>Karaoke AI Sync</span>
           </div>
@@ -1733,18 +1657,16 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
 
         {/* Subtle Brand Color Radial Tint */}
         <div
-          className="absolute inset-0 opacity-[0.07] dark:opacity-[0.14] pointer-events-none"
+          className="absolute inset-0 opacity-[0.06] dark:opacity-[0.12] pointer-events-none"
           style={{
             background: `radial-gradient(circle at bottom right, ${item.color}, transparent 70%)`,
           }}
         />
 
         {/* Header: Company Logo & Milestone Title & Role on Left, Year Badge Pill + Voice Trigger on Right */}
-        <div className="w-full flex items-start sm:items-center justify-between gap-2 pb-2 mb-1.5 border-b border-slate-200/70 dark:border-slate-800/80 shrink-0 relative z-10">
-          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1 text-left">
-            <div
-              className="w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full overflow-hidden border-0 p-0 shadow-sm shrink-0 flex items-center justify-center bg-transparent transition-transform duration-300 group-hover/mcard:scale-105"
-            >
+        <div className="w-full flex items-center justify-between gap-2 pb-1.5 mb-1.5 border-b border-slate-200/70 dark:border-slate-800/80 shrink-0 relative z-10">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1 text-left">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-0 p-0 shrink-0 flex items-center justify-center bg-transparent transition-transform duration-300 group-hover/mcard:scale-105">
               <img
                 src={item.logo}
                 alt={item.company}
@@ -1755,7 +1677,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
             </div>
             <div className="min-w-0 flex-1">
               <h4
-                className="text-[17px] sm:text-[18.5px] lg:text-[19.5px] font-black tracking-tight leading-tight truncate font-play"
+                className="text-[13.5px] sm:text-[15px] lg:text-[16px] font-black tracking-tight leading-snug truncate font-play"
                 style={{ color: item.color }}
               >
                 {displayTitle}
@@ -1788,7 +1710,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
             {/* Year Badge Pill with Gradient (Ẩn khi hideYear = true) */}
             {!hideYear && (
               <span
-                className={`px-2.5 py-0.5 rounded-full text-white text-[10px] sm:text-[10.5px] font-black font-mono tabular-nums shadow-xs tracking-wider uppercase shrink-0 whitespace-nowrap ${item.yearBadgeGradient}`}
+                className={`px-2 py-0.5 rounded-full text-white text-[10px] font-black font-mono tabular-nums shadow-2xs tracking-wider uppercase shrink-0 whitespace-nowrap ${item.yearBadgeGradient}`}
               >
                 {item.yearLabelVi}
               </span>
@@ -1799,15 +1721,15 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
         {/* Body: Text with full width readability + Karaoke Word Sync */}
         <div className="w-full flex-1 my-0.5 text-left relative z-10 flex flex-col justify-center min-h-0">
           {item.descViPart2 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2.5 sm:gap-3.5 items-start">
-              <p className="text-[11.5px] sm:text-[12.5px] leading-relaxed text-slate-700 dark:text-slate-200 text-left font-medium break-words bg-rose-50/50 dark:bg-rose-950/25 p-2.5 rounded-xl border border-rose-200/60 dark:border-rose-800/40">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-2.5 items-stretch">
+              <p className="text-[11.5px] sm:text-[12px] leading-relaxed text-slate-700 dark:text-slate-200 text-left font-medium break-words bg-rose-50/50 dark:bg-rose-950/25 p-2 sm:p-2.5 rounded-xl border border-rose-200/60 dark:border-rose-800/40">
                 {renderFormattedText(item.descVi, {
                   isCardReading: isCardBeingRead,
                   keywordOffset: 0,
                   totalKeywords: totalCardKeywords,
                 })}
               </p>
-              <p className="text-[11.5px] sm:text-[12.5px] leading-relaxed text-slate-700 dark:text-slate-200 text-left font-medium break-words bg-orange-50/50 dark:bg-orange-950/25 p-2.5 rounded-xl border border-orange-200/60 dark:border-orange-800/40">
+              <p className="text-[11.5px] sm:text-[12px] leading-relaxed text-slate-700 dark:text-slate-200 text-left font-medium break-words bg-orange-50/50 dark:bg-orange-950/25 p-2 sm:p-2.5 rounded-xl border border-orange-200/60 dark:border-orange-800/40">
                 {renderFormattedText(item.descViPart2, {
                   isCardReading: isCardBeingRead,
                   keywordOffset: part1KwCount,
@@ -1816,7 +1738,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
               </p>
             </div>
           ) : (
-            <p className="text-[12px] sm:text-[12.5px] leading-relaxed text-slate-700 dark:text-slate-200 text-left font-medium break-words">
+            <p className="text-[11.5px] sm:text-[12.5px] leading-relaxed text-slate-700 dark:text-slate-200 text-left font-medium break-words">
               {renderFormattedText(item.descVi, {
                 isCardReading: isCardBeingRead,
                 keywordOffset: 0,
@@ -1826,7 +1748,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
           )}
 
           {isExpanded && (
-            <p className="text-[11px] sm:text-xs leading-relaxed text-slate-500 dark:text-slate-400 italic mt-1.5 pt-1.5 border-t border-slate-200/50 dark:border-slate-800/60">
+            <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 italic mt-1 pt-1 border-t border-slate-200/50 dark:border-slate-800/60">
               {item.descEn}
             </p>
           )}
@@ -1854,7 +1776,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
 
         {/* Bottom Highlight Bento Capsule */}
         <div
-          className="w-full mt-1.5 p-2 rounded-xl flex items-center justify-between gap-2 text-[11px] sm:text-[11.5px] font-bold relative z-10 border shrink-0 transition-colors"
+          className="w-full mt-1.5 py-1.5 px-2.5 rounded-xl flex items-center justify-between gap-2 text-[11px] font-bold relative z-10 border shrink-0 transition-colors"
           style={{
             backgroundColor: `${item.color}14`,
             borderColor: `${item.color}35`,
@@ -1971,7 +1893,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                   : 'Currently narrating in Professional English. Click to switch to Vietnamese'
               }
             >
-              <span>{narrationLanguage === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
+              <WebIcon name="globe" className="w-3.5 h-3.5 shrink-0" />
               <span className="font-mono">{narrationLanguage === 'vi' ? 'VI' : 'EN'}</span>
             </button>
 
@@ -2077,7 +1999,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                   : 'Currently English. Click to switch to Vietnamese'
               }
             >
-              <span>{narrationLanguage === 'vi' ? '🇻🇳' : '🇬🇧'}</span>
+              <WebIcon name="globe" className="w-3 h-3 shrink-0" />
               <span>{narrationLanguage === 'vi' ? 'VI' : 'EN'}</span>
             </button>
           </div>
@@ -2194,499 +2116,41 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
 
 
 
-      {/* ========================================================================= */}
-      {/* FEATURE 1: CHẾ ĐỘ XEM TOÀN VĂN THƯ NGỎ TRÊN 1 TRANG CUỘN (ONE-PAGE MODE) THEO CHUẨN DESIGN REFERENCE */}
-      {/* ========================================================================= */}
-      {false && (
-        <div
-          id="card-main-letter-one-page"
-          className="w-full h-full flex-1 min-h-0 overflow-y-auto glass-scrollbar p-2 sm:p-3 md:p-4 lg:p-5 pr-1.5 sm:pr-2.5 space-y-4 sm:space-y-5 animate-fadeIn select-none text-slate-800 dark:text-slate-100"
-        >
-          <div className="w-full min-h-full flex flex-col justify-start space-y-4 sm:space-y-5">
-            {/* 0. BREADCRUMB & HEADER TOP BAR */}
-            <div className="flex flex-wrap items-center justify-between gap-2.5 px-1">
-              {/* Breadcrumb bên trái */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-300 shadow-2xs">
-                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold">
-                  <WebIcon name="home" className="w-3.5 h-3.5" />
-                  <span>Trang chủ</span>
-                </span>
-                <span className="text-slate-400">›</span>
-                <span className="flex items-center gap-1 text-slate-800 dark:text-slate-200">
-                  <WebIcon name="mail" className="w-3.5 h-3.5" />
-                  <span>Thư ngỏ</span>
-                </span>
-              </div>
 
-              {/* Subtitle Badge bên phải & Nút điều khiển */}
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold shadow-2xs">
-                  <WebIcon name="sparkles" className="w-3.5 h-3.5 text-emerald-500 animate-pulse" />
-                  <span className="truncate max-w-[280px] sm:max-w-none">
-                    Hành trình 22+ năm kinh nghiệm xây dựng & phát triển hệ thống CSKH
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCompanyInputDraft(companyName);
-                    setIsCompanyModalOpen(true);
-                  }}
-                  className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 dark:bg-amber-950/70 dark:text-amber-200 dark:border-amber-700 flex items-center gap-1 cursor-pointer transition shadow-2xs"
-                  title="Tùy chỉnh tên đối tác"
-                >
-                  <WebIcon name="users" className="w-3.5 h-3.5" />
-                  <span>{companyName ? `Đổi tên (${companyName})` : '+ Điền tên Công ty'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleExportLetterPDF}
-                  className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs flex items-center gap-1 cursor-pointer transition"
-                >
-                  <WebIcon name="download" className="w-3.5 h-3.5" />
-                  <span>Xuất PDF Chuẩn A4</span>
-                </button>
-              </div>
-            </div>
-
-
-
-            {/* 2. KHỐI LĨNH VỰC HOẠT ĐỘNG CHÍNH (4 CARDS NGANG ĐA SẮC) */}
-            <div className="space-y-2.5">
-              <div className="flex items-center gap-2 px-1 text-left">
-                <div className="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shadow-2xs">
-                  <WebIcon name="rocket" className="w-3.5 h-3.5" />
-                </div>
-                <h3 className="text-sm font-black font-play text-slate-900 dark:text-white uppercase tracking-wider">
-                  Lĩnh vực hoạt động chính
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-left">
-                {/* Card 1: Dịch vụ Viễn thông (Xanh dương) */}
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white shadow-sm flex items-center justify-between gap-2.5 group hover:scale-[1.02] transition-all duration-200">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 shadow-inner">
-                      <WebIcon name="phone" className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="text-xs sm:text-[13px] font-black font-play truncate leading-tight">
-                        Dịch vụ Viễn thông
-                      </h4>
-                      <p className="text-[10px] sm:text-[10.5px] text-white/80 truncate mt-0.5">
-                        Kết nối · Phục vụ · Phát triển
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0 group-hover:translate-x-0.5 transition-transform">
-                    <span className="text-xs font-bold">→</span>
-                  </div>
-                </div>
-
-                {/* Card 2: Cam kết (Cam) */}
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white shadow-sm flex items-center justify-between gap-2.5 group hover:scale-[1.02] transition-all duration-200">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 shadow-inner">
-                      <WebIcon name="users" className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="text-xs sm:text-[13px] font-black font-play truncate leading-tight">
-                        Cam kết
-                      </h4>
-                      <p className="text-[10px] sm:text-[10.5px] text-white/80 truncate mt-0.5">
-                        Khách hàng là trung tâm
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0 group-hover:translate-x-0.5 transition-transform">
-                    <span className="text-xs font-bold">→</span>
-                  </div>
-                </div>
-
-                {/* Card 3: Nhiệm vụ (Hồng Magenta) */}
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 text-white shadow-sm flex items-center justify-between gap-2.5 group hover:scale-[1.02] transition-all duration-200">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 shadow-inner">
-                      <WebIcon name="settings" className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="text-xs sm:text-[13px] font-black font-play truncate leading-tight">
-                        Nhiệm vụ
-                      </h4>
-                      <p className="text-[10px] sm:text-[10.5px] text-white/80 truncate mt-0.5">
-                        Nâng cao Trải nghiệm
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0 group-hover:translate-x-0.5 transition-transform">
-                    <span className="text-xs font-bold">→</span>
-                  </div>
-                </div>
-
-                {/* Card 4: Định hướng (Xanh ngọc Teal) */}
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-teal-500 via-emerald-600 to-teal-700 text-white shadow-sm flex items-center justify-between gap-2.5 group hover:scale-[1.02] transition-all duration-200">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 shadow-inner">
-                      <WebIcon name="chart" className="w-4 h-4 text-white" />
-                    </div>
-                    <div className="min-w-0">
-                      <h4 className="text-xs sm:text-[13px] font-black font-play truncate leading-tight">
-                        Định hướng
-                      </h4>
-                      <p className="text-[10px] sm:text-[10.5px] text-white/80 truncate mt-0.5">
-                        Bền vững & Hiệu quả
-                      </p>
-                    </div>
-                  </div>
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0 group-hover:translate-x-0.5 transition-transform">
-                    <span className="text-xs font-bold">→</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 3. KHỐI HÀNH TRÌNH SỰ NGHIỆP — TIMELINE 2 CỘT ZIC-ZAC ĐỐI XỨNG QUA TRỤC DỌC Ở GIỮA */}
-            <div className="p-4 sm:p-6 lg:p-7 rounded-3xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden space-y-5">
-              {/* Header Khối Hành Trình */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200/70 dark:border-slate-800 text-left">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs">
-                    <WebIcon name="briefcase" className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-base sm:text-lg font-black font-play text-slate-900 dark:text-white leading-tight">
-                      Hành trình sự nghiệp
-                    </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
-                      Hơn 22 năm kinh nghiệm xây dựng, vận hành và phát triển hệ thống dịch vụ khách hàng chuyên nghiệp.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-cyan-300 text-xs font-bold font-play">
-                  <WebIcon name="mail" className="w-3.5 h-3.5" />
-                  <span>Hành trình phát triển qua từng cột mốc</span>
-                </div>
-              </div>
-
-              {/* KHUNG TIMELINE 2 CỘT ZIC-ZAC CÓ ĐƯỜNG TRỤC DỌC Ở GIỮA */}
-              <div className="relative w-full">
-                {/* Đường trục dọc ở giữa (Central Spine) trên màn hình tablet/desktop */}
-                <div className="hidden md:block absolute left-1/2 -translate-x-1/2 top-4 bottom-4 w-1 bg-gradient-to-b from-blue-400 via-indigo-400 via-purple-400 to-teal-400 dark:from-blue-600 dark:via-indigo-700 dark:to-teal-600 rounded-full z-0 pointer-events-none opacity-60" />
-
-                {/* Grid 2 Cột Chứa Các Thẻ Cột Mốc Đối Xứng */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6 relative z-10">
-                  {CAREER_MILESTONES_DATA.map((item, idx) => {
-                    const isBeingRead = activeTargetId === item.id;
-                    const p1Count = countBoldKeywords(item.descVi);
-                    const p2Count = countBoldKeywords(item.descViPart2);
-                    const totalKw = Math.max(1, p1Count + p2Count);
-                    const isEven = idx % 2 === 0;
-
-                    // Watermark icon mờ cho từng cột mốc
-                    const watermarkIcon =
-                      item.company.includes('MobiFone') ? 'radio' :
-                      item.company.includes('V247') ? 'phone' :
-                      item.company.includes('HTV') || item.company.includes('LBC') ? 'chart' :
-                      item.company.includes('Garena') ? 'sparkles' :
-                      item.company.includes('Prudential') ? 'shield' :
-                      item.company.includes('MoMo') ? 'wallet' : 'trending';
-
-                    return (
-                      <div
-                        key={item.id}
-                        id={item.id}
-                        className={`relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-white via-slate-50/70 to-slate-100/50 dark:from-slate-800/90 dark:via-slate-850/80 dark:to-slate-900/90 border border-slate-200/90 dark:border-slate-700/80 shadow-xs hover:shadow-md transition-all duration-300 group overflow-hidden text-left ${
-                          isBeingRead ? 'ring-2 ring-emerald-500 dark:ring-emerald-400 shadow-md scale-[1.01]' : ''
-                        }`}
-                      >
-                        {/* Chấm tròn Node Dot nối vào trục giữa trên desktop */}
-                        <div
-                          className={`hidden md:block absolute top-7 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-slate-900 shadow-sm z-20 ${
-                            isEven
-                              ? '-right-[27px] bg-blue-500 ring-2 ring-blue-300/50'
-                              : '-left-[27px] bg-purple-500 ring-2 ring-purple-300/50'
-                          }`}
-                        />
-
-                        {/* Watermark Icon Vector mờ siêu lớn ở góc phải dưới giống hình tham khảo */}
-                        <div className="absolute right-2 bottom-1 text-slate-300/40 dark:text-slate-600/20 pointer-events-none select-none z-0">
-                          <WebIcon name={watermarkIcon} className="w-16 h-16 sm:w-20 sm:h-20" />
-                        </div>
-
-                        {/* Header Thẻ: Logo + Tên Công ty + Badge Năm Pill */}
-                        <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-slate-200/60 dark:border-slate-700/60 relative z-10">
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white p-1 shadow-xs border border-slate-200 dark:border-white/10 flex items-center justify-center shrink-0">
-                              <img
-                                src={item.logo}
-                                alt={item.company}
-                                className="w-full h-full object-contain"
-                              />
-                            </div>
-                            <div className="min-w-0">
-                              <h4
-                                className="text-sm sm:text-base font-black font-play truncate leading-tight"
-                                style={{ color: item.color }}
-                              >
-                                {item.company}
-                              </h4>
-                              <p className="text-[10.5px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400 truncate">
-                                {item.roleVi}
-                              </p>
-                            </div>
-                          </div>
-
-                          <span
-                            className={`px-2.5 sm:px-3 py-0.5 rounded-full text-white text-[10.5px] sm:text-xs font-black font-mono shadow-2xs shrink-0 ${item.yearBadgeGradient}`}
-                          >
-                            {item.yearLabelVi.replace('Năm ', '')}
-                          </span>
-                        </div>
-
-                        {/* Nội dung chi tiết cột mốc (Giữ nguyên 100% data) */}
-                        <div className="space-y-2 text-xs sm:text-[12.5px] text-slate-700 dark:text-slate-200 leading-relaxed relative z-10 flex-1">
-                          <p>
-                            {renderFormattedText(item.descVi, {
-                              isCardReading: isBeingRead,
-                              keywordOffset: 0,
-                              totalKeywords: totalKw,
-                            })}
-                          </p>
-                          {item.descViPart2 && (
-                            <p className="pt-1 text-slate-600 dark:text-slate-300">
-                              {renderFormattedText(item.descViPart2, {
-                                isCardReading: isBeingRead,
-                                keywordOffset: p1Count,
-                                totalKeywords: totalKw,
-                              })}
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Footer Thẻ: Nút nghe giọng đọc Karaoke */}
-                        <div className="mt-3 pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between gap-2 relative z-10">
-                          <button
-                            type="button"
-                            onClick={(e) => handleNarrateMilestone(item.id, e)}
-                            className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold flex items-center gap-1 transition cursor-pointer shadow-2xs border ${
-                              isBeingRead
-                                ? 'bg-emerald-600 text-white border-emerald-400'
-                                : 'bg-white dark:bg-slate-800 text-blue-600 dark:text-cyan-300 border-slate-200 dark:border-slate-700 hover:bg-blue-50'
-                            }`}
-                          >
-                            <WebIcon name={isBeingRead && !isPaused ? 'pause' : 'volume-2'} className="w-3 h-3" />
-                            <span>{isBeingRead ? 'Đang đọc' : 'Nghe mốc này'}</span>
-                          </button>
-
-                          <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono italic truncate">
-                            {item.highlightVi.slice(0, 38)}...
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            {/* 4. KHỐI SONG SONG: GIẢI PHÁP CÔNG NGHỆ (TRÁI) & TÂM THƯ TRI ÂN (PHẢI) */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 text-left">
-              {/* Cột trái: Giải pháp công nghệ */}
-              <div className="md:col-span-6 p-4 sm:p-6 rounded-3xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between gap-3 relative overflow-hidden">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs">
-                      <WebIcon name="settings" className="w-4 h-4" />
-                    </div>
-                    <h3 className="text-base font-black font-play text-slate-900 dark:text-white">
-                      Giải pháp công nghệ
-                    </h3>
-                  </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                    Tập trung áp dụng và triển khai các giải pháp công nghệ để nâng cao hiệu quả vận hành và chất lượng dịch vụ khách hàng. Bao gồm tự động hóa quy trình, phân tích dữ liệu khách hàng, ứng dụng AI và các công cụ hiện đại.
-                  </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                  {/* Danh sách 4 giải pháp */}
-                  <div className="w-full sm:w-3/5 space-y-1.5">
-                    {[
-                      { num: '01', title: 'Hệ thống CRM', desc: 'Quản lý khách hàng toàn diện', color: 'bg-blue-600' },
-                      { num: '02', title: 'Tự động hóa', desc: 'Tối ưu quy trình & hiệu suất', color: 'bg-teal-500' },
-                      { num: '03', title: 'Phân tích dữ liệu', desc: 'Hiểu khách hàng sâu sắc hơn', color: 'bg-rose-500' },
-                      { num: '04', title: 'AI Chatbot', desc: 'Hỗ trợ khách hàng 24/7', color: 'bg-amber-500' },
-                    ].map((sol) => (
-                      <div
-                        key={sol.num}
-                        className="p-1.5 px-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between gap-2 shadow-2xs hover:scale-[1.01] transition-transform"
-                      >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className={`w-5 h-5 rounded-md ${sol.color} text-white font-black font-mono text-[10px] flex items-center justify-center shrink-0`}>
-                            {sol.num}
-                          </span>
-                          <div className="min-w-0">
-                            <span className="text-[11.5px] font-bold text-slate-900 dark:text-white block truncate leading-tight font-play">
-                              {sol.title}
-                            </span>
-                            <span className="text-[9.5px] text-slate-500 dark:text-slate-400 block truncate">
-                              {sol.desc}
-                            </span>
-                          </div>
-                        </div>
-                        <span className="text-xs text-slate-400">›</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Minh họa 3D Dashboard nhỏ bên phải */}
-                  <div className="w-full sm:w-2/5 flex items-center justify-center p-2 rounded-2xl bg-gradient-to-tr from-blue-50 to-indigo-50/80 dark:from-slate-800 dark:to-slate-800/60 border border-blue-200/60 dark:border-blue-900/40">
-                    <div className="w-24 h-20 rounded-xl bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-700 p-2 flex flex-col justify-between">
-                      <div className="flex items-center justify-between">
-                        <div className="w-6 h-1.5 rounded-full bg-blue-500" />
-                        <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                      </div>
-                      <div className="flex items-end justify-between gap-1 h-8 px-1">
-                        <div className="w-2 h-4 rounded-t bg-blue-400" />
-                        <div className="w-2 h-6 rounded-t bg-indigo-500" />
-                        <div className="w-2 h-7 rounded-t bg-teal-400" />
-                        <div className="w-2 h-5 rounded-t bg-amber-400" />
-                      </div>
-                      <div className="w-full h-1 rounded-full bg-slate-200 dark:bg-slate-700" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Cột phải: Tâm thư tri ân */}
-              <div className="md:col-span-6 p-4 sm:p-6 rounded-3xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between gap-3 relative overflow-hidden">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-teal-500 text-white flex items-center justify-center shadow-xs">
-                      <WebIcon name="heart" className="w-4 h-4" />
-                    </div>
-                    <h3 className="text-base font-black font-play text-slate-900 dark:text-white">
-                      Tâm thư tri ân
-                    </h3>
-                  </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                    Xin chân thành cảm ơn Quý đối tác, Quý khách hàng và đồng nghiệp đã luôn tin tưởng, đồng hành và hỗ trợ tôi trong suốt hành trình 22+ năm qua. Tôi luôn trân trọng những cơ hội được hợp tác và mong tiếp tục nhận được sự đồng hành trong chặng đường phía trước.
-                  </p>
-                </div>
-
-                <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
-                  {/* Trích dẫn 3 dòng: Cùng nhau - Cùng phát triển - Cùng thành công */}
-                  <div className="flex items-start gap-2.5">
-                    <span className="text-3xl font-black text-sky-400 leading-none select-none">““</span>
-                    <div className="space-y-0.5">
-                      <p className="text-xs font-black text-blue-700 dark:text-cyan-400 font-play">Cùng nhau</p>
-                      <p className="text-xs font-black text-indigo-700 dark:text-indigo-400 font-play">Cùng phát triển</p>
-                      <p className="text-xs font-black text-emerald-600 dark:text-emerald-400 font-play">Cùng thành công</p>
-                      <div className="pt-1.5">
-                        <SignatureSvg />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Minh họa 3D Phong bì thư với trái tim bay */}
-                  <div className="flex items-center justify-center">
-                    <div className="w-24 h-20 rounded-2xl bg-gradient-to-tr from-sky-100 to-indigo-100 dark:from-slate-800 dark:to-slate-700 p-2 flex items-center justify-center relative shadow-inner">
-                      <div className="w-16 h-12 rounded-lg bg-white dark:bg-slate-900 shadow-md border border-slate-200 dark:border-slate-700 flex items-center justify-center relative">
-                        <WebIcon name="mail" className="w-7 h-7 text-sky-500" />
-                        <div className="absolute -top-2 right-1 w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center shadow-xs">
-                          <WebIcon name="heart" className="w-2.5 h-2.5" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 5. KHỐI GIÁ TRỊ CỐT LÕI (4 CỘT NGANG CÓ SỐ THỨ TỰ 01, 02, 03, 04) */}
-            <div className="space-y-2.5 text-left">
-              <div className="flex items-center gap-2 px-1">
-                <div className="w-6 h-6 rounded-lg bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-cyan-400 flex items-center justify-center shadow-2xs">
-                  <WebIcon name="sparkles" className="w-3.5 h-3.5" />
-                </div>
-                <h3 className="text-sm font-black font-play text-slate-900 dark:text-white uppercase tracking-wider">
-                  Giá trị cốt lõi
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {[
-                  { num: '01', title: 'Tận tâm', desc: 'Đặt khách hàng làm trung tâm trong mọi hoạt động.', icon: 'target', color: 'text-purple-600 dark:text-purple-400', bg: 'bg-purple-100 dark:bg-purple-950/70' },
-                  { num: '02', title: 'Chuyên nghiệp', desc: 'Không ngừng nâng cao năng lực và chất lượng dịch vụ.', icon: 'sparkles', color: 'text-blue-600 dark:text-cyan-400', bg: 'bg-blue-100 dark:bg-blue-950/70' },
-                  { num: '03', title: 'Hợp tác', desc: 'Xây dựng mối quan hệ bền vững với đối tác.', icon: 'users', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-950/70' },
-                  { num: '04', title: 'Hiệu quả', desc: 'Luôn hướng đến giá trị thực tế và bền vững.', icon: 'chart', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-950/70' },
-                ].map((val) => (
-                  <div
-                    key={val.num}
-                    className="p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex flex-col justify-between gap-2 hover:scale-[1.01] transition-transform relative overflow-hidden"
-                  >
-                    {/* Số thứ tự mờ to ở góc trên */}
-                    <span className="absolute top-2 right-3 text-2xl font-black font-mono text-slate-300/40 dark:text-slate-700/40 select-none pointer-events-none">
-                      {val.num}
-                    </span>
-
-                    <div className="flex items-center gap-2">
-                      <div className={`w-7 h-7 rounded-lg ${val.bg} ${val.color} flex items-center justify-center shrink-0 shadow-2xs`}>
-                        <WebIcon name={val.icon} className="w-3.5 h-3.5" />
-                      </div>
-                      <h4 className="text-xs sm:text-[13px] font-black font-play text-slate-900 dark:text-white truncate">
-                        {val.title}
-                      </h4>
-                    </div>
-
-                    <p className="text-[10.5px] sm:text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                      {val.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-
-          </div>
-        </div>
-      )}
 
       {/* SLIDE 1: THẺ THÔNG ĐIỆP HỢP TÁC CHIẾN LƯỢC BENTO VIEW TỐI ƯU TOÀN MÀN HÌNH (FULL CHIỀU CAO & RỘNG) */}
       {/* ========================================================================= */}
       {viewMode === 'slides' && currentSlide === 0 && (
         <div
           key="slide-1"
-          className={`w-full h-full flex-1 min-h-0 flex flex-col justify-between p-2 sm:p-2.5 lg:p-3 select-none font-play ${
+          className={`w-full h-full flex-1 min-h-0 flex flex-col justify-between p-1.5 sm:p-2 lg:p-2.5 select-none font-play ${
             slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'
           }`}
         >
           {/* Main Container Thẻ Thông Điệp Hợp Tác (Chiếm trọn vẹn chiều cao, lấp đầy thẻ chính) */}
           <div
             id="card-main-letter-content"
-            className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-2 sm:gap-2.5 relative z-10 overflow-hidden"
+            className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-2 relative z-10 overflow-hidden"
           >
             {/* 1. KHU VỰC TRÊN (HERO AREA): Chia tỷ lệ 5:7 giữa Khung Video Thuyết Minh và Khung Thư Ngỏ */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-2.5 lg:gap-3 items-stretch flex-1 min-h-0 w-full">
-              {/* 1.1 Khung Video Thuyết Minh (5 Cột) - Tràn viền, bo góc rounded-2xl, Flat Glass Controls */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-2.5 items-stretch flex-1 min-h-0 w-full">
+              {/* 1.1 Khung Video Thuyết Minh (5 Cột) - Tràn viền, bo góc rounded-2xl, Glass Soft Controls & Real-time Kinetic Caption Overlay */}
               <div
                 id="bento-letter-video"
-                className={`col-span-12 lg:col-span-5 rounded-2xl min-h-[190px] lg:min-h-0 w-full h-full relative overflow-hidden flex flex-col justify-between border border-slate-200/60 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-xl shadow-slate-900/5 dark:shadow-none transition-all duration-300 group/vcard ${
+                className={`col-span-12 lg:col-span-5 rounded-2xl min-h-[230px] sm:min-h-[250px] lg:min-h-0 w-full h-full relative overflow-hidden flex flex-col justify-between border border-white/85 dark:border-white/10 bg-white/75 dark:bg-slate-900/60 backdrop-blur-xl shadow-[0_10px_30px_0_rgba(100,110,140,0.08)] dark:shadow-none transition-all duration-300 group/vcard ${
                   activeTargetId === 'bento-experience-intro' || activeTargetId === 'callout-salutation'
                     ? 'ring-2 ring-cyan-500/80 shadow-[0_0_24px_rgba(6,182,212,0.3)]'
                     : 'hover:border-cyan-500/40'
                 }`}
               >
-                {/* Video lấp đầy toàn bộ thẻ - Tự động phát nền không viền */}
+                {/* Video lấp đầy toàn bộ thẻ - Tối ưu tốc độ tải với preload="metadata" */}
                 <video
                   ref={floatingVideoRef}
                   src={LETTER_SLIDE_1_VIDEO_URL}
+                  preload="metadata"
                   playsInline
                   loop
-                  muted
-                  autoPlay
+                  muted={isVideoMuted}
                   onTimeUpdate={handleFloatingVideoTimeUpdate}
                   onLoadedMetadata={handleFloatingVideoLoadedMetadata}
                   onPlay={() => setIsVideoPlaying(true)}
@@ -2695,13 +2159,13 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                 />
 
                 {/* Lớp phủ gradient mờ bảo đảm text và controls luôn sắc nét trên nền video */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/25 to-slate-950/65 z-10 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-slate-950/60 z-10 pointer-events-none" />
 
                 {/* Header Video Top Bar: Micro-badge Scena AI & Nhãn Thuyết Minh */}
-                <div className="relative z-20 p-3 sm:p-3.5 flex items-center justify-between gap-2 shrink-0">
+                <div className="relative z-20 p-2 sm:p-2.5 flex items-center justify-between gap-2 shrink-0">
                   <div className="flex items-center gap-2 min-w-0">
-                    <div className="w-6 h-6 rounded-lg bg-cyan-500/80 text-white flex items-center justify-center shrink-0 shadow-xs ring-1 ring-cyan-300/40">
-                      <WebIcon name="play" className="w-3 h-3 fill-current ml-0.5" />
+                    <div className="w-6 h-6 rounded-lg bg-cyan-500/85 text-white flex items-center justify-center shrink-0 shadow-xs ring-1 ring-cyan-300/40">
+                      <WebIcon name="play" className="w-3 h-3 ml-0.5" />
                     </div>
                     <span className="text-xs sm:text-[13px] font-bold text-white drop-shadow-sm truncate">
                       Thuyết minh thư ngỏ
@@ -2716,7 +2180,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                       <span className={`w-0.5 h-2 bg-cyan-400 rounded-full ${isVideoPlaying ? 'animate-[pulse_0.6s_infinite]' : 'opacity-40'}`} />
                     </span>
                     <span className="text-[10px] font-mono font-semibold text-cyan-200 bg-slate-950/70 px-2 py-0.5 rounded-full border border-cyan-400/30 backdrop-blur-md">
-                      Scena AI
+                      Scena AI • {Math.round(videoProgressPct)}%
                     </span>
                   </div>
                 </div>
@@ -2724,22 +2188,61 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                 {/* Vùng giữa: Nhấp để Play/Pause */}
                 <div
                   onClick={toggleFloatingVideoPlay}
-                  className="relative z-20 flex-1 flex items-center justify-center cursor-pointer min-h-[80px]"
+                  className="relative z-20 flex-1 flex items-center justify-center cursor-pointer min-h-[60px]"
                   title={isVideoPlaying ? 'Bấm để tạm dừng video' : 'Bấm để phát video'}
                 >
                   {!isVideoPlaying && (
-                    <div className="w-12 h-12 rounded-full bg-slate-900/80 hover:bg-cyan-600 text-white flex items-center justify-center shadow-xl backdrop-blur-md border border-white/20 transform hover:scale-105 active:scale-95 transition-all duration-200">
-                      <WebIcon name="play" className="w-5 h-5 fill-current ml-0.5" />
+                    <div className="w-12 h-12 rounded-full bg-slate-900/80 hover:bg-cyan-600 text-white flex items-center justify-center shadow-xl backdrop-blur-md border border-white/25 transform hover:scale-105 active:scale-95 transition-all duration-200">
+                      <WebIcon name="play" className="w-5 h-5 ml-0.5" />
                     </div>
                   )}
                 </div>
 
-                {/* Footer Controls: Flat Glass Thanh Mảnh Bo Tròn Nhẹ Nhàng */}
-                <div className="relative z-20 p-2.5 sm:p-3 flex flex-col gap-2 shrink-0">
-                  {/* Progress Bar ở đáy video */}
-                  <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
+                {/* Vùng Safe Zone Overlay: Hiệu ứng chữ chuyển động theo thời gian thực (Real-time Kinetic Timecode Overlay) */}
+                <div className="relative z-20 px-2.5 sm:px-3 pb-1 shrink-0">
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-950/70 backdrop-blur-md border border-white/20 text-left space-y-1 transition-all duration-300">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/25 border border-cyan-300/40 text-cyan-200 text-[10px] font-bold">
+                        <span>{activeVideoCue.noteBadge}</span>
+                      </span>
+                      <span className="text-[10.5px] font-bold text-amber-300 truncate">
+                        {activeVideoCue.noteTitle}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-white/95 font-medium leading-snug line-clamp-2 break-words">
+                      {activeVideoCue.noteSummary}
+                    </p>
+                    {activeVideoCue.highlightKeywords && activeVideoCue.highlightKeywords.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1 pt-0.5">
+                        {activeVideoCue.highlightKeywords.map((kw, kIdx) => (
+                          <span
+                            key={kIdx}
+                            className="px-1.5 py-0.5 rounded bg-white/15 text-cyan-200 text-[9.5px] font-bold border border-white/15"
+                          >
+                            #{kw}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer Controls: Thanh tua tiến trình tương tác & Nút điều khiển */}
+                <div className="relative z-20 p-2.5 sm:p-3 pt-1.5 flex flex-col gap-2 shrink-0">
+                  {/* Thanh Progress Bar cho phép click tua trực tiếp */}
+                  <div
+                    onClick={(e) => {
+                      if (!floatingVideoRef.current || !floatingVideoRef.current.duration) return;
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const clickPct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                      floatingVideoRef.current.currentTime = clickPct * floatingVideoRef.current.duration;
+                      setVideoProgressPct(clickPct * 100);
+                    }}
+                    className="w-full h-1.5 bg-white/25 hover:h-2 rounded-full overflow-hidden cursor-pointer transition-all"
+                    title="Nhấp để tua nhanh tiến trình video thuyết minh"
+                  >
                     <div
-                      className="h-full bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 transition-all duration-200"
+                      className="h-full bg-gradient-to-r from-cyan-400 via-sky-400 to-amber-400 transition-all duration-150"
                       style={{ width: `${videoProgressPct}%` }}
                     />
                   </div>
@@ -2750,7 +2253,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                       <button
                         type="button"
                         onClick={toggleFloatingVideoMute}
-                        className="px-2.5 py-1 rounded-xl bg-slate-950/60 hover:bg-slate-900/80 active:scale-95 text-white flex items-center gap-1.5 transition text-[11px] font-medium cursor-pointer border border-white/15 backdrop-blur-md"
+                        className="px-2.5 py-1 rounded-xl bg-slate-950/65 hover:bg-slate-900/85 active:scale-95 text-white flex items-center gap-1.5 transition text-[11px] font-medium cursor-pointer border border-white/15 backdrop-blur-md"
                         title={isVideoMuted ? 'Bấm để mở âm thanh video' : 'Bấm để tắt tiếng'}
                       >
                         <WebIcon name={isVideoMuted ? 'volume-x' : 'volume-2'} className="w-3.5 h-3.5 text-cyan-300" />
@@ -2761,7 +2264,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                       <button
                         type="button"
                         onClick={toggleFloatingVideoPlay}
-                        className="px-2.5 py-1 rounded-xl bg-slate-950/60 hover:bg-slate-900/80 active:scale-95 text-white flex items-center gap-1.5 transition text-[11px] font-medium cursor-pointer border border-white/15 backdrop-blur-md"
+                        className="px-2.5 py-1 rounded-xl bg-slate-950/65 hover:bg-slate-900/85 active:scale-95 text-white flex items-center gap-1.5 transition text-[11px] font-medium cursor-pointer border border-white/15 backdrop-blur-md"
                       >
                         <WebIcon name={isVideoPlaying ? 'pause' : 'play'} className="w-3.5 h-3.5 text-cyan-300" />
                         <span>{isVideoPlaying ? 'Tạm dừng' : 'Phát'}</span>
@@ -2982,21 +2485,24 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
         </div>
       )}
 
+
+
       {/* ========================================================================= */}
       {/* SLIDE 2: HÀNH TRÌNH SỰ NGHIỆP (3 CỘT MỐC NỀN TẢNG)                        */}
       {/* ========================================================================= */}
       {viewMode === 'slides' && currentSlide === 1 && (
         <div
           key="slide-2"
-          className={`w-full h-full flex-1 min-h-0 flex flex-col justify-between p-2 sm:p-2.5 lg:p-3 ${
+          className={`w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-2 overflow-y-auto glass-scrollbar p-2 sm:p-2.5 lg:p-3 ${
             slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'
           }`}
         >
+          {renderInteractiveMiniTimeline()}
           {/* 3 Cards Bento Grid */}
-          <div className="w-full h-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-2.5 lg:gap-3 items-stretch">
+          <div className="w-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-2.5 lg:gap-3 items-stretch">
             {CAREER_MILESTONES_DATA.slice(0, 3).map((item, idx) => {
               const bentoSpan = idx === 2 ? 'md:col-span-12' : 'md:col-span-6';
-              return renderCareerCard(item, bentoSpan, true);
+              return renderCareerCard(item, bentoSpan, false);
             })}
           </div>
         </div>
@@ -3008,15 +2514,16 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
       {viewMode === 'slides' && currentSlide === 2 && (
         <div
           key="slide-3"
-          className={`w-full h-full flex-1 min-h-0 flex flex-col justify-between p-2 sm:p-2.5 lg:p-3 ${
+          className={`w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-2 overflow-y-auto glass-scrollbar p-2 sm:p-2.5 lg:p-3 ${
             slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'
           }`}
         >
+          {renderInteractiveMiniTimeline()}
           {/* 4 Cards Bento Grid */}
-          <div className="w-full h-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-2.5 lg:gap-3 items-stretch">
+          <div className="w-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-2.5 lg:gap-3 items-stretch">
             {CAREER_MILESTONES_DATA.slice(3, 7).map((item, idx) => {
               const bentoSpan = idx === 0 ? 'md:col-span-12' : 'md:col-span-4';
-              return renderCareerCard(item, bentoSpan, true);
+              return renderCareerCard(item, bentoSpan, false);
             })}
           </div>
         </div>
@@ -3028,7 +2535,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
       {viewMode === 'slides' && currentSlide === 3 && (
         <div
           key="slide-4"
-          className={`w-full h-full flex-1 min-h-0 flex flex-col justify-between p-2 sm:p-2.5 lg:p-3 ${
+          className={`w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-2.5 overflow-y-auto glass-scrollbar p-2 sm:p-2.5 lg:p-3 ${
             slideDirection === 'next' ? 'animate-slide-next' : 'animate-slide-prev'
           }`}
         >
@@ -3135,12 +2642,12 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                   </div>
                 </div>
 
-                {/* Quote box synthesis */}
-                <div className="w-full bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 dark:from-slate-950 dark:via-indigo-950/90 dark:to-slate-950 p-2.5 sm:p-3 rounded-xl border border-amber-400/40 relative flex items-center gap-2.5 shadow-sm">
-                  <span className="text-amber-400 font-serif font-black text-xl leading-none shrink-0">
+                {/* Quote box synthesis - Đồng bộ Pastel Peach/Amber Glass ở chế độ Sáng và Indigo ở chế độ Tối */}
+                <div className="w-full bg-gradient-to-r from-amber-50/90 via-orange-50/85 to-rose-50/90 dark:from-slate-950 dark:via-indigo-950/90 dark:to-slate-950 p-2.5 sm:p-3 rounded-xl border border-amber-300/80 dark:border-amber-400/40 relative flex items-center gap-2.5 shadow-xs">
+                  <span className="text-amber-600 dark:text-amber-400 font-serif font-black text-xl leading-none shrink-0">
                     “
                   </span>
-                  <p className="text-amber-300 font-bold italic text-xs sm:text-[13px] leading-snug">
+                  <p className="text-amber-900 dark:text-amber-300 font-bold italic text-xs sm:text-[13px] leading-snug break-words">
                     "Sự hài lòng của khách hàng không đến từ sự hoàn hảo, mà đến từ sự đồng cảm kịp thời."
                   </p>
                 </div>
@@ -3190,7 +2697,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
           {/* Lower Section: GIÁ TRỊ CỐT LÕI PHÁT TRIỂN (4 Bento Cards) */}
           <div
             id="card-core-values-pursued"
-            className={`w-full p-4 sm:p-4.5 shadow-md transition-all duration-300 flex flex-col items-start group/values z-10 border text-left rounded-2xl shrink-0 ${getGlassCardClass()}`}
+            className={`w-full p-3 sm:p-3.5 shadow-md transition-all duration-300 flex flex-col items-start group/values z-10 border text-left rounded-2xl shrink-0 ${getGlassCardClass()}`}
           >
             {/* Tiêu đề Khối */}
             <AnimatedCardTitle
@@ -3206,7 +2713,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
             />
 
             {/* 4 Cột Giá Trị Cốt Lõi Bento Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full mt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 w-full mt-1">
               {CORE_VALUES_DATA.map((val) => {
                 const valIconName =
                   val.number === '01'
@@ -3222,7 +2729,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                   <div
                     key={val.number}
                     id={`core-val-${val.number}`}
-                    className={`relative overflow-hidden flex flex-col justify-between p-3.5 bg-gradient-to-br dark:from-slate-900/95 dark:via-slate-900/90 dark:to-slate-950/95 border dark:border-white/15 shadow-xs hover:shadow-lg  transition-all duration-300 min-h-[125px] text-left group rounded-2xl ${val.colorTheme.bgGradient} ${val.colorTheme.border} ${
+                    className={`relative overflow-hidden flex flex-col justify-between p-3 bg-gradient-to-br dark:from-slate-900/95 dark:via-slate-900/90 dark:to-slate-950/95 border dark:border-white/15 shadow-xs hover:shadow-lg transition-all duration-300 min-h-[112px] text-left group rounded-2xl ${val.colorTheme.bgGradient} ${val.colorTheme.border} ${
                       isValBeingRead
                         ? 'ring-2 ring-emerald-500 dark:ring-cyan-400 shadow-[0_0_24px_rgba(16,185,129,0.28)] -translate-y-1'
                         : ''
@@ -3245,7 +2752,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                       >
                         <WebIcon name={valIconName} className="w-4 h-4 shrink-0" />
                         <h4
-                          className="text-[17px] sm:text-[18.5px] lg:text-[19.5px] font-black tracking-tight leading-tight font-play truncate"
+                          className="text-[16px] sm:text-[17px] lg:text-[18px] font-black tracking-tight leading-tight font-play truncate"
                           style={{ color: val.colorTheme.primary }}
                         >
                           {formatCardTitle(val.titleVi)}
@@ -3264,8 +2771,8 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
                       </div>
                     </div>
 
-                    <div className="my-2 relative z-10 text-left">
-                      <p className="text-[11.5px] sm:text-xs text-slate-700 dark:text-slate-300 leading-snug font-medium">
+                    <div className="my-1.5 relative z-10 text-left">
+                      <p className="text-[11px] sm:text-[11.5px] text-slate-700 dark:text-slate-300 leading-snug font-medium">
                         {val.descVi}
                       </p>
                     </div>
@@ -3488,7 +2995,7 @@ export const LetterView: React.FC<LetterViewProps> = ({ currentTheme = 'light-gl
               >
                 <WebIcon
                   name={isVideoPlaying || (isNarrating && !isPaused) ? 'pause' : 'play'}
-                  className="w-3.5 h-3.5 fill-current ml-0.5"
+                  className="w-3.5 h-3.5 ml-0.5"
                 />
               </button>
 

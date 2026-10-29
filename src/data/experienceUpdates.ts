@@ -10,7 +10,7 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
     code: '4.1',
     company: 'Sẵn sàng cho thử thách mới',
     logo: 'https://i.ibb.co/G4QnNzWb/Power-Service.png',
-    bannerUrl: 'https://i.ibb.co/WWNJ329X',
+    bannerUrl: 'https://i.ibb.co/SDs4tGj7/1-1-X-y-d-ng-Ph-ng-CSKH.jpg',
     memoryImg: 'https://i.ibb.co/fYVwSxRW/T-m-C-h-i.png',
     period: '2026+ đến hiện tại',
     cardYearLabel: '2026+ - Hiện tại',

@@ -259,21 +259,52 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
     },
   ];
 
+  const renderSlideSwitcherBar = () => {
+    const slides = [
+      { idx: 0, label: '01. Bát Trạch' },
+      { idx: 1, label: '02. Quản Trị' },
+      { idx: 2, label: '03. Ưu Thế' },
+      { idx: 3, label: '04. Hợp Việc & Triết Lý' },
+    ];
+    return (
+      <div className="inline-flex items-center gap-1 p-0.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-white/10">
+        {slides.map((s) => {
+          const isActive = currentSlide === s.idx;
+          return (
+            <button
+              key={s.idx}
+              type="button"
+              onClick={() => setCurrentSlide(s.idx)}
+              className={`px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] font-bold font-play transition-all cursor-pointer ${
+                isActive
+                  ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white shadow-2xs'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              {s.label}
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
+
   // 1. SLIDE 1: Tử vi bát trạch - Tối ưu nội dung không trùng lặp, gọn gàng
   const renderSection1BatTrach = () => (
     <div
       id="tuvi-section-1"
-      className="w-full h-full bg-gradient-to-br from-white/95 via-purple-50/25 to-amber-50/30 dark:from-slate-900/95 dark:via-purple-950/20 dark:to-slate-900/95 border border-purple-200/80 dark:border-purple-800/60 rounded-[14px] p-4 sm:p-5 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(168,85,247,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden relative group text-left font-play"
+      className="w-full h-full bg-gradient-to-br from-white/95 via-purple-50/25 to-amber-50/30 dark:from-slate-900/95 dark:via-purple-950/20 dark:to-slate-900/95 border border-purple-200/80 dark:border-purple-800/60 rounded-[14px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(168,85,247,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden relative group text-left font-play"
     >
       <div className="absolute -top-24 -right-24 w-80 h-80 bg-purple-500/10 dark:bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header */}
-      <div className="relative z-10 flex items-center justify-between pb-2.5 border-b border-purple-200/50 dark:border-purple-800/40 shrink-0">
+      <div className="relative z-10 flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-purple-200/50 dark:border-purple-800/40 shrink-0">
         <h2 className="text-base sm:text-lg font-bold text-purple-600 dark:text-purple-300 flex items-center gap-2 font-play">
           <Compass className="w-5 h-5 text-purple-600 dark:text-purple-300 animate-pulse shrink-0" />
           <span>{formatCardTitle("Tử Vi Bát Trạch")}</span>
         </h2>
+        {renderSlideSwitcherBar()}
       </div>
 
       {/* Body: La Bàn Âm Dương (Trái) & Hồ Sơ Nhân Thân + 4 Hướng Cát (Phải) */}
@@ -340,7 +371,7 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
                       >
                         <WebIcon
                           name={isAudioPlaying ? 'pause' : 'play'}
-                          className="w-3.5 h-3.5 fill-current"
+                          className="w-3.5 h-3.5"
                         />
                       </div>
                     </div>
@@ -547,13 +578,14 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
     return (
       <div
         id="tuvi-section-2"
-        className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-blue-200/90 dark:border-blue-400/30 rounded-[14px] p-4 sm:p-5 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(56,189,248,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
+        className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-blue-200/90 dark:border-blue-400/30 rounded-[14px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(56,189,248,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
       >
-        <div className="flex items-center justify-between pb-2.5 border-b border-blue-200/50 dark:border-blue-800/50 shrink-0">
+        <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-blue-200/50 dark:border-blue-800/50 shrink-0">
           <h2 className="text-base sm:text-lg font-bold text-blue-600 dark:text-cyan-400 flex items-center gap-2 font-play">
             <Target className="w-5 h-5 text-blue-600 dark:text-cyan-400 animate-pulse shrink-0" />
             <span>{formatCardTitle("Phong Cách Quản Trị")}</span>
           </h2>
+          {renderSlideSwitcherBar()}
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto glass-scrollbar pt-3 pr-0.5">
@@ -666,13 +698,14 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
     return (
       <div
         id="tuvi-section-3"
-        className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-emerald-200/90 dark:border-emerald-400/30 rounded-[14px] p-4 sm:p-5 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(16,185,129,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
+        className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-emerald-200/90 dark:border-emerald-400/30 rounded-[14px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(16,185,129,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
       >
-        <div className="flex items-center justify-between pb-2.5 border-b border-emerald-200/50 dark:border-emerald-800/50 shrink-0">
+        <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-emerald-200/50 dark:border-emerald-800/50 shrink-0">
           <h2 className="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-2 font-play">
             <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400 animate-pulse shrink-0" />
             <span>{formatCardTitle("Ưu Thế Làm Việc")}</span>
           </h2>
+          {renderSlideSwitcherBar()}
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto glass-scrollbar pt-3 pr-0.5">
@@ -714,47 +747,241 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
     );
   };
 
-  // 4. SLIDE 4: Triết lý lãnh đạo - Bố cục lại thanh lịch, gọn gàng trong thẻ chính
+  // 4. SLIDE 4: Công Cụ Kiểm Tra Hợp Việc (12 Con Giáp) & Triết Lý Lãnh Đạo
   const renderSection4Philosophy = () => (
     <div
       id="tuvi-section-4"
-      className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-amber-200/90 dark:border-amber-400/30 rounded-[14px] p-4 sm:p-5 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(245,158,11,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
+      className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-teal-200/90 dark:border-teal-500/30 rounded-[14px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(20,184,166,0.22)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
     >
-      <div className="flex items-center justify-between pb-2.5 border-b border-amber-200/50 dark:border-amber-800/50 shrink-0">
-        <h2 className="text-base sm:text-lg font-bold text-amber-600 dark:text-amber-400 flex items-center gap-2 font-play">
-          <Award className="w-5 h-5 text-amber-600 dark:text-amber-400 animate-pulse shrink-0" />
-          <span>{formatCardTitle("Triết Lý Lãnh Đạo")}</span>
-        </h2>
+      <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-teal-200/50 dark:border-teal-800/50 shrink-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <h2 className="text-base sm:text-lg font-bold text-teal-600 dark:text-teal-400 flex items-center gap-2 font-play">
+            <Users className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0" />
+            <span>{formatCardTitle("Công Cụ Hợp Việc & Triết Lý Lãnh Đạo")}</span>
+          </h2>
+          {hasSearched && currentZodiac && (
+            <button
+              type="button"
+              onClick={() => {
+                setHasSearched(false);
+                setSelectedZodiacId(null);
+              }}
+              className="px-2.5 py-0.5 rounded-full text-[10px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 hover:bg-teal-100 transition flex items-center gap-1 cursor-pointer"
+              title="Quay lại danh sách 12 con giáp"
+            >
+              <span>← 12 Con giáp</span>
+            </button>
+          )}
+        </div>
+        {renderSlideSwitcherBar()}
       </div>
 
-
-
-        {/* 6 Thẻ Triết Lý Hành Động */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 w-full items-stretch">
-          {ACTION_PHILOSOPHY_CARDS.map((card, idx) => (
-            <div
-              key={card.id}
-              className="rounded-xl p-3 bg-white dark:bg-slate-900/90 border border-amber-200/90 dark:border-amber-500/25 shadow-2xs hover:shadow-md hover:border-amber-400 transition-all flex flex-col justify-between text-left gap-2"
-            >
-              <div className="space-y-1">
-                <div className="flex items-center justify-between pb-1 border-b border-black/5 dark:border-white/5">
-                  <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
-                    <Award className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                    <h4 className="text-xs font-black font-play text-amber-600 dark:text-amber-400 leading-snug">
-                      {formatCardTitle(card.title)}
-                    </h4>
-                  </div>
-                  <span className="text-[9.5px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">
-                    0{idx + 1}
-                  </span>
-                </div>
-                <p className="text-[10.5px] text-slate-600 dark:text-slate-300 leading-relaxed pt-1">
-                  {card.description}
-                </p>
-              </div>
+      {/* NỘI DUNG SLIDE 4: BÊN TRÁI CÔNG CỤ HỢP VIỆC - BÊN PHẢI 6 THẺ TRIẾT LÝ LÃNH ĐẠO */}
+      <div className="flex-1 min-h-0 pt-2.5 grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch overflow-hidden">
+        {/* Khối Công Cụ Kiểm Tra Hợp Việc (12 Con Giáp) */}
+        <div
+          id="tuvi-tool-zodiac"
+          className="lg:col-span-5 h-full min-h-0 rounded-xl p-3 bg-teal-50/40 dark:bg-slate-950/60 border border-teal-200/80 dark:border-teal-800/60 flex flex-col justify-between overflow-hidden"
+        >
+          {/* Ô tìm kiếm năm sinh và bộ lọc */}
+          <div className="shrink-0 pb-2 border-b border-teal-200/50 dark:border-teal-800/50 space-y-1.5">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-black text-teal-700 dark:text-teal-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5" />
+                <span>Tra Cứu Tuổi Hợp Tác (12 Con Giáp)</span>
+              </span>
+              <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+                Chủ sự: Nhâm Thân 1992
+              </span>
             </div>
-          ))}
+            <div className="flex items-center gap-1.5 w-full">
+              <div className="relative flex-1">
+                <input
+                  type="number"
+                  placeholder="Nhập năm sinh đối tác (vd: 1992, 1984, 2000)..."
+                  value={searchYearInput}
+                  onChange={(e) => setSearchYearInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleYearSearch()}
+                  className="w-full pl-3 pr-8 py-1.5 rounded-lg text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-semibold"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const order = ['all', 'best', 'support', 'caution'];
+                    const nextIdx = (order.indexOf(zodiacFilterTier) + 1) % order.length;
+                    const nextTier = order[nextIdx];
+                    setZodiacFilterTier(nextTier);
+                    showToast(
+                      `Đã lọc: ${
+                        nextTier === 'all'
+                          ? 'Tất cả 12 Giáp'
+                          : nextTier === 'best'
+                          ? 'Tam / Lục Hợp'
+                          : nextTier === 'support'
+                          ? 'Tương Trợ'
+                          : 'Tránh Xung'
+                      }`
+                    );
+                  }}
+                  title={`Lọc: ${zodiacFilterTier} (Click để đổi)`}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-teal-600 dark:text-teal-400 hover:text-teal-700 cursor-pointer"
+                >
+                  <WebIcon name="filter" className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={handleYearSearch}
+                className="px-3 py-1.5 rounded-lg text-xs font-black bg-teal-600 hover:bg-teal-700 text-white transition-all cursor-pointer shrink-0 shadow-xs active:scale-95"
+              >
+                Tra Cứu
+              </button>
+            </div>
+          </div>
+
+          {/* Danh sách 12 con giáp (Lưới 2 cột) hoặc Chi tiết tương hợp */}
+          <div className="flex-1 min-h-0 overflow-y-auto glass-scrollbar pr-0.5 pt-2">
+            {!hasSearched || !currentZodiac ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                {filteredZodiacList.map((item) => {
+                  const theme = getZodiacTheme(item.tier);
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedZodiacId(item.id);
+                        setHasSearched(true);
+                      }}
+                      className={`p-2 rounded-lg flex items-center justify-between text-left transition-all duration-200 cursor-pointer border ${theme.bgUnselected} hover:brightness-105 hover:border-teal-400/50 hover:shadow-xs active:scale-[0.99]`}
+                    >
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-base leading-none shrink-0">
+                          {item.icon}
+                        </span>
+                        <span className="text-[11px] font-bold text-slate-900 dark:text-white truncate">
+                          Tuổi {item.nameVi} ({item.animalVi})
+                        </span>
+                      </div>
+                      <span
+                        className={`text-[9px] font-mono font-black px-1.5 py-0.5 rounded-xs shrink-0 ${theme.badge}`}
+                      >
+                        {item.score.split(' ')[0]}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              (() => {
+                const activeTheme = getZodiacTheme(currentZodiac.tier);
+                return (
+                  <div className="w-full flex flex-col space-y-2 animate-fadeIn">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setHasSearched(false);
+                        setSelectedZodiacId(null);
+                      }}
+                      className="w-full py-1.5 px-2.5 rounded-lg border border-teal-300/80 dark:border-teal-700/80 bg-teal-50 dark:bg-teal-950/40 hover:bg-teal-100 text-teal-800 dark:text-teal-200 text-[10.5px] font-bold flex items-center justify-between transition cursor-pointer shrink-0"
+                    >
+                      <span>← Danh sách 12 con giáp</span>
+                      <span className="text-[9px] opacity-80">Đổi tuổi khác</span>
+                    </button>
+
+                    <div
+                      className={`p-2.5 rounded-xl bg-gradient-to-br ${activeTheme.gradientBox} border space-y-2 text-xs shrink-0`}
+                    >
+                      <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-slate-200/50 dark:border-slate-800/60">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="text-lg shrink-0">{currentZodiac.icon}</span>
+                          <div className="min-w-0">
+                            <h4 className="text-xs font-black text-slate-900 dark:text-white truncate">
+                              Tuổi {currentZodiac.nameVi} ({currentZodiac.animalVi})
+                            </h4>
+                            <span className="text-[9.5px] font-semibold text-slate-600 dark:text-slate-300 block truncate">
+                              {currentZodiac.relationshipVi}
+                            </span>
+                          </div>
+                        </div>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[9px] font-black shrink-0 ${activeTheme.badge}`}
+                        >
+                          {currentZodiac.score}
+                        </span>
+                      </div>
+
+                      <div className="space-y-1.5 text-[10px]">
+                        <div className="p-1.5 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50">
+                          <span className="font-bold text-slate-700 dark:text-slate-300 block">
+                            📅 Năm sinh:
+                          </span>
+                          <span className="text-slate-900 dark:text-white font-medium">
+                            {currentZodiac.years}
+                          </span>
+                        </div>
+                        <div className="p-1.5 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50">
+                          <span className="font-bold text-slate-700 dark:text-slate-300 block">
+                            🏢 Môi trường hợp tác:
+                          </span>
+                          <span className="text-slate-900 dark:text-white font-medium">
+                            {currentZodiac.workplaceFitVi}
+                          </span>
+                        </div>
+                        <div className="p-1.5 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50">
+                          <span className="font-bold text-slate-700 dark:text-slate-300 block">
+                            🧭 Hướng bàn phong thủy:
+                          </span>
+                          <span className="text-slate-900 dark:text-white font-medium">
+                            {currentZodiac.deskDirectionVi}
+                          </span>
+                        </div>
+                        <div className={`p-1.5 rounded-md ${activeTheme.accentBg} border`}>
+                          <span className={`font-bold ${activeTheme.textColor} block mb-0.5`}>
+                            💡 Lời khuyên làm việc:
+                          </span>
+                          <p className="text-slate-800 dark:text-slate-200 leading-snug">
+                            {currentZodiac.workplaceAdviceVi}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()
+            )}
+          </div>
         </div>
+
+        {/* Khối 6 Thẻ Triết Lý Hành Động */}
+        <div className="lg:col-span-7 h-full min-h-0 overflow-y-auto glass-scrollbar pr-0.5 flex flex-col justify-between">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full h-full items-stretch">
+            {ACTION_PHILOSOPHY_CARDS.map((card, idx) => (
+              <div
+                key={card.id}
+                className="rounded-xl p-3 bg-white dark:bg-slate-900/90 border border-amber-200/90 dark:border-amber-500/25 shadow-2xs hover:shadow-md hover:border-amber-400 transition-all flex flex-col justify-between text-left gap-1.5"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between pb-1 border-b border-black/5 dark:border-white/5">
+                    <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                      <Award className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <h4 className="text-xs font-black font-play text-amber-600 dark:text-amber-400 leading-snug">
+                        {formatCardTitle(card.title)}
+                      </h4>
+                    </div>
+                    <span className="text-[9px] font-mono font-black px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40">
+                      0{idx + 1}
+                    </span>
+                  </div>
+                  <p className="text-[10.5px] text-slate-600 dark:text-slate-300 leading-relaxed pt-0.5">
+                    {card.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 
@@ -763,13 +990,12 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
       id="tuvi"
       className="relative w-full h-full flex-1 flex flex-col justify-between items-stretch font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-hidden max-w-7xl mx-auto gap-3"
     >
-      {/* 2. CHẾ ĐỘ 2 CỘT CÂN BẰNG CHIỀU CAO (NẰM GỌN TRONG THẺ CHÍNH) */}
+      {/* KHUNG SLIDE TOÀN MÀN HÌNH TRONG THẺ CHÍNH */}
       <div
         id="info-card-tuvi"
-        className="w-full flex-1 min-h-0 flex flex-col lg:flex-row gap-3.5 sm:gap-4 items-stretch relative z-10"
+        className="w-full flex-1 min-h-0 flex flex-col items-stretch relative z-10"
       >
-        {/* CỘT TRÁI (78%): CHỨA SLIDE NỘI DUNG VỚI CHIỀU CAO ĐỒNG NHẤT */}
-        <div className="w-full lg:flex-1 flex flex-col min-w-0 relative h-full">
+        <div className="w-full flex-1 flex flex-col min-w-0 relative h-full">
           {/* Nút Prev nổi bên trái */}
           <button
             type="button"
@@ -812,201 +1038,6 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
             {currentSlide === 1 && renderSection2Management()}
             {currentSlide === 2 && renderSection3WorkAdvantages()}
             {currentSlide === 3 && renderSection4Philosophy()}
-          </div>
-        </div>
-
-        {/* CỘT PHẢI: CÔNG CỤ HỢP VIỆC - CHIỀU CAO BẰNG CỘT TRÁI & NẰM GỌN TRONG THẺ CHÍNH */}
-        <div className="w-full lg:w-[280px] xl:w-[310px] shrink-0 flex flex-col min-w-0 h-full">
-          <div
-            id="tuvi-tool-zodiac"
-            className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-teal-200/90 dark:border-teal-500/30 rounded-2xl p-3 sm:p-3.5 shadow-sm backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
-          >
-            {/* Header: Đổi tên thành "Công Cụ Hợp Việc" theo yêu cầu */}
-            <div className="flex items-center justify-between pb-2 border-b border-teal-200/50 dark:border-teal-800/50 shrink-0">
-              <div className="flex items-center gap-1.5 text-teal-600 dark:text-teal-400">
-                <Users className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0" />
-                <h3 className="text-xs sm:text-sm font-black font-play text-teal-600 dark:text-teal-400">
-                  Công Cụ Hợp Việc
-                </h3>
-              </div>
-              {hasSearched && currentZodiac && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setHasSearched(false);
-                    setSelectedZodiacId(null);
-                  }}
-                  className="px-2 py-0.5 rounded-md text-[9px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/50 border border-teal-200 dark:border-teal-800 hover:bg-teal-100 transition flex items-center gap-1 cursor-pointer"
-                  title="Quay lại danh sách 12 con giáp"
-                >
-                  <span>12 Con giáp</span>
-                </button>
-              )}
-            </div>
-
-            {/* Ô tìm kiếm năm sinh và bộ lọc (luôn hiển thị trên đầu) */}
-            <div className="pt-2 shrink-0 pb-1.5 space-y-1">
-              <div className="flex items-center gap-1.5 w-full">
-                <div className="relative flex-1">
-                  <input
-                    type="number"
-                    placeholder="Nhập năm sinh (vd: 1992)..."
-                    value={searchYearInput}
-                    onChange={(e) => setSearchYearInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleYearSearch()}
-                    className="w-full pl-3 pr-7 py-1 rounded-lg text-[10.5px] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-teal-500 font-semibold"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const order = ['all', 'best', 'support', 'caution'];
-                      const nextIdx = (order.indexOf(zodiacFilterTier) + 1) % order.length;
-                      const nextTier = order[nextIdx];
-                      setZodiacFilterTier(nextTier);
-                      showToast(
-                        `Đã lọc: ${
-                          nextTier === 'all'
-                            ? 'Tất cả 12 Giáp'
-                            : nextTier === 'best'
-                            ? 'Tam / Lục Hợp'
-                            : nextTier === 'support'
-                            ? 'Tương Trợ'
-                            : 'Tránh Xung'
-                        }`
-                      );
-                    }}
-                    title={`Lọc: ${zodiacFilterTier} (Click để đổi)`}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-teal-600 dark:text-teal-400 hover:text-teal-700 cursor-pointer"
-                  >
-                    <WebIcon name="filter" className="w-3 h-3" />
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleYearSearch}
-                  className="px-2.5 py-1 rounded-lg text-[10.5px] font-black bg-teal-600 hover:bg-teal-700 text-white transition-all cursor-pointer shrink-0 shadow-xs active:scale-95"
-                >
-                  Tra
-                </button>
-              </div>
-            </div>
-
-            {/* VÙNG CUỘN NỘI DUNG 12 CON GIÁP HOẶC CHI TIẾT TƯƠNG HỢP */}
-            <div className="flex-1 min-h-0 overflow-y-auto glass-scrollbar pr-0.5 pt-1">
-              {!hasSearched || !currentZodiac ? (
-                <div className="w-full space-y-1">
-                  <div className="grid grid-cols-1 gap-1">
-                    {filteredZodiacList.map((item) => {
-                      const theme = getZodiacTheme(item.tier);
-                      return (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => {
-                            setSelectedZodiacId(item.id);
-                            setHasSearched(true);
-                          }}
-                          className={`p-1.5 px-2 rounded-lg flex items-center justify-between text-left transition-all duration-200 cursor-pointer border ${theme.bgUnselected} hover:brightness-105 hover:border-teal-400/50 hover:shadow-xs active:scale-[0.99]`}
-                        >
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className="text-base leading-none shrink-0">
-                              {item.icon}
-                            </span>
-                            <span className="text-[10.5px] font-bold text-slate-900 dark:text-white truncate">
-                              Tuổi {item.nameVi} ({item.animalVi})
-                            </span>
-                          </div>
-                          <span
-                            className={`text-[8.5px] font-mono font-black px-1.5 py-0.2 rounded-xs shrink-0 ${theme.badge}`}
-                          >
-                            {item.score.split(' ')[0]}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : (
-                (() => {
-                  const activeTheme = getZodiacTheme(currentZodiac.tier);
-                  return (
-                    <div className="w-full flex flex-col space-y-2 animate-fadeIn">
-                      {/* Nút quay lại danh sách */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setHasSearched(false);
-                          setSelectedZodiacId(null);
-                        }}
-                        className="w-full py-1.5 px-2 rounded-lg border border-teal-300/80 dark:border-teal-700/80 bg-teal-50 dark:bg-teal-950/40 hover:bg-teal-100 text-teal-800 dark:text-teal-200 text-[10px] font-bold flex items-center justify-between transition cursor-pointer shrink-0"
-                      >
-                        <span>← Danh sách 12 con giáp</span>
-                        <span className="text-[8.5px] opacity-80">Đổi tuổi</span>
-                      </button>
-
-                      {/* Khối chi tiết con giáp */}
-                      <div
-                        className={`p-2.5 rounded-xl bg-gradient-to-br ${activeTheme.gradientBox} border space-y-2 text-xs shrink-0`}
-                      >
-                        <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-slate-200/50 dark:border-slate-800/60">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="text-lg shrink-0">{currentZodiac.icon}</span>
-                            <div className="min-w-0">
-                              <h4 className="text-[11px] font-black text-slate-900 dark:text-white truncate">
-                                Tuổi {currentZodiac.nameVi} ({currentZodiac.animalVi})
-                              </h4>
-                              <span className="text-[9px] font-semibold text-slate-600 dark:text-slate-300 block truncate">
-                                {currentZodiac.relationshipVi}
-                              </span>
-                            </div>
-                          </div>
-                          <span
-                            className={`px-1.5 py-0.5 rounded-full text-[8.5px] font-black shrink-0 ${activeTheme.badge}`}
-                          >
-                            {currentZodiac.score}
-                          </span>
-                        </div>
-
-                        <div className="space-y-1 text-[9.5px]">
-                          <div className="p-1.5 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50">
-                            <span className="font-bold text-slate-700 dark:text-slate-300 block">
-                              📅 Năm sinh:
-                            </span>
-                            <span className="text-slate-900 dark:text-white font-medium">
-                              {currentZodiac.years}
-                            </span>
-                          </div>
-                          <div className="p-1.5 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50">
-                            <span className="font-bold text-slate-700 dark:text-slate-300 block">
-                              🏢 Môi trường hợp tác:
-                            </span>
-                            <span className="text-slate-900 dark:text-white font-medium">
-                              {currentZodiac.workplaceFitVi}
-                            </span>
-                          </div>
-                          <div className="p-1.5 rounded-md bg-white/80 dark:bg-slate-900/80 border border-slate-200/50">
-                            <span className="font-bold text-slate-700 dark:text-slate-300 block">
-                              🧭 Hướng bàn phong thủy:
-                            </span>
-                            <span className="text-slate-900 dark:text-white font-medium">
-                              {currentZodiac.deskDirectionVi}
-                            </span>
-                          </div>
-                          <div className={`p-1.5 rounded-md ${activeTheme.accentBg} border`}>
-                            <span className={`font-bold ${activeTheme.textColor} block mb-0.5`}>
-                              💡 Lời khuyên làm việc:
-                            </span>
-                            <p className="text-slate-800 dark:text-slate-200 leading-snug">
-                              {currentZodiac.workplaceAdviceVi}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })()
-              )}
-            </div>
           </div>
         </div>
       </div>

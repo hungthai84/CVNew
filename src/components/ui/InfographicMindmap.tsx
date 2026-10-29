@@ -279,7 +279,7 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
     <div
       ref={containerRef}
       className={cn(
-        'relative w-full h-[650px] sm:h-[720px] rounded-3xl border overflow-hidden select-none transition-all duration-300 flex flex-col',
+        'relative w-full h-full flex-1 min-h-0 rounded-2xl border overflow-hidden select-none transition-all duration-300 flex flex-col justify-between',
         isDark
           ? 'bg-gradient-to-b from-slate-950/90 via-slate-900/80 to-slate-950/95 border-slate-800/80 shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
           : 'bg-gradient-to-b from-white/95 via-sky-50/40 to-slate-50/90 border-slate-200/90 shadow-[0_12px_40px_rgba(100,116,139,0.12)]'
@@ -310,10 +310,10 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
         }}
       />
 
-      {/* 2. FLOATING HUD TOOLBAR (Điều khiển Zoom / Reset / Lọc năng lực / Xuất ảnh) */}
-      <div className="absolute top-3 sm:top-4 left-3 sm:left-4 right-3 sm:right-4 z-30 flex flex-wrap items-center justify-between gap-2.5 pointer-events-none">
+      {/* 2. FLOATING HUD TOOLBAR (Điều khiển Zoom / Reset) */}
+      <div className="absolute top-2.5 sm:top-3 left-2.5 sm:left-3.5 right-2.5 sm:right-3.5 z-30 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
         {/* Left: Nhãn chế độ Infographic */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border backdrop-blur-xl pointer-events-auto shadow-sm bg-white/85 dark:bg-slate-900/85 border-slate-200/80 dark:border-slate-800">
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full border backdrop-blur-xl pointer-events-auto shadow-sm bg-white/85 dark:bg-slate-900/85 border-slate-200/80 dark:border-slate-800">
           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span className="text-xs font-semibold tracking-wide text-slate-700 dark:text-slate-200">
             Sơ đồ tư duy
@@ -323,17 +323,14 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
           </span>
         </div>
 
-
-
-        {/* Right: Zoom Controls & YÊU CẦU 3 — Nút Xuất Ảnh Sơ Đồ */}
+        {/* Right: Zoom Controls */}
         <div className="flex items-center gap-2 pointer-events-auto">
-          {/* Phím Zoom In / Out / Reset */}
           <div className="hidden sm:flex items-center gap-1 p-1 rounded-full border backdrop-blur-xl bg-white/85 dark:bg-slate-900/85 border-slate-200/80 dark:border-slate-800 shadow-sm">
             <button
               type="button"
               onClick={() => handleZoom(-0.1)}
               title="Thu nhỏ"
-              className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+              className="w-6.5 h-6.5 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
@@ -341,7 +338,7 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
               type="button"
               onClick={handleResetZoom}
               title="Khôi phục chuẩn 100%"
-              className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+              className="w-6.5 h-6.5 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
@@ -349,21 +346,20 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
               type="button"
               onClick={() => handleZoom(0.1)}
               title="Phóng to"
-              className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+              className="w-6.5 h-6.5 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
           </div>
-
         </div>
       </div>
 
-      {/* 3. VÙNG HIỂN THỊ MINDMAP (CANVAS VỚI ZOOM / PAN & SVG CONNECTOR PARTICLES) */}
-      <div className="relative flex-1 w-full overflow-y-auto overflow-x-hidden p-4 sm:p-8 flex items-center justify-center custom-scrollbar">
+      {/* 3. VÙNG HIỂN THỊ MINDMAP FULL CHIỀU RỘNG & CHIỀU CAO */}
+      <div className="relative flex-1 min-h-0 w-full h-full overflow-y-auto md:overflow-hidden overflow-x-hidden px-2.5 sm:px-3.5 pt-11 pb-2 flex items-stretch justify-between custom-scrollbar">
         <motion.div
           animate={{ scale: zoomLevel }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="relative w-full max-w-6xl mx-auto my-auto flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-12 py-10"
+          className="relative w-full h-full flex-1 min-h-0 flex flex-col md:flex-row items-stretch justify-between gap-3 sm:gap-6 lg:gap-8"
         >
           {/* YÊU CẦU 1: SVG CONNECTOR OVERLAY & ANIMATED ENERGY PARTICLE STREAM */}
           <div className="hidden md:block absolute inset-0 pointer-events-none z-0">
@@ -389,7 +385,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
 
                 return (
                   <g key={`left-stream-${card.id}`}>
-                    {/* Đường ray tĩnh đứt khúc */}
                     <path
                       d={pathD}
                       fill="none"
@@ -400,7 +395,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                       className="transition-all duration-300"
                     />
 
-                    {/* Hào quang phát sáng khi hover */}
                     {isHovered && (
                       <path
                         d={pathD}
@@ -412,7 +406,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                       />
                     )}
 
-                    {/* Hạt photon ánh sáng chuyển động dọc theo đường dẫn */}
                     <circle
                       r={isHovered ? 5 : 3.5}
                       fill={isHovered ? '#ffffff' : card.themeColor}
@@ -425,7 +418,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                       />
                     </circle>
 
-                    {/* Hạt photon thứ 2 lệch pha */}
                     <circle
                       r={isHovered ? 3.5 : 2.5}
                       fill={card.themeColor}
@@ -450,7 +442,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
 
                 return (
                   <g key={`right-stream-${card.id}`}>
-                    {/* Đường ray tĩnh đứt khúc */}
                     <path
                       d={pathD}
                       fill="none"
@@ -461,7 +452,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                       className="transition-all duration-300"
                     />
 
-                    {/* Hào quang phát sáng khi hover */}
                     {isHovered && (
                       <path
                         d={pathD}
@@ -473,7 +463,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                       />
                     )}
 
-                    {/* Hạt photon ánh sáng chuyển động dọc theo đường dẫn */}
                     <circle
                       r={isHovered ? 5 : 3.5}
                       fill={isHovered ? '#ffffff' : card.themeColor}
@@ -486,7 +475,6 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                       />
                     </circle>
 
-                    {/* Hạt photon thứ 2 lệch pha */}
                     <circle
                       r={isHovered ? 3.5 : 2.5}
                       fill={card.themeColor}
@@ -504,45 +492,44 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                 );
               })}
 
-              {/* Cổng xuất phát năng lượng ở Đỉnh TOP hình tròn */}
               <g className="transition-transform duration-300">
-                <circle cx="500" cy="220" r="7" fill={isDark ? '#0284c7' : '#0284c7'} opacity="0.95" />
+                <circle cx="500" cy="220" r="7" fill="#0284c7" opacity="0.95" />
                 <circle cx="500" cy="220" r="3" fill="#ffffff" />
                 <circle cx="500" cy="220" r="11" fill="none" stroke={isDark ? '#38bdf8' : '#0284c7'} strokeWidth="1.5" opacity="0.7" strokeDasharray="3,3" />
               </g>
 
-              {/* Cổng xuất phát năng lượng ở GIỮA BÊN TRÁI hình tròn */}
               <g className="transition-transform duration-300">
-                <circle cx="420" cy="300" r="7" fill={isDark ? '#0284c7' : '#0284c7'} opacity="0.95" />
+                <circle cx="420" cy="300" r="7" fill="#0284c7" opacity="0.95" />
                 <circle cx="420" cy="300" r="3" fill="#ffffff" />
                 <circle cx="420" cy="300" r="11" fill="none" stroke={isDark ? '#38bdf8' : '#0284c7'} strokeWidth="1.5" opacity="0.7" strokeDasharray="3,3" />
               </g>
 
-              {/* Cổng xuất phát năng lượng ở GIỮA BÊN PHẢI hình tròn */}
               <g className="transition-transform duration-300">
-                <circle cx="580" cy="300" r="7" fill={isDark ? '#0284c7' : '#0284c7'} opacity="0.95" />
+                <circle cx="580" cy="300" r="7" fill="#0284c7" opacity="0.95" />
                 <circle cx="580" cy="300" r="3" fill="#ffffff" />
                 <circle cx="580" cy="300" r="11" fill="none" stroke={isDark ? '#38bdf8' : '#0284c7'} strokeWidth="1.5" opacity="0.7" strokeDasharray="3,3" />
               </g>
 
-              {/* Cổng xuất phát năng lượng ở Đáy BOT hình tròn */}
               <g className="transition-transform duration-300">
-                <circle cx="500" cy="380" r="7" fill={isDark ? '#0284c7' : '#0284c7'} opacity="0.95" />
+                <circle cx="500" cy="380" r="7" fill="#0284c7" opacity="0.95" />
                 <circle cx="500" cy="380" r="3" fill="#ffffff" />
                 <circle cx="500" cy="380" r="11" fill="none" stroke={isDark ? '#38bdf8' : '#0284c7'} strokeWidth="1.5" opacity="0.7" strokeDasharray="3,3" />
               </g>
             </svg>
           </div>
 
-          {/* CÁNH TRÁI: 3 thẻ (Hàng 1, Hàng 2, Hàng 3) - Kích thước bằng nhau, viền đứt nét tiệp màu line */}
-          <div className="flex-1 w-full flex flex-col gap-5 sm:gap-7 z-10">
+          {/* CÁNH TRÁI: 3 thẻ — Full chiều cao & chiều rộng, danh sách kỹ năng 2 cột 2 hàng */}
+          <div className="flex-1 w-full h-full min-h-0 flex flex-col justify-between gap-2.5 sm:gap-3 z-10">
             {leftBranches.map((card, idx) => {
               const isSelected = selectedBranchId === card.id;
               const hasAudio = Boolean(audioSummaries[card.id]);
               const isPlayingAudio = playingAudioId === card.id;
               const cardOrder = idx === 0 ? '01' : idx === 1 ? '02' : '03';
-
-              const isCardDimmed = false;
+              const displayPills = card.details.slice(0, 4).map((d) => ({
+                name: d.title,
+                score: `${d.percent}%`,
+                desc: d.desc,
+              }));
 
               return (
                 <motion.div
@@ -552,10 +539,9 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                   onMouseLeave={() => setHoveredNodeId(null)}
                   onClick={() => setSelectedBranchId(isSelected ? null : card.id)}
                   className={cn(
-                    'group relative p-3.5 sm:p-4 rounded-2xl border backdrop-blur-xl transition-all duration-300 cursor-pointer w-full h-[180px] min-h-[180px] max-h-[180px] flex flex-col justify-between overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.06)] hover:-translate-y-1 hover:shadow-lg',
+                    'group relative p-2.5 sm:p-3 rounded-2xl border backdrop-blur-xl transition-all duration-300 cursor-pointer w-full h-full flex-1 min-h-0 flex flex-col justify-between overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 hover:shadow-lg',
                     isSelected && 'ring-2 ring-offset-2 dark:ring-offset-slate-950',
-                    isSelected && isDark && 'shadow-[0_0_20px_rgba(56,189,248,0.25)]',
-                    isCardDimmed && 'opacity-40 grayscale-[40%]'
+                    isSelected && isDark && 'shadow-[0_0_20px_rgba(56,189,248,0.25)]'
                   )}
                   style={{
                     background: isDark
@@ -567,8 +553,8 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                       : `0 10px 25px -5px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.85)`,
                   }}
                 >
-                  {/* Nhãn Khung Hợp Nhất kèm Số thứ tự, Icon & Tên kỹ năng */}
-                  <div className="flex items-center justify-between gap-2 mb-1.5 shrink-0">
+                  {/* Header: Số thứ tự, Icon & Tên kỹ năng */}
+                  <div className="flex items-center justify-between gap-2 pb-1 shrink-0">
                     <div className="flex items-center gap-2 min-w-0">
                       <span
                         className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-mono font-bold shrink-0 shadow-2xs"
@@ -580,20 +566,20 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                         <img
                           src={SKILL_ILLUSTRATIONS[card.id]}
                           alt={card.title}
-                          className="w-7 h-7 sm:w-8 sm:h-8 object-contain drop-shadow-md shrink-0 pointer-events-none select-none"
+                          className="w-6 h-6 sm:w-7 sm:h-7 object-contain drop-shadow-md shrink-0 pointer-events-none select-none"
                           loading="lazy"
                         />
                       )}
                       <div
-                        className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border backdrop-blur-md"
+                        className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border backdrop-blur-md min-w-0"
                         style={{
                           backgroundColor: isDark ? `${card.themeColor}20` : `${card.themeColor}12`,
                           borderColor: isDark ? `${card.themeColor}50` : `${card.themeColor}35`,
                         }}
                       >
-                        <span style={{ color: card.themeColor }}>{getBranchIcon(card.id, 'w-3.5 h-3.5')}</span>
+                        <span style={{ color: card.themeColor }}>{getBranchIcon(card.id, 'w-3.5 h-3.5 shrink-0')}</span>
                         <span
-                          className="text-[17px] sm:text-[18.5px] lg:text-[19.5px] font-black font-play leading-tight tracking-tight truncate"
+                          className="text-[14px] sm:text-[15.5px] lg:text-[16.5px] font-black font-play leading-tight tracking-tight truncate"
                           style={{ color: card.themeColor }}
                         >
                           {formatCardTitle(card.title)}
@@ -641,54 +627,54 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                   </div>
 
                   {/* Mô tả súc tích của nhánh */}
-                  <p className="text-[11.5px] text-slate-600 dark:text-slate-300 line-clamp-1 leading-relaxed mb-2 shrink-0">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 line-clamp-1 leading-snug mb-1.5 shrink-0">
                     {card.desc}
                   </p>
 
-                  {/* Danh sách kỹ năng: Có số thứ tự, icon, tên kỹ năng và % điểm */}
-                  <div className="flex flex-wrap items-center gap-1.5 overflow-hidden">
-                    {card.pills.slice(0, 4).map((pill, pIdx) => {
-                      return (
-                        <button
-                          key={pIdx}
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            SoundEngine.playTap();
-                            setSelectedSkillForProjects({
-                              skillName: pill.name,
-                              score: pill.score,
-                              groupTitle: card.title,
-                              themeColor: card.themeColor,
-                              desc: pill.desc,
-                              categoryFilter: card.categoryFilter,
-                            });
-                          }}
-                          className={cn(
-                            'inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-medium border transition-all duration-200 cursor-pointer',
-                            isDark
-                              ? 'bg-slate-800/80 border-slate-700/80 text-slate-200 hover:border-slate-600'
-                              : 'bg-slate-50 border-slate-200/90 text-slate-800 hover:border-slate-300'
-                          )}
-                          title={`Bấm để xem các dự án thực tế đã áp dụng: ${pill.name}`}
-                        >
-                          <span className="text-[9px] font-mono font-bold text-slate-400 dark:text-slate-500">
+                  {/* Danh sách kỹ năng: Hiển thị 2 cột 2 hàng full chiều rộng & chiều cao */}
+                  <div className="grid grid-cols-2 grid-rows-2 gap-1.5 w-full flex-1 min-h-0 items-stretch overflow-hidden">
+                    {displayPills.map((pill, pIdx) => (
+                      <button
+                        key={pIdx}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          SoundEngine.playTap();
+                          setSelectedSkillForProjects({
+                            skillName: pill.name,
+                            score: pill.score,
+                            groupTitle: card.title,
+                            themeColor: card.themeColor,
+                            desc: pill.desc,
+                            categoryFilter: card.categoryFilter,
+                          });
+                        }}
+                        className={cn(
+                          'w-full h-full flex items-center justify-between gap-1 px-2 py-1 rounded-lg text-[10.5px] font-semibold border transition-all duration-200 cursor-pointer min-w-0',
+                          isDark
+                            ? 'bg-slate-800/85 border-slate-700/80 text-slate-200 hover:border-slate-500'
+                            : 'bg-white/85 border-slate-200/90 text-slate-800 hover:border-slate-300 shadow-2xs'
+                        )}
+                        title={`Bấm để xem các dự án thực tế đã áp dụng: ${pill.name}`}
+                      >
+                        <div className="flex items-center gap-1 min-w-0 flex-1">
+                          <span className="text-[9px] font-mono font-bold text-slate-400 dark:text-slate-500 shrink-0">
                             {pIdx + 1}.
                           </span>
                           <Zap className="w-2.5 h-2.5 shrink-0" style={{ color: card.themeColor }} />
-                          <span className="truncate max-w-[120px]">{pill.name}</span>
-                          <span
-                            className="font-mono text-[9.5px] font-bold px-1 rounded shrink-0"
-                            style={{
-                              color: card.themeColor,
-                              backgroundColor: isDark ? `${card.themeColor}25` : `${card.themeColor}15`,
-                            }}
-                          >
-                            {pill.score}
-                          </span>
-                        </button>
-                      );
-                    })}
+                          <span className="truncate text-left">{pill.name}</span>
+                        </div>
+                        <span
+                          className="font-mono text-[9.5px] font-bold px-1.5 py-0.2 rounded shrink-0"
+                          style={{
+                            color: card.themeColor,
+                            backgroundColor: isDark ? `${card.themeColor}25` : `${card.themeColor}15`,
+                          }}
+                        >
+                          {pill.score}
+                        </span>
+                      </button>
+                    ))}
                   </div>
 
                   {/* Thanh tiến trình hào quang phát sáng ở cạnh dưới card */}
@@ -703,38 +689,34 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
             })}
           </div>
 
-          {/* TRUNG TÂM: CENTRAL HUB CORE (HẠT NHÂN QUẢN TRỊ ĐIỀU HÀNH) */}
-          <div className="relative shrink-0 flex flex-col items-center justify-center my-6 md:my-0 z-20">
-            {/* Vòng hào quang xung năng lượng xoay nhẹ */}
+          {/* TRUNG TÂM: CENTRAL HUB CORE (HẠT NHÂN QUẢN TRỊ ĐIỀNH HÀNH) */}
+          <div className="relative shrink-0 flex flex-col items-center justify-center my-4 md:my-0 z-20 self-center">
             <div
-              className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-full border border-dashed opacity-40 animate-spin"
+              className="absolute w-40 h-40 sm:w-48 sm:h-48 rounded-full border border-dashed opacity-40 animate-spin"
               style={{
                 borderColor: isDark ? 'rgba(56, 189, 248, 0.4)' : 'rgba(2, 132, 199, 0.35)',
                 animationDuration: '40s',
               }}
             />
             <div
-              className="absolute w-36 h-36 sm:w-44 sm:h-44 rounded-full border border-sky-400/20 opacity-30 animate-ping"
+              className="absolute w-32 h-32 sm:w-40 sm:h-40 rounded-full border border-sky-400/20 opacity-30 animate-ping"
               style={{ animationDuration: '6s' }}
             />
 
-            {/* Khối Cốt Lõi Trung Tâm */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               className={cn(
-                'relative w-36 h-36 sm:w-44 sm:h-44 rounded-full p-1 border shadow-xl flex flex-col items-center justify-center text-center backdrop-blur-2xl transition-all duration-300',
+                'relative w-32 h-32 sm:w-40 sm:h-40 rounded-full p-1 border shadow-xl flex flex-col items-center justify-center text-center backdrop-blur-2xl transition-all duration-300',
                 isDark
                   ? 'bg-slate-900/90 border-sky-400/40 shadow-[0_0_35px_rgba(56,189,248,0.25)]'
                   : 'bg-white/95 border-sky-500/30 shadow-[0_12px_35px_rgba(14,165,233,0.18)]'
               )}
             >
-              {/* Huy hiệu trung tâm */}
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md mb-1.5">
-                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md mb-1">
+                <Sparkles className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
               </div>
 
-              {/* Tên & Vị trí điều hành chuẩn */}
               <h4 className="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-slate-100 tracking-tight leading-tight px-2">
                 Kỹ Năng Cốt Lõi
               </h4>
@@ -742,23 +724,25 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                 Nguyễn Hùng Thái
               </p>
 
-              {/* Chỉ số kinh nghiệm */}
-              <div className="mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+              <div className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                 22+ Năm Vận Hành
               </div>
             </motion.div>
           </div>
 
-          {/* CÁNH PHẢI: 3 thẻ (Hàng 1, Hàng 2, Hàng 3) - Kích thước bằng nhau, viền đứt nét tiệp màu line */}
-          <div className="flex-1 w-full flex flex-col gap-5 sm:gap-7 z-10">
+          {/* CÁNH PHẢI: 3 thẻ — Full chiều cao & chiều rộng, danh sách kỹ năng 2 cột 2 hàng */}
+          <div className="flex-1 w-full h-full min-h-0 flex flex-col justify-between gap-2.5 sm:gap-3 z-10">
             {rightBranches.map((card, idx) => {
               const isSelected = selectedBranchId === card.id;
               const hasAudio = Boolean(audioSummaries[card.id]);
               const isPlayingAudio = playingAudioId === card.id;
               const cardOrder = idx === 0 ? '04' : idx === 1 ? '05' : '06';
-
-              const isCardDimmed = false;
+              const displayPills = card.details.slice(0, 4).map((d) => ({
+                name: d.title,
+                score: `${d.percent}%`,
+                desc: d.desc,
+              }));
 
               return (
                 <motion.div
@@ -768,21 +752,22 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                   onMouseLeave={() => setHoveredNodeId(null)}
                   onClick={() => setSelectedBranchId(isSelected ? null : card.id)}
                   className={cn(
-                    'group relative p-3.5 sm:p-4 rounded-2xl border-2 border-dashed backdrop-blur-xl transition-all duration-300 cursor-pointer shadow-sm w-full h-[180px] min-h-[180px] max-h-[180px] flex flex-col justify-between overflow-hidden',
-                    isDark
-                      ? 'bg-slate-900/85 hover:bg-slate-900'
-                      : 'bg-white/90 hover:bg-white',
+                    'group relative p-2.5 sm:p-3 rounded-2xl border backdrop-blur-xl transition-all duration-300 cursor-pointer w-full h-full flex-1 min-h-0 flex flex-col justify-between overflow-hidden shadow-[0_10px_25px_-5px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 hover:shadow-lg',
                     isSelected && 'ring-2 ring-offset-2 dark:ring-offset-slate-950',
-                    isSelected && isDark && 'shadow-[0_0_20px_rgba(56,189,248,0.25)]',
-                    isCardDimmed && 'opacity-40 grayscale-[40%]'
+                    isSelected && isDark && 'shadow-[0_0_20px_rgba(56,189,248,0.25)]'
                   )}
                   style={{
-                    borderColor: card.themeColor,
-                    borderStyle: 'dashed',
+                    background: isDark
+                      ? card.cardDarkBg || 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.85) 100%)'
+                      : card.cardBg,
+                    borderColor: isDark ? `${card.themeColor}55` : `${card.themeColor}40`,
+                    boxShadow: isDark
+                      ? `0 10px 25px -5px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1)`
+                      : `0 10px 25px -5px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.85)`,
                   }}
                 >
-                  {/* Nhãn Khung Hợp Nhất kèm Số thứ tự, Icon & Tên kỹ năng */}
-                  <div className="flex items-center justify-between gap-2 mb-1.5 shrink-0">
+                  {/* Header: Số thứ tự, Icon & Tên kỹ năng */}
+                  <div className="flex items-center justify-between gap-2 pb-1 shrink-0">
                     <div className="flex items-center gap-2 min-w-0">
                       <span
                         className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-mono font-bold shrink-0 shadow-2xs"
@@ -794,20 +779,20 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                         <img
                           src={SKILL_ILLUSTRATIONS[card.id]}
                           alt={card.title}
-                          className="w-7 h-7 sm:w-8 sm:h-8 object-contain drop-shadow-md shrink-0 pointer-events-none select-none"
+                          className="w-6 h-6 sm:w-7 sm:h-7 object-contain drop-shadow-md shrink-0 pointer-events-none select-none"
                           loading="lazy"
                         />
                       )}
                       <div
-                        className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border backdrop-blur-md"
+                        className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full border backdrop-blur-md min-w-0"
                         style={{
                           backgroundColor: isDark ? `${card.themeColor}20` : `${card.themeColor}12`,
                           borderColor: isDark ? `${card.themeColor}50` : `${card.themeColor}35`,
                         }}
                       >
-                        <span style={{ color: card.themeColor }}>{getBranchIcon(card.id, 'w-3.5 h-3.5')}</span>
+                        <span style={{ color: card.themeColor }}>{getBranchIcon(card.id, 'w-3.5 h-3.5 shrink-0')}</span>
                         <span
-                          className="text-xs font-bold tracking-tight truncate"
+                          className="text-[14px] sm:text-[15.5px] lg:text-[16.5px] font-black font-play leading-tight tracking-tight truncate"
                           style={{ color: card.themeColor }}
                         >
                           {formatCardTitle(card.title)}
@@ -855,54 +840,54 @@ export function InfographicMindmap<T extends MindmapCardData = MindmapCardData>(
                   </div>
 
                   {/* Mô tả súc tích của nhánh */}
-                  <p className="text-[11.5px] text-slate-600 dark:text-slate-300 line-clamp-1 leading-relaxed mb-2 shrink-0">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 line-clamp-1 leading-snug mb-1.5 shrink-0">
                     {card.desc}
                   </p>
 
-                  {/* Danh sách kỹ năng: Có số thứ tự, icon, tên kỹ năng và % điểm */}
-                  <div className="flex flex-wrap items-center gap-1.5 overflow-hidden">
-                    {card.pills.slice(0, 4).map((pill, pIdx) => {
-                      return (
-                        <button
-                          key={pIdx}
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            SoundEngine.playTap();
-                            setSelectedSkillForProjects({
-                              skillName: pill.name,
-                              score: pill.score,
-                              groupTitle: card.title,
-                              themeColor: card.themeColor,
-                              desc: pill.desc,
-                              categoryFilter: card.categoryFilter,
-                            });
-                          }}
-                          className={cn(
-                            'inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10.5px] font-medium border transition-all duration-200 cursor-pointer',
-                            isDark
-                              ? 'bg-slate-800/80 border-slate-700/80 text-slate-200 hover:border-slate-600'
-                              : 'bg-slate-50 border-slate-200/90 text-slate-800 hover:border-slate-300'
-                          )}
-                          title={`Bấm để xem các dự án thực tế đã áp dụng: ${pill.name}`}
-                        >
-                          <span className="text-[9px] font-mono font-bold text-slate-400 dark:text-slate-500">
+                  {/* Danh sách kỹ năng: Hiển thị 2 cột 2 hàng full chiều rộng & chiều cao */}
+                  <div className="grid grid-cols-2 grid-rows-2 gap-1.5 w-full flex-1 min-h-0 items-stretch overflow-hidden">
+                    {displayPills.map((pill, pIdx) => (
+                      <button
+                        key={pIdx}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          SoundEngine.playTap();
+                          setSelectedSkillForProjects({
+                            skillName: pill.name,
+                            score: pill.score,
+                            groupTitle: card.title,
+                            themeColor: card.themeColor,
+                            desc: pill.desc,
+                            categoryFilter: card.categoryFilter,
+                          });
+                        }}
+                        className={cn(
+                          'w-full h-full flex items-center justify-between gap-1 px-2 py-1 rounded-lg text-[10.5px] font-semibold border transition-all duration-200 cursor-pointer min-w-0',
+                          isDark
+                            ? 'bg-slate-800/85 border-slate-700/80 text-slate-200 hover:border-slate-500'
+                            : 'bg-white/85 border-slate-200/90 text-slate-800 hover:border-slate-300 shadow-2xs'
+                        )}
+                        title={`Bấm để xem các dự án thực tế đã áp dụng: ${pill.name}`}
+                      >
+                        <div className="flex items-center gap-1 min-w-0 flex-1">
+                          <span className="text-[9px] font-mono font-bold text-slate-400 dark:text-slate-500 shrink-0">
                             {pIdx + 1}.
                           </span>
                           <Zap className="w-2.5 h-2.5 shrink-0" style={{ color: card.themeColor }} />
-                          <span className="truncate max-w-[120px]">{pill.name}</span>
-                          <span
-                            className="font-mono text-[9.5px] font-bold px-1 rounded shrink-0"
-                            style={{
-                              color: card.themeColor,
-                              backgroundColor: isDark ? `${card.themeColor}25` : `${card.themeColor}15`,
-                            }}
-                          >
-                            {pill.score}
-                          </span>
-                        </button>
-                      );
-                    })}
+                          <span className="truncate text-left">{pill.name}</span>
+                        </div>
+                        <span
+                          className="font-mono text-[9.5px] font-bold px-1.5 py-0.2 rounded shrink-0"
+                          style={{
+                            color: card.themeColor,
+                            backgroundColor: isDark ? `${card.themeColor}25` : `${card.themeColor}15`,
+                          }}
+                        >
+                          {pill.score}
+                        </span>
+                      </button>
+                    ))}
                   </div>
 
                   {/* Thanh tiến trình hào quang phát sáng ở cạnh dưới card */}

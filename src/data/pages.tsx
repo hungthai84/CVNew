@@ -129,10 +129,9 @@ export const PAGES: PageMeta[] = [
     bgNormal: 'rgba(245, 232, 255, 0.55)',
     borderColor: 'rgba(192, 132, 252, 0.7)',
     iconSvg: (
-      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2 12h20" />
+      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 13h6" />
       </svg>
     ),
   },
@@ -147,10 +146,10 @@ export const PAGES: PageMeta[] = [
     bgNormal: 'rgba(255, 237, 213, 0.55)',
     borderColor: 'rgba(251, 146, 60, 0.7)',
     iconSvg: (
-      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2 12h20" />
+      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+        <polygon points="12 2 2 7 12 12 22 7 12 2" strokeLinecap="round" strokeLinejoin="round" />
+        <polyline points="2 12 12 17 22 12" strokeLinecap="round" strokeLinejoin="round" />
+        <polyline points="2 17 12 22 22 17" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     ),
   },
@@ -235,3 +234,4 @@ export const PAGES: PageMeta[] = [
     ),
   },
 ];
+

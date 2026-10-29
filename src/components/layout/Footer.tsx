@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { PageMeta, WeatherPreset, SiteTheme } from '@/types';
-import { THEME_LIST } from '@/data/themes';
 import { WeatherWidget } from './WeatherWidget';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
@@ -19,10 +18,16 @@ export interface FooterProps {
   onPrevPage: () => void;
   onNextPage: () => void;
   onSelectPage: (index: number) => void;
-  onSelectTheme?: (theme: SiteTheme) => void;
+  onSelectTheme?: (theme: SiteTheme, eventOrCoords?: any) => void;
   onOpenAiChat?: () => void;
   onOpenPagesCarousel?: () => void;
   onOpenNetworkDebug?: () => void;
+  isAutoSolarTheme?: boolean;
+  onToggleAutoSolarTheme?: (enabled?: boolean) => void;
+  glassBlurPx?: number;
+  onChangeGlassBlur?: (blurPx: number) => void;
+  customAccentHex?: string;
+  onChangeCustomAccent?: (hex: string) => void;
 }
 
 export const FONT_SCALE_OPTIONS = [
@@ -45,6 +50,12 @@ export const Footer: React.FC<FooterProps> = ({
   onOpenAiChat,
   onOpenPagesCarousel,
   onOpenNetworkDebug,
+  isAutoSolarTheme = false,
+  onToggleAutoSolarTheme,
+  glassBlurPx = 20,
+  onChangeGlassBlur,
+  customAccentHex = '#06b6d4',
+  onChangeCustomAccent,
 }) => {
   const { showToast } = useToast();
   const activePage = pages[currentPage] || pages[0];
@@ -357,13 +368,23 @@ export const Footer: React.FC<FooterProps> = ({
               <div
                 className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform duration-300 group-hover:scale-110"
                 style={{
-                  background: isDark ? 'rgba(52, 211, 153, 0.25)' : 'rgba(16, 185, 129, 0.2)',
-                  color: isDark ? '#a7f3d0' : '#047857',
+                  background: 'rgba(16, 185, 129, 0.2)',
+                  color: '#047857',
                 }}
               >
-                <span className="text-[17px] leading-none select-none">
-                  {language === 'en' ? '🇬🇧' : '🇻🇳'}
-                </span>
+                <svg
+                  className="w-[18px] h-[18px] stroke-[2.2] transition-transform duration-300 group-hover:rotate-12"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m5 8 6 6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m4 14 6-6 2-3" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2 5h12" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 2h1" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m22 22-5-10-5 10" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 18h6" />
+                </svg>
               </div>
               <div className="flex flex-col text-left leading-none">
                 <span
@@ -448,201 +469,7 @@ export const Footer: React.FC<FooterProps> = ({
 
 
 
-          {/* Tiện ích 3: Nút Giao Diện (Màu 4: Vàng Hổ Phách Amber Gold - zIndex: 30) */}
-          <div ref={themeMenuContainerRef} className="relative -ml-[64px] z-30 pointer-events-auto" style={{ zIndex: 30 }}>
-            <button
-              id="theme-toggle-footer-btn"
-              type="button"
-              onClick={() => {
-                SoundEngine.playTap();
-                setIsThemeMenuOpen((prev) => !prev);
-              }}
-              className={`footer-util-btn border cursor-pointer transition-all duration-300 ${
-                isDark
-                  ? 'border-amber-400/60 shadow-[0_0_14px_rgba(251,191,36,0.3)] hover:border-amber-300'
-                  : 'border-amber-300/90 shadow-[0_2px_10px_rgba(245,158,11,0.15)] hover:border-amber-400'
-              }`}
-              style={{
-                background: isDark
-                  ? 'linear-gradient(135deg, rgba(69, 26, 3, 0.92) 0%, rgba(120, 53, 15, 0.88) 100%)'
-                  : 'linear-gradient(135deg, rgba(254, 243, 199, 0.95) 0%, rgba(253, 230, 138, 0.9) 100%)',
-                color: isDark ? '#fde68a' : '#92400e',
-              }}
-              title="Nhấp để hiển thị danh sách giao diện cho chọn lựa"
-            >
-              <div
-                className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform duration-300 group-hover:rotate-12 icon-spring-bounce"
-                style={{
-                  background: isDark ? 'rgba(251, 191, 36, 0.25)' : 'rgba(245, 158, 11, 0.25)',
-                  color: isDark ? '#fde68a' : '#b45309',
-                }}
-              >
-                <WebIcon
-                  name={isDark ? 'moon' : 'sun'}
-                  className="w-[16px] h-[16px]"
-                  springBounce
-                />
-              </div>
-              <div className="flex flex-col text-left leading-none">
-                <span
-                  className="text-[11px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play flex items-center gap-1"
-                  style={{
-                    color: isDark ? '#fde68a' : '#92400e',
-                  }}
-                >
-                  {isDark ? 'Kính Tối Đa Sắc' : 'Kính Sáng Đa Sắc'}
-                </span>
-                <span
-                  className="text-[8.5px] font-semibold mt-1 opacity-80 select-none whitespace-nowrap flex items-center gap-0.5"
-                  style={{
-                    color: isDark ? '#fcd34d' : '#b45309',
-                  }}
-                >
-                  <span>{isDark ? 'Giao diện tối neon' : 'Giao diện sáng glass'}</span>
-                  <svg className={`w-2.5 h-2.5 transition-transform ${isThemeMenuOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </span>
-              </div>
-            </button>
 
-            {/* Popup Danh Sách Giao Diện Cho Chọn Lựa */}
-            {isThemeMenuOpen && (
-              <div
-                className={`absolute bottom-[calc(100%+14px)] right-0 w-[300px] sm:w-[320px] rounded-3xl backdrop-blur-2xl border shadow-2xl p-3 text-left z-[120] flex flex-col gap-2 font-play select-none animate-in fade-in zoom-in-95 duration-150 ${
-                  isDark
-                    ? 'bg-slate-900/98 border-cyan-400/50 text-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_25px_rgba(34,211,238,0.25)]'
-                    : 'bg-white/98 border-white/95 text-slate-800 shadow-[0_20px_50px_rgba(30,27,75,0.22),0_0_0_1px_rgba(255,255,255,0.9)]'
-                }`}
-                style={{
-                  boxShadow: isDark
-                    ? '0 20px 50px rgba(0, 0, 0, 0.85), 0 0 25px rgba(34, 211, 238, 0.25)'
-                    : '0 20px 50px rgba(30, 27, 75, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.9)',
-                }}
-              >
-                {/* Header Popup */}
-                <div
-                  className={`flex items-center justify-between pb-2 border-b px-1 ${
-                    isDark ? 'border-white/10' : 'border-slate-100'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                        isDark ? 'bg-cyan-950 text-cyan-300' : 'bg-amber-100 text-amber-700'
-                      }`}
-                    >
-                      <WebIcon name="palette" className="w-3.5 h-3.5" />
-                    </span>
-                    <span className={`text-xs font-black ${isDark ? 'text-white' : 'text-slate-800'}`}>
-                      Chọn Giao Diện
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsThemeMenuOpen(false)}
-                    className={`w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition ${
-                      isDark
-                        ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white'
-                        : 'bg-slate-100 hover:bg-slate-200 text-slate-500'
-                    }`}
-                  >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-
-                {/* Danh Sách Giao Diện */}
-                <div className="flex flex-col gap-1.5 py-0.5">
-                  {THEME_LIST.map((theme) => {
-                    const isActive = currentTheme === theme.id;
-                    const iconName = theme.id === 'light-glass' ? 'sun' : 'moon';
-
-                    return (
-                      <button
-                        key={theme.id}
-                        type="button"
-                        onClick={() => {
-                          SoundEngine.playTap();
-                          if (onSelectTheme) onSelectTheme(theme.id);
-                          setIsThemeMenuOpen(false);
-                          showToast(`Đã áp dụng giao diện: ${theme.fourWordName}`);
-                        }}
-                        className={`w-full p-2.5 rounded-2xl border text-left flex items-center justify-between gap-2.5 transition-all cursor-pointer ${
-                          isActive
-                            ? isDark
-                              ? 'bg-cyan-950/70 border-cyan-400/70 shadow-[0_0_12px_rgba(34,211,238,0.25)]'
-                              : 'bg-amber-50/90 border-amber-300 shadow-sm'
-                            : isDark
-                            ? 'bg-slate-800/60 hover:bg-slate-800 border-white/10 text-slate-300'
-                            : 'bg-slate-50/80 hover:bg-slate-100/90 border-slate-200/80 text-slate-700'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div
-                            className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-xs icon-spring-bounce ${
-                              isActive
-                                ? isDark
-                                  ? 'bg-cyan-500/30 text-cyan-300 ring-1 ring-cyan-400'
-                                  : 'bg-amber-200/80 text-amber-800 ring-1 ring-amber-400'
-                                : isDark
-                                ? 'bg-slate-700/80 text-slate-300'
-                                : 'bg-white text-slate-600 border border-slate-200'
-                            }`}
-                          >
-                            <WebIcon
-                              name={iconName}
-                              className="w-4 h-4"
-                              springBounce
-                            />
-                          </div>
-                          <div className="min-w-0 flex items-center gap-2">
-                            <span
-                              className={`text-xs font-black font-play truncate ${
-                                isActive
-                                  ? isDark
-                                    ? 'text-cyan-300'
-                                    : 'text-amber-900'
-                                  : isDark
-                                  ? 'text-slate-100'
-                                  : 'text-slate-800'
-                              }`}
-                            >
-                              {theme.fourWordName}
-                            </span>
-                            {isActive && (
-                              <span className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full ${
-                                isDark
-                                  ? 'bg-cyan-400/30 text-cyan-200'
-                                  : 'bg-amber-200 text-amber-900'
-                              }`}>
-                                Đang dùng
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {isActive && (
-                          <div
-                            className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
-                              isDark
-                                ? 'bg-cyan-400 text-slate-950 shadow-xs'
-                                : 'bg-amber-500 text-white shadow-xs'
-                            }`}
-                          >
-                            <svg className="w-3 h-3 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                            </svg>
-                          </div>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
 
           {/* Tiện ích 4: Avatar Hùng Thái biến đổi hình thái từ pill -> circle -> bay lên + Pure CSS Circle Menu (Màu 5: Xanh Chàm Hoàng Gia Royal Indigo) */}
           <div ref={contactContainerRef} className="avatar-circle-menu-container -ml-[64px] z-42">

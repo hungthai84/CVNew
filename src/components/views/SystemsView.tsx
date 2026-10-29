@@ -1272,7 +1272,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] items-stretch justify-start relative z-10 overflow-hidden">
         {/* VÙNG CHÍNH: LƯỚI 12 HỆ THỐNG C-LEVEL HOẶC BẢNG MA TRẬN SO SÁNH 12 PHẦN MỀM */}
         <div className="flex-1 min-h-0 flex flex-col h-full overflow-hidden">
-          {/* HÀNG 1: HEADER TIÊU ĐỀ THẺ HỆ THỐNG + LIVE HEALTH PULSE BADGE + CHUYỂN ĐỔI DẠNG THẺ / BẢNG MA TRẬN + MÔ PHỎNG LUỒNG DỮ LIỆU */}
+          {/* HÀNG 1: HEADER TIÊU ĐỀ THẺ HỆ THỐNG + CHUYỂN ĐỔI DẠNG THẺ + SƠ ĐỒ TỔNG */}
           <div className="flex flex-wrap items-center justify-between gap-2 pb-1.5 shrink-0 border-b border-slate-200/70 dark:border-white/10">
             <div className="flex items-center gap-2 min-w-0 flex-wrap">
               <WebIcon name="layers" className="w-5 h-5 text-sky-600 dark:text-cyan-400 stroke-[2.2] shrink-0" />
@@ -1282,28 +1282,10 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
               <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-50 dark:bg-cyan-500/20 text-indigo-700 dark:text-cyan-300 border border-indigo-200 dark:border-cyan-400/30 shrink-0">
                 {filteredSystems.length}/12
               </span>
-
-              {/* 5. Huy Hiệu Trạng Thái Vận Hành Trực Tuyến Thời Gian Thực (Live Health Pulse Badge) */}
-              <div
-                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10.5px] font-mono font-bold bg-emerald-500/12 dark:bg-emerald-500/18 text-emerald-700 dark:text-emerald-300 border border-emerald-400/45 dark:border-emerald-400/50 shadow-[0_0_12px_rgba(16,185,129,0.2)] shrink-0"
-                title="Trạng thái vận hành trực tuyến thời gian thực của toàn bộ hệ sinh thái 12 phân hệ"
-              >
-                <span className="relative flex h-2 w-2 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-85" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-                </span>
-                <span className="font-extrabold tracking-tight">Uptime 99.98%</span>
-                <span className="opacity-45">•</span>
-                <span className="inline-flex items-center gap-1 text-emerald-800 dark:text-emerald-200 font-black">
-                  <Users className="w-3 h-3 text-emerald-500 dark:text-emerald-400" />
-                  <span>{totalAgentsOnline.toLocaleString('en-US')} Agents Online</span>
-                </span>
-              </div>
             </div>
 
-            {/* Cụm nút chức năng góc phải: Chuyển đổi Chế độ Thẻ / Bảng Ma Trận + Nối Luồng Tương Tác + Sơ Đồ Tổng */}
+            {/* Cụm nút chức năng góc phải: Chuyển đổi Chế độ Thẻ + Sơ Đồ Tổng */}
             <div className="flex items-center gap-1.5 flex-wrap shrink-0">
-              {/* 4. Nút chuyển đổi Chế Độ Xem Thẻ / Bảng Ma Trận Tính Năng (Compact Comparison Matrix View) */}
               <div className="inline-flex items-center p-0.5 rounded-full bg-slate-200/75 dark:bg-slate-800/80 border border-slate-300/70 dark:border-white/15">
                 <button
                   type="button"
@@ -1336,86 +1318,6 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
             </div>
           </div>
 
-
-
-          {/* HÀNG 3 (KHI BẬT MÔ PHỎNG LUỒNG DỮ LIỆU TƯƠNG TÁC GIỮA 2 HỆ THỐNG): INTERACTIVE DATA FLOW CANVAS BAR */}
-          {isFlowCanvasActive && viewMode === 'grid' && (
-            <div className="mb-1.5 px-3 py-2 rounded-2xl bg-gradient-to-r from-sky-500/12 via-indigo-500/12 to-purple-500/12 dark:from-cyan-950/65 dark:via-indigo-950/65 dark:to-purple-950/65 border border-sky-400/45 dark:border-cyan-400/45 backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0 shadow-xs">
-              <div className="flex items-start sm:items-center gap-2 min-w-0 flex-1">
-                <span className="w-6 h-6 rounded-lg bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-sky-600 dark:text-cyan-300 shrink-0 mt-0.5 sm:mt-0">
-                  <ArrowLeftRight className="w-3.5 h-3.5 animate-pulse" />
-                </span>
-                {connectedFlowSystems ? (
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[11px] font-black font-play text-sky-700 dark:text-cyan-300">
-                        Luồng đồng bộ thời gian thực:
-                      </span>
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black bg-amber-500/20 text-amber-800 dark:text-amber-200 border border-amber-400/40">
-                        1. {connectedFlowSystems.sysA.abbr}
-                      </span>
-                      <span className="text-xs font-black text-sky-500 dark:text-cyan-400">⇄</span>
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black bg-indigo-500/20 text-indigo-800 dark:text-indigo-200 border border-indigo-400/40">
-                        2. {connectedFlowSystems.sysB.abbr}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-[9.5px] font-mono font-bold bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-400/35">
-                        {connectedFlowSystems.flowMeta.protocol} • {connectedFlowSystems.flowMeta.latency}
-                      </span>
-                    </div>
-                    <p className="text-[10.5px] text-slate-700 dark:text-slate-200 font-medium leading-snug mt-0.5 line-clamp-1">
-                      {connectedFlowSystems.flowMeta.payloadSummary}
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-[11px] font-semibold text-sky-800 dark:text-cyan-200">
-                    Hãy nhấp vào nút <strong className="font-mono">[Nối luồng]</strong> trên 2 thẻ hệ thống bất kỳ để vẽ đường truyền dữ liệu thời gian thực! (Đã chọn {flowPairIds.length}/2)
-                  </p>
-                )}
-              </div>
-
-              {/* Các cặp kết nối mẫu nhanh + Nút đóng */}
-              <div className="flex items-center gap-1 flex-wrap shrink-0">
-                {[
-                  { pair: ['crm', 'sdp'], label: 'CRM ⇄ SDP' },
-                  { pair: ['csc', 'crm'], label: 'CSC ⇄ CRM' },
-                  { pair: ['pos', 'erp'], label: 'POS ⇄ ERP' },
-                  { pair: ['ai', 'sdp'], label: 'AI ⇄ SDP' },
-                ].map((preset) => {
-                  const isCurrentPair =
-                    flowPairIds.length === 2 &&
-                    flowPairIds.includes(preset.pair[0]) &&
-                    flowPairIds.includes(preset.pair[1]);
-                  return (
-                    <button
-                      key={preset.label}
-                      type="button"
-                      onClick={() => {
-                        SoundEngine.playTap();
-                        setActiveCategory('all');
-                        setFlowPairIds(preset.pair);
-                      }}
-                      className={`px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold transition cursor-pointer border ${
-                        isCurrentPair
-                          ? 'bg-sky-600 text-white border-sky-400 shadow-2xs'
-                          : 'bg-white/75 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-300/70 dark:border-white/15 hover:bg-sky-50'
-                      }`}
-                    >
-                      {preset.label}
-                    </button>
-                  );
-                })}
-                <button
-                  type="button"
-                  onClick={() => setIsFlowCanvasActive(false)}
-                  className="p-1 rounded-lg bg-white/70 dark:bg-slate-800 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200 dark:border-white/10 cursor-pointer"
-                  title="Tắt mô phỏng đường truyền"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* NỘI DUNG CHÍNH: CHẾ ĐỘ BẢNG MA TRẬN TÍNH NĂNG (MATRIX) HOẶC LƯỚI 12 THẺ HỆ THỐNG (GRID) */}
           {filteredSystems.length === 0 ? (
             <div className="text-center py-16 px-4 bg-white/75 dark:bg-slate-900/70 rounded-3xl border border-slate-200/90 dark:border-white/15 backdrop-blur-md flex flex-col items-center justify-center flex-1 shadow-xs">
@@ -1442,7 +1344,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
           ) : viewMode === 'matrix' ? (
             /* 4. CHẾ ĐỘ XEM THẺ DẠNG BẢNG MA TRẬN TÍNH NĂNG (COMPACT COMPARISON MATRIX VIEW) */
             <div className="flex-1 min-h-0 overflow-auto glass-scrollbar rounded-2xl border border-slate-200/85 dark:border-white/15 bg-white/80 dark:bg-slate-900/75 backdrop-blur-xl shadow-lg">
-              <table className="w-full text-left border-collapse min-w-[860px]">
+              <table className="w-full text-left border-collapse min-w-[780px]">
                 <thead className="sticky top-0 z-20 bg-slate-100/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-200/90 dark:border-white/15 text-[10.5px] font-mono uppercase tracking-wider text-slate-600 dark:text-cyan-300">
                   <tr>
                     <th className="py-2.5 px-3 font-black">Phân hệ (12)</th>
@@ -1466,7 +1368,6 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                         <span>Chuẩn ISO 27001</span>
                       </span>
                     </th>
-                    <th className="py-2.5 px-2.5 font-black">Trạng thái trực tuyến</th>
                     <th className="py-2.5 px-3 font-black text-right">Tác vụ</th>
                   </tr>
                 </thead>
@@ -1480,10 +1381,6 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                       gradient: item.gradient,
                     };
                     const tech = SYSTEM_TECH_SPECS_MAP[item.id] || SYSTEM_TECH_SPECS_MAP.sdp;
-                    const cardLiveUsers = Math.max(
-                      12,
-                      tech.baseOnlineUsers + ((liveAgentDelta + item.abbr.length) % 5)
-                    );
 
                     return (
                       <tr
@@ -1548,36 +1445,9 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                           </span>
                         </td>
 
-                        {/* Cột 7: Live Health Pulse Badge */}
-                        <td className="py-2 px-2.5">
-                          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 border border-emerald-400/40">
-                            <span className="relative flex h-1.5 w-1.5 shrink-0">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-85" />
-                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-                            </span>
-                            <span>{tech.uptimePct}</span>
-                            <span className="opacity-50">•</span>
-                            <span>
-                              {cardLiveUsers} {tech.onlineRoleLabel}
-                            </span>
-                          </div>
-                        </td>
-
-                        {/* Cột 8: Nút mở cổng */}
+                        {/* Cột 7: Nút mở cổng */}
                         <td className="py-2 px-3 text-right">
                           <div className="inline-flex items-center gap-1 justify-end">
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleSelectSystemForFlow(item.id, e);
-                                setViewMode('grid');
-                              }}
-                              className="px-2 py-1 rounded-lg text-[10px] font-bold bg-sky-500/15 hover:bg-sky-500/25 text-sky-700 dark:text-cyan-300 border border-sky-400/35 cursor-pointer"
-                              title="Chọn nối luồng dữ liệu trên lưới"
-                            >
-                              Nối luồng
-                            </button>
                             {item.url && (
                               <button
                                 type="button"
@@ -1603,87 +1473,6 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
               onScroll={handleGridScroll}
               className="flex-1 min-h-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3 items-stretch overflow-y-auto no-scrollbar py-0.5 relative grid-flow-row-dense"
             >
-              {/* 3. LỚP VẼ ĐƯỜNG TRUYỀN DỮ LIỆU TƯƠNG TÁC GIỮA 2 THẺ (INTERACTIVE DATA FLOW SVG CANVAS OVERLAY) */}
-              {isFlowCanvasActive && flowSvgCoords && connectedFlowSystems && (
-                <svg
-                  className="absolute top-0 left-0 pointer-events-none z-30 overflow-visible"
-                  width={flowSvgCoords.width}
-                  height={flowSvgCoords.height}
-                >
-                  <defs>
-                    <linearGradient id="liveDataFlowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#f59e0b" />
-                      <stop offset="50%" stopColor="#06b6d4" />
-                      <stop offset="100%" stopColor="#6366f1" />
-                    </linearGradient>
-                    <filter id="flowLineGlow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="4" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                  </defs>
-
-                  {/* Đường hào quang nền */}
-                  <path
-                    d={`M ${flowSvgCoords.x1} ${flowSvgCoords.y1} C ${flowSvgCoords.cx1} ${flowSvgCoords.cy1}, ${flowSvgCoords.cx2} ${flowSvgCoords.cy2}, ${flowSvgCoords.x2} ${flowSvgCoords.y2}`}
-                    fill="none"
-                    stroke="url(#liveDataFlowGrad)"
-                    strokeWidth="6"
-                    strokeOpacity="0.32"
-                    filter="url(#flowLineGlow)"
-                  />
-
-                  {/* Đường truyền dữ liệu nét đứt chuyển động */}
-                  <path
-                    id="interactiveSystemFlowPath"
-                    d={`M ${flowSvgCoords.x1} ${flowSvgCoords.y1} C ${flowSvgCoords.cx1} ${flowSvgCoords.cy1}, ${flowSvgCoords.cx2} ${flowSvgCoords.cy2}, ${flowSvgCoords.x2} ${flowSvgCoords.y2}`}
-                    fill="none"
-                    stroke="url(#liveDataFlowGrad)"
-                    strokeWidth="3"
-                    strokeDasharray="8 6"
-                  >
-                    <animate
-                      attributeName="stroke-dashoffset"
-                      from="56"
-                      to="0"
-                      dur="1.1s"
-                      repeatCount="indefinite"
-                    />
-                  </path>
-
-                  {/* Hạt gói tin (Data Packets) chạy dọc đường truyền chiều đi & chiều về */}
-                  <circle r="5" fill="#22d3ee" filter="url(#flowLineGlow)">
-                    <animateMotion dur="1.6s" repeatCount="indefinite">
-                      <mpath href="#interactiveSystemFlowPath" />
-                    </animateMotion>
-                  </circle>
-                  <circle r="4" fill="#f59e0b" filter="url(#flowLineGlow)">
-                    <animateMotion dur="1.6s" begin="0.8s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear">
-                      <mpath href="#interactiveSystemFlowPath" />
-                    </animateMotion>
-                  </circle>
-
-                  {/* Hai đầu mút phát sáng tại tâm 2 thẻ */}
-                  <circle cx={flowSvgCoords.x1} cy={flowSvgCoords.y1} r="7" fill="#f59e0b" fillOpacity="0.9" />
-                  <circle cx={flowSvgCoords.x2} cy={flowSvgCoords.y2} r="7" fill="#06b6d4" fillOpacity="0.9" />
-
-                  {/* Nhãn nổi hiển thị độ trễ đồng bộ ngay giữa đường truyền */}
-                  <foreignObject
-                    x={Math.max(8, flowSvgCoords.midX - 95)}
-                    y={Math.max(4, flowSvgCoords.midY - 16)}
-                    width="190"
-                    height="34"
-                  >
-                    <div className="px-2.5 py-1 rounded-full bg-slate-950/90 text-cyan-300 border border-cyan-400/60 shadow-lg text-[10px] font-mono font-bold flex items-center justify-center gap-1 whitespace-nowrap">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                      <span>
-                        {connectedFlowSystems.sysA.abbr} ⇄ {connectedFlowSystems.sysB.abbr} •{' '}
-                        {connectedFlowSystems.flowMeta.latency}
-                      </span>
-                    </div>
-                  </foreignObject>
-                </svg>
-              )}
-
               {filteredSystems.map((item) => {
                 const isFlipped = !!flippedCardIds[item.id];
                 const isExpanded = expandedSystemId === item.id;
@@ -1700,16 +1489,8 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                   cardTheme: item.themeColor || '#3B72E2',
                 };
 
-                const isVividDarkFace = isDark;
-                const statusInfo = systemStatusBadge[item.id] || { text: 'Hoạt động', dotColor: 'bg-emerald-400' };
+                const isVividDarkFace = true;
                 const isImgHovered = hoveredImgId === item.id;
-                const techSpec = SYSTEM_TECH_SPECS_MAP[item.id] || SYSTEM_TECH_SPECS_MAP.sdp;
-                const cardLiveOnline = Math.max(
-                  12,
-                  techSpec.baseOnlineUsers + ((liveAgentDelta + item.abbr.length) % 5)
-                );
-                const flowNodeIndex = isFlowCanvasActive ? flowPairIds.indexOf(item.id) : -1;
-                const isFlowNodeSelected = flowNodeIndex !== -1;
 
                 return (
                   <div
@@ -1721,10 +1502,6 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                       isExpanded
                         ? 'col-span-1 row-span-4 min-h-[600px] sm:min-h-[640px] z-20'
                         : 'col-span-1 row-span-1 min-h-[138px] sm:min-h-[148px] z-1'
-                    } ${
-                      isFlowNodeSelected
-                        ? 'ring-2 ring-cyan-400 dark:ring-cyan-300 rounded-[15px] shadow-[0_0_22px_rgba(6,182,212,0.45)] z-10'
-                        : ''
                     } transition-all duration-500 ease-out`}
                   >
                     {isExpanded ? (
@@ -1753,7 +1530,6 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                                 color: isDark ? '#ffffff' : config.lightAccent,
                               }}
                             >
-                              <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotColor} shrink-0 animate-pulse`} />
                               <span>{item.abbr}</span>
                             </span>
                             <h3
@@ -1860,14 +1636,8 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                           )}
                         </div>
 
-                        {/* Footer Thao Tác: Live Health Pulse + Mở cổng & Thu nhỏ */}
-                        <div className="flex items-center justify-between gap-2 pt-2 border-t border-black/10 dark:border-white/15 shrink-0 mt-2">
-                          <span className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 truncate max-w-[55%]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
-                            <span>
-                              {techSpec.uptimePct} • {cardLiveOnline} {techSpec.onlineRoleLabel}
-                            </span>
-                          </span>
+                        {/* Footer Thao Tác: Mở cổng & Thu nhỏ */}
+                        <div className="flex items-center justify-end gap-2 pt-2 border-t border-black/10 dark:border-white/15 shrink-0 mt-2">
                           <div className="flex items-center gap-1.5">
                             {item.url && (
                               <button
@@ -1895,34 +1665,20 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                     ) : (
                       /* THẺ BÌNH THƯỜNG: HÌNH GẤP ĐÔI, MÔ TẢ ĐẦY ĐỦ, HOVER VÀO HÌNH PHÁT VIDEO RÕ RÀNG KÈM NÚT LOA NHỎ MỜ */
                       <div className={`system-flip-inner ${isFlipped ? 'is-flipped' : ''}`}>
-                        {/* MẶT TRƯỚC (FRONT): Click vào thẻ để mở rộng (hoặc nối luồng khi đang bật chế độ Nối luồng 2 thẻ) */}
+                        {/* MẶT TRƯỚC (FRONT): Click vào thẻ để mở rộng */}
                         <article
                           onClick={(e) => {
-                            if (isFlowCanvasActive) {
-                              handleSelectSystemForFlow(item.id, e);
-                              return;
-                            }
                             handleToggleExpandCard(item.id, e);
                           }}
                           onMouseEnter={() => setHoveredCardId(item.id)}
                           onMouseLeave={() => setHoveredCardId(null)}
-                          title={
-                            isFlowCanvasActive
-                              ? `Nhấp chọn ${item.abbr} để nối đường truyền dữ liệu thời gian thực`
-                              : `Nhấp để mở rộng chi tiết thẻ: ${config.displayTitle} (${item.abbr})`
-                          }
+                          title={`Nhấp để mở rộng chi tiết thẻ: ${config.displayTitle} (${item.abbr})`}
                           className="system-flip-front system-item cursor-pointer relative overflow-hidden p-2.5 sm:p-3 flex flex-col justify-between select-none transition-all duration-300 border rounded-[14px] hover:border-sky-400/60 dark:hover:border-cyan-400/60 hover:shadow-xl group"
                           style={{
-                            background: isDark ? config.gradient : config.lightBg,
-                            borderColor: isFlowNodeSelected
-                              ? '#22d3ee'
-                              : isDark
-                              ? 'rgba(255, 255, 255, 0.28)'
-                              : config.lightBorder,
-                            boxShadow: isDark
-                              ? `0 10px 26px -4px rgba(0, 0, 0, 0.55), 0 0 18px ${config.cardTheme}35, inset 0 1px 1.5px rgba(255, 255, 255, 0.4)`
-                              : `0 10px 24px -4px ${config.cardTheme}1f, 0 4px 10px -2px rgba(15, 23, 42, 0.05), inset 0 1.5px 2px rgba(255, 255, 255, 0.96)`,
-                            color: isVividDarkFace ? '#ffffff' : config.lightAccent,
+                            background: config.gradient,
+                            borderColor: 'rgba(255, 255, 255, 0.28)',
+                            boxShadow: `0 10px 26px -4px rgba(0, 0, 0, 0.55), 0 0 18px ${config.cardTheme}35, inset 0 1px 1.5px rgba(255, 255, 255, 0.4)`,
+                            color: '#ffffff',
                           }}
                         >
                           {/* KHI RÊ CHUỘT VÀO THẺ HỆ THỐNG: HIỂN THỊ VIDEO TOÀN THẺ HỆ THỐNG, VIDEO HIỂN THỊ RÕ RÀNG KHÔNG HIỂN THỊ GÌ KHÁC NGOÀI VIDEO */}
@@ -1943,14 +1699,14 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                             }}
                           />
 
-                          {/* Nội dung Mặt Trước: Tên viết tắt, Live Health Pulse Badge, Tiêu đề 4 từ, Mô tả & Khung hình gấp đôi */}
+                          {/* Nội dung Mặt Trước: Tên viết tắt, Tiêu đề 4 từ, Mô tả & Khung hình gấp đôi */}
                           <div className="relative z-10 flex flex-col justify-between h-full text-left">
-                            {/* Hàng Đỉnh: Tên viết tắt + Live Health Pulse (Trái) & Tên đầy đủ + Nút Nối Luồng + Nút Lật (Phải) */}
+                            {/* Hàng Đỉnh: Tên viết tắt (Trái) & Tên đầy đủ + Nút Lật (Phải) */}
                             <div className="flex items-center justify-between gap-1.5 pb-1.5 border-b border-black/10 dark:border-white/15">
-                              {/* Phía trên bên trái: Tên viết tắt + Huy hiệu Live Health Pulse */}
+                              {/* Phía trên bên trái: Tên viết tắt */}
                               <div className="flex items-center gap-1 shrink-0">
                                 <span
-                                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-mono font-black tracking-wider uppercase border shadow-2xs"
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] sm:text-[10px] font-mono font-black tracking-wider uppercase border shadow-2xs"
                                   style={
                                     isVividDarkFace
                                       ? {
@@ -1965,66 +1721,18 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                                         }
                                   }
                                 >
-                                  <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotColor} shrink-0 animate-pulse`} />
                                   <span>{item.abbr}</span>
-                                </span>
-
-                                {/* 5. Live Health Pulse Badge trên từng thẻ */}
-                                <span
-                                  className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[8.5px] font-mono font-bold border ${
-                                    isVividDarkFace
-                                      ? 'bg-emerald-950/65 text-emerald-300 border-emerald-400/40'
-                                      : 'bg-emerald-50/95 text-emerald-700 border-emerald-300/70'
-                                  }`}
-                                  title={`Trạng thái trực tuyến: Uptime ${techSpec.uptimePct} • ${cardLiveOnline} ${techSpec.onlineRoleLabel}`}
-                                >
-                                  <span className="relative flex h-1.5 w-1.5 shrink-0">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-85" />
-                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-                                  </span>
-                                  <span>{techSpec.uptimePct}</span>
-                                  <span className="hidden xl:inline opacity-65">• {cardLiveOnline} Onl</span>
                                 </span>
                               </div>
 
-                              {/* Phía trên bên phải: Tên đầy đủ, Nút chọn nối luồng 2 thẻ & Nút lật thẻ */}
-                              <div className="flex items-center gap-1 max-w-[62%] justify-end shrink-0">
+                              {/* Phía trên bên phải: Tên đầy đủ */}
+                              <div className="flex items-center gap-1.5 max-w-[75%] justify-end shrink-0">
                                 <span
-                                  className={`text-[9px] sm:text-[9.5px] font-bold font-mono tracking-tight truncate text-right ${
-                                    isVividDarkFace ? 'text-white/85' : 'text-slate-700/90'
-                                  }`}
+                                  className="text-[9px] sm:text-[9.5px] font-bold font-mono tracking-tight truncate text-right text-white/85"
                                   title={item.fullName}
                                 >
                                   {item.fullName}
                                 </span>
-
-                                {/* 3. Nút chọn nối luồng dữ liệu giữa 2 thẻ */}
-                                <button
-                                  type="button"
-                                  onClick={(e) => handleSelectSystemForFlow(item.id, e)}
-                                  title={
-                                    isFlowNodeSelected
-                                      ? `Đang kết nối luồng (${flowNodeIndex + 1}/2) — Nhấp để bỏ chọn`
-                                      : `Chọn ${item.abbr} để vẽ đường truyền dữ liệu thời gian thực`
-                                  }
-                                  className={`w-5 h-5 rounded-md flex items-center justify-center transition hover:scale-115 active:scale-90 border shrink-0 cursor-pointer ${
-                                    isFlowNodeSelected
-                                      ? 'bg-cyan-500 text-white border-white shadow-[0_0_8px_rgba(6,182,212,0.85)]'
-                                      : 'border-black/10 dark:border-white/20 bg-white/40 dark:bg-black/30 text-slate-700 dark:text-cyan-300'
-                                  }`}
-                                >
-                                  <Network className="w-2.5 h-2.5" />
-                                </button>
-
-                                {/* Nút lật thẻ nhanh */}
-                                <button
-                                  type="button"
-                                  onClick={(e) => handleFlipToggle(item.id, e)}
-                                  title="Lật mặt sau: Xem mô phỏng ROI & Hiệu suất"
-                                  className="w-5 h-5 rounded-md flex items-center justify-center transition hover:scale-115 active:scale-90 border border-black/10 dark:border-white/20 bg-white/40 dark:bg-black/30 shrink-0 cursor-pointer"
-                                >
-                                  <RotateCw className="w-2.5 h-2.5 text-slate-700 dark:text-cyan-300" />
-                                </button>
                               </div>
                             </div>
 
@@ -2198,16 +1906,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                           </div>
 
                           {/* Back Action Buttons */}
-                          <div className="flex items-center justify-between gap-1.5 pt-1">
-                            <span
-                              className={`inline-flex items-center gap-1 text-[9px] font-semibold truncate ${
-                                isDark ? 'text-slate-300' : 'text-slate-500'
-                              }`}
-                            >
-                              <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dotColor} shrink-0`} />
-                              <span className="truncate">{statusInfo.text}</span>
-                            </span>
-
+                          <div className="flex items-center justify-end gap-1.5 pt-1">
                             <div className="flex items-center gap-1.5 shrink-0">
                               <button
                                 type="button"

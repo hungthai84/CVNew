@@ -297,4 +297,25 @@ export const PAGE_SHOWCASE_ITEMS: PageShowcaseItem[] = [
     iconName: 'sparkles',
     image: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=80',
   },
+  {
+    pageId: 14,
+    pageNumber: '15',
+    shortTitle: 'Tạo Banner',
+    fullName: 'Dịch Vụ Thiết Kế & Tạo Banner Chuẩn 16:3 Bằng AI',
+    category: 'Studio Thiết Kế AI',
+    badge: '16:3 Banner Studio',
+    description:
+      'Studio thiết kế Banner tỷ lệ chuẩn 16:3 (1920x360px) kết hợp AI tạo nền siêu rộng và 6 mẫu bố cục trực quan, hỗ trợ xuất mã HTML/CSS kèm hiệu ứng chữ chuyển động, tải ảnh PNG/WebP sắc nét và áp dụng trực tiếp lên các trang của website.',
+    highlights: [
+      'Tự động đồng bộ 100% dữ liệu thực tế của 15 trang hồ sơ năng lực vào mẫu Banner 16:3',
+      'Kết hợp AI tạo hình nền Panorama 16:3 theo mô tả tiếng Việt và 6 mẫu thiết kế chuyên nghiệp',
+      'Tích hợp 6 hiệu ứng chữ chuyển động (Shimmer, Slide-Up, Neon Pulse, Typewriter, Float, Scanline)',
+      'Xuất mã nhúng HTML/CSS độc lập, tải ảnh PNG/WebP 1920x360px và gắn trực tiếp làm Banner trang',
+    ],
+    theme: '#06b6d4',
+    accentBg: 'linear-gradient(135deg, rgba(6, 182, 212, 0.85) 0%, rgba(59, 130, 246, 0.85) 100%)',
+    iconName: 'sparkles',
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+  },
 ];
+

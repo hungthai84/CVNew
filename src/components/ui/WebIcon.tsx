@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import * as HeroSolidIcons from '@heroicons/react/24/solid';
 import * as HeroOutlineIcons from '@heroicons/react/24/outline';
 import * as LucideIcons from 'lucide-react';
 import { LucideProps } from 'lucide-react';
@@ -185,14 +184,12 @@ const HEROICONS_ALIAS_MAP: Record<string, string> = {
  * Tự động chuyển đổi tên bất kỳ sang component icon @heroicons/react/24/outline
  */
 function resolveHeroIcon(rawName: string): React.ComponentType<any> {
-  if (!rawName) return HeroSolidIcons.SparklesIcon || HeroOutlineIcons.SparklesIcon;
+  if (!rawName) return HeroOutlineIcons.SparklesIcon;
   const clean = rawName.trim().toLowerCase();
 
-  // 1. Tra trong bảng alias Heroicons (Ưu tiên Solid -> Outline)
+  // 1. Tra trong bảng alias Heroicons (Ưu tiên Outline dạng Line 100%)
   if (HEROICONS_ALIAS_MAP[clean]) {
     const iconName = HEROICONS_ALIAS_MAP[clean];
-    const solidComp = (HeroSolidIcons as Record<string, any>)[iconName];
-    if (solidComp) return solidComp;
     const outlineComp = (HeroOutlineIcons as Record<string, any>)[iconName];
     if (outlineComp) return outlineComp;
   }
@@ -205,13 +202,6 @@ function resolveHeroIcon(rawName: string): React.ComponentType<any> {
 
   const pascalWithIcon = pascal.endsWith('Icon') ? pascal : `${pascal}Icon`;
 
-  if ((HeroSolidIcons as Record<string, any>)[pascalWithIcon]) {
-    return (HeroSolidIcons as Record<string, any>)[pascalWithIcon];
-  }
-  if ((HeroSolidIcons as Record<string, any>)[pascal]) {
-    return (HeroSolidIcons as Record<string, any>)[pascal];
-  }
-
   if ((HeroOutlineIcons as Record<string, any>)[pascalWithIcon]) {
     return (HeroOutlineIcons as Record<string, any>)[pascalWithIcon];
   }
@@ -220,43 +210,31 @@ function resolveHeroIcon(rawName: string): React.ComponentType<any> {
     return (HeroOutlineIcons as Record<string, any>)[pascal];
   }
 
-  // 3. Tra exact name
-  if ((HeroSolidIcons as Record<string, any>)[rawName]) {
-    return (HeroSolidIcons as Record<string, any>)[rawName];
-  }
-  const rawWithIcon = rawName.endsWith('Icon') ? rawName : `${rawName}Icon`;
-  if ((HeroSolidIcons as Record<string, any>)[rawWithIcon]) {
-    return (HeroSolidIcons as Record<string, any>)[rawWithIcon];
-  }
+  // 3. Tra exact name trong Outline
   if ((HeroOutlineIcons as Record<string, any>)[rawName]) {
     return (HeroOutlineIcons as Record<string, any>)[rawName];
   }
+  const rawWithIcon = rawName.endsWith('Icon') ? rawName : `${rawName}Icon`;
   if ((HeroOutlineIcons as Record<string, any>)[rawWithIcon]) {
     return (HeroOutlineIcons as Record<string, any>)[rawWithIcon];
   }
 
-  // 4. Fallback an toàn sang Lucide nếu là icon chuyên biệt chỉ có ở Lucide
+  // 4. Fallback an toàn sang Lucide (dạng Line vector chuẩn)
   const lucidePascal = pascal.replace(/Icon$/, '');
   if ((LucideIcons as Record<string, any>)[lucidePascal]) {
     return (LucideIcons as Record<string, any>)[lucidePascal];
   }
 
-  return HeroSolidIcons.SparklesIcon || HeroOutlineIcons.SparklesIcon;
+  return HeroOutlineIcons.SparklesIcon;
 }
 
 /**
- * Toàn bộ icon website được cung cấp 100% bằng thư viện @heroicons/react
- * Tích hợp Hiệu Ứng Vi Tương Tác Chuyển Động (Micro-Animated Icon Physics):
- * - Xoay nhẹ khi click nút làm mới (ArrowPathIcon / refresh)
- * - Nhấp nháy lấp lánh cho SparklesIcon (AI / Highlight)
- * - Nảy nhẹ tự nhiên khi rê chuột (Spring Bounce)
- * - Đổi màu năng động theo từng cụm chủ đề / phân hệ (Dynamic Accent Hue)
- * - Bọc khung kính mờ hào quang phản chiếu (Glassmorphic Glow Icon Frame)
+ * Toàn bộ icon website được chuẩn hóa 100% sang dạng Line (Outline Vector Stroke)
  */
 export const WebIcon: React.FC<WebIconProps> = ({
   name,
   className = 'w-4 h-4',
-  strokeWidth = 2.75,
+  strokeWidth = 2,
   category,
   sparkle,
   springBounce,
@@ -297,11 +275,11 @@ export const WebIcon: React.FC<WebIconProps> = ({
 
   const IconComponent = resolveHeroIcon(name);
 
-  // Xây dựng class name tổng hợp
+  // Xây dựng class name tổng hợp (100% Line Icon)
   const iconClasses = [
     className,
     className.includes('shrink-') ? '' : 'shrink-0',
-    'web-icon-solid web-icon-ultimate-bold',
+    'web-icon-line',
     isSparkle ? 'icon-sparkle-twinkle' : '',
     springBounce ? 'icon-spring-bounce' : '',
     shouldRotate ? 'icon-rotate-click' : '',
@@ -313,6 +291,7 @@ export const WebIcon: React.FC<WebIconProps> = ({
   const mergedStyle: React.CSSProperties = {
     ...style,
     color: dynamicColor || style?.color,
+    fill: 'none',
   };
 
   const renderedIcon = (

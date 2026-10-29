@@ -136,64 +136,8 @@ export const InterviewView: React.FC<InterviewViewProps> = ({ currentTheme = 'li
 
         {/* Nội dung Banner Phỏng Vấn (Controls) */}
         <div className="relative z-20 w-full h-full p-3.5 sm:p-4 lg:p-5 flex flex-col justify-end pointer-events-none">
-          {/* DÒNG DƯỚI CÙNG: DROPDOWN LỌC DANH MỤC + CỤM NÚT ĐIỀU KHIỂN LASER BEAM */}
-          <div className="w-full flex items-center justify-between gap-3 pointer-events-auto pt-2 flex-wrap sm:flex-nowrap">
-            {/* Cụm trái: Dropdown chọn danh mục 14 câu hỏi */}
-            <div className="relative z-50">
-              <button
-                type="button"
-                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                className="px-3.5 py-2 rounded-xl text-xs font-bold font-play tracking-wide transition-all border cursor-pointer flex items-center gap-2 bg-slate-900/80 hover:bg-slate-900 text-white border-white/30 shadow-md backdrop-blur-md active:scale-95"
-              >
-                <WebIcon name="filter" className="w-3.5 h-3.5 text-pink-300 shrink-0" />
-                <span className="truncate max-w-[170px] sm:max-w-[200px]">
-                  Danh mục: {
-                    INTERVIEW_TABS.find((t) => t.key === activeFilter)?.labelVi || 'Tất cả (14)'
-                  }
-                </span>
-                <svg
-                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                    isFilterDropdownOpen ? 'rotate-180' : ''
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {isFilterDropdownOpen && (
-                <div className="absolute bottom-full left-0 mb-2 w-56 p-1.5 rounded-2xl bg-slate-900/95 backdrop-blur-2xl border border-white/20 shadow-2xl z-50 flex flex-col gap-1">
-                  {INTERVIEW_TABS.map((tab) => {
-                    const isActive = activeFilter === tab.key;
-                    return (
-                      <button
-                        key={tab.key}
-                        type="button"
-                        onClick={() => {
-                          setActiveFilter(tab.key);
-                          setIsFilterDropdownOpen(false);
-                        }}
-                        className={`w-full text-left px-3 py-2 rounded-xl text-[11px] font-bold font-play tracking-wide transition-all border cursor-pointer whitespace-nowrap flex items-center justify-between gap-2 ${
-                          isActive
-                            ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white border-pink-300 shadow-md'
-                            : 'bg-white/5 hover:bg-white/15 text-white/90 border-white/10'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 truncate">
-                          <WebIcon name="compass" className="w-3.5 h-3.5 shrink-0 text-pink-300" />
-                          <span className="truncate">{tab.labelVi}</span>
-                        </div>
-                        {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyan-300 shrink-0" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
+          {/* DÒNG DƯỚI CÙNG: CỤM NÚT ĐIỀU KHIỂN LASER BEAM */}
+          <div className="w-full flex items-center justify-end gap-3 pointer-events-auto pt-2 flex-wrap sm:flex-nowrap">
             {/* Cụm phải: Laser Beam Capsule Button (Loa Bật/Tắt + Nút Phát/Dừng) */}
             <div className="relative inline-flex items-center justify-between rounded-full p-[2px] select-none group/container transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] h-[44px] overflow-hidden shadow-[0_0_20px_rgba(78,86,246,0.5)] ring-2 ring-indigo-400/50">
               <div className="absolute -inset-[220%] animate-[spin_4s_linear_infinite] pointer-events-none bg-[conic-gradient(from_0deg,transparent_0_200deg,#4E56F6_250deg,#F125D6_300deg,#ffffff_340deg,#4E56F6_360deg)] opacity-100" />
@@ -235,12 +179,12 @@ export const InterviewView: React.FC<InterviewViewProps> = ({ currentTheme = 'li
                   </span>
                   <span>
                     {isVideoPlaying ? (
-                      <svg className="w-4 h-4 shrink-0 fill-current text-white" viewBox="0 0 24 24">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                      <svg className="w-4 h-4 shrink-0 text-white" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 6v12m6-12v12" />
                       </svg>
                     ) : (
-                      <svg className="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
+                      <svg className="w-4 h-4 shrink-0 text-white" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 5.5v13l10.5-6.5L8 5.5z" />
                       </svg>
                     )}
                   </span>
@@ -253,16 +197,16 @@ export const InterviewView: React.FC<InterviewViewProps> = ({ currentTheme = 'li
 
       {/* 3. VÙNG BÊN PHẢI: THẺ CHI TIẾT CÂU TRẢ LỜI */}
       <div className="w-full lg:w-[350px] xl:w-[380px] shrink-0 flex flex-col h-auto lg:h-full overflow-hidden">
-        <div className="w-full h-full flex-1 rounded-2xl border border-white/70 dark:border-white/10 bg-white/80 dark:bg-slate-900/90 p-4 sm:p-5 backdrop-blur-2xl shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(244,114,182,0.25)] transition-all duration-300 text-left flex flex-col justify-between gap-3 relative overflow-hidden">
-          <div className="space-y-2.5 flex-1 flex flex-col min-h-0 relative z-10">
+        <div className="w-full h-full flex-1 rounded-2xl border border-white/70 dark:border-white/10 bg-white/85 dark:bg-slate-900/90 p-3.5 sm:p-4 backdrop-blur-2xl shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(244,114,182,0.25)] transition-all duration-300 text-left flex flex-col justify-between gap-2.5 relative overflow-hidden">
+          <div className="space-y-2 flex-1 flex flex-col min-h-0 relative z-10">
             {/* Header Tiêu đề thẻ */}
-            <div className="space-y-2 shrink-0">
+            <div className="space-y-1.5 shrink-0">
               <div className="flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
                 <div
                   className="flex items-center gap-2 text-pink-600 dark:text-pink-400"
                 >
-                  <svg className="w-4 h-4 stroke-[2.3] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                  <svg className="w-4 h-4 stroke-[2] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                   </svg>
                   <h4 className="text-xs sm:text-sm font-black font-play tracking-tight leading-none text-pink-600 dark:text-pink-400">
                     {formatCardTitle('Chi Tiết Trả Lời')}

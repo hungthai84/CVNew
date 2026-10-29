@@ -367,49 +367,55 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
                         <Maximize2 className="w-3.5 h-3.5" />
                       </button>
 
-                      {/* Nhãn vai trò & mã ở chân ảnh */}
-                      <span className="absolute bottom-1.5 left-2 right-2 text-[10px] font-bold text-white/90 truncate drop-shadow-sm font-sans flex items-center justify-between">
-                        <span className="truncate">{proj.role || 'Trưởng Dự Án'}</span>
-                        <span className="text-[9px] text-cyan-300 font-mono shrink-0 ml-1">
-                          {proj.number ? `Mã ${proj.number}` : 'STAR Case'}
+                      {/* Nhãn #8.1 Chiến Lược Vận Hành & Trưởng Phòng Chăm Sóc Khách Hàng ở chân ảnh */}
+                      <div className="absolute bottom-1.5 left-2 right-2 flex flex-col gap-0.5 drop-shadow-sm font-play">
+                        <div className="flex items-center justify-between gap-1 text-[10px] font-black text-amber-300">
+                          <span className="truncate">
+                            #{orderNumber || proj.code || proj.number} {parentGroup.fourWordTitle}
+                          </span>
+                          <span className="text-[9px] text-cyan-300 font-mono shrink-0 ml-1">
+                            {proj.number ? `Mã ${proj.number}` : 'STAR Case'}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold text-white/95 truncate block">
+                          {proj.role || 'Trưởng Dự Án'}
                         </span>
-                      </span>
+                      </div>
                     </div>
 
-                    {/* Phần Thân Card: Tiêu đề 2 dòng có số thứ tự, Phân loại & Tóm tắt */}
-                    <div className="flex-1 flex flex-col justify-between space-y-2">
+                    {/* Phần Thân Card: Tiêu đề dự án 2 dòng, Phân loại & Tóm tắt */}
+                    <div className="flex-1 flex flex-col justify-between space-y-1.5">
                       <div>
                         <div className="flex items-center gap-1.5 mb-1">
                           <span
-                            className="w-2 h-2 rounded-full shrink-0"
-                            style={{ backgroundColor: cfg.accentColor }}
-                          />
-                          <span
-                            className="text-[10px] font-bold font-mono tracking-tight"
-                            style={{ color: cfg.accentColor }}
+                            className="px-1.5 py-0.5 rounded text-[9.5px] font-mono font-black shrink-0"
+                            style={{
+                              backgroundColor: `${cfg.accentColor}18`,
+                              color: cfg.accentColor,
+                              border: `1px solid ${cfg.accentColor}40`,
+                            }}
                           >
-                            {parentGroup.fourWordTitle}
+                            #{orderNumber || proj.code || proj.number} {parentGroup.fourWordTitle}
                           </span>
-                          <span className="ml-auto text-[9px] font-mono text-slate-400">
+                          <span
+                            className="text-[10px] font-bold font-play tracking-tight truncate"
+                            style={{ color: cfg.accentColor }}
+                            title={proj.role || 'Trưởng Dự Án'}
+                          >
+                            {proj.role || 'Trưởng Dự Án'}
+                          </span>
+                          <span className="ml-auto text-[9px] font-mono text-slate-400 shrink-0">
                             {proj.progressPercent ? `${proj.progressPercent}%` : '100%'}
                           </span>
                         </div>
 
-                        {/* Tiêu đề 2 dòng: Dòng 1 có số thứ tự dự án, Dòng 2 là tên dự án */}
+                        {/* Tiêu đề dự án hiển thị 2 dòng */}
                         <h3
-                          className="font-black font-play text-[17px] sm:text-[18.5px] lg:text-[19.5px] leading-tight tracking-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors flex flex-col justify-center"
-                          style={{ color: isDark ? '#ffffff' : '#0f172a' }}
-                          title={`${orderNumber ? `${orderNumber} · ` : ''}${cleanTitle}`}
+                          className="font-black font-play text-[14.5px] sm:text-[15.5px] leading-snug tracking-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors break-words"
+                          style={{ color: isDark ? '#ffffff' : cfg.accentColor }}
+                          title={proj.title}
                         >
-                          <div className="flex items-center gap-1 font-mono text-[10.5px] font-bold text-cyan-600 dark:text-cyan-400 leading-tight">
-                            <span className="px-1.5 py-0.2 rounded bg-cyan-500/15 border border-cyan-400/30">
-                              #{orderNumber || proj.code || proj.number}
-                            </span>
-                            <span className="truncate">{parentGroup.fourWordTitle}</span>
-                          </div>
-                          <div className="line-clamp-1 truncate font-play font-black text-[17px] sm:text-[18.5px] lg:text-[19.5px] leading-tight mt-0.5">
-                            {formatCardTitle(cleanTitle)}
-                          </div>
+                          {proj.title}
                         </h3>
 
                         <p className={`text-[11px] leading-snug line-clamp-2 mt-1.5 font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>

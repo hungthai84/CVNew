@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { WALLPAPER_OPTIONS } from '@/data/wallpapers';
 import { WEATHER_PRESETS } from '@/data/weather';
 import { WallpaperOption, WeatherPreset, SiteTheme } from '@/types';
-import { THEME_LIST } from '@/data/themes';
+
 import { Clock, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
@@ -1053,23 +1053,12 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 className="px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-amber-500/30 active:scale-95 animate-pulse"
                 title={`Lưu vĩnh viễn hình nền "${activeWallpaperObj.name}" làm mặc định khi tải trang`}
               >
-                <WebIcon name="star" className="w-3.5 h-3.5 fill-current text-white" />
+                <WebIcon name="star" className="w-3.5 h-3.5 text-white" />
                 <span>Đặt &quot;{activeWallpaperObj.name}&quot; làm mặc định</span>
               </button>
             )}
 
-            {/* Nút Nhập JSON */}
-            <button
-              type="button"
-              onClick={() => jsonInputRef.current?.click()}
-              title="Nhập danh sách hình nền từ tệp .json"
-              className="px-3 py-1.5 rounded-[999px] text-xs font-semibold bg-white/90 dark:bg-slate-900/80 hover:bg-indigo-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-300 border border-slate-300/80 dark:border-white/15 shadow-2xs flex items-center gap-1.5 transition cursor-pointer"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-              </svg>
-              <span>Nhập JSON</span>
-            </button>
+            {/* Input tệp JSON ẩn phục vụ Tab Nhập & Xuất JSON trong nút + Thêm hình nền */}
             <input
               ref={jsonInputRef}
               type="file"
@@ -1077,19 +1066,6 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
               className="hidden"
               onChange={handleImportJsonFile}
             />
-
-            {/* Nút Xuất JSON */}
-            <button
-              type="button"
-              onClick={handleExportJson}
-              title="Tải về tệp sao lưu .json tất cả hình nền tùy chỉnh"
-              className="px-3 py-1.5 rounded-[999px] text-xs font-semibold bg-white/90 dark:bg-slate-900/80 hover:bg-fuchsia-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 hover:text-fuchsia-600 dark:hover:text-fuchsia-300 border border-slate-300/80 dark:border-white/15 shadow-2xs flex items-center gap-1.5 transition cursor-pointer"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              <span>Xuất JSON</span>
-            </button>
           </div>
         </div>
       </div>
@@ -1135,8 +1111,8 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 }`}
               >
                 <WebIcon name="sliders" className="w-3.5 h-3.5" />
-                <span>Độ Tối Mờ Nền</span>
-                {(settings.dimmerOpacity > 0 || settings.blurAmount > 0) && (
+                <span>Độ Tối Nền</span>
+                {settings.dimmerOpacity > 0 && (
                   <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-300" />
                 )}
               </button>
@@ -1262,10 +1238,9 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">
                   Phân loại hình nền luân chuyển:
                 </span>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                   {[
                     { key: 'auto', label: 'Tự động ☀️🌙' },
-                    { key: 'time-of-day', label: 'Theo giờ thực ⏰' },
                     { key: 'light-only', label: 'Chỉ nền Sáng ☀️' },
                     { key: 'dark-only', label: 'Chỉ nền Tối 🌙' },
                     { key: 'all', label: 'Tất cả kho nền' },
@@ -1366,20 +1341,20 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
             </div>
           )}
 
-          {/* TAB 2: ĐỘ TỐI MỜ NỀN */}
+          {/* TAB 2: ĐỘ TỐI NỀN */}
           {customizerTab === 'dimmer' && (
             <div className="flex flex-col gap-4 animate-fadeIn">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-xs font-black text-fuchsia-600 dark:text-fuchsia-400">
-                    Bộ Lọc Lớp Phủ Tối & Độ Mờ Kính Hình Nền
+                    Bộ Lọc Lớp Phủ Tối Hình Nền (Dimmer)
                   </span>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Điều chỉnh độ tối và độ mờ để chữ và các thẻ nội dung hiển thị sắc nét nhất trên nền ảnh/video.
+                    Điều chỉnh độ tối để chữ và các thẻ nội dung hiển thị sắc nét nhất trên nền ảnh/video.
                   </p>
                 </div>
 
-                {(settings.dimmerOpacity > 0 || settings.blurAmount > 0) && (
+                {settings.dimmerOpacity > 0 && (
                   <button
                     type="button"
                     onClick={() => updateSettings({ dimmerOpacity: 0, blurAmount: 0 })}
@@ -1390,53 +1365,27 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Thanh trượt Độ Tối */}
-                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
-                  <div className="flex items-center justify-between text-xs font-bold">
-                    <span className="text-slate-700 dark:text-slate-200">Lớp phủ tối (Dimmer):</span>
-                    <span className="font-mono text-fuchsia-600 dark:text-fuchsia-400 text-sm">
-                      {settings.dimmerOpacity}%
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={80}
-                    step={2}
-                    value={settings.dimmerOpacity}
-                    onChange={(e) => updateSettings({ dimmerOpacity: Number(e.target.value) })}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-fuchsia-600"
-                  />
-                  <div className="flex items-center justify-between text-[10px] text-slate-400">
-                    <span>0% (Sáng nguyên bản)</span>
-                    <span>40% (Cân bằng)</span>
-                    <span>80% (Tối sâu)</span>
-                  </div>
+              {/* Thanh trượt Độ Tối */}
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+                <div className="flex items-center justify-between text-xs font-bold">
+                  <span className="text-slate-700 dark:text-slate-200">Lớp phủ tối (Dimmer):</span>
+                  <span className="font-mono text-fuchsia-600 dark:text-fuchsia-400 text-sm">
+                    {settings.dimmerOpacity}%
+                  </span>
                 </div>
-
-                {/* Thanh trượt Độ Mờ */}
-                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
-                  <div className="flex items-center justify-between text-xs font-bold">
-                    <span className="text-slate-700 dark:text-slate-200">Độ mờ kính (Blur):</span>
-                    <span className="font-mono text-indigo-600 dark:text-indigo-400 text-sm">
-                      {settings.blurAmount}px
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={24}
-                    step={1}
-                    value={settings.blurAmount}
-                    onChange={(e) => updateSettings({ blurAmount: Number(e.target.value) })}
-                    className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
-                  />
-                  <div className="flex items-center justify-between text-[10px] text-slate-400">
-                    <span>0px (Rõ nét)</span>
-                    <span>8px (Kính mờ)</span>
-                    <span>24px (Siêu mờ)</span>
-                  </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={80}
+                  step={2}
+                  value={settings.dimmerOpacity}
+                  onChange={(e) => updateSettings({ dimmerOpacity: Number(e.target.value) })}
+                  className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-fuchsia-600"
+                />
+                <div className="flex items-center justify-between text-[10px] text-slate-400">
+                  <span>0% (Sáng nguyên bản)</span>
+                  <span>40% (Cân bằng)</span>
+                  <span>80% (Tối sâu)</span>
                 </div>
               </div>
 
@@ -1446,17 +1395,17 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                   Chỉnh nhanh:
                 </span>
                 {[
-                  { label: 'Nguyên Bản (0%)', dim: 0, blur: 0 },
-                  { label: 'Dịu Mắt (15% tối, 2px mờ)', dim: 15, blur: 2 },
-                  { label: 'Rạp Phim (35% tối, 4px mờ)', dim: 35, blur: 4 },
-                  { label: 'Kính Mờ Cao Cấp (20% tối, 10px mờ)', dim: 20, blur: 10 },
-                  { label: 'Đọc Sách Đêm (55% tối, 1px mờ)', dim: 55, blur: 1 },
+                  { label: 'Nguyên Bản (0%)', dim: 0 },
+                  { label: 'Dịu Mắt (15% tối)', dim: 15 },
+                  { label: 'Cân Bằng (25% tối)', dim: 25 },
+                  { label: 'Rạp Phim (40% tối)', dim: 40 },
+                  { label: 'Đọc Sách Đêm (60% tối)', dim: 60 },
                 ].map((preset, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => {
-                      updateSettings({ dimmerOpacity: preset.dim, blurAmount: preset.blur });
+                      updateSettings({ dimmerOpacity: preset.dim, blurAmount: 0 });
                       showToast(`Đã áp dụng mốc: ${preset.label}`);
                     }}
                     className="px-2.5 py-1 rounded-lg text-[10.5px] font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 cursor-pointer transition"
@@ -2450,7 +2399,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                       : 'bg-black/50 hover:bg-amber-500 text-white opacity-0 group-hover:opacity-100 hover:scale-105'
                   }`}
                 >
-                  <WebIcon name="star" className="w-3 h-3 fill-current" />
+                  <WebIcon name="star" className="w-3 h-3" />
                 </button>
 
                 <button
@@ -2643,7 +2592,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 {/* Nút / Nhãn Đặt mặc định ở chân thẻ */}
                 {isDefault ? (
                   <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-600 flex items-center gap-0.5 shrink-0">
-                    <WebIcon name="star" className="w-2.5 h-2.5 fill-current text-amber-500" />
+                    <WebIcon name="star" className="w-2.5 h-2.5 text-amber-500" />
                     <span>Mặc định</span>
                   </span>
                 ) : (

@@ -293,7 +293,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
   const isDark = currentTheme === 'dark-neon';
 
   const [activeCategory, setActiveCategory] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'compact' | 'carousel'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'compact' | 'carousel'>('compact');
   // Bộ lọc năm tốt nghiệp Timeline (2003 - 2024)
   const [maxYearFilter, setMaxYearFilter] = useState<number>(2024);
   const [exactYearFilter, setExactYearFilter] = useState<number | null>(null);
@@ -486,16 +486,6 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                             <span className="text-xs font-mono font-bold opacity-80">
                               Năm {activeCourse.year} • Mã {activeCourse.code}
                             </span>
-                            {verifyInfo && (
-                              <button
-                                type="button"
-                                onClick={(e) => handleOpenVerifyModal(activeCourse, e)}
-                                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500 hover:text-white transition cursor-pointer"
-                              >
-                                <ShieldCheck className="w-3.5 h-3.5" />
-                                <span>Xác thực: {verifyInfo.credentialId}</span>
-                              </button>
-                            )}
                           </div>
 
                           {/* Tiêu đề trùng màu icon (activeCourse.accentColor) */}
@@ -553,14 +543,6 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                           </div>
 
                           <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={(e) => handleOpenVerifyModal(activeCourse, e)}
-                              className="px-3 py-2 rounded-xl text-xs font-bold font-play text-cyan-700 dark:text-cyan-300 bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/40 transition cursor-pointer flex items-center gap-1.5"
-                            >
-                              <ShieldCheck className="w-3.5 h-3.5" />
-                              <span>Tra cứu mã số</span>
-                            </button>
 
                             <button
                               type="button"
@@ -582,7 +564,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
               </div>
             ) : (
               /* CHẾ ĐỘ LƯỚI (GRID VIEW & COMPACT 2-WORD TITLE VIEW) */
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[15px] items-stretch">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-3.5 items-stretch">
                 {filteredCourses.map((course) => {
                   const verifyInfo = CREDENTIAL_VERIFICATION_MAP[course.id];
                   const isTwoWordMode = viewMode === 'compact';
@@ -595,20 +577,20 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                       key={course.id}
                       layoutId={`education-card-${course.id}`}
                       onClick={() => handleOpenDetail(course)}
-                      className={`group relative rounded-[14px] overflow-hidden p-[15px] flex flex-col justify-between border select-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${
+                      className={`group relative rounded-[14px] overflow-hidden p-3 sm:p-3.5 flex flex-col justify-between border select-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${
                         isDark
                           ? 'bg-slate-900/50 border-slate-700/70 hover:border-emerald-400/60 shadow-[0_4px_20px_rgba(0,0,0,0.4)] text-slate-100'
-                          : 'bg-white/60 border-slate-200/90 hover:border-emerald-500/60 shadow-md text-slate-800'
+                          : 'bg-white/75 border-slate-200/90 hover:border-emerald-500/60 shadow-md text-slate-800'
                       }`}
                       style={{
-                        backgroundColor: isDark ? 'rgba(15, 23, 42, 0.55)' : 'rgba(255, 255, 255, 0.65)',
+                        backgroundColor: isDark ? 'rgba(15, 23, 42, 0.55)' : 'rgba(255, 255, 255, 0.78)',
                         backdropFilter: 'blur(16px)',
                         ['--card-accent-color' as string]: course.accentColor,
                       }}
                       title="Bấm để xem chi tiết bằng cấp (Format giống trang dịch vụ)"
                     >
                       {/* Khối Ảnh Bằng Cấp / Khóa Học */}
-                      <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden bg-slate-950/50 shrink-0 border border-black/10 dark:border-white/10 shadow-xs mb-2.5 group/img">
+                      <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-slate-950/50 shrink-0 border border-black/10 dark:border-white/10 shadow-xs mb-2 group/img">
                         <img
                           src={course.image}
                           alt={course.title}
@@ -645,7 +627,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                       </div>
 
                       {/* Phần Thân Card: Phân loại 2 chữ, Huy hiệu Xác thực số, Tiêu đề & Tóm tắt */}
-                      <div className="flex-1 flex flex-col justify-between space-y-2 min-h-0">
+                      <div className="flex-1 flex flex-col justify-between space-y-1.5 min-h-0">
                         <div>
                           <div className="flex items-center justify-between gap-1.5 mb-1">
                             <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 min-w-0">
@@ -656,43 +638,27 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                                 {getShortCategoryLabel(course.category)}
                               </span>
                             </div>
-
-                            {/* Huy hiệu Chứng chỉ xác thực số */}
-                            {verifyInfo && (
-                              <button
-                                type="button"
-                                onClick={(e) => handleOpenVerifyModal(course, e)}
-                                title={`Kiểm tra mã xác thực số: ${verifyInfo.credentialId} (${verifyInfo.registryName})`}
-                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-mono font-bold bg-cyan-500/15 hover:bg-cyan-500 text-cyan-700 dark:text-cyan-300 hover:text-white border border-cyan-500/30 transition cursor-pointer shrink-0"
-                              >
-                                <ShieldCheck className="w-2.5 h-2.5" />
-                                <span>Xác thực</span>
-                              </button>
-                            )}
                           </div>
 
                           {/* TIÊU ĐỀ GIỐNG MÀU ICON (course.accentColor) */}
-                          <div className="flex items-baseline justify-between gap-2">
+                          <div className="flex items-start justify-between gap-2">
                             <h3
-                              className="font-black font-play text-[17px] sm:text-[18.5px] lg:text-[19.5px] leading-tight tracking-tight transition-opacity flex items-center gap-1.5 min-w-0 hover:opacity-85"
+                              className="font-black font-play text-[15px] sm:text-[16px] leading-snug tracking-tight transition-opacity flex items-start gap-1.5 min-w-0 hover:opacity-85 line-clamp-2 min-h-[2.5em]"
                               style={{ color: course.accentColor }}
                             >
                               <span
-                                className="w-4 h-4 rounded-md flex items-center justify-center shrink-0"
+                                className="w-4 h-4 rounded-md flex items-center justify-center shrink-0 mt-0.5"
                                 style={{ color: course.accentColor }}
                               >
                                 {renderCategoryIcon(course.category, 'w-3.5 h-3.5')}
                               </span>
-                              <span className="truncate">{displayTitle}</span>
-                            </h3>
-                            {!isTwoWordMode && verifyInfo && (
-                              <span className="text-[9.5px] font-mono font-semibold text-slate-500 dark:text-slate-400 shrink-0">
-                                {verifyInfo.twoWordTitle}
+                              <span className="line-clamp-2 break-words">
+                                {formatCardTitle(course.title).split(/\s+/).slice(0, 6).join(' ')}
                               </span>
-                            )}
+                            </h3>
                           </div>
 
-                          <p className={`text-[11px] leading-snug line-clamp-2 mt-1.5 font-medium ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
+                          <p className={`text-[11px] leading-snug line-clamp-2 mt-1 font-medium ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
                             {course.desc}
                           </p>
                         </div>
@@ -722,17 +688,6 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                               <span>Xem chi tiết bằng cấp</span>
                               <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                             </button>
-
-                            {verifyInfo && (
-                              <button
-                                type="button"
-                                onClick={(e) => handleOpenVerifyModal(course, e)}
-                                title="Tra cứu xác thực chứng chỉ trực tuyến"
-                                className="p-1.5 rounded-xl border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-600 text-cyan-700 dark:text-cyan-300 hover:text-white transition cursor-pointer shrink-0"
-                              >
-                                <ShieldCheck className="w-4 h-4" />
-                              </button>
-                            )}
                           </div>
                         </div>
                       </div>
@@ -927,17 +882,6 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                           {course.issuer}
                         </p>
                       </div>
-                      {verifyInfo && (
-                        <button
-                          type="button"
-                          onClick={(e) => handleOpenVerifyModal(course, e)}
-                          className="px-3 py-1.5 rounded-full text-xs font-bold font-play text-cyan-700 dark:text-cyan-300 bg-cyan-500/15 hover:bg-cyan-500 hover:text-white border border-cyan-400/40 transition cursor-pointer flex items-center gap-1 shrink-0"
-                          title="Tra cứu mã chứng chỉ"
-                        >
-                          <ShieldCheck className="w-3.5 h-3.5" />
-                          <span>Mã: {verifyInfo.credentialId}</span>
-                        </button>
-                      )}
                     </div>
                   </div>
 
@@ -1148,17 +1092,6 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                       <Maximize2 className="w-3.5 h-3.5" />
                       <span>Xem bằng cấp toàn màn hình</span>
                     </button>
-
-                    {verifyInfo && (
-                      <button
-                        type="button"
-                        onClick={(e) => handleOpenVerifyModal(course, e)}
-                        className="px-3.5 py-1.5 rounded-xl text-xs font-bold font-play flex items-center gap-1.5 bg-cyan-600 hover:bg-cyan-700 text-white transition cursor-pointer shadow-sm hover:scale-105 active:scale-95"
-                      >
-                        <ShieldCheck className="w-3.5 h-3.5" />
-                        <span>Tra cứu mã chứng chỉ</span>
-                      </button>
-                    )}
                   </div>
 
                   <button
