@@ -416,26 +416,26 @@ export const DataFlowMatrixModal: React.FC<DataFlowMatrixModalProps> = ({
   return (
     <AnimatePresence>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-xl select-none font-play"
+        className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md select-none font-play rounded-[14px]"
         onClick={() => {
           SoundEngine.playTap();
           onClose();
         }}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.92, y: 15 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.92, y: 15 }}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.96 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className={`relative w-[95vw] sm:w-[92vw] max-w-7xl h-[88vh] max-h-[88vh] overflow-hidden rounded-[14px] border shadow-2xl flex flex-col backdrop-blur-2xl transition-all duration-300 ${
+          className={`relative w-full h-full overflow-hidden rounded-[14px] border shadow-2xl flex flex-col backdrop-blur-2xl transition-all duration-300 ${
             isDark
               ? 'bg-slate-950/95 border-cyan-500/40 shadow-[0_0_50px_rgba(34,211,238,0.25)] text-white'
               : 'bg-white/95 border-blue-200/90 shadow-[0_20px_60px_rgba(15,23,42,0.25)] text-slate-900'
           }`}
         >
         {/* Header Modal */}
-        <div className="flex items-center justify-between p-3.5 sm:p-4.5 border-b border-slate-200/80 dark:border-white/10 shrink-0">
+        <div className="flex items-center justify-between p-3 sm:p-4 border-b border-slate-200/80 dark:border-white/10 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
               <Activity className="w-5 h-5 text-cyan-200 animate-pulse" />
@@ -486,10 +486,10 @@ export const DataFlowMatrixModal: React.FC<DataFlowMatrixModalProps> = ({
         </div>
 
         {/* Khu Vực Chính: Sơ Đồ Vector SVG Tương Tác Kèm Hạt Phát Sáng */}
-        <div className="relative flex-1 min-h-[300px] sm:min-h-[380px] p-2 sm:p-4 overflow-hidden flex items-center justify-center bg-radial from-slate-900/10 via-transparent to-transparent">
+        <div className="relative flex-1 min-h-0 p-2 sm:p-3 overflow-hidden flex items-center justify-center bg-radial from-slate-900/10 via-transparent to-transparent">
           <svg
             viewBox="0 0 1000 520"
-            className="w-full h-full max-h-[460px] object-contain drop-shadow-md select-none"
+            className="w-full h-full object-contain drop-shadow-md select-none"
           >
             <defs>
               {/* Filter phát sáng hào quang cho các hạt photon (Glow Filter) */}

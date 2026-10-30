@@ -36,8 +36,8 @@ import { NetworkDebugModal } from '@/components/ui/NetworkDebugModal';
 import { HomeView } from '@/components/views/HomeView';
 import { LetterView } from '@/components/views/LetterView';
 import { AboutView } from '@/components/views/AboutView';
-import { EducationView } from '@/components/views/EducationView';
 import { ServicesView } from '@/components/views/ServicesView';
+import EducationView from '@/components/views/EducationView';
 import { ExperienceView } from '@/components/views/ExperienceView';
 import { SkillsView } from '@/components/views/SkillsView';
 import { ProjectsView } from '@/components/views/ProjectsView';
@@ -723,7 +723,7 @@ export default function HomePage() {
             {currentPage === 0 && (
               <HomeView
                 currentTheme={currentTheme}
-                onNavigateContact={() => setCurrentPage(12)}
+                onNavigateContact={() => setCurrentPage(13)}
                 onNavigatePage={setCurrentPage}
                 onOpenPagesCarousel={() => setIsPagesCarouselOpen(true)}
               />
@@ -734,17 +734,18 @@ export default function HomePage() {
               />
             )}
             {currentPage === 2 && <AboutView currentTheme={currentTheme} onNavigatePage={setCurrentPage} />}
-            {currentPage === 3 && <EducationView currentTheme={currentTheme} />}
-            {currentPage === 4 && <ServicesView currentTheme={currentTheme} />}
-            {currentPage === 5 && <SkillsView currentTheme={currentTheme} onNavigatePage={setCurrentPage} />}
-            {currentPage === 6 && <ExperienceView currentTheme={currentTheme} />}
-            {currentPage === 7 && <ProjectsView currentTheme={currentTheme} />}
-            {currentPage === 8 && <SystemsView currentTheme={currentTheme} />}
-            {currentPage === 9 && <InterviewView currentTheme={currentTheme} />}
-            {currentPage === 10 && <HoroscopeView currentTheme={currentTheme} />}
-            {currentPage === 11 && <MemoriesView currentTheme={currentTheme} />}
-            {currentPage === 12 && <ContactView currentTheme={currentTheme} />}
-            {currentPage === 13 && (
+            {currentPage === 3 && <ServicesView currentTheme={currentTheme} />}
+            {currentPage === 4 && <SkillsView currentTheme={currentTheme} />}
+            {currentPage === 5 && <EducationView />}
+            {currentPage === 6 && <SkillsView currentTheme={currentTheme} />}
+            {currentPage === 7 && <ExperienceView currentTheme={currentTheme} />}
+            {currentPage === 8 && <ProjectsView currentTheme={currentTheme} />}
+            {currentPage === 9 && <SystemsView currentTheme={currentTheme} />}
+            {currentPage === 10 && <InterviewView currentTheme={currentTheme} />}
+            {currentPage === 11 && <HoroscopeView currentTheme={currentTheme} />}
+            {currentPage === 12 && <MemoriesView currentTheme={currentTheme} />}
+            {currentPage === 13 && <ContactView currentTheme={currentTheme} />}
+            {currentPage === 14 && (
               <WallpaperView
                 currentTheme={currentTheme}
                 onSelectTheme={handleChangeTheme}

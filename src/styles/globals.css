@@ -9,6 +9,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .glass-pastel {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(15px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
+}
+
+
 /* Font dùng mặc định cho toàn bộ website là Play */
 *,
 *::before,
@@ -58,66 +69,91 @@ blockquote {
    Cùng đối tượng = Cùng cấp bậc = Cùng kích thước = Cùng độ đậm
    Line-height tối ưu bảo vệ đầy đủ dấu tiếng Việt: mũ, ngã, sắc, nặng, hỏi
    ========================================================================= */
-h1 {
-  font-size: clamp(1.4rem, 1.15rem + 1vw, 2rem) !important;
-  line-height: 1.32 !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.015em !important;
-}
-
-h2 {
-  font-size: clamp(1.2rem, 1.05rem + 0.65vw, 1.55rem) !important;
-  line-height: 1.36 !important;
+h1,
+.hero-banner h1,
+.hero-banner h2,
+.theme-hero-banner h1,
+.theme-hero-banner h2,
+.kinetic-title-16x3,
+.banner-title {
+  font-size: var(--font-h1) !important;
+  line-height: 1.3 !important;
   font-weight: 700 !important;
   letter-spacing: -0.01em !important;
 }
 
-h3 {
-  font-size: clamp(1.05rem, 0.95rem + 0.45vw, 1.32rem) !important;
-  line-height: 1.38 !important;
+h2:not(.kinetic-title-16x3) {
+  font-size: var(--font-h2) !important;
+  line-height: 1.34 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+}
+
+h3,
+h4 {
+  font-size: var(--font-card-title) !important;
+  line-height: 1.35 !important;
   font-weight: 700 !important;
   letter-spacing: -0.005em !important;
 }
 
-h4 {
-  font-size: clamp(0.925rem, 0.85rem + 0.35vw, 1.125rem) !important;
-  line-height: 1.42 !important;
-  font-weight: 700 !important;
-}
-
 h5 {
-  font-size: clamp(0.85rem, 0.8rem + 0.25vw, 1rem) !important;
-  line-height: 1.45 !important;
-  font-weight: 700 !important;
+  font-size: var(--font-h5) !important;
+  line-height: 1.42 !important;
+  font-weight: 600 !important;
 }
 
 h6 {
-  font-size: clamp(0.8rem, 0.76rem + 0.15vw, 0.875rem) !important;
-  line-height: 1.48 !important;
-  font-weight: 700 !important;
+  font-size: var(--font-h6) !important;
+  line-height: 1.38 !important;
+  font-weight: 600 !important;
 }
 
-/* Thân bài & đoạn văn chuẩn mực rõ ràng */
-p {
-  line-height: 1.62 !important;
-  letter-spacing: 0.005em !important;
+/* Thân bài & danh sách chuẩn mực rõ ràng (14px đồng nhất) */
+p,
+li {
+  font-size: var(--font-body) !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0em !important;
 }
 
-/* Tiêu đề thẻ Card đồng bộ 100% kích thước thẻ dịch vụ (17px -> 18.5px -> 19.5px) */
+/* Tiêu đề thẻ Card đồng bộ 100% kích thước trên toàn website (17px) */
 .card-title,
 .domain-card-title,
+.edu-card-title,
+.skill-card-title,
+.system-card-title,
+.project-card-title,
+.typo-card-title,
 .theme-pastel-card h2,
 .theme-pastel-card h3,
 .theme-pastel-card h4,
+.bento-card h2,
+.bento-card h3,
+.bento-card h4,
+.bento-view-card h2,
+.bento-view-card h3,
+.bento-view-card h4,
+.edu-stack-card h2,
+.edu-stack-card h3,
+.edu-stack-card h4,
+.system-item h2,
+.system-item h3,
+.system-item h4,
+.card-002 h3,
+.card-003 h3,
+.card-104 h3,
+.u228-in b,
 .card-system .card-title {
-  font-size: clamp(1.0625rem, 0.95rem + 0.55vw, 1.22rem) !important;
-  line-height: 1.32 !important;
+  font-size: var(--font-card-title) !important;
+  line-height: 1.35 !important;
   font-weight: 700 !important;
   letter-spacing: -0.01em !important;
 }
 
 /* Kiểu dáng full chiều cao và full chiều rộng đồng nhất cho các khối thẻ trên toàn website */
 .theme-pastel-card {
+  @apply glass-pastel;
   width: 100% !important;
   height: 100% !important;
   min-height: 0 !important;
@@ -1719,115 +1755,115 @@ body {
 
 h1,
 .typo-h1 {
-  font-size: var(--font-h1);
-  font-weight: var(--weight-bold);
-  line-height: var(--line-heading);
-  letter-spacing: var(--tracking-heading);
+  font-size: var(--font-h1) !important;
+  font-weight: var(--weight-bold) !important;
+  line-height: 1.3 !important;
+  letter-spacing: var(--tracking-heading) !important;
 }
 
-h2,
-.typo-h2 {
-  font-size: var(--font-h2);
-  font-weight: var(--weight-bold);
-  line-height: var(--line-heading);
-  letter-spacing: var(--tracking-heading);
+h2:not(.kinetic-title-16x3),
+.typo-h2,
+.section-title {
+  font-size: var(--font-h2) !important;
+  font-weight: var(--weight-bold) !important;
+  line-height: 1.34 !important;
+  letter-spacing: var(--tracking-heading) !important;
 }
 
 h3,
-.typo-h3 {
-  font-size: var(--font-h3);
-  font-weight: var(--weight-semibold);
-  line-height: var(--line-subheading);
-  letter-spacing: var(--tracking-heading);
-}
-
+.typo-h3,
 h4,
 .typo-h4 {
-  font-size: var(--font-h4);
-  font-weight: var(--weight-semibold);
-  line-height: var(--line-subheading);
-  letter-spacing: -0.01em;
+  font-size: var(--font-card-title) !important;
+  font-weight: var(--weight-bold) !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.01em !important;
 }
 
 h5,
-.typo-h5 {
-  font-size: var(--font-h5);
-  font-weight: var(--weight-semibold);
-  line-height: var(--line-subheading);
-  letter-spacing: 0em;
+.typo-h5,
+.card-subtitle,
+.card-fullname {
+  font-size: var(--font-h5) !important;
+  font-weight: var(--weight-semibold) !important;
+  line-height: 1.42 !important;
+  letter-spacing: 0em !important;
 }
 
 h6,
 .typo-h6 {
-  font-size: var(--font-h6);
-  font-weight: var(--weight-semibold);
-  line-height: var(--line-subheading);
-  letter-spacing: 0em;
+  font-size: var(--font-h6) !important;
+  font-weight: var(--weight-semibold) !important;
+  line-height: 1.38 !important;
+  letter-spacing: 0em !important;
 }
 
 /* 2. Các Token Lớp Đối Tượng Chuẩn Hóa (Semantic Typography Utility Classes) */
 .typo-hero {
-  font-size: var(--font-hero);
-  font-weight: var(--weight-bold);
-  line-height: var(--line-heading);
-  letter-spacing: var(--tracking-heading);
+  font-size: var(--font-hero) !important;
+  font-weight: var(--weight-bold) !important;
+  line-height: 1.3 !important;
+  letter-spacing: var(--tracking-heading) !important;
 }
 
-.typo-body {
-  font-size: var(--font-body);
-  font-weight: var(--weight-regular);
-  line-height: var(--line-body);
-  letter-spacing: var(--tracking-body);
+.typo-body,
+.typo-body-sm,
+.typo-card,
+.card-desc,
+.card-002 p,
+.card-003 p,
+.card-104 p,
+.u228-in span {
+  font-size: var(--font-body) !important;
+  line-height: 1.6 !important;
+  letter-spacing: var(--tracking-body) !important;
 }
 
-.typo-body-sm {
-  font-size: var(--font-body-sm);
-  font-weight: var(--weight-regular);
-  line-height: var(--line-body-sm);
-  letter-spacing: var(--tracking-body);
-}
-
-.typo-caption {
-  font-size: var(--font-caption);
-  font-weight: var(--weight-regular);
-  line-height: var(--line-compact);
+.typo-caption,
+.badge,
+.tag,
+.pill {
+  font-size: var(--font-caption) !important;
+  line-height: 1.38 !important;
   letter-spacing: var(--tracking-body);
 }
 
 .typo-overline {
-  font-size: var(--font-overline);
-  font-weight: var(--weight-semibold);
-  line-height: var(--line-compact);
-  letter-spacing: var(--tracking-overline);
+  font-size: var(--font-overline) !important;
+  font-weight: var(--weight-semibold) !important;
+  line-height: 1.38 !important;
+  letter-spacing: var(--tracking-overline) !important;
   text-transform: uppercase;
 }
 
-.typo-nav {
-  font-size: var(--font-nav);
-  font-weight: var(--weight-medium);
-  line-height: var(--line-compact);
+.typo-nav,
+.neonav-item {
+  font-size: var(--font-nav) !important;
+  font-weight: var(--weight-semibold) !important;
+  line-height: 1.4 !important;
 }
 
-.typo-button {
-  font-size: var(--font-button);
-  font-weight: var(--weight-semibold);
-  line-height: var(--line-compact);
+.typo-button,
+.btn {
+  font-size: var(--font-button) !important;
+  font-weight: var(--weight-semibold) !important;
+  line-height: 1.4 !important;
 }
 
 .typo-label,
 label {
-  font-size: var(--font-label);
-  font-weight: var(--weight-medium);
-  line-height: var(--line-compact);
+  font-size: var(--font-label) !important;
+  font-weight: var(--weight-semibold);
+  line-height: 1.38 !important;
 }
 
 .typo-input,
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 textarea,
 select {
-  font-size: var(--font-input);
+  font-size: var(--font-input) !important;
   font-weight: var(--weight-regular);
-  line-height: var(--line-body-sm);
+  line-height: 1.5 !important;
 }
 
 .typo-card-title,
@@ -1837,50 +1873,44 @@ select {
 .system-card-title,
 .project-card-title,
 .card-title {
-  font-size: var(--font-card-title);
-  font-weight: var(--weight-semibold);
-  line-height: var(--line-subheading);
-  letter-spacing: -0.01em;
-}
-
-.typo-card,
-.card-desc {
-  font-size: var(--font-card);
-  font-weight: var(--weight-regular);
-  line-height: var(--line-body-sm);
+  font-size: var(--font-card-title) !important;
+  font-weight: var(--weight-bold) !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.01em !important;
 }
 
 .typo-stat {
-  font-size: var(--font-stat);
-  font-weight: var(--weight-bold);
-  line-height: var(--line-heading);
+  font-size: var(--font-stat) !important;
+  font-weight: var(--weight-bold) !important;
+  line-height: 1.25 !important;
   letter-spacing: var(--tracking-heading);
+  font-variant-numeric: tabular-nums;
 }
 
 .typo-stat-label {
-  font-size: var(--font-stat-label);
-  font-weight: var(--weight-medium);
-  line-height: var(--line-compact);
+  font-size: var(--font-stat-label) !important;
+  font-weight: var(--weight-semibold);
+  line-height: 1.38 !important;
 }
 
 .typo-breadcrumb {
-  font-size: var(--font-breadcrumb);
+  font-size: var(--font-breadcrumb) !important;
   font-weight: var(--weight-medium);
-  line-height: var(--line-compact);
+  line-height: 1.38 !important;
 }
 
 .typo-tooltip,
 .circle-node-tooltip {
-  font-size: var(--font-tooltip);
+  font-size: var(--font-tooltip) !important;
   font-weight: var(--weight-medium);
-  line-height: var(--line-compact);
+  line-height: 1.38 !important;
 }
 
 .typo-table,
 table th,
 table td {
-  font-size: var(--font-table);
-  line-height: var(--line-body-sm);
+  font-size: var(--font-table) !important;
+  line-height: 1.55 !important;
 }
 
 table th {
@@ -1896,9 +1926,9 @@ code,
 pre,
 kbd,
 samp {
-  font-size: var(--font-code);
+  font-size: var(--font-code) !important;
   font-weight: var(--weight-medium);
-  line-height: var(--line-compact);
+  line-height: 1.4 !important;
 }
 
 /* 3. Chuẩn hóa độ đậm chữ (Không tự ý vượt quá 700, đồng bộ font-extrabold / font-black -> 700) */
@@ -1920,22 +1950,78 @@ samp {
 /* =========================================================================
    5. HỆ THỐNG TYPOGRAPHY SCALE TOÀN DIỆN (/typography - RULE 30)
    - Giữ nguyên font Play mặc định, hiển thị đầy đủ dấu Tiếng Việt
-   - Chuẩn hóa kích thước theo vai trò đồng nhất trên Desktop, Tablet, Mobile
+   - Khóa cứng các lớp cỡ chữ tự phát (text-[8px] -> text-3xl) về đúng 6 bậc chuẩn
    ========================================================================= */
 :root {
-  --font-size-display: clamp(1.85rem, 1.35rem + 2.2vw, 2.65rem);
-  --font-size-h1: clamp(1.5rem, 1.15rem + 1.6vw, 2.125rem);
-  --font-size-h2: clamp(1.25rem, 1rem + 1.1vw, 1.625rem);
-  --font-size-h3: clamp(1.0625rem, 0.95rem + 0.65vw, 1.3125rem);
-  --font-size-h4: clamp(0.95rem, 0.875rem + 0.4vw, 1.125rem);
-  --font-size-body: clamp(0.8125rem, 0.785rem + 0.15vw, 0.9375rem);
-  --font-size-body-sm: clamp(0.75rem, 0.725rem + 0.12vw, 0.875rem);
-  --font-size-label: clamp(0.75rem, 0.725rem + 0.12vw, 0.84375rem);
-  --font-size-button: clamp(0.75rem, 0.725rem + 0.15vw, 0.875rem);
-  --font-size-caption: clamp(0.6875rem, 0.65rem + 0.12vw, 0.78125rem);
-  --font-size-metric: clamp(1.4rem, 1.1rem + 1.6vw, 2.25rem);
-  --line-height-heading: 1.28;
+  --font-size-display: clamp(1.25rem, 1.1rem + 0.65vw, 1.375rem);
+  --font-size-h1: clamp(1.25rem, 1.1rem + 0.65vw, 1.375rem);
+  --font-size-h2: clamp(1.125rem, 1.02rem + 0.45vw, 1.1875rem);
+  --font-size-h3: 1.0625rem;
+  --font-size-h4: 1.0625rem;
+  --font-size-body: 0.875rem;
+  --font-size-body-sm: 0.875rem;
+  --font-size-label: 0.75rem;
+  --font-size-button: 0.875rem;
+  --font-size-caption: 0.75rem;
+  --font-size-metric: 1.375rem;
+  --line-height-heading: 1.32;
   --line-height-body: 1.6;
+}
+
+/* Khóa đồng bộ các lớp cỡ chữ rời rạc trong vùng nội dung (#content-display) */
+#content-display .text-\[8px\],
+#content-display .text-\[8\.5px\],
+#content-display .text-\[9px\],
+#content-display .text-\[9\.5px\],
+#content-display .text-\[10px\],
+#content-display .text-\[10\.5px\],
+#content-display .text-\[11px\],
+#content-display .text-\[11\.5px\],
+#content-display .text-xs {
+  font-size: var(--font-caption) !important; /* 12px chuẩn Badge / Tag / Caption */
+  line-height: 1.38 !important;
+}
+
+#content-display .text-\[12px\],
+#content-display .text-\[12\.5px\],
+#content-display .text-\[13px\],
+#content-display .text-\[13\.5px\],
+#content-display .text-\[14px\],
+#content-display .text-\[14\.5px\],
+#content-display .text-sm {
+  font-size: var(--font-body) !important; /* 14px chuẩn Body / Mô tả / List */
+  line-height: 1.58 !important;
+}
+
+#content-display .text-\[15px\],
+#content-display .text-\[15\.5px\],
+#content-display .text-base {
+  font-size: var(--font-h5) !important; /* 15px chuẩn Subtitle */
+  line-height: 1.42 !important;
+}
+
+#content-display .text-\[16px\],
+#content-display .text-\[16\.5px\],
+#content-display .text-\[17px\],
+#content-display .text-\[17\.5px\],
+#content-display .text-\[18px\],
+#content-display .text-lg {
+  font-size: var(--font-card-title) !important; /* 17px chuẩn Card Title */
+  line-height: 1.35 !important;
+}
+
+#content-display .text-\[19px\],
+#content-display .text-\[20px\],
+#content-display .text-xl {
+  font-size: var(--font-h2) !important; /* 19px chuẩn Section Header */
+  line-height: 1.34 !important;
+}
+
+#content-display .text-2xl,
+#content-display .text-3xl,
+#content-display .text-4xl {
+  font-size: var(--font-h1) !important; /* 22px chuẩn Banner / KPI */
+  line-height: 1.3 !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -2120,33 +2206,30 @@ img, video {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* Inter Typography for Dark Theme */
+/* Play Typography Unified for Dark Theme (Đồng bộ 100% với Light Mode) */
 [data-theme="dark-neon"] h1,
 [data-theme="dark-neon"] h2,
 [data-theme="dark-neon"] h3,
 [data-theme="dark-neon"] h4,
 [data-theme="dark-neon"] h5,
 [data-theme="dark-neon"] h6 {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.05em !important;
-  line-height: 1.05 !important;
-  color: #F4F4F5 !important;
+  font-family: 'Play', system-ui, -apple-system, sans-serif !important;
+  color: #F4F4F5;
 }
 
 [data-theme="dark-neon"] p,
 [data-theme="dark-neon"] body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: #71717A;
+  font-family: 'Play', system-ui, -apple-system, sans-serif !important;
+  color: #cbd5e1;
 }
 
 [data-theme="dark-neon"] .label-uppercase,
 [data-theme="dark-neon"] .label-badge,
 [data-theme="dark-neon"] .badge-uppercase {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  font-family: 'Play', system-ui, -apple-system, sans-serif !important;
   font-weight: 700 !important;
-  font-size: 10px !important;
-  letter-spacing: 0.2em !important;
+  font-size: var(--font-caption) !important;
+  letter-spacing: var(--tracking-overline) !important;
   text-transform: uppercase !important;
 }
 

@@ -180,6 +180,10 @@ const getLucideIcon = (name: string) => {
       return LinkedinIcon as any;
     case 'ExternalLink':
       return ExternalLink;
+    case 'Sparkles':
+      return Sparkles;
+    case 'Star':
+      return Star;
     default:
       return User;
   }
@@ -1238,14 +1242,6 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                 {!isPlayingIntro && (
                   <div className="flex flex-col gap-2 z-20 w-full sm:w-[160px] lg:w-[180px] shrink-0 justify-center">
                     <div className="flex flex-col gap-2">
-                      <div className="flex items-center justify-between px-0.5">
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-white/90 drop-shadow-xs flex items-center gap-1.5">
-                          <User className="w-3.5 h-3.5 text-cyan-300" />
-                          <span>Thông Tin Cá Nhân</span>
-                        </span>
-                        <span className="text-[9.5px] text-white/70 font-mono">Hồ sơ C-Level</span>
-                      </div>
-
                       <div className="grid grid-cols-1 gap-2">
                         {PERSONAL_DEMOGRAPHICS.map((item) => {
                           const ItemIcon = getLucideIcon(item.iconName);
@@ -1324,42 +1320,8 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                 </span>
               </div>
 
-              {/* Bento Grid: Khối trên (Chỉ số + Chân dung + 3 Trụ Cột) & Khối dưới (Giá trị cốt lõi + Triết lý) */}
+              {/* Bento Grid: Khối trên (Chân dung + 3 Trụ Cột) & Khối dưới (Giá trị cốt lõi + Triết lý) */}
               <div className="flex flex-col gap-3.5 flex-1 min-h-0">
-                {/* Khối 4 Thẻ Chỉ Số Vận Hành Thực Chiến chuyển qua Slide 3 */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 shrink-0">
-                  {ABOUT_PROFILE_STATS.map((stat) => {
-                    const StatIcon = getLucideIcon(stat.iconName);
-                    return (
-                      <div
-                        key={stat.id}
-                        onClick={() => {
-                          SoundEngine.playPop();
-                          showToast(`Chỉ số ${stat.labelVi}: ${stat.metric} ${stat.unitVi || ''}`);
-                        }}
-                        className="p-2 sm:p-2.5 rounded-xl bg-white/95 dark:bg-slate-800/95 border border-slate-200/90 dark:border-white/10 shadow-2xs flex items-center gap-2.5 hover:shadow-xs  transition-all cursor-pointer"
-                      >
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-2xs"
-                          style={{ backgroundColor: `${stat.color}18`, color: stat.color }}
-                        >
-                          <StatIcon className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0 flex flex-col text-left">
-                          <span className="text-[9.5px] sm:text-[10px] text-slate-500 dark:text-slate-400 font-bold truncate">
-                            {stat.labelVi}
-                          </span>
-                          <span
-                            className="text-[13px] sm:text-[14px] font-black font-mono leading-tight truncate"
-                            style={{ color: stat.color }}
-                          >
-                            {stat.metric} {stat.unitVi}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
 
                 {/* Row 1: Left Story Card (lg:col-span-5) + Right 3 Pillars (lg:col-span-7) */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch flex-1 min-h-0">
@@ -1400,19 +1362,6 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                         khắc, dù là nhỏ nhất, đều là một cơ hội quý giá để lắng nghe, để thấu hiểu, và để tạo ra những trải
                         nghiệm vượt trên cả sự mong đợi.
                       </p>
-
-                      {/* Khối Kinh nghiệm CX & CS 22+ NĂM & Quy mô lớn 8+ MÔI TRƯỜNG tích hợp trực tiếp vào thẻ giới thiệu bản thân */}
-                      <div className="mt-2.5 p-2 rounded-xl bg-blue-50/90 dark:bg-slate-800/90 border border-blue-200/80 dark:border-white/10 flex items-center justify-around text-center shadow-2xs backdrop-blur-md">
-                        <div className="flex flex-col items-center">
-                          <span className="text-[10px] text-slate-600 dark:text-slate-300 font-bold block">Kinh nghiệm CX & CS</span>
-                          <span className="text-xs sm:text-sm font-black font-mono text-blue-600 dark:text-cyan-400">22+ NĂM</span>
-                        </div>
-                        <div className="w-[1px] h-7 bg-slate-300/80 dark:bg-white/15" />
-                        <div className="flex flex-col items-center">
-                          <span className="text-[10px] text-slate-600 dark:text-slate-300 font-bold block">Quy mô lớn</span>
-                          <span className="text-xs sm:text-sm font-black font-mono text-purple-600 dark:text-purple-400">8+ MÔI TRƯỜNG</span>
-                        </div>
-                      </div>
                     </div>
 
                     {/* Signature */}

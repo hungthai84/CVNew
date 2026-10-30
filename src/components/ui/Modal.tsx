@@ -53,7 +53,7 @@ export const Modal: React.FC<ModalProps> = ({
     >
       <div
         className={clsx(
-          'relative w-full rounded-[14px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl shadow-2xl border border-white/60 dark:border-white/15 flex flex-col text-slate-800 dark:text-slate-100 overflow-hidden max-h-[92vh] transition-colors duration-300',
+          'relative w-full rounded-[14px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl shadow-2xl border border-white/60 dark:border-white/15 flex flex-col text-slate-800 dark:text-slate-100 overflow-hidden max-h-[92vh] transition-colors duration-300 glass-pastel',
           maxWidthClasses[maxWidth]
         )}
         onClick={(e) => e.stopPropagation()}

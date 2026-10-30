@@ -1124,7 +1124,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                           <img
                             src={bannerImg}
                             alt={`${item.shortName} banner`}
-                            className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 group-hover/logo:scale-105 pointer-events-none select-none opacity-85"
+                            className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 pointer-events-none select-none opacity-85"
                             loading="lazy"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-white/35 via-transparent to-white/15 dark:from-slate-950/55 dark:to-transparent pointer-events-none" />
@@ -1132,7 +1132,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                           {/* Circular Logo Medallion */}
                           <div
                             className={`relative z-10 w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full overflow-hidden bg-white p-0 shadow-md transition-all duration-300 flex items-center justify-center shrink-0 ${
-                              isSelected ? 'scale-105' : 'group-hover/logo:scale-105'
+                              isSelected ? 'scale-105' : ''
                             }`}
                           >
                             <img
@@ -1871,7 +1871,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                   {brandsList.map((b, bIdx) => (
                     <div
                       key={bIdx}
-                      className="p-1.5 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-white/10 flex items-center justify-center h-12 sm:h-13 hover:bg-white dark:hover:bg-slate-700 hover:scale-105 shadow-xs transition-all"
+                      className="p-1.5 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-white/10 flex items-center justify-center h-12 sm:h-13 shadow-xs transition-all"
                       title={b.name}
                     >
                       {b.logo ? (
@@ -1988,7 +1988,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                         target.src = fallback;
                       }
                     }}
-                    className="h-full w-full object-cover object-right group-hover/banner:scale-105 transition-transform duration-700"
+                    className="h-full w-full object-cover object-right transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent" />
                 </div>
@@ -2020,7 +2020,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                   {brandsList.map((b, bIdx) => (
                     <div
                       key={bIdx}
-                      className="logo-pill-light p-1.5 px-3 rounded-full bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-white/20 text-[10px] font-bold shadow-xs flex items-center justify-center hover:scale-105 transition-transform"
+                      className="logo-pill-light p-1.5 px-3 rounded-full bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-white/20 text-[10px] font-bold shadow-xs flex items-center justify-center transition-transform"
                       title={b.name}
                     >
                       {b.logo ? (

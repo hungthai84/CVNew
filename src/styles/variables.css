@@ -10,33 +10,33 @@
   --font-family-base: 'Play', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-play: var(--font-family-base);
 
-  /* A. Tiêu đề và nội dung chính (Fluid Clamp Typography: Responsive từ 375px đến 1440px+) */
-  --font-hero: clamp(1.75rem, 1.25rem + 2.5vw, 2.5rem);           /* 28px -> 40px */
-  --font-h1: clamp(1.5rem, 1.15rem + 1.75vw, 2.125rem);           /* 24px -> 34px */
-  --font-h2: clamp(1.25rem, 1rem + 1.25vw, 1.625rem);             /* 20px -> 26px */
-  --font-h3: clamp(1.1rem, 0.95rem + 0.75vw, 1.375rem);           /* 17.6px -> 22px */
-  --font-h4: clamp(0.95rem, 0.85rem + 0.5vw, 1.125rem);           /* 15.2px -> 18px */
-  --font-h5: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);             /* 14px -> 16px */
-  --font-h6: clamp(0.8125rem, 0.775rem + 0.2vw, 0.875rem);        /* 13px -> 14px */
+  /* A. Tiêu đề và nội dung chính (Chuẩn cân đối dễ đọc: Body 14px, Card Title 17px, Section 19px, Banner 22px) */
+  --font-hero: clamp(1.25rem, 1.1rem + 0.65vw, 1.375rem);          /* 20px -> 22px */
+  --font-h1: clamp(1.25rem, 1.1rem + 0.65vw, 1.375rem);            /* 20px -> 22px (Tiêu đề trang & Banner) */
+  --font-h2: clamp(1.125rem, 1.02rem + 0.45vw, 1.1875rem);         /* 18px -> 19px (Tiêu đề mục lớn Section) */
+  --font-h3: 1.0625rem;                                            /* 17px (Tiêu đề thẻ Card H3) */
+  --font-h4: 1.0625rem;                                            /* 17px (Tiêu đề thẻ Card H4 đồng nhất H3) */
+  --font-h5: 0.9375rem;                                            /* 15px (Tiêu đề phụ trong thẻ / Chức danh) */
+  --font-h6: 0.75rem;                                              /* 12px (Nhãn nhỏ / Kicker / Eyebrow) */
 
-  --font-body: clamp(0.8125rem, 0.785rem + 0.15vw, 0.875rem);      /* 13px -> 14px (Đồng bộ font text giới thiệu chuẩn) */
-  --font-body-sm: clamp(0.75rem, 0.725rem + 0.15vw, 0.875rem);     /* 12px -> 14px */
-  --font-caption: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);     /* 11px -> 12px */
-  --font-overline: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);    /* 11px -> 12px */
+  --font-body: 0.875rem;                                           /* 14px (Thân bài, mô tả thẻ, danh sách li) */
+  --font-body-sm: 0.875rem;                                        /* 14px (Đồng bộ 100% cùng thân bài 14px) */
+  --font-caption: 0.75rem;                                         /* 12px (Badge, Tag, Pill, Chú thích) */
+  --font-overline: 0.75rem;                                        /* 12px (Kicker / Eyebrow viết hoa) */
 
-  /* B. Thành phần giao diện (Fluid Interface Tokens) */
-  --font-nav: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);            /* 12px -> 14px */
-  --font-button: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);         /* 12px -> 14px */
-  --font-label: clamp(0.75rem, 0.725rem + 0.15vw, 0.8125rem);      /* 12px -> 13px */
-  --font-input: clamp(0.875rem, 0.825rem + 0.25vw, 1rem);          /* 14px -> 16px - chống iOS auto-zoom */
-  --font-card: clamp(0.8125rem, 0.775rem + 0.2vw, 0.875rem);        /* 13px -> 14px */
-  --font-card-title: clamp(0.9375rem, 0.85rem + 0.45vw, 1.125rem);   /* 15px -> 18px */
-  --font-stat: clamp(1.5rem, 1.15rem + 1.8vw, 2.25rem);            /* 24px -> 36px */
-  --font-stat-label: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);   /* 11px -> 12px */
-  --font-breadcrumb: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);   /* 11px -> 12px */
-  --font-tooltip: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);      /* 11px -> 12px */
-  --font-table: clamp(0.75rem, 0.725rem + 0.15vw, 0.8125rem);      /* 12px -> 13px */
-  --font-code: clamp(0.75rem, 0.725rem + 0.15vw, 0.8125rem);       /* 12px -> 13px */
+  /* B. Thành phần giao diện (Standardized Interface Tokens) */
+  --font-nav: 0.875rem;                                            /* 14px (Menu Header & Điều hướng) */
+  --font-button: 0.875rem;                                         /* 14px (Nút bấm CTA & Action) */
+  --font-label: 0.75rem;                                           /* 12px (Nhãn Form & Tag) */
+  --font-input: 0.875rem;                                          /* 14px (Ô nhập liệu Input / Select) */
+  --font-card: 0.875rem;                                           /* 14px (Mô tả trong thẻ Card) */
+  --font-card-title: 1.0625rem;                                    /* 17px (Tiêu đề thẻ Card chuẩn) */
+  --font-stat: 1.375rem;                                           /* 22px (Con số thống kê KPI) */
+  --font-stat-label: 0.75rem;                                      /* 12px (Nhãn chỉ số KPI) */
+  --font-breadcrumb: 0.75rem;                                      /* 12px */
+  --font-tooltip: 0.75rem;                                         /* 12px */
+  --font-table: 0.875rem;                                          /* 14px (Bảng dữ liệu đồng bộ thân bài) */
+  --font-code: 0.75rem;                                            /* 12px */
 
   /* C. Quy chuẩn Font Weight (400 - 700, không tự ý dùng 800/900) */
   --weight-regular: 400;
@@ -45,14 +45,14 @@
   --weight-bold: 700;
 
   /* D. Quy chuẩn Line-Height (bảo vệ hiển thị đầy đủ dấu tiếng Việt: mũ, ngã, sắc, nặng) */
-  --line-heading: 1.28;
-  --line-subheading: 1.36;
-  --line-body: 1.62;
-  --line-body-sm: 1.52;
-  --line-compact: 1.42;
+  --line-heading: 1.32;
+  --line-subheading: 1.35;
+  --line-body: 1.6;
+  --line-body-sm: 1.58;
+  --line-compact: 1.38;
 
   /* E. Quy chuẩn Letter-Spacing */
-  --tracking-heading: -0.015em;
+  --tracking-heading: -0.01em;
   --tracking-body: 0em;
   --tracking-overline: 0.04em;
 
@@ -1114,21 +1114,21 @@ body {
 }
 
 .card-title {
-  font-size: 15px;
-  font-weight: 800;
+  font-size: var(--font-card-title);
+  font-weight: 700;
   color: var(--card-theme-color);
   letter-spacing: -0.01em;
-  line-height: 1.2;
+  line-height: 1.35;
   margin: 0;
 }
 
 .card-fullname {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: var(--font-h5);
+  font-weight: 600;
   color: var(--card-theme-color);
   margin-top: 1px;
   margin-bottom: 0;
-  line-height: 1.2;
+  line-height: 1.42;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1136,9 +1136,9 @@ body {
 }
 
 .card-time {
-  font-size: 12.5px;
-  font-weight: 700;
-  line-height: 1.3;
+  font-size: var(--font-body);
+  font-weight: 600;
+  line-height: 1.45;
   color: #1e293b;
 }
 
@@ -3783,16 +3783,19 @@ html.theme-transitioning article {
 @media (max-width: 767px) {
   :root,
   [data-theme] {
-    --font-hero: clamp(1.625rem, 1.25rem + 1.8vw, 1.875rem);
-    --font-h1: clamp(1.375rem, 1.15rem + 1.2vw, 1.625rem);
-    --font-h2: clamp(1.15rem, 1rem + 0.9vw, 1.35rem);
-    --font-h3: clamp(1.05rem, 0.95rem + 0.6vw, 1.2rem);
-    --font-h4: clamp(0.95rem, 0.88rem + 0.4vw, 1.05rem);
-    --font-h5: clamp(0.875rem, 0.82rem + 0.3vw, 0.95rem);
-    --font-h6: clamp(0.8125rem, 0.78rem + 0.2vw, 0.875rem);
-    --font-input: 16px; /* Giữ 16px để iOS Safari không tự zoom */
-    --font-card-title: clamp(0.925rem, 0.85rem + 0.4vw, 1.05rem);
-    --font-stat: clamp(1.375rem, 1.15rem + 1.2vw, 1.65rem);
+    --font-hero: 1.25rem;        /* 20px trên Mobile */
+    --font-h1: 1.25rem;          /* 20px trên Mobile */
+    --font-h2: 1.125rem;         /* 18px trên Mobile */
+    --font-h3: 1rem;             /* 16px trên Mobile */
+    --font-h4: 1rem;             /* 16px trên Mobile */
+    --font-h5: 0.9375rem;        /* 15px trên Mobile */
+    --font-h6: 0.75rem;          /* 12px trên Mobile */
+    --font-body: 0.875rem;       /* 14px trên Mobile */
+    --font-body-sm: 0.875rem;    /* 14px trên Mobile */
+    --font-card: 0.875rem;       /* 14px trên Mobile */
+    --font-card-title: 1rem;     /* 16px trên Mobile */
+    --font-input: 16px;          /* Giữ 16px để iOS Safari không tự zoom */
+    --font-stat: 1.25rem;        /* 20px trên Mobile */
   }
 }
 

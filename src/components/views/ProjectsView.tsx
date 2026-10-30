@@ -418,7 +418,7 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
 
                         {/* Tiêu đề dự án hiển thị đầy đủ có số thứ tự và chỉ 2 dòng */}
                         <h3
-                          className="font-black font-play text-[14px] sm:text-[14.5px] leading-snug tracking-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors break-words line-clamp-2 overflow-hidden"
+                          className="font-black font-play text-[14px] sm:text-[14.5px] leading-snug tracking-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors break-normal line-clamp-2 overflow-hidden"
                           style={{ color: isDark ? '#ffffff' : cfg.accentColor }}
                           title={proj.title}
                         >

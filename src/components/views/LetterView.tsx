@@ -343,10 +343,6 @@ export const LetterView: React.FC<LetterViewProps> = ({
     return getSavedVoiceURI();
   });
 
-  // Current Slide: 0 -> Slide 1, 1 -> Slide 2, 2 -> Slide 3, 3 -> Slide 4
-  const [currentSlide, setCurrentSlide] = useState<number>(0);
-  const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
-
   // Chế độ hiển thị cố định 4 Slide tương tác
   const viewMode = 'slides' as const;
 
@@ -358,26 +354,13 @@ export const LetterView: React.FC<LetterViewProps> = ({
 
   // Floating expandable navigation control bar on hover
   const [isNavHovered, setIsNavHovered] = useState<boolean>(false);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState<boolean>(false);
   const navContainerRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (navContainerRef.current && !navContainerRef.current.contains(e.target as Node)) {
-        setIsNavHovered(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   // Feature 2: Cá nhân hóa tên "Quý Công ty" từ URL (?company=...) hoặc tùy chỉnh trực tiếp
   const [companyName, setCompanyName] = useState<string>('');
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState<boolean>(false);
   const [companyInputDraft, setCompanyInputDraft] = useState<string>('');
-
-  // Feature 5: Karaoke Word Sync progress (0 -> 1) cho thẻ đang thuyết minh
-  const [karaokeProgress, setKaraokeProgress] = useState<number>(0);
-  const karaokeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Selected milestone for detail modal
   const [selectedMilestone, setSelectedMilestone] = useState<CareerMilestoneItem | null>(null);
@@ -396,119 +379,42 @@ export const LetterView: React.FC<LetterViewProps> = ({
   const [isClientMounted, setIsClientMounted] = useState<boolean>(false);
   const [isNavMenuOpen, setIsNavMenuOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    setIsClientMounted(true);
-    const updateSideToolbarPosition = () => {
-      const centerCard = document.getElementById('center-card');
-      if (centerCard) {
-        const rect = centerCard.getBoundingClientRect();
-        setSideToolbarPos({
-          top: rect.top,
-          height: rect.height,
-        });
-      }
-    };
-
-    updateSideToolbarPosition();
-    window.addEventListener('resize', updateSideToolbarPosition);
-    window.addEventListener('scroll', updateSideToolbarPosition, true);
-    const timer = setTimeout(updateSideToolbarPosition, 150);
-    return () => {
-      window.removeEventListener('resize', updateSideToolbarPosition);
-      window.removeEventListener('scroll', updateSideToolbarPosition, true);
-      clearTimeout(timer);
-    };
-  }, []);
-
-  // Lắng nghe click outside để tự động đóng menu điều khiển
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
-      if (navContainerRef.current && !navContainerRef.current.contains(e.target as Node)) {
-        setIsNavHovered(false);
-        setIsNavMenuOpen(false);
-        setIsLangMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('touchstart', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
-    };
-  }, []);
-
-  // =========================================================================
-  // FLOATING CIRCLE PIP VIDEO PRESENTATION (VIDEO THUYẾT MINH GÓC PHẢI DƯỚI)
-  // =========================================================================
-  const floatingVideoRef = useRef<HTMLVideoElement | null>(null);
-  // Mặc định thuyết trình không auto-play: người dùng chủ động bấm phát khi muốn nghe
-  const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(false);
-  const [isVideoMuted, setIsVideoMuted] = useState<boolean>(() => getSavedMutedPref(true));
-  const [videoProgressPct, setVideoProgressPct] = useState<number>(0);
-  const [autoSyncVideoWithSlides, setAutoSyncVideoWithSlides] = useState<boolean>(true);
-  const lastActiveCueIdRef = useRef<string>('');
-
-  // Chế Độ Thuyết Trình Tự Động Kèm Nhạc Nền Lo-Fi (Autoplay Presentation with Ambient Audio)
+  // Slides and Presentation State
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [autoAdvance, setAutoAdvance] = useState<boolean>(false);
+  const [speechRate, setSpeechRate] = useState<number>(1.0);
+  const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
   const [isAutoplayPresentation, setIsAutoplayPresentation] = useState<boolean>(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(false);
+  const [isVideoMuted, setIsVideoMuted] = useState<boolean>(false);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [narrationLanguage, setNarrationLanguage] = useState<'vi' | 'en'>('vi');
+  const [activeSegmentIndex, setActiveSegmentIndex] = useState<number>(0);
+  const [videoProgressPct, setVideoProgressPct] = useState<number>(0);
+  const [autoSyncVideoWithSlides, setAutoSyncVideoWithSlides] = useState<boolean>(false);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [isNarrating, setIsNarrating] = useState<boolean>(false);
+
+  // Presentation Refs
+  const isNarratingRef = useRef<boolean>(false);
+  const autoAdvanceRef = useRef<boolean>(false);
+  const speechRateRef = useRef<number>(1.0);
+  const narrationLanguageRef = useRef<'vi' | 'en'>('vi');
+  const savedVideoTimeRef = useRef<number>(0);
+  const lastActiveCueIdRef = useRef<string | null>(null);
+  const utteranceIdRef = useRef<number>(0);
+  const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const karaokeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const floatingVideoRef = useRef<HTMLVideoElement>(null);
+  const isPausedRef = useRef<boolean>(false);
+
+  // Constants / Nulls for disabled presentation features
+  const activeTargetId = null;
+  const [karaokeProgress, setKaraokeProgress] = useState<number>(0);
   const [isLofiAudioEnabled, setIsLofiAudioEnabled] = useState<boolean>(true);
   const [isDuckingActive, setIsDuckingActive] = useState<boolean>(false);
-  const savedVideoTimeRef = useRef<number>(0);
+  const toggleLofiAudio = useCallback(() => setIsLofiAudioEnabled(prev => !prev), []);
 
-  // Dọn dẹp âm thanh khi unmount
-  useEffect(() => {
-    return () => {
-      AmbientSoundEngine.stop();
-    };
-  }, []);
-
-  // Lắng nghe đồng bộ âm thanh video toàn hệ thống
-  useEffect(() => {
-    const handleAudioPref = (e: Event) => {
-      const customEvent = e as CustomEvent<{ muted: boolean }>;
-      if (customEvent.detail && typeof customEvent.detail.muted === 'boolean') {
-        setIsVideoMuted(customEvent.detail.muted);
-        if (floatingVideoRef.current) {
-          floatingVideoRef.current.muted = customEvent.detail.muted;
-        }
-      }
-    };
-    window.addEventListener(AUDIO_PREF_EVENT, handleAudioPref);
-    return () => window.removeEventListener(AUDIO_PREF_EVENT, handleAudioPref);
-  }, []);
-
-  // =========================================================================
-  // AI VOICE NARRATION STATE & ENGINE (ĐỌC TỰ ĐỘNG 4 PHẦN THƯ NGỎ)
-  // =========================================================================
-  // Chế Độ Thuyết Minh Song Ngữ (Bilingual Narration: 'vi' = Tiếng Việt, 'en' = English)
-  const [narrationLanguage, setNarrationLanguage] = useState<'vi' | 'en'>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('hungthai_narration_lang');
-        if (saved === 'en' || saved === 'vi') return saved;
-      } catch {}
-    }
-    return 'vi';
-  });
-  const narrationLanguageRef = useRef<'vi' | 'en'>('vi');
-  const [isLangMenuOpen, setIsLangMenuOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    narrationLanguageRef.current = narrationLanguage;
-  }, [narrationLanguage]);
-
-  const [isNarrating, setIsNarrating] = useState<boolean>(false);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [autoAdvance, setAutoAdvance] = useState<boolean>(true);
-  const [speechRate, setSpeechRate] = useState<number>(1.0);
-  const [activeSegmentIndex, setActiveSegmentIndex] = useState<number>(0);
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-
-  const isNarratingRef = useRef<boolean>(false);
-  const isPausedRef = useRef<boolean>(false);
-  const autoAdvanceRef = useRef<boolean>(true);
-  const speechRateRef = useRef<number>(1.0);
-  const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const utteranceIdRef = useRef<number>(0);
 
   const clearKaraokeTimer = useCallback(() => {
     if (karaokeIntervalRef.current) {
@@ -517,29 +423,29 @@ export const LetterView: React.FC<LetterViewProps> = ({
     }
   }, []);
 
-  // Cơ Chế Giảm Âm Lượng Nhạc Nền Tinh Tế (Ambient Audio Ducking Engine)
-  useEffect(() => {
-    if (!isLofiAudioEnabled) {
-      AmbientSoundEngine.stop();
-      return;
-    }
-
-    if (!isAutoplayPresentation) {
-      return;
-    }
-
-    // Nhạc nền Lofi tự động giảm âm lượng khi có giọng đọc AI TTS hoặc khi video thuyết minh đang phát có tiếng
-    const isVoiceActive = (isVideoPlaying && !isVideoMuted) || (isNarrating && !isPaused);
-    setIsDuckingActive(isVoiceActive);
-
-    if (isVoiceActive) {
-      // Giảm âm lượng Lo-Fi xuống 12% để giọng đọc AI và thuyết minh nổi bật, rõ ràng
-      AmbientSoundEngine.setVolume(12);
-    } else {
-      // Tăng âm lượng Lo-Fi trở lại mức nền thư thái 32%
-      AmbientSoundEngine.setVolume(32);
-    }
-  }, [isLofiAudioEnabled, isAutoplayPresentation, isVideoPlaying, isVideoMuted, isNarrating, isPaused]);
+  // Cơ Chế Giảm Âm Lượng Nhạc Nền Tinh Tế (Ambient Audio Ducking Engine) - Disabled
+  // useEffect(() => {
+  //   if (!isLofiAudioEnabled) {
+  //     AmbientSoundEngine.stop();
+  //     return;
+  //   }
+  //
+  //   if (!isAutoplayPresentation) {
+  //     return;
+  //   }
+  //
+  //   // Nhạc nền Lofi tự động giảm âm lượng khi có giọng đọc AI TTS hoặc khi video thuyết minh đang phát có tiếng
+  //   const isVoiceActive = (isVideoPlaying && !isVideoMuted) || (isNarrating && !isPaused);
+  //   // setIsDuckingActive(isVoiceActive);
+  //
+  //   if (isVoiceActive) {
+  //     // Giảm âm lượng Lo-Fi xuống 12% để giọng đọc AI và thuyết minh nổi bật, rõ ràng
+  //     AmbientSoundEngine.setVolume(12);
+  //   } else {
+  //     // Tăng âm lượng Lo-Fi trở lại mức nền thư thái 32%
+  //     AmbientSoundEngine.setVolume(32);
+  //   }
+  // }, [isLofiAudioEnabled, isAutoplayPresentation, isVideoPlaying, isVideoMuted, isNarrating, isPaused]);
 
   // Tên hiển thị "Quý Công ty" đã cá nhân hóa (ví dụ: "Quý Công ty FPT")
   const companyDisplay = useMemo(() => {
@@ -563,9 +469,6 @@ export const LetterView: React.FC<LetterViewProps> = ({
         setCompanyName(initialCompany);
         setCompanyInputDraft(initialCompany);
       }
-
-
-
       const savedSlide = localStorage.getItem('hungthai_letter_active_slide');
       if (savedSlide !== null) {
         const parsed = parseInt(savedSlide, 10);
@@ -1227,9 +1130,9 @@ export const LetterView: React.FC<LetterViewProps> = ({
 
 
       // Bật nhạc nền Lo-Fi 'cosmos' 432Hz thư thái
-      if (isLofiAudioEnabled) {
-        AmbientSoundEngine.startTrack('cosmos', 32);
-      }
+      // if (isLofiAudioEnabled) {
+      //   AmbientSoundEngine.startTrack('cosmos', 32);
+      // }
 
       // Khởi chạy video thuyết minh và đồng bộ âm thanh
       if (floatingVideoRef.current) {
@@ -1243,33 +1146,27 @@ export const LetterView: React.FC<LetterViewProps> = ({
       }
       showToast('Bắt đầu Thuyết trình Tự động kèm Nhạc nền Lo-Fi (4 Slide)');
     }
-  }, [isAutoplayPresentation, isLofiAudioEnabled, showToast]);
+  }, [isAutoplayPresentation, showToast]);
 
   // Bật / Tắt riêng Nhạc Nền Lo-Fi
-  const toggleLofiAudio = useCallback((e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    SoundEngine.playTap();
-    setIsLofiAudioEnabled((prev) => {
-      const next = !prev;
-      if (next) {
-        AmbientSoundEngine.startTrack('cosmos', isDuckingActive ? 12 : 32);
-        showToast('Đã bật Nhạc Nền Lo-Fi Thư Thái (Ambient Pad 432Hz)');
-      } else {
-        AmbientSoundEngine.stop();
-        showToast('Đã tắt Nhạc Nền Lo-Fi');
-      }
-      return next;
-    });
-  }, [isDuckingActive, showToast]);
+  // const toggleLofiAudio = useCallback((e?: React.MouseEvent) => {
+  //   if (e) e.stopPropagation();
+  //   SoundEngine.playTap();
+  //   setIsLofiAudioEnabled((prev) => {
+  //     const next = !prev;
+  //     if (next) {
+  //       AmbientSoundEngine.startTrack('cosmos', isDuckingActive ? 12 : 32);
+  //       showToast('Đã bật Nhạc Nền Lo-Fi Thư Thái (Ambient Pad 432Hz)');
+  //     } else {
+  //       AmbientSoundEngine.stop();
+  //       showToast('Đã tắt Nhạc Nền Lo-Fi');
+  //     }
+  //     return next;
+  //   });
+  // }, [isDuckingActive, showToast]);
 
   // Active Video Cue based on playback progress percentage
-  const activeVideoCue = useMemo(() => {
-    return (
-      PRESENTATION_VIDEO_CUES.find(
-        (c) => videoProgressPct >= c.startPct && videoProgressPct < c.endPct
-      ) || PRESENTATION_VIDEO_CUES[0]
-    );
-  }, [videoProgressPct]);
+  const activeVideoCue: any = null;
 
   // Tiến trình nội bộ của Cue Video Scena AI hiện tại (từ 0.0 đến 1.0)
   const currentCueProgress = useMemo(() => {
@@ -1284,11 +1181,11 @@ export const LetterView: React.FC<LetterViewProps> = ({
 
   // Active segment metadata: Kết hợp cả AI Voice TTS lẫn Video Timecode Cues
   const currentSegment = narrationSegments[activeSegmentIndex] || narrationSegments[0];
-  const activeTargetId = isNarrating
-    ? currentSegment?.targetId
-    : isVideoPlaying
-    ? activeVideoCue?.targetId
-    : null;
+  // const activeTargetId = isNarrating
+  //   ? currentSegment?.targetId
+  //   : isVideoPlaying
+  //   ? activeVideoCue?.targetId
+  //   : null;
   const progressPercent = isNarrating
     ? Math.round(((activeSegmentIndex + 1) / narrationSegments.length) * 100)
     : isVideoPlaying
@@ -1636,24 +1533,7 @@ export const LetterView: React.FC<LetterViewProps> = ({
             : ''
         }`}
       >
-        {/* Floating Video Live Presentation Callout Badge on Card */}
-        {isVideoPlaying && activeVideoCue?.targetId === item.id && (
-          <div className="absolute top-2 left-2 z-20 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white text-[10px] font-bold shadow-md border border-white/30 animate-pulse">
-            <WebIcon name="sparkles" className="w-3 h-3 text-amber-300 shrink-0" />
-            <span className="font-play">{activeVideoCue.noteBadge}</span>
-            <span className="hidden sm:inline font-medium opacity-90 truncate max-w-[140px]">
-              — {activeVideoCue.noteTitle}
-            </span>
-          </div>
-        )}
-
-        {/* Active Voice Reading Indicator Badge on Card */}
-        {isCardBeingRead && !isVideoPlaying && (
-          <div className="absolute top-2 right-2 z-20 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-600/95 text-white text-[10px] font-bold shadow-xs backdrop-blur-md">
-            <AudioWaveformVisualizer isPlaying={!isPaused} barCount={4} size="sm" />
-            <span>Karaoke AI Sync</span>
-          </div>
-        )}
+        {/* Thuyết trình đã bị xóa bỏ theo yêu cầu. */}
 
         {/* Subtle Brand Color Radial Tint */}
         <div
@@ -1962,6 +1842,7 @@ export const LetterView: React.FC<LetterViewProps> = ({
 
           {/* Huy hiệu Audio Ducking Nhạc nền Lo-Fi */}
           <div className="flex items-center gap-1.5 shrink-0">
+            {/*
             <button
               type="button"
               onClick={toggleLofiAudio}
@@ -1983,6 +1864,7 @@ export const LetterView: React.FC<LetterViewProps> = ({
                   : 'Lo-Fi tắt'}
               </span>
             </button>
+            */}
 
             {/* Nút chuyển đổi giọng đọc Song Ngữ VI / EN */}
             <button
@@ -2179,31 +2061,11 @@ export const LetterView: React.FC<LetterViewProps> = ({
                   </div>
                 )}
 
-                {/* Header Thư Ngỏ: Micro-Badge "Thông điệp hợp tác" & Nút Đổi tên công ty */}
+                {/* Header Thư Ngỏ: Micro-Badge "Thông điệp hợp tác" */}
                 <div className="flex items-center justify-between pb-2 border-b border-slate-200/60 dark:border-white/10 shrink-0 gap-2">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-800 dark:text-cyan-300 text-xs font-bold">
                     <WebIcon name="book" className="w-3.5 h-3.5 shrink-0" />
                     <span>Thông điệp hợp tác</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        SoundEngine.playTap();
-                        setCompanyInputDraft(companyName);
-                        setIsCompanyModalOpen(true);
-                      }}
-                      className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300/70 dark:border-white/15 transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
-                      title="Tùy chỉnh tên Quý Công ty hoặc lấy link chia sẻ (?company=...)"
-                    >
-                      <WebIcon name="users" className="w-3 h-3 text-cyan-600 dark:text-cyan-400" />
-                      <span>{companyName ? 'Đổi tên' : '+ Tên Công ty'}</span>
-                    </button>
-
-                    <span className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300 bg-slate-100/80 dark:bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-200/80 dark:border-white/10">
-                      Nguyễn Hùng Thái
-                    </span>
                   </div>
                 </div>
 
@@ -2840,100 +2702,6 @@ export const LetterView: React.FC<LetterViewProps> = ({
             </div>
           </div>
         </Modal>
-      )}
-
-      {/* ========================================================================= */}
-      {/* FLOATING AI VOICE SYNC READING HUD BAR (KARAOKE PODCAST LIVE CONTROLLER) */}
-      {/* ========================================================================= */}
-      {(isVideoPlaying || isNarrating) && (
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 max-w-[94vw] sm:max-w-md w-full px-2 animate-fade-in select-none">
-          <div className="relative overflow-hidden rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-indigo-300/80 dark:border-cyan-500/40 backdrop-blur-xl shadow-[0_12px_36px_rgba(30,41,59,0.22)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.65)] p-2 sm:px-3 sm:py-2 flex items-center justify-between gap-2.5">
-            {/* Live Progress Micro Bar */}
-            <div
-              className="absolute bottom-0 left-0 h-[2.5px] bg-gradient-to-r from-amber-400 via-rose-500 to-cyan-400 transition-all duration-200"
-              style={{
-                width: isVideoPlaying
-                  ? `${videoProgressPct.toFixed(1)}%`
-                  : `${Math.round(effectiveKaraokeProgress * 100)}%`,
-              }}
-            />
-
-            {/* Left: Play/Pause button + Waveform */}
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <button
-                type="button"
-                onClick={isVideoPlaying ? (e) => toggleFloatingVideoPlay(e) : handleToggleNarration}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                title={isVideoPlaying ? 'Tạm dừng Video Thuyết Minh' : isPaused ? 'Tiếp tục Giọng Đọc' : 'Tạm dừng Giọng Đọc'}
-              >
-                <WebIcon
-                  name={isVideoPlaying || (isNarrating && !isPaused) ? 'pause' : 'play'}
-                  className="w-3.5 h-3.5 ml-0.5"
-                />
-              </button>
-
-              <div className="min-w-0 flex-1 text-left">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[9.5px] font-black uppercase tracking-wider font-mono px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-300/60 shrink-0">
-                    {isVideoPlaying ? 'Video Scena AI' : 'Podcast AI Voice'}
-                  </span>
-                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold shrink-0">
-                    {isVideoPlaying
-                      ? `${Math.round(videoProgressPct)}%`
-                      : `${Math.round(effectiveKaraokeProgress * 100)}%`}
-                  </span>
-                </div>
-                <p className="text-[11.5px] sm:text-[12px] font-bold text-slate-900 dark:text-white truncate font-play">
-                  {isVideoPlaying
-                    ? activeVideoCue.noteTitle || activeVideoCue.noteBadge
-                    : currentSegment?.label || 'Đang thuyết minh thư ngỏ'}
-                </p>
-              </div>
-            </div>
-
-            {/* Right: Audio Waveform Visualizer + Volume / Stop Controls */}
-            <div className="flex items-center gap-1.5 shrink-0">
-              <AudioWaveformVisualizer
-                isPlaying={isVideoPlaying || (isNarrating && !isPaused)}
-                barCount={8}
-                size="sm"
-              />
-
-              {isVideoPlaying && (
-                <button
-                  type="button"
-                  onClick={(e) => toggleFloatingVideoMute(e)}
-                  className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all cursor-pointer ${
-                    isVideoMuted
-                      ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-600 border-rose-300'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:text-blue-600'
-                  }`}
-                  title={isVideoMuted ? 'Bật tiếng' : 'Tắt tiếng'}
-                >
-                  <WebIcon name={isVideoMuted ? 'volume-x' : 'volume-2'} className="w-3.5 h-3.5" />
-                </button>
-              )}
-
-              <button
-                type="button"
-                onClick={() => {
-                  SoundEngine.playTap();
-                  if (isVideoPlaying && floatingVideoRef.current) {
-                    floatingVideoRef.current.pause();
-                    setIsVideoPlaying(false);
-                  }
-                  if (isNarrating) {
-                    stopNarration();
-                  }
-                }}
-                className="w-7 h-7 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
-                title="Đóng điều khiển"
-              >
-                <WebIcon name="x" className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );

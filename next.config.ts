@@ -1,8 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  distDir: process.env.NEXT_DIST_DIR || ".next",
-  output: "standalone",
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
@@ -16,7 +14,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
-  // Vô hiệu hóa toàn diện tính năng lưu cache của trình duyệt & proxy
   async headers() {
     return [
       {

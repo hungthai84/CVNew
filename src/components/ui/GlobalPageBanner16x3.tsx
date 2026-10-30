@@ -260,7 +260,7 @@ export const GlobalPageBanner16x3: React.FC<GlobalPageBanner16x3Props> = ({
               }`}
             >
               <span
-                className="inline-flex items-center gap-1 text-[10.5px] sm:text-[11.5px] font-bold tracking-wider uppercase font-play"
+                className="inline-flex items-center gap-1 text-xs font-bold tracking-wider uppercase font-play"
                 style={{ color: config.accentColor }}
               >
                 <Sparkles className="w-3.5 h-3.5 shrink-0" />
@@ -273,7 +273,7 @@ export const GlobalPageBanner16x3: React.FC<GlobalPageBanner16x3Props> = ({
                 ·
               </span>
               <span
-                className={`text-[10.5px] font-mono font-semibold tabular-nums ${
+                className={`text-xs font-mono font-semibold tabular-nums ${
                   isLightFrostedMode ? 'text-slate-600' : 'text-slate-300'
                 }`}
               >
@@ -281,12 +281,11 @@ export const GlobalPageBanner16x3: React.FC<GlobalPageBanner16x3Props> = ({
               </span>
             </div>
 
-            {/* Tiêu đề chính (Kinetic Typography) */}
+            {/* Tiêu đề chính (Kinetic Typography - Đồng bộ 22px var(--font-h1)) */}
             <h2
               className="kinetic-title-16x3 font-play font-bold tracking-tight leading-snug line-clamp-2 break-words"
               style={{
                 color: primaryTextColor,
-                fontSize: 'clamp(1.08rem, 1.55vw, 1.52rem)',
               }}
             >
               {config.title}
@@ -298,9 +297,9 @@ export const GlobalPageBanner16x3: React.FC<GlobalPageBanner16x3Props> = ({
               )}
             </h2>
 
-            {/* Phụ đề tóm tắt */}
+            {/* Phụ đề tóm tắt (Đồng bộ 14px var(--font-body)) */}
             <p
-              className="text-xs sm:text-[13px] leading-relaxed line-clamp-2 font-medium max-w-3xl"
+              className="text-sm leading-relaxed line-clamp-2 font-medium max-w-3xl"
               style={{ color: secondaryTextColor }}
             >
               {config.subtitle}
@@ -328,13 +327,13 @@ export const GlobalPageBanner16x3: React.FC<GlobalPageBanner16x3Props> = ({
                   }}
                 >
                   <div
-                    className="text-sm sm:text-base md:text-[17px] font-bold font-play tabular-nums leading-tight truncate"
+                    className="text-[17px] font-bold font-play tabular-nums leading-tight truncate"
                     style={{ color: config.accentColor }}
                   >
                     {metric.value}
                   </div>
                   <div
-                    className={`text-[11px] font-bold leading-tight mt-0.5 truncate ${
+                    className={`text-xs font-bold leading-tight mt-0.5 truncate ${
                       isLightFrostedMode ? 'text-slate-800' : 'text-slate-100'
                     }`}
                   >
@@ -342,7 +341,7 @@ export const GlobalPageBanner16x3: React.FC<GlobalPageBanner16x3Props> = ({
                   </div>
                   {metric.sub && (
                     <div
-                      className={`text-[9.5px] font-medium truncate mt-0.5 ${
+                      className={`text-xs font-medium truncate mt-0.5 ${
                         isLightFrostedMode ? 'text-slate-500' : 'text-slate-400'
                       }`}
                     >

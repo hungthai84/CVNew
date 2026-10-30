@@ -315,7 +315,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
     updateVoices();
     window.speechSynthesis.onvoiceschanged = updateVoices;
 
-    // Lắng nghe sự kiện người dùng thay đổi giọng đọc trong cài đặt Trợ Lý AI
+    // Lắng nghe sự kiện người dùng thay đổi giọng đọc trong cài đặt Trợ lý AI
     const handleVoiceChange = (e: Event) => {
       const customEvent = e as CustomEvent<{ voiceURI: string }>;
       if (customEvent.detail?.voiceURI) {
@@ -340,7 +340,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
     if (!v) return 'Giọng Trợ Lý AI';
     if (/nam\s*minh/i.test(v.name)) return 'Nam Minh AI (Edge)';
     if (/tiếng việt 5|tieng viet 5/i.test(v.name)) return 'Tiếng Việt 5 AI (Chrome)';
-    if (/hoai\s*my/i.test(v.name)) return 'Hoài My AI';
+    if (/hoài\s*my/i.test(v.name)) return 'Hoài My AI';
     if (/an\s*online/i.test(v.name)) return 'An AI';
     return v.name.split('-')[0].trim();
   })();
@@ -737,34 +737,34 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
     switch (domain.id) {
       case '01': // Viễn thông
         return {
-          heroSubtitle: 'Kết nối người dùng, xây dựng hạ tầng số, đem lại giá trị bền vững cho cộng đồng.',
-          heroTags: 'Hạ tầng số • Kết nối • Trải nghiệm vượt trội',
+          heroSubtitle: 'Năng lực quản trị và vận hành Contact Center viễn thông quy mô lớn – chuyên nghiệp – liên tục 24/7/365.',
+          heroTags: 'Viễn thông • Contact Center • 24/7/365',
           heroImage: 'https://i.ibb.co/4RYYfBvx/D-ch-v-vi-n-th-ng-removebg-preview.png',
-          roleBadge: '9+ NĂM KINH NGHIỆM',
+          roleBadge: '10+ NĂM KINH NGHIỆM',
           roleBullets: [
-            'Quản lý vận hành dịch vụ viễn thông',
-            'Điều phối & giám sát hoạt động khai thác',
-            'Phối hợp phát triển kinh doanh, chăm sóc KH',
+            'Trưởng phòng Chăm sóc Khách hàng.',
+            'Giám sát Vận hành Contact Center.',
+            'Chuyên gia Dịch vụ Viễn thông.',
           ],
           teamBadge: '50 – 130+ NHÂN SỰ / CA',
           teamBullets: [
-            'Đội ngũ kỹ thuật, vận hành, CSKH',
-            'Đội ngũ chăm sóc & xử lý sự cố',
-            'Phối hợp đa phòng ban, đối tác',
+            'Quản lý và điều hành trực tiếp từ 50–130+ nhân sự theo ca vận hành.',
+            'Sản lượng: Hơn 100.000 cuộc gọi và giao dịch mỗi tháng.',
+            'Đảm bảo vận hành dịch vụ liên tục 24/7/365.',
           ],
-          techBadge: 'CÁC HỆ THỐNG LỚN',
+          techBadge: 'GIẢI PHÁP CÔNG NGHỆ',
           techBullets: [
-            'MobiFone / V247 / LBC / HTVC',
-            'Hệ thống CRM & Call Center',
-            'Hạ tầng mạng, 4G/5G, VoIP, Data',
+            'Avaya Call Center: Tiếp nhận, phân phối và quản lý lưu lượng cuộc gọi.',
+            'AICC System: Hỗ trợ hệ thống vận hành Contact Center.',
+            'Smart IVR, CRM Telecom, SOP Matrix.',
           ],
           description:
-            'Phụ trách toàn bộ hoạt động vận hành dịch vụ viễn thông, bao gồm: quản lý hạ tầng mạng, điều phối khai thác dịch vụ, chăm sóc khách hàng, xử lý sự cố và tối ưu chất lượng dịch vụ. Đồng thời, phối hợp với các đối tác chiến lược để phát triển các sản phẩm, dịch vụ mới, mở rộng thị trường và nâng cao trải nghiệm khách hàng, đảm bảo hoạt động ổn định, hiệu quả và bền vững.',
+            'Hơn 10 năm kinh nghiệm thực chiến trong lĩnh vực dịch vụ viễn thông, quản trị và vận hành Chăm sóc Khách hàng theo tiêu chuẩn tập đoàn như MobiFone. Tham gia vận hành Contact Center phục vụ kết nối viễn thông trong nước và quốc tế tại Viễn Liên V247, LBC và HTVC. Am hiểu quy trình tiếp nhận cuộc gọi, tư vấn dịch vụ, giải quyết khiếu nại và kiểm soát chất lượng hội thoại.',
           achievements: [
             {
-              label: 'Tăng trưởng doanh thu',
-              value: '+32%',
-              sub: '(trung bình 3 năm)',
+              label: 'SLA tiếp nhận cuộc gọi',
+              value: '> 98%',
+              sub: '',
               cardBg: 'bg-sky-50/70 dark:bg-slate-800/80',
               borderColor: 'border-sky-100 dark:border-white/5',
               iconBg: 'bg-sky-100 dark:bg-sky-950/70 text-sky-600 dark:text-sky-400',
@@ -772,9 +772,9 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
               iconType: 'trend',
             },
             {
-              label: 'Tỷ lệ hài lòng KH',
-              value: '99%',
-              sub: '(duy trì ổn định)',
+              label: 'CSAT',
+              value: '96,5%',
+              sub: '',
               cardBg: 'bg-emerald-50/70 dark:bg-slate-800/80',
               borderColor: 'border-emerald-100 dark:border-white/5',
               iconBg: 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400',
@@ -782,19 +782,19 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
               iconType: 'shield',
             },
             {
-              label: 'Giảm thời gian xử lý sự cố',
-              value: '-40%',
-              sub: '(so với trước)',
+              label: 'Giảm chi phí khiếu nại cước',
+              value: '20%',
+              sub: '',
               cardBg: 'bg-amber-50/70 dark:bg-slate-800/80',
               borderColor: 'border-amber-100 dark:border-white/5',
               iconBg: 'bg-amber-100 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400',
               metricColor: 'text-amber-600 dark:text-amber-400',
-              iconType: 'clock',
+              iconType: 'trend',
             },
             {
-              label: 'Phát triển đội ngũ',
-              value: '+50%',
-              sub: '(mở rộng quy mô)',
+              label: 'Tỷ lệ nghỉ việc',
+              value: '< 3%',
+              sub: '',
               cardBg: 'bg-purple-50/70 dark:bg-slate-800/80',
               borderColor: 'border-purple-100 dark:border-white/5',
               iconBg: 'bg-purple-100 dark:bg-purple-950/70 text-purple-600 dark:text-purple-400',
@@ -803,43 +803,43 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
             },
           ],
           partners: [
-            { name: 'MobiFone', logo: 'https://i.ibb.co/hxHm9TsZ/Mobifone.png', sub: 'Nhà mạng viễn thông' },
-            { name: 'V247', logo: 'https://i.ibb.co/QvtbdnfP/V247.png', sub: 'Truyền hình & nội dung số' },
-            { name: 'LBC', logo: 'https://i.ibb.co/R4YXWyzF/LBC.png', sub: 'Dịch vụ viễn thông' },
-            { name: 'HTVC', logo: 'https://i.ibb.co/1fNw0hBq/HTVC.png', sub: 'Truyền hình cáp' },
+            { name: 'MobiFone', logo: 'https://i.ibb.co/hxHm9TsZ/Mobifone.png', sub: 'Nhà mạng Viễn thông' },
+            { name: 'Viễn Liên V247', logo: 'https://i.ibb.co/QvtbdnfP/V247.png', sub: 'Viễn thông Quốc tế' },
+            { name: 'LBC', logo: 'https://i.ibb.co/R4YXWyzF/LBC.png', sub: 'Bưu chính & Logistics' },
+            { name: 'HTVC', logo: 'https://i.ibb.co/1fNw0hBq/HTVC.png', sub: 'Truyền hình' },
           ],
         };
 
-      case '02': // TMĐT
+      case '02': // Thương mại & Thương mại điện tử
         return {
-          heroSubtitle: 'Vận hành quy trình chăm sóc khách hàng đa kênh cho hàng triệu người tiêu dùng số.',
-          heroTags: 'Thương mại điện tử • Tối ưu chuyển đổi • Tốc độ',
+          heroSubtitle: 'Năng lực quản trị vận hành thương mại điện tử quy mô lớn – tối ưu trải nghiệm đa kênh – kiểm soát chất lượng.',
+          heroTags: 'TMĐT • Đa kênh • Live Chat',
           heroImage: 'https://i.ibb.co/fY3Nqny0/Th-ng-m-i-i-n-t-removebg-preview.png',
           roleBadge: '6+ NĂM KINH NGHIỆM',
           roleBullets: [
-            'Chỉ đạo vận hành CSKH sàn TMĐT quy mô lớn',
-            'Điều phối chiến dịch Mega Sale toàn quốc',
-            'Xử lý khiếu nại, đổi trả & kiểm soát rủi ro',
+            'Customer Service Operations Manager.',
+            'Quản trị vận hành CSKH đa kênh.',
+            'Quản trị rủi ro, kiểm soát gian lận.',
           ],
-          teamBadge: '100 – 300+ NHÂN SỰ / CA',
+          teamBadge: '100+ NHÂN SỰ',
           teamBullets: [
-            'Đội ngũ Live Chat, Call Center & Email Support',
-            'Bộ phận Dispute, Fraud & Escalation cấp cao',
-            'Đội ngũ Kiểm soát Chất lượng QA & Trainer',
+            'Quản lý hơn 100 nhân sự thuộc các bộ phận CSKH và Fraud.',
+            'Phục vụ hệ sinh thái có hàng triệu người dùng.',
+            'Điều phối và xử lý lưu lượng tương tác lớn (Mega-Sale).',
           ],
-          techBadge: 'HỆ SINH THÁI OMNICHANNEL',
+          techBadge: 'GIẢI PHÁP CÔNG NGHỆ',
           techBullets: [
-            'Shopee / ShopeePay / Finviet / ECO',
-            'Zendesk, Chatbot AI & Tự động phân luồng',
-            'Real-time WFM Dashboard & Power BI Analytics',
+            'Zendesk Omnichannel, Shopee Admin CRM.',
+            'Live Chat Auto-router, Chatbot phân loại tự động.',
+            'Power BI Dashboard theo dõi hiệu suất.',
           ],
           description:
-            'Chỉ đạo và điều hành toàn diện hoạt động dịch vụ khách hàng cho sàn thương mại điện tử hàng đầu, đáp ứng lưu lượng truy cập và giao dịch bùng nổ trong các đợt cao điểm khuyến mãi. Xây dựng quy trình xử lý đơn hàng, đổi trả, khiếu nại minh bạch và giải quyết rủi ro bảo mật tài khoản người dùng nhanh chóng.',
+            'Hơn 6 năm kinh nghiệm quản trị và vận hành dịch vụ thương mại và thương mại điện tử. Tổ chức hoạt động CSKH đa kênh, đặc biệt trên nền tảng Live Chat, Ticket và các kênh tương tác trực tuyến. Am hiểu hành trình mua sắm, đơn hàng, thanh toán, giao nhận, đổi trả và giải quyết khiếu nại. Phối hợp quản trị rủi ro, kiểm soát gian lận và nâng cao chất lượng dịch vụ.',
           achievements: [
             {
-              label: 'Xử lý đơn Mega Sale',
-              value: '+120%',
-              sub: '(mùa cao điểm)',
+              label: 'Thời gian chờ Chat',
+              value: '< 30 giây',
+              sub: '',
               cardBg: 'bg-sky-50/70 dark:bg-slate-800/80',
               borderColor: 'border-sky-100 dark:border-white/5',
               iconBg: 'bg-sky-100 dark:bg-sky-950/70 text-sky-600 dark:text-sky-400',
@@ -847,9 +847,9 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
               iconType: 'trend',
             },
             {
-              label: 'Điểm hài lòng CSAT',
-              value: '98%',
-              sub: '(chuẩn 5 sao)',
+              label: 'CSAT',
+              value: '96,5%',
+              sub: '(Tăng từ 88%)',
               cardBg: 'bg-emerald-50/70 dark:bg-slate-800/80',
               borderColor: 'border-emerald-100 dark:border-white/5',
               iconBg: 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400',
@@ -857,19 +857,19 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
               iconType: 'shield',
             },
             {
-              label: 'Tốc độ phản hồi Chat',
-              value: '< 30s',
-              sub: '(FCR đạt 94%)',
+              label: 'Tỷ lệ hủy đơn',
+              value: 'Giảm 30%',
+              sub: '',
               cardBg: 'bg-amber-50/70 dark:bg-slate-800/80',
               borderColor: 'border-amber-100 dark:border-white/5',
               iconBg: 'bg-amber-100 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400',
               metricColor: 'text-amber-600 dark:text-amber-400',
-              iconType: 'clock',
+              iconType: 'trend',
             },
             {
-              label: 'Tối ưu chi phí vận hành',
-              value: '-25%',
-              sub: '(nhờ AI & Automation)',
+              label: 'Cost-to-Serve',
+              value: 'Giảm 25%',
+              sub: '',
               cardBg: 'bg-purple-50/70 dark:bg-slate-800/80',
               borderColor: 'border-purple-100 dark:border-white/5',
               iconBg: 'bg-purple-100 dark:bg-purple-950/70 text-purple-600 dark:text-purple-400',
@@ -878,43 +878,40 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
             },
           ],
           partners: [
-            { name: 'Shopee', logo: 'https://i.ibb.co/BSVS4xf/Shopee.png', sub: 'Sàn TMĐT hàng đầu' },
-            { name: 'ShopeePay', logo: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png', sub: 'Ví thanh toán trực tuyến' },
-            { name: 'Finviet', logo: 'https://i.ibb.co/7NtSSz4d/Finviet.png', sub: 'Nền tảng bán buôn ECO' },
-            { name: 'Garena', logo: 'https://i.ibb.co/h1Md65yV/Garena.png', sub: 'Hỗ trợ dịch vụ số' },
+            { name: 'Shopee', logo: 'https://i.ibb.co/BSVS4xf/Shopee.png', sub: 'TMĐT Hàng đầu' },
+            { name: 'Finviet', logo: 'https://i.ibb.co/7NtSSz4d/Finviet.png', sub: 'Nền tảng TMĐT' },
           ],
         };
 
-      case '03': // Bảo hiểm
+      case '03': // Tài chính & Bảo hiểm
         return {
-          heroSubtitle: 'Xây dựng tiêu chuẩn phục vụ tận tâm, bảo vệ quyền lợi tài chính cho khách hàng.',
-          heroTags: 'Bảo hiểm nhân thọ • Chuẩn 5 sao • BCP',
+          heroSubtitle: 'Năng lực quản trị chất lượng dịch vụ tài chính bảo hiểm – chuẩn hóa quy trình – nâng cao trải nghiệm khách hàng.',
+          heroTags: 'Tài chính • Bảo hiểm • QA',
           heroImage: 'https://i.ibb.co/B8K1Gwr/D-ch-v-b-o-hi-m-removebg-preview.png',
-          roleBadge: '4+ NĂM KINH NGHIỆM',
+          roleBadge: '3+ NĂM KINH NGHIỆM',
           roleBullets: [
-            'Quản trị dịch vụ khách hàng bảo hiểm chuẩn BCP',
-            'Giám sát tiếp nhận và giải quyết quyền lợi (Claims)',
-            'Tối ưu hóa quy trình tư vấn và chăm sóc VIP',
+            'Customer Service Operations Manager.',
+            'Kiểm soát chất lượng tư vấn, tuân thủ nghiệp vụ.',
           ],
-          teamBadge: '80 – 150+ CHUYÊN VIÊN',
+          teamBadge: '12 + 40+ CHUYÊN VIÊN',
           teamBullets: [
-            'Đội ngũ Contact Center & Advisory Care',
-            'Bộ phận thẩm định & hỗ trợ bồi thường',
-            'Đội ngũ chăm sóc đại lý và kênh Bancassurance',
+            'Quản lý 12 nhân sự trực tiếp, phối hợp 40+ tư vấn viên Call Center.',
+            'Hỗ trợ hàng trăm nghìn hợp đồng bảo hiểm.',
+            'Nghiệp vụ: Tư vấn, giải đáp, xử lý quyền lợi, gia hạn.',
           ],
-          techBadge: 'CORE SYSTEM CHUYÊN DỤNG',
+          techBadge: 'QUẢN TRỊ NGHIỆP VỤ',
           techBullets: [
-            'Prudential Life / AS400 / VideoCall Advisory',
-            'Hệ thống ghi âm giám sát tuân thủ 100%',
-            'Nền tảng Claims Online & Cổng thông tin PruOnline',
+            'Prudential Life CRM (AS400), Video Call.',
+            'QA Voice Recording, BCP Framework.',
+            'Quality Management System.',
           ],
           description:
-            'Chịu trách nhiệm thiết lập và vận hành trung tâm dịch vụ khách hàng ngành bảo hiểm nhân thọ, áp dụng quy trình kiểm soát chất lượng khắt khe và kế hoạch duy trì kinh doanh liên tục (BCP). Nâng cao độ chính xác trong tư vấn, hỗ trợ bồi thường minh bạch và giữ vững chỉ số gắn kết khách hàng dài hạn.',
+            'Hơn 3 năm kinh nghiệm quản trị chất lượng và trải nghiệm khách hàng trong lĩnh vực bảo hiểm. Tổ chức hoạt động tư vấn và hỗ trợ khách hàng thông qua hệ thống Call Center. Kiểm soát chất lượng tư vấn, tính chính xác thông tin và tuân thủ quy trình nghiệp vụ. Am hiểu nghiệp vụ hợp đồng, quyền lợi bảo hiểm, giải quyết khiếu nại và chăm sóc sau bán.',
           achievements: [
             {
-              label: 'Tỷ lệ giải quyết FCR',
-              value: '95%',
-              sub: '(ngay lần đầu)',
+              label: 'Thời gian xử lý yêu cầu',
+              value: 'Giảm 45%',
+              sub: '',
               cardBg: 'bg-sky-50/70 dark:bg-slate-800/80',
               borderColor: 'border-sky-100 dark:border-white/5',
               iconBg: 'bg-sky-100 dark:bg-sky-950/70 text-sky-600 dark:text-sky-400',
@@ -922,9 +919,9 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
               iconType: 'trend',
             },
             {
-              label: 'Điểm CSAT Bảo hiểm',
-              value: '99%',
-              sub: '(chuẩn quốc tế)',
+              label: 'FCR',
+              value: '> 92%',
+              sub: '',
               cardBg: 'bg-emerald-50/70 dark:bg-slate-800/80',
               borderColor: 'border-emerald-100 dark:border-white/5',
               iconBg: 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400',
@@ -932,19 +929,19 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
               iconType: 'shield',
             },
             {
-              label: 'Thời gian duyệt Claims',
-              value: '-50%',
-              sub: '(số hóa quy trình)',
+              label: 'Tỷ lệ gia hạn (Retention)',
+              value: 'Tăng 15%',
+              sub: '',
               cardBg: 'bg-amber-50/70 dark:bg-slate-800/80',
               borderColor: 'border-amber-100 dark:border-white/5',
               iconBg: 'bg-amber-100 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400',
               metricColor: 'text-amber-600 dark:text-amber-400',
-              iconType: 'clock',
+              iconType: 'trend',
             },
             {
-              label: 'Đào tạo chuẩn hóa',
-              value: '100%',
-              sub: '(đạt chứng chỉ)',
+              label: 'SLA',
+              value: '95%',
+              sub: '',
               cardBg: 'bg-purple-50/70 dark:bg-slate-800/80',
               borderColor: 'border-purple-100 dark:border-white/5',
               iconBg: 'bg-purple-100 dark:bg-purple-950/70 text-purple-600 dark:text-purple-400',
@@ -953,43 +950,40 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
             },
           ],
           partners: [
-            { name: 'Prudential', logo: 'https://i.ibb.co/XfpQphWF/Prudential.png', sub: 'Tập đoàn bảo hiểm Anh Quốc' },
-            { name: 'VPBank', logo: 'https://i.ibb.co/hxHm9TsZ/Mobifone.png', sub: 'Đối tác Bancassurance' },
-            { name: 'Standard Chartered', logo: 'https://i.ibb.co/BSVS4xf/Shopee.png', sub: 'Ngân hàng đối tác' },
-            { name: 'Shinhan Bank', logo: 'https://i.ibb.co/7NtSSz4d/Finviet.png', sub: 'Kênh phân phối liên kết' },
+            { name: 'Prudential', logo: 'https://i.ibb.co/XfpQphWF/Prudential.png', sub: 'Đối tác bảo hiểm' },
           ],
         };
 
       case '04': // Game & eSports
         return {
-          heroSubtitle: 'Đồng hành cùng cộng đồng game thủ, vận hành hệ thống hỗ trợ hàng triệu người chơi.',
-          heroTags: 'Thể thao điện tử • eSports • Cộng đồng',
+          heroSubtitle: 'Năng lực quản trị dịch vụ khách hàng ngành Gaming, vận hành hệ thống hỗ trợ hàng triệu game thủ, kiểm soát rủi ro.',
+          heroTags: 'Gaming • eSports • Fraud Prevention',
           heroImage: 'https://i.ibb.co/pBKmWZHc/Game-e-Sports-removebg-preview.png',
           roleBadge: '5+ NĂM KINH NGHIỆM',
           roleBullets: [
-            'Tổ chức và điều hành hệ thống CSKH eSports',
-            'Giám sát vận hành dịch vụ game online 24/7',
-            'Bảo mật tài khoản, phòng chống hack & cheat',
+            'Head of Game Customer Support & Operations',
+            'Tổ chức hệ thống Game Supporter, CSKH, Fraud',
+            'Xử lý tài khoản, vật phẩm, giao dịch',
           ],
-          teamBadge: '200 – 500+ NHÂN SỰ / CA',
+          teamBadge: '130+ NHÂN SỰ',
           teamBullets: [
-            'Đội ngũ Hỗ trợ Ticket, Live Chat & Diễn đàn',
-            'Ban Quản trị Sự kiện & Giải đấu eSports',
-            'Đội ngũ Giám sát Kỹ thuật phòng máy Gcafe',
+            'Lãnh đạo 130+ nhân sự',
+            '80+ chuyên viên Game Supporter, Fraud, CS',
+            'Phục vụ hàng chục triệu game thủ',
           ],
-          techBadge: 'HỆ THỐNG CSKH TẬP TRUNG',
+          techBadge: 'HỆ THỐNG QUẢN TRỊ',
           techBullets: [
-            'Garena / LMHT / FIFA Online / ShopeePay',
-            'Ticket Desk xử lý 80.000 yêu cầu/ngày',
-            'Công cụ kiểm duyệt & phát hiện gian lận real-time',
+            'Garena Customer Desk',
+            'Gcafe Management',
+            'AI Ticket Classifier, LMS',
           ],
           description:
-            'Xây dựng và phát triển đội ngũ chăm sóc khách hàng quy mô lớn phục vụ các tựa game eSports hàng đầu tại Việt Nam. Triển khai các kênh hỗ trợ chuyên sâu cho giải đấu lớn, bảo vệ an toàn tài khoản người dùng và nâng cao uy tín thương hiệu trong cộng đồng game thủ.',
+            'Hơn 5 năm kinh nghiệm quản trị và điều hành dịch vụ khách hàng trong lĩnh vực Gaming và eSports. Tổ chức hệ thống Game Supporter, CSKH và Fraud Prevention, quản trị quy trình tiếp nhận, phân loại và xử lý Ticket/Chat lưu lượng lớn, xử lý các vấn đề tài khoản, vật phẩm, giao dịch và quyền lợi người chơi trong các sự kiện.',
           achievements: [
             {
-              label: 'Năng lực xử lý Ticket',
-              value: '80K/ngày',
-              sub: '(đáp ứng 100% SLA)',
+              label: 'Tốc độ xử lý Ticket/Chat',
+              value: '< 30 giây',
+              sub: '',
               cardBg: 'bg-sky-50/70 dark:bg-slate-800/80',
               borderColor: 'border-sky-100 dark:border-white/5',
               iconBg: 'bg-sky-100 dark:bg-sky-950/70 text-sky-600 dark:text-sky-400',
@@ -997,9 +991,9 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
               iconType: 'trend',
             },
             {
-              label: 'Điểm CSAT Game thủ',
+              label: 'CSAT',
               value: '96%',
-              sub: '(duy trì chuẩn cao)',
+              sub: '',
               cardBg: 'bg-emerald-50/70 dark:bg-slate-800/80',
               borderColor: 'border-emerald-100 dark:border-white/5',
               iconBg: 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400',
@@ -1007,19 +1001,19 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
               iconType: 'shield',
             },
             {
-              label: 'Tốc độ phản hồi Chat',
-              value: '< 30s',
-              sub: '(giải quyết tức thì)',
+              label: 'Sản lượng Ticket',
+              value: '> 50.000/ngày',
+              sub: '',
               cardBg: 'bg-amber-50/70 dark:bg-slate-800/80',
               borderColor: 'border-amber-100 dark:border-white/5',
               iconBg: 'bg-amber-100 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400',
               metricColor: 'text-amber-600 dark:text-amber-400',
-              iconType: 'clock',
+              iconType: 'trend',
             },
             {
-              label: 'Bảo mật tài khoản',
-              value: '99.9%',
-              sub: '(ngăn ngừa gian lận)',
+              label: 'Quy mô đội ngũ',
+              value: '130 nhân sự',
+              sub: '',
               cardBg: 'bg-purple-50/70 dark:bg-slate-800/80',
               borderColor: 'border-purple-100 dark:border-white/5',
               iconBg: 'bg-purple-100 dark:bg-purple-950/70 text-purple-600 dark:text-purple-400',
@@ -1028,23 +1022,22 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
             },
           ],
           partners: [
-            { name: 'Garena', logo: 'https://i.ibb.co/h1Md65yV/Garena.png', sub: 'Nhà phát hành thể thao điện tử' },
-            { name: 'VED', logo: 'https://i.ibb.co/fYPJLfbw/VED.png', sub: 'Vietnam Esports' },
-            { name: 'GCafe', logo: 'https://i.ibb.co/FkWk3s4W/GCafe.png', sub: 'Hạ tầng phòng máy toàn quốc' },
-            { name: 'AirPay', logo: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png', sub: 'Thanh toán dịch vụ game' },
+            { name: 'Garena', logo: 'https://i.ibb.co/h1Md65yV/Garena.png', sub: 'Nhà phát hành' },
+            { name: 'VED', logo: 'https://i.ibb.co/fYPJLfbw/VED.png', sub: 'Thể thao điện tử' },
+            { name: 'GCafe', logo: 'https://i.ibb.co/FkWk3s4W/GCafe.png', sub: 'Hệ thống phòng máy' },
           ],
         };
 
       case '05': // Thanh toán điện tử
         return {
-          heroSubtitle: 'Đảm bảo giao dịch thông suốt, an toàn tài chính và trải nghiệm thanh toán tiện lợi.',
-          heroTags: 'Fintech • Ví điện tử • An toàn bảo mật',
+          heroSubtitle: 'Năng lực quản trị vận hành dịch vụ tài chính số, kiểm soát rủi ro giao dịch, tự động hóa quy trình xử lý.',
+          heroTags: 'Tài chính số • Thanh toán • RPA',
           heroImage: 'https://i.ibb.co/hRJDnYw4/Thanh-to-n-i-n-t-removebg-preview.png',
           roleBadge: '5+ NĂM KINH NGHIỆM',
           roleBullets: [
-            'Vận hành dịch vụ khách hàng ví điện tử & Fintech',
-            'Xử lý tra soát giao dịch ngân hàng & hoàn tiền',
-            'Bảo mật thanh toán, phòng chống rửa tiền (AML)',
+            'Head of Customer Service / Operations Lead',
+            'Vận hành ví điện tử, thanh toán số',
+            'Quản trị tra soát, khiếu nại giao dịch, hoàn tiền',
           ],
           teamBadge: '60 – 120+ CHUYÊN VIÊN',
           teamBullets: [
@@ -1052,19 +1045,18 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
             'Bộ phận Tra soát Đối soát Ngân hàng',
             'Đội ngũ Hỗ trợ Điểm chấp nhận thanh toán Merchant',
           ],
-          techBadge: 'CORE FINTECH & GATEWAY',
+          techBadge: 'TỰ ĐỘNG HÓA & KẾT NỐI',
           techBullets: [
-            'MoMo / ShopeePay / Finviet / AirPay',
-            'Cổng kết nối NAPAS & Hệ thống ngân hàng',
-            'Fraud Detection & AI Risk Engine giám sát giao dịch',
+            'MoMo, ShopeePay CRM, Core Banking',
+            'RPA, AI Bot RAG, War-Room',
           ],
           description:
-            'Tổ chức và điều hành trung tâm chăm sóc khách hàng ngành ví điện tử và thanh toán số, giải quyết tức thời các thắc mắc giao dịch, xử lý tra soát và hoàn tiền chuẩn xác. Thiết lập cơ chế kiểm soát gian lận, bảo mật thông tin tài khoản và nâng cao mức độ tin cậy của dịch vụ tài chính số.',
+            'Hơn 5 năm kinh nghiệm quản trị và phát triển dịch vụ khách hàng trong lĩnh vực ví điện tử và thanh toán số. Tổ chức vận hành hệ thống CSKH cho nền tảng ví điện tử và hệ sinh thái thanh toán, quản trị nghiệp vụ tra soát, khiếu nại giao dịch, hoàn tiền và xử lý các vấn đề tài chính.',
           achievements: [
             {
-              label: 'Tỷ lệ tra soát đúng hạn',
-              value: '99.5%',
-              sub: '(tuân thủ chuẩn NHNN)',
+              label: 'Thời gian hoàn tiền qua RPA',
+              value: '90 giây',
+              sub: '(Từ 48 giờ)',
               cardBg: 'bg-sky-50/70 dark:bg-slate-800/80',
               borderColor: 'border-sky-100 dark:border-white/5',
               iconBg: 'bg-sky-100 dark:bg-sky-950/70 text-sky-600 dark:text-sky-400',
@@ -1072,9 +1064,9 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
               iconType: 'trend',
             },
             {
-              label: 'Điểm CSAT Thanh toán',
-              value: '98%',
-              sub: '(độ hài lòng cao)',
+              label: 'CSAT',
+              value: '98,2%',
+              sub: '',
               cardBg: 'bg-emerald-50/70 dark:bg-slate-800/80',
               borderColor: 'border-emerald-100 dark:border-white/5',
               iconBg: 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400',
@@ -1082,19 +1074,19 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
               iconType: 'shield',
             },
             {
-              label: 'Thời gian giải quyết sự cố',
-              value: '< 15m',
-              sub: '(cho giao dịch lỗi)',
+              label: 'SLA vận hành BPO',
+              value: '98,6%',
+              sub: '',
               cardBg: 'bg-amber-50/70 dark:bg-slate-800/80',
               borderColor: 'border-amber-100 dark:border-white/5',
               iconBg: 'bg-amber-100 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400',
               metricColor: 'text-amber-600 dark:text-amber-400',
-              iconType: 'clock',
+              iconType: 'trend',
             },
             {
-              label: 'An toàn giao dịch',
-              value: '100%',
-              sub: '(bảo vệ tài sản KH)',
+              label: 'Sự cố vận hành',
+              value: 'Giảm 35%',
+              sub: '',
               cardBg: 'bg-purple-50/70 dark:bg-slate-800/80',
               borderColor: 'border-purple-100 dark:border-white/5',
               iconBg: 'bg-purple-100 dark:bg-purple-950/70 text-purple-600 dark:text-purple-400',
@@ -1103,10 +1095,9 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
             },
           ],
           partners: [
-            { name: 'MoMo', logo: 'https://i.ibb.co/k2QtrgTw/Momo.png', sub: 'Ví điện tử hàng đầu' },
-            { name: 'ShopeePay', logo: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png', sub: 'Ví thanh toán trực tuyến' },
-            { name: 'Finviet', logo: 'https://i.ibb.co/7NtSSz4d/Finviet.png', sub: 'Ví ECO & Điểm đại lý' },
-            { name: 'AirPay', logo: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png', sub: 'Cổng thanh toán điện tử' },
+            { name: 'MoMo', logo: 'https://i.ibb.co/k2QtrgTw/Momo.png', sub: 'Ví điện tử' },
+            { name: 'ShopeePay', logo: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png', sub: 'Ví thanh toán số' },
+            { name: 'Ví ECO', logo: 'https://i.ibb.co/7NtSSz4d/Finviet.png', sub: 'Ví thanh toán' },
           ],
         };
 
@@ -1216,7 +1207,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
     <div
       className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden"
     >
-      {/* ĐÃ XÓA KHỐI LỌC ĐỐI TÁC THEO YÊU CẦU NGƯỜI DÙNG */}
+      {/* ĐÃ XÓA KHỎI LỌC ĐỐI TÁC THEO YÊU CẦU NGƯỜI DÙNG */}
 
       {/* 3. VÙNG HIỂN THỊ NỘI DUNG LĨNH VỰC (GRID CARD EXPANSION TRANSITION - THẺ MỞ RỘNG TOÀN BỘ LƯỚI) */}
       <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
@@ -1370,7 +1361,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                               color: isDark ? 'rgba(226, 232, 240, 0.95)' : '#1e293b',
                             }}
                           >
-                            “{domain.orientationVi.replace(/^[“"']+|[”"']+$/g, '')}”
+                            “{domain.orientationVi.replace(/^[“”"']+|[“”"']+$/g, '')}”
                           </p>
                         </div>
 
@@ -1457,7 +1448,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                                   loading="lazy"
                                 />
 
-                                {/* 2. Tooltip Thông Tin Vai Trò Dự Án Với Thương Hiệu (Brand Project Role Tooltip) */}
+                                {/* 2. Tooltip Thông Tin Vai Trò Dự án Với Thương Hiệu (Brand Project Role Tooltip) */}
                                 <AnimatePresence>
                                   {isHoveredLogo && (
                                     <motion.div
@@ -1504,7 +1495,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                                           <span className="truncate">{brandMeta.awardText}</span>
                                         </div>
                                       )}
-
+                                      
                                       {/* Footer hint */}
                                       <div className="pt-1 text-[8.5px] text-cyan-300/90 font-mono font-medium flex items-center justify-between border-t border-white/5">
                                         <span>✦ Nhấp để lọc</span>
@@ -1806,7 +1797,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                       <span>Đối tác tiêu biểu</span>
                       <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
                     </span>
-                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+                    <div className="flex items-center gap-[5px] overflow-x-auto no-scrollbar py-0.5">
                       {selectedDomain.logos.map((logo, lIdx) => {
                         const brandMeta = getBrandMeta(logo.name);
                         const detailLogoKey = `detail-${selectedDomain.id}-${logo.name}`;
@@ -1832,7 +1823,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                             <img
                               src={logoSrc}
                               alt={logo.alt}
-                              className="w-full h-full object-cover block rounded-full shrink-0 pointer-events-none select-none"
+                              className="w-full h-full object-contain block rounded-full shrink-0 pointer-events-none select-none"
                               loading="lazy"
                             />
                           </div>
@@ -2060,30 +2051,21 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                                     <IconComp className="w-3.5 h-3.5" />
                                   </div>
                                 </div>
-
-                                <div className="mt-1 flex items-end justify-between gap-1">
-                                  <div>
-                                    <span
-                                      className={cn(
-                                        'text-lg sm:text-xl font-black font-play leading-none block',
-                                        item.metricColor
-                                      )}
-                                    >
-                                      {item.value}
-                                    </span>
-                                    <span className="text-[9.5px] text-slate-500 dark:text-slate-400 font-medium block truncate mt-1">
-                                      {item.sub}
-                                    </span>
-                                  </div>
-
-                                  {/* Mini decorative sparkline / bar chart graphic matching Reference Image 3 */}
-                                  <div className="flex items-end gap-0.5 h-5 opacity-75 shrink-0">
-                                    <span className={cn('w-1 rounded-t bg-current h-2', item.metricColor)} />
-                                    <span className={cn('w-1 rounded-t bg-current h-3', item.metricColor)} />
-                                    <span className={cn('w-1 rounded-t bg-current h-4', item.metricColor)} />
-                                    <span className={cn('w-1 rounded-t bg-current h-5', item.metricColor)} />
-                                  </div>
+                                <div className="mt-1.5 flex items-baseline gap-1">
+                                  <span
+                                    className={cn(
+                                      'text-[18px] sm:text-[20px] font-black font-play leading-none tracking-tight',
+                                      item.metricColor
+                                    )}
+                                  >
+                                    {item.value}
+                                  </span>
                                 </div>
+                                {item.sub && (
+                                  <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400 mt-1 truncate">
+                                    {item.sub}
+                                  </span>
+                                )}
                               </div>
                             );
                           })}
@@ -2092,165 +2074,46 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                     </motion.div>
                   )}
 
-                  {/* TAB 2: CASE STUDY THỰC CHIẾN (PROBLEM -> SOLUTION -> IMPACT) */}
-                  {activeDetailTab === 'casestudy' && (() => {
-                    const cs = DOMAIN_CASE_STUDIES[selectedDomain.id] || DOMAIN_CASE_STUDIES['01'];
-                    return (
-                      <motion.div
-                        key="tab-casestudy"
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="flex flex-col justify-between gap-2.5 h-full min-h-0"
-                      >
-                        {/* Header Case Study */}
-                        <div className="p-2.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-white/80 dark:border-white/10 shadow-2xs flex items-center justify-between gap-2 shrink-0">
-                          <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping shrink-0" />
-                            <h4 className="text-xs sm:text-sm font-black font-play text-slate-900 dark:text-white truncate">
-                              Case study thực chiến: {cs.title}
-                            </h4>
-                          </div>
-                          <div className="flex items-center gap-1.5 shrink-0">
-                            <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-cyan-50 dark:bg-cyan-950/70 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
-                              {cs.client}
-                            </span>
-                            <span className="text-[9px] font-mono text-slate-400 dark:text-slate-500">
-                              {cs.duration}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Middle: 2 Khối Thách thức (Problem) & Giải pháp (Solution) */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 flex-1 min-h-0">
-                          {/* Khối Thách thức ban đầu (Problem) */}
-                          <div className="rounded-2xl bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200/60 dark:border-rose-900/40 p-3 shadow-2xs flex flex-col justify-between gap-1.5">
-                            <div>
-                              <div className="flex items-center gap-1.5 pb-1 border-b border-rose-200/50 dark:border-rose-900/30">
-                                <AlertTriangle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 stroke-[2.2] shrink-0" />
-                                <h5 className="text-xs font-black font-play text-rose-700 dark:text-rose-300">
-                                  Thách thức ban đầu
-                                </h5>
-                              </div>
-                              <p className="text-[11px] font-medium text-slate-700 dark:text-slate-300 leading-snug mt-1.5 mb-2">
-                                {cs.problem.description}
-                              </p>
-                              <ul className="space-y-1 text-[10.5px] text-slate-700 dark:text-slate-200 font-medium">
-                                {cs.problem.painPoints.map((pt, i) => (
-                                  <li key={i} className="flex items-start gap-1 leading-snug">
-                                    <span className="text-rose-500 shrink-0">✕</span>
-                                    <span>{pt}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-
-                          {/* Khối Giải pháp bứt phá (Solution) */}
-                          <div className="rounded-2xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200/60 dark:border-sky-900/40 p-3 shadow-2xs flex flex-col justify-between gap-1.5">
-                            <div>
-                              <div className="flex items-center gap-1.5 pb-1 border-b border-sky-200/50 dark:border-sky-900/30">
-                                <Target className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400 stroke-[2.2] shrink-0" />
-                                <h5 className="text-xs font-black font-play text-sky-700 dark:text-sky-300">
-                                  Giải pháp bứt phá
-                                </h5>
-                              </div>
-                              <p className="text-[11px] font-medium text-slate-700 dark:text-slate-300 leading-snug mt-1.5 mb-2">
-                                {cs.solution.description}
-                              </p>
-                              <ul className="space-y-1 text-[10.5px] text-slate-700 dark:text-slate-200 font-medium">
-                                {cs.solution.keyActions.map((act, i) => (
-                                  <li key={i} className="flex items-start gap-1 leading-snug">
-                                    <span className="text-sky-500 shrink-0">✓</span>
-                                    <span>{act}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Bottom: Khối Kết quả vượt trội (Impact & ROI) */}
-                        <div className="p-2.5 sm:p-3 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-900/50 shadow-2xs shrink-0 flex flex-col gap-2">
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-1.5">
-                              <Trophy className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                              <h5 className="text-xs sm:text-sm font-black font-play text-emerald-700 dark:text-emerald-300">
-                                Kết quả vượt trội
-                              </h5>
-                            </div>
-                            <span className="text-[10px] text-slate-600 dark:text-slate-400 font-medium truncate max-w-sm">
-                              {cs.impact.roiSummary}
-                            </span>
-                          </div>
-
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                            {cs.impact.metrics.map((m, idx) => (
-                              <div
-                                key={idx}
-                                className="p-2 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-emerald-200/70 dark:border-emerald-800/60 flex flex-col justify-between shadow-2xs"
-                              >
-                                <span className="text-[9.5px] font-bold text-slate-600 dark:text-slate-400 truncate">
-                                  {m.label}
-                                </span>
-                                <div className="mt-1 flex items-baseline justify-between gap-1">
-                                  <span className="text-base sm:text-lg font-black font-mono text-emerald-600 dark:text-emerald-300">
-                                    {m.value}
-                                  </span>
-                                  <span className="text-[9px] font-mono font-bold text-cyan-600 dark:text-cyan-400">
-                                    {m.diff}
-                                  </span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })()}
-
-                  {/* TAB 3: ĐO LƯỜNG TRƯỚC VÀ SAU (BEFORE / AFTER IMPACT SLIDER) */}
-                  {activeDetailTab === 'impact' && (() => {
-                    const impactData = DOMAIN_BEFORE_AFTER_DATA[selectedDomain.id] || DOMAIN_BEFORE_AFTER_DATA['01'];
-                    return (
-                      <motion.div
-                        key="tab-impact"
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="h-full flex flex-col justify-between flex-1 min-h-0"
-                      >
-                        <BeforeAfterImpactSlider data={impactData} accentColor={cfg.accentColor} />
-                      </motion.div>
-                    );
-                  })()}
+                  {/* Case Study Tab */}
+                  {activeDetailTab === 'casestudy' && (
+                    <motion.div
+                      key="tab-casestudy"
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="h-full min-h-0"
+                    >
+                      {/* Placeholder for case study - implement if needed based on DOMAIN_CASE_STUDIES */}
+                      <div className="h-full flex items-center justify-center p-4 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-dashed border-slate-300 dark:border-slate-700 text-slate-500 font-bold text-sm">
+                        Báo cáo chi tiết đang được cập nhật...
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
               </div>
+
+              {/* 3. Tech Stack Explorer Popup Modal */}
+              <AnimatePresence>
+                {techExplorerState && (
+                  <TechStackExplorerModal
+                    domainId={techExplorerState.domainId}
+                    selectedTechBullet={techExplorerState.bullet}
+                    allTechBullets={techExplorerState.allBullets}
+                    accentColor={techExplorerState.accentColor}
+                    isDark={isDark}
+                    onSelectTechBullet={(bullet) =>
+                      setTechExplorerState((prev) => (prev ? { ...prev, bullet } : null))
+                    }
+                    onClose={() => setTechExplorerState(null)}
+                  />
+                )}
+              </AnimatePresence>
             </motion.div>
           );
         })()}
         </AnimatePresence>
       </div>
-
-      {/* 4. POPUP BẢN ĐỒ HỆ SINH THÁI CÔNG NGHỆ TƯƠNG TÁC (INTERACTIVE TECH STACK EXPLORER MODAL) */}
-      {techExplorerState && (
-        <TechStackExplorerModal
-          domainId={techExplorerState.domainId}
-          selectedTechBullet={techExplorerState.bullet}
-          allTechBullets={techExplorerState.allBullets}
-          accentColor={techExplorerState.accentColor}
-          isDark={isDark}
-          onSelectTechBullet={(nextBullet) =>
-            setTechExplorerState((prev) => (prev ? { ...prev, bullet: nextBullet } : null))
-          }
-          onClose={() => setTechExplorerState(null)}
-        />
-      )}
     </div>
   );
 };
-
-export const DomainsView = ServicesView;
-

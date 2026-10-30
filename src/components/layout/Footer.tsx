@@ -388,13 +388,13 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <div className="flex flex-col text-left leading-none">
                 <span
-                  className="text-[11px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play flex items-center gap-1"
+                  className="text-xs font-bold whitespace-nowrap leading-none select-none tracking-tight font-play flex items-center gap-1"
                   style={{ color: isDark ? '#a7f3d0' : '#065f46' }}
                 >
                   <span>{language === 'en' ? 'English' : 'Tiếng Việt'}</span>
                 </span>
                 <span
-                  className="text-[8.5px] font-semibold mt-1 opacity-80 select-none whitespace-nowrap flex items-center gap-0.5"
+                  className="text-[10px] font-semibold mt-1 opacity-85 select-none whitespace-nowrap flex items-center gap-0.5"
                   style={{ color: isDark ? '#6ee7b7' : '#047857' }}
                 >
                   <span>{language === 'en' ? 'EN / Tiếng Anh' : 'VI / Song ngữ'}</span>
@@ -453,13 +453,13 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
             <div className="flex flex-col text-left leading-none">
               <span
-                className="text-[11px] font-bold whitespace-nowrap leading-none select-none tracking-tight font-play"
+                className="text-xs font-bold whitespace-nowrap leading-none select-none tracking-tight font-play"
                 style={{ color: isDark ? '#fecdd3' : '#9f1239' }}
               >
                 Hình Nền
               </span>
               <span
-                className="text-[8.5px] font-semibold mt-1 opacity-80 select-none whitespace-nowrap"
+                className="text-[10px] font-semibold mt-1 opacity-85 select-none whitespace-nowrap"
                 style={{ color: isDark ? '#fda4af' : '#be123c' }}
               >
                 Tùy chỉnh
@@ -523,14 +523,14 @@ export const Footer: React.FC<FooterProps> = ({
               {/* Nhãn chữ co biến mất mượt mà khi thu thành hình tròn */}
               <div className="avatar-morph-text flex flex-col items-start select-none">
                 <span
-                  className={`text-[11.5px] font-bold whitespace-nowrap leading-tight tracking-tight font-play ${
+                  className={`text-xs font-bold whitespace-nowrap leading-tight tracking-tight font-play ${
                     isDark ? 'text-indigo-200' : 'text-[#3730a3]'
                   }`}
                 >
                   Hùng Thái
                 </span>
                 <span
-                  className={`text-[9px] font-medium whitespace-nowrap leading-none tracking-tight ${
+                  className={`text-[10px] font-semibold mt-0.5 whitespace-nowrap leading-none tracking-tight ${
                     isDark ? 'text-indigo-300' : 'text-[#4f46e5]'
                   }`}
                 >
@@ -690,13 +690,13 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
             <div className="flex flex-col items-start select-none">
               <span
-                className="text-[11.5px] font-bold whitespace-nowrap leading-tight tracking-tight font-play"
+                className="text-xs font-bold whitespace-nowrap leading-tight tracking-tight font-play"
                 style={{ color: isDark ? '#f3e8ff' : '#6b21a8' }}
               >
                 AI hỗ trợ
               </span>
               <span
-                className="text-[9px] font-medium whitespace-nowrap leading-none tracking-tight"
+                className="text-[10px] font-semibold mt-0.5 whitespace-nowrap leading-none tracking-tight"
                 style={{ color: isDark ? '#d8b4fe' : '#9333ea' }}
               >
                 Trợ lý 24/7

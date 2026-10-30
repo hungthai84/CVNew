@@ -17,10 +17,10 @@ export const PageCardHeader: React.FC<PageCardHeaderProps> = ({ pageId, classNam
           <Brain className="w-5 h-5" />
         </div>
         <div className="text-left">
-          <h2 className="text-base sm:text-lg font-black font-play text-slate-900 dark:text-white leading-tight">
+          <h2 className="section-title font-bold font-play text-slate-900 dark:text-white leading-tight">
             07. KHUNG NĂNG LỰC & KỸ NĂNG CỐT LÕI
           </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
             Khung phân tích SWOT 4 Ma Trận & Năng lực Ngôn ngữ Giao tiếp Quốc tế
           </p>
         </div>

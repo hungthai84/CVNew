@@ -1,14 +1,40 @@
 {
   "entities": {
-    "contactMessages": {
-      "title": "Contact Messages",
-      "description": "Messages sent from contact form",
+    "EducationItem": {
+      "title": "EducationItem",
+      "description": "An academic degree or course.",
+      "type": "object",
       "properties": {
-        "name": { "type": "string" },
-        "email": { "type": "string" },
-        "message": { "type": "string" },
-        "createdAt": { "type": "string" }
-      }
+        "id": { "type": "string" },
+        "institution": { "type": "string" },
+        "degree": { "type": "string" },
+        "year": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "institution", "degree"]
+    },
+    "UserProgress": {
+      "title": "UserProgress",
+      "description": "Tracks a user's progress through education items.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "completedCourses": { 
+          "type": "array", 
+          "items": { "type": "string" } 
+        }
+      },
+      "required": ["userId"]
+    }
+  },
+  "firestore": {
+    "educationItems": {
+      "schema": { "$ref": "EducationItem" },
+      "description": "List of academic history items."
+    },
+    "userProgress/{userId}": {
+      "schema": { "$ref": "UserProgress" },
+      "description": "User specific progress tracking."
     }
   }
 }
