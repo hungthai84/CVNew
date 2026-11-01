@@ -249,9 +249,9 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
     products: [
       { src: 'https://i.ibb.co/BKHcWL5R/Logo-VED.gif', alt: 'Logo-VED' },
       { src: 'https://i.ibb.co/h1Md65yV/Garena.png', alt: 'Garena' },
-      { src: 'https://i.ibb.co/BSVS4xf/Shopee.png', alt: 'Shopee' },
-      { src: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png', alt: 'ShopeePay' },
       { src: 'https://i.ibb.co/FkWk3s4W/GCafe.png', alt: 'GCafe' },
+      { src: 'https://i.ibb.co/QvtbdnfP/V247.png', alt: 'V247' },
+      { src: 'https://i.ibb.co/fYPJLfbw/VED.png', alt: 'VED' },
     ],
     intro: [
       {
@@ -265,6 +265,10 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
       {
         title: 'Hỗ Trợ Sự Kiện',
         desc: 'Giải quyết khiếu nại đơn hàng TMĐT & sự cố tài khoản game lượng truy cập khủng; phối hợp CSKH tại các giải đấu eSports lớn.',
+      },
+      {
+        title: 'Triết Lý Quản Trị',
+        desc: 'Đảm bảo tốc độ phản hồi Ticket/Chat cực nhanh (> 50,000 ticket/ngày), bảo mật tài khoản người dùng và khả năng chịu tải siêu cao trong các sự kiện game & Mega-sale.',
       },
     ],
     philosophy:
@@ -294,6 +298,13 @@ export const EXPERIENCE_UPDATES: Record<string, Partial<ExperienceMilestone>> = 
       { label: 'Tốc độ phản hồi Chat/Ticket', percent: 100, displayValue: '< 30 giây' },
       { label: 'Điểm CSAT', percent: 96, displayValue: '96%' },
       { label: 'Hoàn thành dự án Onboarding & Đào tạo nội bộ', percent: 100, displayValue: '100%' },
+    ],
+    photos: [
+      { src: 'https://i.ibb.co/fYPJLfbw/VED.png', title: 'VED Corporate', desc: 'Dấu ấn thương hiệu VED' },
+      { src: 'https://i.ibb.co/ds1qm1WD/VED-1.webp', title: 'VED Operations', desc: 'Vận hành CSKH quy mô lớn' },
+      { src: 'https://i.ibb.co/7d9BFsS6/VED-2.webp', title: 'VED Training', desc: 'Đào tạo và phát triển đội ngũ' },
+      { src: 'https://i.ibb.co/1f4dHTyV/VED-3.webp', title: 'VED eSports', desc: 'Sự kiện eSports quốc gia' },
+      { src: 'https://i.ibb.co/7xNbsP5j/VED-4.webp', title: 'VED Teamwork', desc: 'Gắn kết đội ngũ nhân sự' },
     ],
   },
 

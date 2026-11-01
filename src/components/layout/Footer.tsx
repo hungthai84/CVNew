@@ -122,7 +122,7 @@ export const Footer: React.FC<FooterProps> = ({
   return (
     <footer
       id="app-footer"
-      className={`w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto h-[72px] glass-panel flex items-center justify-between px-2.5 sm:px-4 z-40 relative flex-shrink-0 transition-all duration-300 rounded-b-none rounded-t-[20px] border-b-0 border-x border-t ${
+      className={`w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto h-[72px] glass-panel flex items-center justify-between px-2.5 sm:px-4 z-40 relative flex-shrink-0 transition-all duration-300 rounded-b-none rounded-tl-[24px] rounded-tr-[24px] border-b-0 border-x border-t ${
         isDark
           ? 'border-2 border-cyan-400/30 bg-slate-950/85 backdrop-blur-xl shadow-[0_16px_45px_-6px_rgba(0,0,0,0.75),0_0_24px_rgba(34,211,238,0.22),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-cyan-400/50'
           : 'border-2 border-white/80 shadow-[0_14px_40px_-6px_rgba(30,27,75,0.18),0_4px_16px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)] hover:border-white/95 bg-white/80 backdrop-blur-xl'
@@ -421,8 +421,9 @@ export const Footer: React.FC<FooterProps> = ({
           <button
             type="button"
             onClick={() => {
+              SoundEngine.playTap();
               const idx = pages.findIndex((p) => p.shortTitle === 'Hình Nền');
-              onSelectPage(idx !== -1 ? idx : pages.length - 1);
+              onSelectPage(idx !== -1 ? idx : 12);
             }}
             className={`footer-util-btn border -ml-[64px] transition-all duration-300 ${
               isDark
@@ -591,7 +592,7 @@ export const Footer: React.FC<FooterProps> = ({
                 onClick={() => {
                   setIsContactMenuOpen(false);
                   const idx = pages.findIndex((p) => p.shortTitle === 'Liên Hệ');
-                  onSelectPage(idx !== -1 ? idx : 12);
+                  onSelectPage(idx !== -1 ? idx : 11);
                   showToast('Mở trang Thông Tin Liên Hệ Chi Tiết');
                 }}
                 className="circle-menu-node circle-node-3 bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-600"

@@ -1021,6 +1021,21 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" title="Đang kích hoạt hiệu ứng" />
               )}
             </button>
+            
+            {/* NÚT THAY ĐỔI GIAO DIỆN (THEME TOGGLE) */}
+            <button
+              type="button"
+              onClick={() => onSelectTheme && onSelectTheme(isDark ? 'light-glass' : 'dark-neon')}
+              className="px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer bg-white/95 dark:bg-slate-900/80 hover:bg-indigo-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200/90 dark:border-white/10 shadow-2xs active:scale-95"
+              title="Chuyển đổi giao diện Sáng/Tối"
+            >
+              {isDark ? (
+                <WebIcon name="sun" className="w-3.5 h-3.5 text-amber-500" />
+              ) : (
+                <WebIcon name="moon" className="w-3.5 h-3.5 text-indigo-600" />
+              )}
+              <span>{isDark ? 'Giao diện Sáng' : 'Giao diện Tối'}</span>
+            </button>
 
             {/* NÚT THÊM HÌNH NỀN: Tích hợp Dán Link, Tải Tệp và Tạo Nền Gradient */}
             <button

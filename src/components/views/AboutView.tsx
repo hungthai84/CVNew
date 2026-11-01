@@ -69,6 +69,7 @@ import { SiteTheme } from '@/types';
 import { SoundEngine } from '@/components/ui/SoundEngine';
 import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/Toast';
+import { WebIcon } from '@/components/ui/WebIcon';
 import { findBestVoice } from '@/utils/speechVoice';
 import {
   ABOUT_PROFILE_STATS,
@@ -199,6 +200,376 @@ export interface AboutViewProps {
   currentTheme?: SiteTheme;
   onNavigatePage?: (pageIndex: number) => void;
 }
+
+/* Lucian UX/UI - Tích Hợp Hệ Sinh Thái & Thông Tin Cá Nhân (Phóng to, Nền Trong Suốt, Xoay Quanh Nhân Vật) */
+interface IntegrationsUIProps {
+  onOpenMap?: (location: { type: 'tam_tru' | 'cu_tru'; title: string; address: string; query: string }) => void;
+  onNavigatePage?: (pageIndex: number) => void;
+}
+
+const IntegrationsUI: React.FC<IntegrationsUIProps> = ({ onOpenMap, onNavigatePage }) => {
+  const { showToast } = useToast();
+  const [isHold, setIsHold] = useState(false);
+  const [activeIcon, setActiveIcon] = useState<number | null>(null);
+
+  const personalItems = [
+    {
+      id: 'birthday',
+      icon: 'calendar',
+      label: 'Sinh nhật',
+      shortLabel: '22/06/1984',
+      value: '22/06/1984 · Giáp Tý',
+      color: '#F59E0B',
+      r: 175,
+      t: '26s',
+      dir: 'normal',
+      rdir: 'reverse',
+      deg: 0,
+      type: 'text' as const,
+    },
+    {
+      id: 'horoscope',
+      icon: 'sparkles',
+      label: 'Tử vi phong thủy',
+      shortLabel: 'Hải Trung Kim',
+      value: 'Giáp Tý · Mệnh Hải Trung Kim · Cung Đoài',
+      color: '#A855F7',
+      r: 175,
+      t: '26s',
+      dir: 'normal',
+      rdir: 'reverse',
+      deg: 90,
+      type: 'page' as const,
+      pageIndex: 9,
+    },
+    {
+      id: 'temp_residence',
+      icon: 'map-pin',
+      label: 'Tạm trú hiện tại',
+      shortLabel: 'Quận 7, TP.HCM',
+      value: 'Quận 7, TP. Hồ Chí Minh',
+      color: '#0284C7',
+      r: 175,
+      t: '26s',
+      dir: 'normal',
+      rdir: 'reverse',
+      deg: 180,
+      type: 'map' as const,
+      mapData: {
+        type: 'tam_tru' as const,
+        title: 'Tạm trú (Quận 7, TP.HCM)',
+        address: 'Quận 7, TP. Hồ Chí Minh',
+        query: 'District 7, Ho Chi Minh City, Vietnam',
+      },
+    },
+    {
+      id: 'permanent_residence',
+      icon: 'home',
+      label: 'Cư trú quê quán',
+      shortLabel: 'Mỹ Tho, Tiền Giang',
+      value: 'TP. Mỹ Tho, Tỉnh Tiền Giang',
+      color: '#10B981',
+      r: 175,
+      t: '26s',
+      dir: 'normal',
+      rdir: 'reverse',
+      deg: 270,
+      type: 'map' as const,
+      mapData: {
+        type: 'cu_tru' as const,
+        title: 'Cư trú (TP. Mỹ Tho, Tiền Giang)',
+        address: 'TP. Mỹ Tho, Tỉnh Tiền Giang',
+        query: 'My Tho, Tien Giang, Vietnam',
+      },
+    },
+    {
+      id: 'email',
+      icon: 'mail',
+      label: 'Email chính',
+      shortLabel: 'Email',
+      value: 'hungthai84@gmail.com',
+      color: '#06B6D4',
+      r: 110,
+      t: '18s',
+      dir: 'reverse',
+      rdir: 'normal',
+      deg: 45,
+      type: 'copy' as const,
+      copyText: 'hungthai84@gmail.com',
+    },
+    {
+      id: 'phone',
+      icon: 'phone',
+      label: 'Hotline / Zalo',
+      shortLabel: '0909.097.882',
+      value: '+84 0909097882',
+      color: '#3B82F6',
+      r: 110,
+      t: '18s',
+      dir: 'reverse',
+      rdir: 'normal',
+      deg: 135,
+      type: 'link' as const,
+      url: 'https://zalo.me/0909097882',
+    },
+    {
+      id: 'experience',
+      icon: 'briefcase',
+      label: 'Kinh nghiệm quản trị',
+      shortLabel: '22+ Năm CX',
+      value: '22+ Năm thực chiến CSKH & Call Center',
+      color: '#EC4899',
+      r: 110,
+      t: '18s',
+      dir: 'reverse',
+      rdir: 'normal',
+      deg: 225,
+      type: 'page' as const,
+      pageIndex: 5,
+    },
+    {
+      id: 'degree',
+      icon: 'award',
+      label: 'Học vấn & Bằng cấp',
+      shortLabel: 'Cử nhân CNTT & QTKD',
+      value: 'Cử nhân CNTT & Quản trị Kinh doanh',
+      color: '#6366F1',
+      r: 110,
+      t: '18s',
+      dir: 'reverse',
+      rdir: 'normal',
+      deg: 315,
+      type: 'page' as const,
+      pageIndex: 4,
+    },
+  ];
+
+  const handleItemClick = (item: typeof personalItems[0]) => {
+    SoundEngine.playPop();
+    if (item.type === 'map' && item.mapData && onOpenMap) {
+      onOpenMap(item.mapData);
+      showToast(`📍 Mở bản đồ vị trí: ${item.mapData.title}`);
+    } else if (item.type === 'page' && typeof item.pageIndex === 'number' && onNavigatePage) {
+      onNavigatePage(item.pageIndex);
+      showToast(`Chuyển đến: ${item.label}`);
+    } else if (item.type === 'link' && item.url) {
+      window.open(item.url, '_blank', 'noopener,noreferrer');
+    } else if (item.type === 'copy' && item.copyText) {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        navigator.clipboard.writeText(item.copyText);
+        showToast(`✓ Đã sao chép: ${item.copyText}`);
+      }
+    } else {
+      showToast(`${item.label}: ${item.value}`);
+    }
+  };
+
+  const activeItem = activeIcon !== null ? personalItems[activeIcon] : null;
+
+  return (
+    <div
+      className={`u306 mx-auto ${isHold ? 'is-hold' : ''}`}
+      onMouseEnter={() => setIsHold(true)}
+      onMouseLeave={() => setIsHold(false)}
+    >
+      {/* Tiêu đề & Trạng thái trong suốt kính mờ cao cấp */}
+      <div className="u306-hd">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/65 backdrop-blur-md border border-cyan-400/40 text-cyan-300 text-[10.5px] font-mono font-bold shadow-lg mb-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+          <span>HỒ SƠ CÁ NHÂN &amp; KẾT NỐI</span>
+        </div>
+        <h3 className="font-play text-white text-base sm:text-lg font-black tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+          Tích Hợp Hệ Sinh Thái
+        </h3>
+        <div className="u306-cp mt-1">
+          {activeItem ? (
+            <button
+              type="button"
+              onClick={() => handleItemClick(activeItem)}
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/80 text-cyan-300 border border-cyan-400/60 text-[11px] font-bold cursor-pointer hover:scale-105 transition-transform backdrop-blur-md shadow-lg"
+            >
+              <span>{activeItem.label}:</span>
+              <span className="underline decoration-cyan-400">{activeItem.value}</span>
+            </button>
+          ) : (
+            <span className="inline-flex items-center px-3 py-0.5 rounded-full bg-slate-950/60 backdrop-blur-md text-[11px] text-white/95 font-medium border border-white/20 shadow-md">
+              Nguyễn Hùng Thái · Giáp Tý 1984 · Q7, TP.HCM · 22+ năm CX
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Vòng tròn quỹ đạo quay quanh nhân vật ở chính giữa */}
+      <div className="u306-st">
+        {personalItems.map((item, idx) => (
+          <div
+            key={item.id}
+            className="u306-rg"
+            style={{ '--r': `${item.r}px`, '--t': item.t, '--dir': item.dir } as any}
+          >
+            <div className="u306-sl" style={{ transform: `rotate(${item.deg}deg) translateX(${item.r}px)` }}>
+              <div className="u306-up" style={{ '--t': item.t, '--rdir': item.rdir } as any}>
+                <button
+                  type="button"
+                  className={`u306-ic ${activeIcon === idx ? 'is-on' : ''}`}
+                  style={{ '--c': item.color } as any}
+                  onMouseEnter={() => setActiveIcon(idx)}
+                  onMouseLeave={() => setActiveIcon(null)}
+                  onClick={() => handleItemClick(item)}
+                  title={`${item.label}: ${item.value} (Nhấp để mở)`}
+                >
+                  <WebIcon name={item.icon as any} className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Center Hub: Holographic Aura Ring định tâm bao quanh nhân vật trong video */}
+        <div
+          className="u306-hb"
+          title="Nguyễn Hùng Thái - Chuyên gia CX & Vận hành Dịch vụ"
+          onClick={() => showToast('Nguyễn Hùng Thái · Chuyên gia Quản trị CX & Vận hành Contact Center')}
+        >
+          <div className="w-4 h-4 rounded-full border border-cyan-400/80 bg-cyan-400/20 animate-ping pointer-events-none" />
+          <div className="w-2 h-2 rounded-full bg-cyan-300 shadow-[0_0_10px_#22d3ee] pointer-events-none" />
+        </div>
+      </div>
+
+      {/* Dải Nút Nhãn Tắt Thông Tin Cá Nhân Ở Chân Khung */}
+      <div className="u306-ft flex items-center justify-center gap-1.5 flex-wrap px-2">
+        {personalItems.map((item, idx) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => handleItemClick(item)}
+            onMouseEnter={() => setActiveIcon(idx)}
+            onMouseLeave={() => setActiveIcon(null)}
+            className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold backdrop-blur-md transition-all cursor-pointer ${
+              activeIcon === idx
+                ? 'bg-cyan-500 text-slate-950 shadow-[0_0_15px_rgba(34,211,238,0.9)] scale-105 border border-cyan-300'
+                : 'bg-black/55 hover:bg-black/80 text-white border border-white/30 shadow-md hover:border-cyan-400'
+            }`}
+          >
+            {item.shortLabel}
+          </button>
+        ))}
+      </div>
+
+      <style jsx>{`
+        .u306 {
+          position: relative;
+          width: 100%;
+          max-width: 500px;
+          height: 460px;
+          background: transparent !important;
+          box-shadow: none !important;
+          border: none !important;
+          overflow: visible;
+        }
+        .u306-hd {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 10px;
+          z-index: 10;
+          text-align: center;
+        }
+        .u306-st {
+          position: absolute;
+          left: 50%;
+          top: 220px;
+          width: 0;
+          height: 0;
+          z-index: 5;
+        }
+        .u306-rg {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 0;
+          height: 0;
+          animation: u306-r var(--t) linear infinite;
+          animation-direction: var(--dir);
+        }
+        .u306-rg::before {
+          content: "";
+          position: absolute;
+          left: calc(var(--r) * -1);
+          top: calc(var(--r) * -1);
+          width: calc(var(--r) * 2);
+          height: calc(var(--r) * 2);
+          border-radius: 50%;
+          border: 1.5px dashed rgba(34, 211, 238, 0.45);
+          box-shadow: 0 0 16px rgba(34, 211, 238, 0.15);
+        }
+        .u306.is-hold .u306-rg, .u306.is-hold .u306-up { animation-play-state: paused; }
+        @keyframes u306-r { to { transform: rotate(360deg); } }
+        .u306-sl { position: absolute; left: 0; top: 0; }
+        .u306-up {
+          position: absolute;
+          left: -19px;
+          top: -19px;
+          animation: u306-r var(--t) linear infinite;
+          animation-direction: var(--rdir);
+        }
+        .u306-ic {
+          display: grid;
+          place-items: center;
+          width: 38px;
+          height: 38px;
+          padding: 0;
+          border: 1px solid rgba(255, 255, 255, 0.35);
+          border-radius: 12px;
+          background: rgba(15, 23, 42, 0.85);
+          backdrop-filter: blur(8px);
+          box-shadow: 0 0 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.15);
+          color: var(--c);
+          cursor: pointer;
+          transition: transform 0.3s cubic-bezier(0.3,1.6,0.5,1), box-shadow 0.3s;
+        }
+        .u306-ic:hover {
+          background: rgba(15, 23, 42, 0.95);
+          border-color: var(--c);
+        }
+        .u306-ic.is-on {
+          transform: scale(1.25);
+          background: #0f172a;
+          box-shadow: 0 0 0 2px var(--c), 0 0 20px var(--c);
+          border-color: var(--c);
+        }
+        .u306-hb {
+          position: absolute;
+          left: -40px;
+          top: -40px;
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          border: 2px dashed rgba(34, 211, 238, 0.65);
+          background: radial-gradient(circle, rgba(6, 182, 212, 0.18) 0%, transparent 70%);
+          box-shadow: 0 0 24px rgba(6, 182, 212, 0.45);
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          z-index: 6;
+        }
+        .u306-hb:hover {
+          transform: scale(1.1);
+          border-color: rgba(34, 211, 238, 0.95);
+          box-shadow: 0 0 32px rgba(34, 211, 238, 0.7);
+        }
+        .u306-ft {
+          position: absolute;
+          bottom: 4px;
+          left: 0;
+          right: 0;
+          z-index: 10;
+        }
+      `}</style>
+    </div>
+  );
+};
 
 export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: AboutViewProps = {}) {
   const { showToast } = useToast();
@@ -1238,57 +1609,13 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                   </div>
                 </div>
 
-                {/* Right Column: Thẻ Thông Tin Cá Nhân (Chỉ hiện khi idle) */}
+                {/* Center-Right: Tích Hợp Hệ Sinh Thái (Phóng to, nền trong suốt, căn vòng tròn quanh nhân vật) */}
                 {!isPlayingIntro && (
-                  <div className="flex flex-col gap-2 z-20 w-full sm:w-[160px] lg:w-[180px] shrink-0 justify-center">
-                    <div className="flex flex-col gap-2">
-                      <div className="grid grid-cols-1 gap-2">
-                        {PERSONAL_DEMOGRAPHICS.map((item) => {
-                          const ItemIcon = getLucideIcon(item.iconName);
-                          return (
-                            <div
-                              key={item.id}
-                              onClick={() => {
-                                SoundEngine.playPop();
-                                if (item.type === 'map') {
-                                  setSelectedMapLocation({
-                                    isOpen: true,
-                                    type: item.id === 'temp_residence' ? 'tam_tru' : 'cu_tru',
-                                    title: item.mapTitle || item.labelVi,
-                                    address: item.href || item.valueVi,
-                                    query: item.mapQuery || item.valueVi,
-                                  });
-                                } else {
-                                  showToast(`${item.labelVi}: ${item.valueVi}`);
-                                }
-                              }}
-                              className="p-2 px-2.5 rounded-xl bg-white/95 dark:bg-slate-800/95 border border-slate-200/90 dark:border-white/10 shadow-2xs flex items-center gap-2 hover:shadow-xs  transition-all cursor-pointer group"
-                              title={item.type === 'map' ? `Click để xem bản đồ: ${item.valueVi}` : `${item.labelVi}: ${item.valueVi}`}
-                            >
-                              <div
-                                className={cn(
-                                  'w-7.5 h-7.5 rounded-lg flex items-center justify-center shrink-0 shadow-2xs',
-                                  item.colorTheme.iconBg
-                                )}
-                              >
-                                <ItemIcon className={cn('w-3.5 h-3.5', item.colorTheme.iconColor)} />
-                              </div>
-                              <div className="min-w-0 flex flex-col text-left flex-1">
-                                <span className="text-[9.5px] text-slate-500 dark:text-slate-400 font-bold truncate">
-                                  {item.labelVi}
-                                </span>
-                                <span className="text-[11.5px] font-black font-play text-slate-800 dark:text-slate-100 truncate leading-tight group-hover:text-blue-600 dark:group-hover:text-cyan-300 transition-colors">
-                                  {item.valueVi}
-                                </span>
-                              </div>
-                              {item.type === 'map' && (
-                                <ExternalLink className="w-2.5 h-2.5 text-slate-400 group-hover:text-blue-500 shrink-0" />
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
+                  <div className="flex-1 flex items-center justify-center md:justify-end shrink-0 z-20 w-full h-full relative">
+                    <IntegrationsUI
+                      onOpenMap={(loc) => setSelectedMapLocation({ isOpen: true, ...loc })}
+                      onNavigatePage={onNavigatePage}
+                    />
                   </div>
                 )}
               </div>

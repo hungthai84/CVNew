@@ -15,18 +15,19 @@ export interface HeaderProps {
 
 // Bảng màu ánh sáng Neon đèn độc bản cho từng mục menu ở giao diện tối Glass Neon
 const PAGE_NEON_COLORS: Record<number, { neon: string; glow: string }> = {
-  0: { neon: '#38BDF8', glow: 'rgba(56, 189, 248, 0.7)' },   // Trang Chủ: Electric Sky Blue
-  1: { neon: '#FB7185', glow: 'rgba(251, 113, 133, 0.7)' },  // Thư Ngỏ: Neon Rose Red
-  2: { neon: '#C084FC', glow: 'rgba(192, 132, 252, 0.7)' },  // Giới Thiệu: Neon Violet
-  3: { neon: '#FBBF24', glow: 'rgba(251, 191, 36, 0.7)' },   // Lĩnh Vực: Amber Gold Neon
-  4: { neon: '#22D3EE', glow: 'rgba(34, 211, 238, 0.7)' },   // Kỹ Năng: Vivid Cyan Neon
-  5: { neon: '#818CF8', glow: 'rgba(129, 140, 248, 0.7)' },  // Kinh Nghiệm: Indigo Laser Neon
-  6: { neon: '#E879F9', glow: 'rgba(232, 121, 249, 0.7)' },  // Dự Án: Fuchsia Neon
-  7: { neon: '#FB923C', glow: 'rgba(251, 146, 60, 0.7)' },   // Hệ Thống: Radiant Orange Neon
-  8: { neon: '#F472B6', glow: 'rgba(244, 114, 182, 0.7)' },  // Phỏng Vấn: Hot Pink Neon
-  9: { neon: '#F0ABFC', glow: 'rgba(240, 171, 252, 0.7)' },  // Tử Vi: Mystic Purple Neon
-  10: { neon: '#4ADE80', glow: 'rgba(74, 222, 128, 0.7)' },  // Kỷ Niệm: Lime Mint Neon
-  11: { neon: '#2DD4BF', glow: 'rgba(45, 212, 191, 0.7)' },  // Liên Hệ: Electric Teal Neon
+  0: { neon: '#38BDF8', glow: 'rgba(56, 189, 248, 0.7)' },   // Trang Chủ
+  1: { neon: '#FB7185', glow: 'rgba(251, 113, 133, 0.7)' },  // Thư Ngỏ
+  2: { neon: '#C084FC', glow: 'rgba(192, 132, 252, 0.7)' },  // Giới Thiệu
+  3: { neon: '#FBBF24', glow: 'rgba(251, 191, 36, 0.7)' },   // Lĩnh Vực
+  4: { neon: '#22D3EE', glow: 'rgba(34, 211, 238, 0.7)' },   // Học Vấn
+  5: { neon: '#818CF8', glow: 'rgba(129, 140, 248, 0.7)' },  // Kinh Nghiệm
+  6: { neon: '#E879F9', glow: 'rgba(232, 121, 249, 0.7)' },  // Dự Án
+  7: { neon: '#FB923C', glow: 'rgba(251, 146, 60, 0.7)' },   // Hệ Thống
+  8: { neon: '#F472B6', glow: 'rgba(244, 114, 182, 0.7)' },  // Phỏng Vấn
+  9: { neon: '#F0ABFC', glow: 'rgba(240, 171, 252, 0.7)' },  // Tử Vi
+  10: { neon: '#4ADE80', glow: 'rgba(74, 222, 128, 0.7)' },  // Kỷ Niệm
+  11: { neon: '#2DD4BF', glow: 'rgba(45, 212, 191, 0.7)' },  // Liên Hệ
+  12: { neon: '#D946EF', glow: 'rgba(217, 70, 239, 0.7)' },  // Hình Nền
 };
 
 export const Header: React.FC<HeaderProps> = ({
@@ -133,7 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       id="app-header"
-      className={`neonav-bar w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto h-[64px] sm:h-[68px] glass-panel flex items-center justify-between p-[2px] z-40 relative flex-shrink-0 transition-all duration-300 rounded-t-none rounded-b-[20px] border-t-0 border-x border-b ${
+      className={`neonav-bar w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto h-[64px] sm:h-[68px] glass-panel flex items-center justify-between p-[2px] z-40 relative flex-shrink-0 transition-all duration-300 rounded-t-none rounded-bl-[24px] rounded-br-[24px] border-t-0 border-x border-b ${
         isDark
           ? 'border-2 border-cyan-400/30 bg-slate-950/80 backdrop-blur-xl shadow-[0_16px_45px_-6px_rgba(0,0,0,0.75),0_0_24px_rgba(34,211,238,0.22),inset_0_1px_1px_rgba(255,255,255,0.15)]'
           : 'border-2 border-white/80 dark:border-white/20 shadow-[0_14px_40px_-6px_rgba(30,27,75,0.18),0_4px_16px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)]'
@@ -191,47 +192,33 @@ export const Header: React.FC<HeaderProps> = ({
             if (currentTheme === 'dark-neon') {
               const neonData = PAGE_NEON_COLORS[page.id] || { neon: page.theme, glow: `${page.theme}80` };
               iconColor = neonData.neon;
-              iconGlowFilter = isHovered || isSelected
+              iconGlowFilter = isHovered
                 ? `drop-shadow(0 0 5px ${neonData.neon})`
-                : `drop-shadow(0 0 3px ${neonData.neon}B3)`;
+                : `drop-shadow(0 0 2px ${neonData.neon}80)`;
 
-              itemBg = isSelected
-                ? `${neonData.neon}32`
-                : isHovered
+              itemBg = isHovered
                 ? `${neonData.neon}28`
                 : 'rgba(15, 23, 42, 0.88)';
-              itemBorder = isSelected
-                ? `${neonData.neon}95`
-                : isHovered
+              itemBorder = isHovered
                 ? `${neonData.neon}75`
                 : `${neonData.neon}35`;
               itemBoxShadow = isHovered
                 ? `0 10px 25px -4px ${neonData.glow}, 0 0 14px ${neonData.neon}`
-                : isSelected
-                ? `0 4px 16px -2px ${neonData.glow}`
                 : '0 2px 4px rgba(0, 0, 0, 0.35)';
 
               titleColor = iconColor;
-              titleTextShadow = isSelected
-                ? `0 0 6px ${neonData.neon}`
-                : isHovered
+              titleTextShadow = isHovered
                 ? `0 0 4px ${neonData.neon}80`
                 : 'none';
             } else {
-              itemBg = isSelected
-                ? `linear-gradient(135deg, #FFFFFF 0%, ${page.bgNormal || `${page.theme}24`} 100%)`
-                : isHovered
+              itemBg = isHovered
                 ? `linear-gradient(135deg, #FFFFFF 0%, ${page.bgLight || `${page.theme}18`} 100%)`
                 : `linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, ${page.bgLight || `${page.theme}12`} 100%)`;
-              itemBorder = isSelected
-                ? page.theme
-                : isHovered
+              itemBorder = isHovered
                 ? `${page.theme}85`
                 : page.borderColor || `${page.theme}45`;
               itemBoxShadow = isHovered
                 ? `0 8px 20px -3px ${page.theme}55`
-                : isSelected
-                ? `0 4px 14px -2px ${page.theme}45`
                 : `0 2px 6px -1px ${page.theme}20`;
 
               titleColor = iconColor;
@@ -266,8 +253,6 @@ export const Header: React.FC<HeaderProps> = ({
                   color: iconColor,
                   transform: isHovered
                     ? 'translateY(-3px) scale(1.05)'
-                    : isSelected
-                    ? 'translateY(-1px)'
                     : 'none',
                 }}
                 title={pageFullName}

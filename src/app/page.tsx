@@ -39,7 +39,6 @@ import { AboutView } from '@/components/views/AboutView';
 import { ServicesView } from '@/components/views/ServicesView';
 import EducationView from '@/components/views/EducationView';
 import { ExperienceView } from '@/components/views/ExperienceView';
-import { SkillsView } from '@/components/views/SkillsView';
 import { ProjectsView } from '@/components/views/ProjectsView';
 import { SystemsView } from '@/components/views/SystemsView';
 import { InterviewView } from '@/components/views/InterviewView';
@@ -696,8 +695,8 @@ export default function HomePage() {
           id="center-card"
           className={`w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto my-[4px] sm:my-[8px] md:my-[10px] flex-1 min-h-0 glass-panel overflow-hidden flex flex-col relative z-20 transition-all duration-500 elevated-float-card group/main ${
             currentTheme === 'dark-neon'
-              ? 'rounded-[14px] border border-cyan-400/40 shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_24px_rgba(34,211,238,0.18)]'
-              : 'rounded-[14px] border border-white/90 shadow-xl'
+              ? 'rounded-[24px] border border-cyan-400/40 shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_24px_rgba(34,211,238,0.18)]'
+              : 'rounded-[24px] border border-white/90 shadow-xl'
           }`}
         >
           {/* Dynamic Page Transition Beam Indicator */}
@@ -710,8 +709,7 @@ export default function HomePage() {
             }`}
           />
 
-          {/* Top ambient highlight line */}
-          <div className="absolute top-0 inset-x-8 h-[1px] bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none z-10" />
+
 
           <div
             ref={contentDisplayRef}
@@ -735,17 +733,15 @@ export default function HomePage() {
             )}
             {currentPage === 2 && <AboutView currentTheme={currentTheme} onNavigatePage={setCurrentPage} />}
             {currentPage === 3 && <ServicesView currentTheme={currentTheme} />}
-            {currentPage === 4 && <SkillsView currentTheme={currentTheme} />}
-            {currentPage === 5 && <EducationView />}
-            {currentPage === 6 && <SkillsView currentTheme={currentTheme} />}
-            {currentPage === 7 && <ExperienceView currentTheme={currentTheme} />}
-            {currentPage === 8 && <ProjectsView currentTheme={currentTheme} />}
-            {currentPage === 9 && <SystemsView currentTheme={currentTheme} />}
-            {currentPage === 10 && <InterviewView currentTheme={currentTheme} />}
-            {currentPage === 11 && <HoroscopeView currentTheme={currentTheme} />}
-            {currentPage === 12 && <MemoriesView currentTheme={currentTheme} />}
-            {currentPage === 13 && <ContactView currentTheme={currentTheme} />}
-            {currentPage === 14 && (
+            {currentPage === 4 && <EducationView currentTheme={currentTheme} />}
+            {currentPage === 5 && <ExperienceView currentTheme={currentTheme} />}
+            {currentPage === 6 && <ProjectsView currentTheme={currentTheme} />}
+            {currentPage === 7 && <SystemsView currentTheme={currentTheme} />}
+            {currentPage === 8 && <InterviewView currentTheme={currentTheme} />}
+            {currentPage === 9 && <HoroscopeView currentTheme={currentTheme} />}
+            {currentPage === 10 && <MemoriesView currentTheme={currentTheme} />}
+            {currentPage === 11 && <ContactView currentTheme={currentTheme} />}
+            {currentPage === 12 && (
               <WallpaperView
                 currentTheme={currentTheme}
                 onSelectTheme={handleChangeTheme}

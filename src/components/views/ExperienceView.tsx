@@ -190,7 +190,7 @@ const MILESTONE_CUSTOM_CONTENT: Record<string, MilestoneCustomContent> = {
     ],
   },
   '2013': {
-    bannerTitle: 'Kết nối cộng đồng<br />Kiến tạo giá trị bền vững',
+    bannerTitle: 'Vietnam Esports (VED)<br />Kiến tạo giá trị bền vững',
     bannerDesc: 'Với thế mạnh trong lĩnh vực eSports, Thương mại điện tử và Dịch vụ số, VED mang đến những trải nghiệm vượt trội cho hàng triệu người dùng Việt Nam.',
     gradient: 'from-blue-700 via-blue-600 to-indigo-800',
     pillars: [
@@ -568,6 +568,41 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
         { text: 'Phát triển đội ngũ', icon: 'rocket' },
       ],
     },
+    {
+      key: '2013',
+      yearBadge: 'Năm 2013',
+      shortName: 'VIETNAM ESPORTS (VED)',
+      roleSummary: 'Trưởng Phòng Dịch vụ Khách hàng',
+      headcountLabel: '130 Nhân sự',
+      logo: 'https://i.ibb.co/fYPJLfbw/VED.png',
+      productSummary: 'Shopee · Garena · AirPay · GCafe',
+      products: [
+        { name: 'VED', logo: 'https://i.ibb.co/fYPJLfbw/VED.png' },
+        { name: 'Garena', logo: 'https://i.ibb.co/h1Md65yV/Garena.png' },
+        { name: 'Shopee', logo: 'https://i.ibb.co/BSVS4xf/Shopee.png' },
+        { name: 'AirPay', logo: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png' },
+        { name: 'GCafe', logo: 'https://i.ibb.co/FkWk3s4W/GCafe.png' },
+      ],
+      primaryColor: '#ed1c24',
+      badgeBg: 'linear-gradient(135deg, #ff2a32 0%, #d60e15 100%)',
+      badgeColor: '#ed1c24',
+      glowColor: 'rgba(237, 28, 36, 0.24)',
+      outerRingBg: '#ffe5e6',
+      cardBg: 'linear-gradient(180deg, rgba(254, 242, 242, 0.95) 0%, rgba(254, 226, 226, 0.75) 100%)',
+      iconCircleBg: 'rgba(237, 28, 36, 0.14)',
+      iconName: 'gamepad' as const,
+      borderColor: 'border-red-200/90',
+      activeRing: 'ring-red-400',
+      titleColor: 'text-red-950',
+      pillBg: 'bg-white/90 backdrop-blur-sm text-red-700 border-red-200/90',
+      arrowBg: '#ed1c24',
+      arrowBorder: '#fecdd3',
+      bullets: [
+        { text: 'Quản lý 130 nhân sự', icon: 'users' },
+        { text: 'Xây dựng CRM Garena', icon: 'file' },
+        { text: 'CSKH TMĐT & eSports', icon: 'rocket' },
+      ],
+    },
 
     {
       key: '2016',
@@ -715,6 +750,8 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
         return <Megaphone {...props} />;
       case 'clipboard':
         return <ClipboardCheck {...props} />;
+      case 'gamepad':
+        return <Gamepad2 {...props} />;
       default:
         return <RadioTower {...props} />;
     }
@@ -779,6 +816,15 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
 
   // Featured Products Carousel (Right Widget in the image)
   const featuredProductPages = [
+    {
+      label: '4 sản phẩm (VED, Garena, Shopee, AirPay)',
+      items: [
+        { name: 'VED eSports', sub: 'eSports & Game Online', logo: 'https://i.ibb.co/fYPJLfbw/VED.png', targetKey: '2013' },
+        { name: 'Garena', sub: 'LMHT, FO3 & VCS', logo: 'https://i.ibb.co/h1Md65yV/Garena.png', targetKey: '2013-garena' },
+        { name: 'Shopee', sub: 'Sàn Thương Mại Điện Tử', logo: 'https://i.ibb.co/BSVS4xf/Shopee.png', targetKey: '2013-shopee' },
+        { name: 'ShopeePay / AirPay', sub: 'Ví Điện Tử Thanh Toán', logo: 'https://i.ibb.co/LdYv3TJy/Shopee-Paye.png', targetKey: '2014-airpay' },
+      ],
+    },
     {
       label: '2 sản phẩm',
       items: [
@@ -915,7 +961,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
               {/* =====================================================================
                   2. 8-COLUMN 3-TIER INFOGRAPHIC TIMELINE WITH ANIMATED PULSE FLOW & QUICK KPI POPOVER (FULL CHIỀU CAO)
                   ===================================================================== */}
-              <div className="w-full h-full flex-1 min-h-0 px-3 py-2.5 sm:px-4 sm:py-3.5 rounded-[14px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_12px_32px_-8px_rgba(30,27,75,0.06)] dark:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] overflow-x-auto no-scrollbar relative flex flex-col justify-between">
+              <div className="w-full h-full flex-1 min-h-0 px-3 py-2.5 sm:px-4 sm:py-3.5 rounded-[16px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_12px_32px_-8px_rgba(30,27,75,0.06)] dark:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] overflow-x-auto no-scrollbar relative flex flex-col justify-between">
             {/* Story Narration Bar (Khi ở chế độ Trình Chiếu Hành Trình) */}
             {isStoryActive && (
               <div className="w-full mb-2.5 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-[#1E1B4B]/95 via-indigo-950/95 to-slate-950/95 text-white shadow-[0_16px_36px_-8px_rgba(30,27,75,0.3)] border border-white/20 backdrop-blur-2xl relative overflow-hidden animate-fadeIn shrink-0">
@@ -1114,8 +1160,6 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
 
                         {/* Scenic Banner Frame with centered Circular Medallion matching Reference Image 1 */}
                         <div
-                          onMouseEnter={() => setHoveredMilestoneKey(item.key)}
-                          onMouseLeave={() => setHoveredMilestoneKey((cur) => (cur === item.key ? null : cur))}
                           onClick={() => handleOpenJobCard(item.key)}
                           title={`Click để mở chi tiết công tác ${item.shortName}`}
                           className="relative z-10 w-full h-[76px] sm:h-[82px] rounded-xl overflow-hidden border border-white/90 dark:border-white/15 shadow-sm flex items-center justify-center cursor-pointer group/logo"
@@ -1160,84 +1204,6 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                             </div>
                           )}
                         </div>
-
-                        {/* QUICK KPI POPOVER */}
-                        {hoveredMilestoneKey === item.key && !isStoryActive && (
-                          <div
-                            onMouseEnter={() => setHoveredMilestoneKey(item.key)}
-                            onMouseLeave={() => setHoveredMilestoneKey(null)}
-                            className="absolute z-50 w-68 p-3.5 rounded-2xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-white/95 dark:border-white/20 shadow-[0_18px_45px_rgba(15,23,42,0.25)] flex flex-col gap-2.5 transition-all duration-200 pointer-events-auto animate-fadeIn left-1/2 -translate-x-1/2 top-full mt-2"
-                          >
-                            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-slate-900 border-t border-l border-white/90 dark:border-white/20 rotate-45" />
-                            <div className="flex items-center justify-between gap-2 border-b border-slate-100 dark:border-white/10 pb-2">
-                              <div className="flex items-center gap-2 min-w-0">
-                                <img
-                                  src={item.logo}
-                                  alt={item.shortName}
-                                  className="w-7 h-7 object-cover rounded-full bg-white shrink-0 shadow-xs"
-                                />
-                                <div className="min-w-0">
-                                  <h4 className="text-xs font-black text-slate-900 dark:text-white font-play truncate">
-                                    {formatCardTitle(EXPERIENCE_MILESTONES[item.key]?.company || item.shortName)}
-                                  </h4>
-                                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">
-                                    {formatCardTitle(item.roleSummary)}
-                                  </p>
-                                </div>
-                              </div>
-                              <span
-                                className="text-[9.5px] font-mono font-black px-2 py-0.5 rounded-full text-white shrink-0 shadow-2xs"
-                                style={{ background: item.badgeBg }}
-                              >
-                                {item.yearBadge}
-                              </span>
-                            </div>
-
-                            <div className="flex flex-col gap-1.5">
-                              <span className="text-[9.5px] font-mono font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                                {formatCardTitle('Chỉ số KPI nổi bật')}
-                              </span>
-                              {(EXPERIENCE_MILESTONES[item.key]?.kpis || [])
-                                .slice(0, 3)
-                                .map((kpi, kIdx) => {
-                                  const kpiVal =
-                                    typeof kpi.percent === 'number'
-                                      ? `${kpi.percent}%`
-                                      : (kpi as unknown as { value?: string }).value || `${item.headcountLabel}`;
-                                  return (
-                                    <div
-                                      key={kIdx}
-                                      className="p-1.5 px-2 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-white/10 flex items-center justify-between gap-2"
-                                    >
-                                      <span className="text-[11px] font-medium text-slate-600 dark:text-slate-300 truncate">
-                                        {kpi.label}
-                                      </span>
-                                      <span
-                                        className="text-[11.5px] font-black font-mono px-1.5 py-0.2 rounded-md shrink-0"
-                                        style={{ color: item.primaryColor }}
-                                      >
-                                        {kpiVal}
-                                      </span>
-                                    </div>
-                                  );
-                                })}
-                            </div>
-
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setHoveredMilestoneKey(null);
-                                handleOpenJobCard(item.key);
-                              }}
-                              className="w-full py-1.5 px-2 rounded-xl text-white text-[11px] font-bold font-play flex items-center justify-center gap-1.5 transition-all shadow-xs hover:shadow-md hover:brightness-105 cursor-pointer"
-                              style={{ background: item.badgeBg }}
-                            >
-                              <span>Xem Chi Tiết Công Tác</span>
-                              <span className="text-xs">→</span>
-                            </button>
-                          </div>
-                        )}
                       </div>
 
                       {/* Vertical Connector Stem from Banner to Bottom Card */}

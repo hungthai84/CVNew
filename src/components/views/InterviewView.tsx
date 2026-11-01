@@ -197,7 +197,7 @@ export const InterviewView: React.FC<InterviewViewProps> = ({ currentTheme = 'li
 
       {/* 3. VÙNG BÊN PHẢI: THẺ CHI TIẾT CÂU TRẢ LỜI */}
       <div className="w-full lg:w-[350px] xl:w-[380px] shrink-0 flex flex-col h-auto lg:h-full overflow-hidden">
-        <div className="w-full h-full flex-1 rounded-2xl border border-white/70 dark:border-white/10 bg-white/85 dark:bg-slate-900/90 p-3.5 sm:p-4 backdrop-blur-2xl shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(244,114,182,0.25)] transition-all duration-300 text-left flex flex-col justify-between gap-2.5 relative overflow-hidden">
+        <div className="w-full h-full flex-1 rounded-2xl bg-white/85 dark:bg-slate-900/90 p-3.5 sm:p-4 backdrop-blur-2xl transition-all duration-300 text-left flex flex-col justify-between gap-2.5 relative overflow-hidden">
           <div className="space-y-2 flex-1 flex flex-col min-h-0 relative z-10">
             {/* Header Tiêu đề thẻ */}
             <div className="space-y-1.5 shrink-0">

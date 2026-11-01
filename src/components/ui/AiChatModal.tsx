@@ -47,6 +47,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
 ];
 
 const SUGGESTED_QUESTIONS = [
+  { icon: 'microphone', label: '🎙️ /chat-voice (Đàm thoại 2 chiều)', query: '/chat-voice' },
   { icon: 'sparkles', label: 'Giới thiệu nhanh về anh Hùng Thái', query: 'Hãy giới thiệu tổng quan về anh Nguyễn Hùng Thái' },
   { icon: 'briefcase', label: 'Kinh nghiệm quản trị thực chiến', query: 'Kinh nghiệm quản trị vận hành và CSKH nổi bật của anh Thái?' },
   { icon: 'rocket', label: 'Kho 21 dự án trọng điểm', query: 'Anh Thái đã thực hiện các dự án và sáng kiến trọng điểm nào?' },
@@ -470,7 +471,7 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
     };
   };
 
-  const handleSend = (textToSend?: string) => {
+  const handleSend = async (textToSend?: string) => {
     const text = (textToSend || inputVal).trim();
     if (!text) return;
 
@@ -487,27 +488,43 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
     setInputVal('');
     setIsTyping(true);
 
-    // AI typing delay
-    setTimeout(() => {
-      const resp = generateAiResponse(text);
+    try {
+      const response = await fetch('/api/aichat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: text }),
+      });
+
+      const data = await response.json();
+
       const aiMsg: ChatMessage = {
         id: `msg-ai-${Date.now()}`,
         sender: 'ai',
-        text: resp.text,
+        text: data.text || "Tôi không nhận được phản hồi, bạn thử lại nhé!",
         timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-        action: resp.action,
+        action: data.action,
       };
 
       setMessages((prev) => [...prev, aiMsg]);
       setIsTyping(false);
       SoundEngine.playPop();
       if (isAutoSpeakEnabled) {
-        handleSpeak(resp.text, aiMsg.id);
+        handleSpeak(aiMsg.text, aiMsg.id);
       }
-    }, 700);
+    } catch (error) {
+      console.error('Chat error:', error);
+      const errorMsg: ChatMessage = {
+        id: `msg-error-${Date.now()}`,
+        sender: 'ai',
+        text: "Kết nối AI đang gặp sự cố. Bạn vui lòng thử lại sau giây lát!",
+        timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages((prev) => [...prev, errorMsg]);
+      setIsTyping(false);
+    }
   };
 
-  const handleVoiceSend = (durationStr: string, bars: number[], transcription?: string) => {
+  const handleVoiceSend = async (durationStr: string, bars: number[], transcription?: string) => {
     SoundEngine.playPop();
 
     const transcriptText = transcription?.trim() || '';
@@ -527,18 +544,25 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
 
     const queryForAi = transcriptText || 'hồ sơ năng lực của anh thái';
 
-    setTimeout(() => {
-      const resp = generateAiResponse(queryForAi);
+    try {
+      const response = await fetch('/api/aichat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: queryForAi }),
+      });
+
+      const data = await response.json();
+      
       const aiReplyText = transcriptText
-        ? `Tôi đã nghe thấy câu hỏi thoại: "${transcriptText}".\n\n${resp.text}`
-        : `Tôi đã nhận được tin nhắn thoại (${durationStr}) của bạn!\n\n${resp.text}`;
+        ? `Tôi đã nghe thấy câu hỏi thoại: "${transcriptText}".\n\n${data.text}`
+        : `Tôi đã nhận được tin nhắn thoại (${durationStr}) của bạn!\n\n${data.text}`;
 
       const aiMsg: ChatMessage = {
         id: `msg-ai-${Date.now()}`,
         sender: 'ai',
         text: aiReplyText,
         timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-        action: resp.action,
+        action: data.action,
       };
 
       setMessages((prev) => [...prev, aiMsg]);
@@ -547,7 +571,10 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
       if (isAutoSpeakEnabled) {
         handleSpeak(aiReplyText, aiMsg.id);
       }
-    }, 700);
+    } catch (error) {
+      console.error('Voice chat error:', error);
+      setIsTyping(false);
+    }
   };
 
   const handleVoiceCancel = () => {

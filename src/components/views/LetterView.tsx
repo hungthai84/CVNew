@@ -83,8 +83,8 @@ const getMilestoneIconName = (name: string): string => {
 // Slide sections metadata for interactive navigation
 const LETTER_SECTIONS = [
   { id: 0, shortLabel: 'Thông Điệp Hợp Tác', icon: 'mail' },
-  { id: 1, shortLabel: 'Sự Nghiệp 2002 - 2011', icon: 'rocket' },
-  { id: 2, shortLabel: 'Sự Nghiệp 2013 - 2023+', icon: 'briefcase' },
+  { id: 1, shortLabel: 'Sự Nghiệp 2002 - 2013', icon: 'rocket' },
+  { id: 2, shortLabel: 'Sự Nghiệp 2015 - 2023+', icon: 'briefcase' },
   { id: 3, shortLabel: 'Triết Lý Quản Trị', icon: 'trophy' },
 ];
 
@@ -2044,10 +2044,9 @@ export const LetterView: React.FC<LetterViewProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-slate-950/10 z-10 pointer-events-none" />
               </div>
 
-              {/* 1.2 Khung Thư Ngỏ (5 Cột ~ 40% chiều ngang) - Bố cục chuẩn mực, Full chiều cao */}
               <div
                 id="bento-commitment"
-                className={`col-span-12 lg:col-span-5 p-3 sm:p-4 lg:p-4.5 rounded-2xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 shadow-xl shadow-slate-900/5 dark:shadow-none flex flex-col justify-between relative overflow-hidden transition-all duration-300 w-full h-full flex-1 min-h-0 ${
+                className={`col-span-12 lg:col-span-5 p-3 sm:p-4 lg:p-4.5 rounded-2xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 shadow-xl shadow-slate-900/5 dark:shadow-none flex flex-col justify-start relative overflow-hidden transition-all duration-300 w-full h-auto ${
                   activeTargetId === 'callout-salutation' || activeTargetId === 'bento-experience-intro' || activeTargetId === 'bento-commitment'
                     ? 'ring-2 ring-cyan-500/80 shadow-[0_0_24px_rgba(6,182,212,0.25)]'
                     : 'hover:border-cyan-500/40'
@@ -2223,7 +2222,7 @@ export const LetterView: React.FC<LetterViewProps> = ({
 
 
       {/* ========================================================================= */}
-      {/* SLIDE 2: HÀNH TRÌNH SỰ NGHIỆP (3 CỘT MỐC NỀN TẢNG)                        */}
+      {/* SLIDE 2: HÀNH TRÌNH SỰ NGHIỆP (4 CỘT MỐC NỀN TẢNG & CHUYỂN ĐỔI SỐ)        */}
       {/* ========================================================================= */}
       {viewMode === 'slides' && currentSlide === 1 && (
         <div
@@ -2233,18 +2232,17 @@ export const LetterView: React.FC<LetterViewProps> = ({
           }`}
         >
           {renderInteractiveMiniTimeline()}
-          {/* 3 Cards Bento Grid */}
-          <div className="w-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-2.5 lg:gap-3 items-stretch">
-            {CAREER_MILESTONES_DATA.slice(0, 3).map((item, idx) => {
-              const bentoSpan = idx === 2 ? 'md:col-span-12' : 'md:col-span-6';
-              return renderCareerCard(item, bentoSpan, false);
+          {/* 4 Cards Bento Grid (2x2) */}
+          <div className="w-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 items-stretch">
+            {CAREER_MILESTONES_DATA.slice(0, 4).map((item) => {
+              return renderCareerCard(item, 'md:col-span-1', false);
             })}
           </div>
         </div>
       )}
 
       {/* ========================================================================= */}
-      {/* SLIDE 3: HÀNH TRÌNH BỨT PHÁ (4 CỘT MỐC CHUYỂN ĐỔI SỐ)                     */}
+      {/* SLIDE 3: HÀNH TRÌNH BỨT PHÁ (4 CỘT MỐC QUY MÔ & TÀI CHÍNH SỐ)             */}
       {/* ========================================================================= */}
       {viewMode === 'slides' && currentSlide === 2 && (
         <div
@@ -2254,11 +2252,10 @@ export const LetterView: React.FC<LetterViewProps> = ({
           }`}
         >
           {renderInteractiveMiniTimeline()}
-          {/* 4 Cards Bento Grid */}
-          <div className="w-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-12 gap-2 sm:gap-2.5 lg:gap-3 items-stretch">
-            {CAREER_MILESTONES_DATA.slice(3, 7).map((item, idx) => {
-              const bentoSpan = idx === 0 ? 'md:col-span-12' : 'md:col-span-4';
-              return renderCareerCard(item, bentoSpan, false);
+          {/* 4 Cards Bento Grid (2x2) */}
+          <div className="w-full flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5 lg:gap-3 items-stretch">
+            {CAREER_MILESTONES_DATA.slice(4, 8).map((item) => {
+              return renderCareerCard(item, 'md:col-span-1', false);
             })}
           </div>
         </div>

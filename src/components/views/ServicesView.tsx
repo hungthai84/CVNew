@@ -1902,26 +1902,6 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                               ))}
                             </ul>
                           </div>
-
-                          {/* Minh họa đội ngũ điều hành dưới đáy thẻ giống hình tham khảo */}
-                          <div className="mt-auto pt-2 flex items-center justify-center">
-                            <div className="w-full h-14 rounded-xl bg-gradient-to-r from-emerald-500/10 via-sky-500/10 to-blue-500/10 border border-emerald-500/20 flex items-center justify-between px-3 py-1.5">
-                              <div className="flex -space-x-2">
-                                <span className="w-7 h-7 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
-                                  OP
-                                </span>
-                                <span className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
-                                  QA
-                                </span>
-                                <span className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
-                                  CS
-                                </span>
-                              </div>
-                              <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 font-play">
-                                Đa phòng ban 24/7
-                              </span>
-                            </div>
-                          </div>
                         </div>
 
                         {/* Trụ cột 3: Công nghệ hệ thống (Kèm minh họa hạ tầng Cloud/Server ở đáy thẻ) */}

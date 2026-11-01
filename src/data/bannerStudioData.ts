@@ -312,7 +312,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 3,
+    pageId: 5,
     pageTitle: 'Học Vấn',
     kickerBadge: 'HỌC VẤN CHÍNH QUY & 14 CHỨNG CHỈ QUỐC TẾ',
     defaultTitle: 'Nền Tảng Tri Thức CNTT & Hệ Thống Chứng Chỉ Quản Trị Chuyên Sâu',
@@ -330,9 +330,9 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 4,
-    pageTitle: 'Lĩnh Vực',
-    kickerBadge: '06 LĨNH VỰC HOẠT ĐỘNG CHUYÊN MÔN MŨI NHỌN',
+    pageId: 3,
+    pageTitle: 'Dịch Vụ',
+    kickerBadge: '06 DỊCH VỤ HOẠT ĐỘNG CHUYÊN MÔN CỐT LÕI',
     defaultTitle: 'Thâm Niên Điều Hành Đa Ngành: Viễn Thông, TMĐT, Bảo Hiểm, Game & Fintech',
     defaultSubtitle:
       'Chuyển hóa linh hoạt tiêu chuẩn dịch vụ khách hàng quốc tế qua MobiFone, Shopee, Prudential, Garena, MoMo, Finviet, V247 và HTVC.',
@@ -348,7 +348,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 5,
+    pageId: 4,
     pageTitle: 'Kỹ Năng',
     kickerBadge: 'KỸ NĂNG CHUYÊN MÔN & MA TRẬN CHIẾN LƯỢC SWOT',
     defaultTitle: 'Bản Đồ Năng Lực Quản Trị Vận Hành, Công Nghệ AI & Phân Tích SWOT',
@@ -366,7 +366,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 6,
+    pageId: 7,
     pageTitle: 'Kinh Nghiệm',
     kickerBadge: 'HÀNH TRÌNH SỰ NGHIỆP & CỘT MỐC QUẢN TRỊ (2003 – 2026+)',
     defaultTitle: 'Hơn 22 Năm Thực Chiến Xây Dựng & Dẫn Dắt Trung Tâm Dịch Vụ Khách Hàng',
@@ -384,7 +384,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 7,
+    pageId: 8,
     pageTitle: 'Dự Án',
     kickerBadge: 'KHO 21 DỰ ÁN & SÁNG KIẾN VẬN HÀNH TRỌNG ĐIỂM',
     defaultTitle: 'Tuyển Tập 21 Dự Án Chuyển Đổi Số, Chuẩn Hóa SOP & Tối Ưu Trải Nghiệm CX',
@@ -402,7 +402,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 8,
+    pageId: 9,
     pageTitle: 'Hệ Thống',
     kickerBadge: 'CỔNG BENTO 12 HỆ THỐNG CSKH C-LEVEL',
     defaultTitle: 'Kiến Trúc 12 Nền Tảng Công Nghệ Quản Trị Dịch Vụ Khách Hàng Hợp Nhất',
@@ -420,7 +420,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 9,
+    pageId: 10,
     pageTitle: 'Phỏng Vấn',
     kickerBadge: 'ĐỐI THOẠI MÔ PHỎNG AI & Q&A TUYỂN DỤNG C-LEVEL',
     defaultTitle: 'Góc Nhìn Lãnh Đạo & Giải Pháp Thực Chiến Cho Vị Trí Head of Customer Service',
@@ -438,7 +438,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 10,
+    pageId: 11,
     pageTitle: 'Tử Vi',
     kickerBadge: 'BẢN ĐỒ TỬ VI, BÁT TRẠCH & PHONG THỦY QUẢN TRỊ',
     defaultTitle: 'Giáp Tý 1984 (Hải Trung Kim) — Nghệ Thuật Dụng Nhân & Phong Thủy Điều Hành',
@@ -456,7 +456,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 11,
+    pageId: 12,
     pageTitle: 'Kỷ Niệm',
     kickerBadge: 'KHOẢNH KHẮC HÀNH TRÌNH & KỶ NIỆM ĐÁNG NHỚ',
     defaultTitle: 'Dấu Ấn Đồng Đội, Văn Hóa Tôn Vinh & Những Nụ Cười Phụng Sự Khách Hàng',
@@ -474,7 +474,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 12,
+    pageId: 13,
     pageTitle: 'Liên Hệ',
     kickerBadge: 'KÊNH KẾT NỐI TRỰC TIẾP & HỢP TÁC CHIẾN LƯỢC',
     defaultTitle: 'Kết Nối Ngay Với Nguyễn Hùng Thái — Sẵn Sàng Đồng Hành Cùng Doanh Nghiệp',
@@ -492,7 +492,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 13,
+    pageId: 14,
     pageTitle: 'Hình Nền',
     kickerBadge: 'TÙY CHỈNH HÌNH NỀN 4K & GIAO DIỆN ĐA SẮC',
     defaultTitle: 'Không Gian Trải Nghiệm Thị Giác Cá Nhân Hóa & Chế Độ Trình Chiếu Zen Mode',
@@ -510,7 +510,7 @@ export const PAGE_BANNER_PRESETS: PageBannerPreset[] = [
     ],
   },
   {
-    pageId: 14,
+    pageId: 15,
     pageTitle: 'Tạo Banner',
     kickerBadge: 'EXECUTIVE BANNER STUDIO · CHUẨN TỶ LỆ 16:3',
     defaultTitle: 'Dịch Vụ Thiết Kế & Tạo Banner AI Siêu Rộng 16:3 Cho Cổng Thông Tin Chuyên Gia',

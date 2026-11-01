@@ -142,14 +142,29 @@
   --color-warning: #FCD34D;
   --color-danger: #FB7185;
 
-  /* Radius Tokens - Chuẩn hóa toàn bộ website card bo cong 14px */
+  /* ========================================================
+     MASTER BORDER RADIUS DESIGN TOKENS (CHUẨN HÓA TOÀN WEBSITE)
+     ======================================================== */
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 14px;
-  --radius-xl: 14px;
-  --radius-2xl: 14px;
-  --card-radius: 14px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 32px;
   --radius-full: 9999px;
+
+  /* Phân cấp theo thành phần */
+  --radius-main-container: 24px;
+  --radius-dashboard-container: 24px;
+  --radius-bento-card: 20px;
+  --radius-glass-card: 20px;
+  --card-radius: 20px;
+  --radius-modal: 24px;
+  --radius-button: 12px;
+  --radius-input: 12px;
+  --radius-image: 14px;
+  --radius-badge: 9999px;
 
   /* Focus & Interaction Tokens */
   --focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.45);

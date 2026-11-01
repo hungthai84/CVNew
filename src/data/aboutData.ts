@@ -130,7 +130,7 @@ export const PERSONAL_DEMOGRAPHICS: DemographicItem[] = [
   {
     id: 'status',
     iconName: 'Heart',
-    labelVi: 'Tình trạng hôn nhân',
+    labelVi: 'Hôn nhân',
     labelEn: 'Marital Status',
     valueVi: 'Độc thân',
     valueEn: 'Single',
@@ -206,13 +206,13 @@ export const PERSONAL_DEMOGRAPHICS: DemographicItem[] = [
   {
     id: 'permanent_residence',
     iconName: 'Home',
-    labelVi: 'Cư trú gốc',
+    labelVi: 'Cư trú',
     labelEn: 'Permanent Residence',
     valueVi: 'TP. Mỹ Tho, Tỉnh Tiền Giang',
     valueEn: 'My Tho, Tien Giang',
     type: 'map',
     href: 'TP. Mỹ Tho, Tỉnh Tiền Giang',
-    mapTitle: 'Cư trú gốc (TP. Mỹ Tho, Tiền Giang)',
+    mapTitle: 'Cư trú (TP. Mỹ Tho, Tiền Giang)',
     mapQuery: 'My Tho, Tien Giang, Vietnam',
     colorTheme: {
       bg: 'bg-emerald-50/80 dark:bg-emerald-950/40',
@@ -227,7 +227,7 @@ export const PERSONAL_DEMOGRAPHICS: DemographicItem[] = [
   {
     id: 'email',
     iconName: 'Mail',
-    labelVi: 'Email chính thức',
+    labelVi: 'Email chính',
     labelEn: 'Official Email',
     valueVi: 'hungthai84@gmail.com',
     valueEn: 'hungthai84@gmail.com',
@@ -246,7 +246,7 @@ export const PERSONAL_DEMOGRAPHICS: DemographicItem[] = [
   {
     id: 'phone_zalo',
     iconName: 'Phone',
-    labelVi: 'Điện thoại & Zalo',
+    labelVi: 'Điện thoại',
     labelEn: 'Phone & Zalo',
     valueVi: '+84 0909097882',
     valueEn: '+84 0909097882',
@@ -265,7 +265,7 @@ export const PERSONAL_DEMOGRAPHICS: DemographicItem[] = [
   {
     id: 'website_netlify',
     iconName: 'Globe',
-    labelVi: 'Website Netlify',
+    labelVi: 'Web cá nhân',
     labelEn: 'Netlify Portfolio',
     valueVi: 'nguyenhungthaiportfolio.netlify.app',
     valueEn: 'nguyenhungthaiportfolio.netlify.app',
@@ -344,7 +344,7 @@ export const ECOSYSTEM_BANNERS: EcosystemBannerItem[] = [
   {
     id: 'education',
     title: 'Học Vấn',
-    pageIndex: 3,
+    pageIndex: 5,
     videoSrc: 'https://cdn.scena.ai/project/10223/cc5a8e558d2380dc8bfb96fd26cd877e444d63b6a7036a8530abd823d6d6da63.mp4',
     badge: '14 Bằng Cấp & Chứng Chỉ',
     desc: 'Cử nhân CNTT & Quản trị Kinh doanh, COPC, ITIL.',
@@ -353,7 +353,7 @@ export const ECOSYSTEM_BANNERS: EcosystemBannerItem[] = [
   {
     id: 'experience',
     title: 'Kinh Nghiệm',
-    pageIndex: 6,
+    pageIndex: 7,
     videoSrc: 'https://cdn.scena.ai/project/10223/50cd00ea3adfb39fb5860c632402df091d620960b69aae65fd2bb08f4bea4fc6.mp4',
     badge: '2003 - 2026+ C-Level',
     desc: 'Hành trình dẫn dắt mạng lưới Call Center & Omni-channel.',
@@ -362,7 +362,7 @@ export const ECOSYSTEM_BANNERS: EcosystemBannerItem[] = [
   {
     id: 'projects',
     title: 'Dự Án',
-    pageIndex: 7,
+    pageIndex: 8,
     videoSrc: 'https://cdn.scena.ai/project/10223/cc106cb37b8d219cca59af9a71a4d7a8cd019515a3e9a8282d16909bb21d88b9.mp4',
     badge: 'Kho 21 Dự Án Trọng Điểm',
     desc: 'Thiết kế SOP, tái cấu trúc tổ chức và tự động hóa AI.',
@@ -371,7 +371,7 @@ export const ECOSYSTEM_BANNERS: EcosystemBannerItem[] = [
   {
     id: 'systems',
     title: 'Hệ Thống',
-    pageIndex: 8,
+    pageIndex: 9,
     videoSrc: 'https://cdn.scena.ai/project/10223/7bd12b39b9758378cc8f15b6169d42368b4778ad2f2f322b1ef8403c90268f24.mp4',
     badge: 'Cổng Bento 12 Hệ Thống',
     desc: 'SDP, ERP, CRM, HRM, OKR, BPM trên powerservice.one.',
@@ -380,7 +380,7 @@ export const ECOSYSTEM_BANNERS: EcosystemBannerItem[] = [
   {
     id: 'horoscope',
     title: 'Tử Vi',
-    pageIndex: 10,
+    pageIndex: 11,
     videoSrc: 'https://cdn.scena.ai/project/10223/ddb11f6544a9a76e2b6c5946ee6805f53a61b1f57a3049bfba7856d2f52ee367.mp4',
     badge: 'Bát Trạch Quản Trị',
     desc: 'Ứng dụng thuật số và phong thủy điều hành nhân sự.',
@@ -389,7 +389,7 @@ export const ECOSYSTEM_BANNERS: EcosystemBannerItem[] = [
   {
     id: 'contact',
     title: 'Liên Hệ',
-    pageIndex: 12,
+    pageIndex: 13,
     videoSrc: 'https://cdn.scena.ai/project/10223/50b7b30031d4b9124af4948a069cdf530ca8f0942767f6e6b713c350cb8bd6b2.mp4',
     badge: 'Kết Nối Trực Tiếp',
     desc: 'Hotline, Zalo, Email và đặt lịch phỏng vấn C-Level.',

@@ -41,7 +41,7 @@ export const CATEGORY_TABS: CategoryTabItem[] = [
   },
   {
     id: 'profile',
-    title: 'Hồ sơ năng lực',
+    title: 'Hồ sơ chuyên môn',
     count: 5,
     pageIds: [1, 2, 3, 4, 5],
   },

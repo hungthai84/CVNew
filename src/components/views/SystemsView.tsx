@@ -428,7 +428,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
     }
   > = {
     sdp: {
-      displayTitle: 'Cổng làm việc CSKH',
+      displayTitle: 'SDP - Cổng làm việc CSKH',
       subtitle: 'Trang làm việc chính của Phòng CSKH',
       gradient: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 50%, #38bdf8 100%)',
       lightBg: 'linear-gradient(135deg, rgba(245, 243, 255, 0.95) 0%, rgba(238, 242, 255, 0.88) 50%, rgba(224, 242, 254, 0.82) 100%)',
@@ -440,7 +440,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#7c3aed',
     },
     erp: {
-      displayTitle: 'Tài chính kế toán',
+      displayTitle: 'ERP - Tài chính kế toán',
       subtitle: 'Quản lý tài chính, kế toán và tài sản',
       gradient: 'linear-gradient(135deg, #059669 0%, #0d9488 50%, #10b981 100%)',
       lightBg: 'linear-gradient(135deg, rgba(240, 253, 250, 0.95) 0%, rgba(204, 251, 241, 0.88) 50%, rgba(167, 243, 208, 0.82) 100%)',
@@ -452,7 +452,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#0d9488',
     },
     crm: {
-      displayTitle: 'Quản lý khách hàng',
+      displayTitle: 'CRM - Quản lý khách hàng',
       subtitle: 'Dữ liệu khách hàng 360 độ và bán hàng',
       gradient: 'linear-gradient(135deg, #f59e0b 0%, #f97316 45%, #ea580c 100%)',
       lightBg: 'linear-gradient(135deg, rgba(255, 251, 235, 0.95) 0%, rgba(254, 243, 199, 0.88) 50%, rgba(254, 215, 170, 0.82) 100%)',
@@ -464,7 +464,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#ea580c',
     },
     hrm: {
-      displayTitle: 'Quản lý nhân lực',
+      displayTitle: 'HRM - Quản lý nhân lực',
       subtitle: 'Tuyển dụng, chấm công và tính lương',
       gradient: 'linear-gradient(135deg, #a21caf 0%, #c026d3 50%, #7c3aed 100%)',
       lightBg: 'linear-gradient(135deg, rgba(253, 244, 255, 0.95) 0%, rgba(250, 232, 255, 0.88) 50%, rgba(243, 232, 255, 0.82) 100%)',
@@ -476,7 +476,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#c026d3',
     },
     bpm: {
-      displayTitle: 'Quản lý quy trình',
+      displayTitle: 'BPM - Quản lý quy trình',
       subtitle: 'Số hóa và tự động hóa quy trình nghiệp vụ',
       gradient: 'linear-gradient(135deg, #c2410c 0%, #ea580c 50%, #f97316 100%)',
       lightBg: 'linear-gradient(135deg, rgba(255, 247, 237, 0.95) 0%, rgba(255, 237, 213, 0.88) 50%, rgba(254, 215, 170, 0.82) 100%)',
@@ -488,7 +488,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#ea580c',
     },
     okr: {
-      displayTitle: 'Quản lý mục tiêu',
+      displayTitle: 'OKR - Quản lý mục tiêu',
       subtitle: 'Mục tiêu chiến lược và kết quả then chốt',
       gradient: 'linear-gradient(135deg, #be123c 0%, #e11d48 50%, #f43f5e 100%)',
       lightBg: 'linear-gradient(135deg, rgba(255, 241, 242, 0.95) 0%, rgba(255, 228, 230, 0.88) 50%, rgba(254, 205, 211, 0.82) 100%)',
@@ -500,7 +500,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#e11d48',
     },
     clp: {
-      displayTitle: 'Khách hàng thân thiết',
+      displayTitle: 'CLP - Khách hàng thân thiết',
       subtitle: 'Chương trình thành viên, điểm và ưu đãi',
       gradient: 'linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #4f46e5 100%)',
       lightBg: 'linear-gradient(135deg, rgba(238, 242, 255, 0.95) 0%, rgba(224, 231, 255, 0.88) 50%, rgba(199, 210, 254, 0.82) 100%)',
@@ -512,7 +512,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#2563eb',
     },
     lms: {
-      displayTitle: 'Quản lý đào tạo',
+      displayTitle: 'LMS - Quản lý đào tạo',
       subtitle: 'Khóa học trực tuyến và sát hạch tự động',
       gradient: 'linear-gradient(135deg, #15803d 0%, #16a34a 50%, #22c55e 100%)',
       lightBg: 'linear-gradient(135deg, rgba(240, 253, 244, 0.95) 0%, rgba(220, 252, 231, 0.88) 50%, rgba(187, 247, 208, 0.82) 100%)',
@@ -524,7 +524,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#16a34a',
     },
     csc: {
-      displayTitle: 'Trung tâm chăm sóc',
+      displayTitle: 'CSC - Trung tâm chăm sóc',
       subtitle: 'Tương tác đa kênh, Ticket và giám sát SLA',
       gradient: 'linear-gradient(135deg, #0284c7 0%, #0ea5e9 50%, #06b6d4 100%)',
       lightBg: 'linear-gradient(135deg, rgba(240, 249, 255, 0.95) 0%, rgba(224, 242, 254, 0.88) 50%, rgba(207, 250, 254, 0.82) 100%)',
@@ -536,7 +536,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#0284c7',
     },
     bi: {
-      displayTitle: 'Báo cáo phân tích',
+      displayTitle: 'BI Dashboard - Báo cáo phân tích',
       subtitle: 'Trực quan hóa dữ liệu real-time wallboard',
       gradient: 'linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #8b5cf6 100%)',
       lightBg: 'linear-gradient(135deg, rgba(238, 242, 255, 0.95) 0%, rgba(224, 231, 255, 0.88) 50%, rgba(221, 214, 254, 0.82) 100%)',
@@ -548,7 +548,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#4f46e5',
     },
     ai: {
-      displayTitle: 'Trợ lý trí tuệ',
+      displayTitle: 'AI Assistant - Trợ lý trí tuệ',
       subtitle: 'Tìm kiếm tri thức và tác vụ tự động 24/7',
       gradient: 'linear-gradient(135deg, #0d9488 0%, #8b5cf6 50%, #06b6d4 100%)',
       lightBg: 'linear-gradient(135deg, rgba(240, 253, 250, 0.95) 0%, rgba(243, 232, 255, 0.88) 50%, rgba(207, 250, 254, 0.82) 100%)',
@@ -560,7 +560,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
       cardTheme: '#8b5cf6',
     },
     pos: {
-      displayTitle: 'Quản lý bán hàng',
+      displayTitle: 'POS - Quản lý bán hàng',
       subtitle: 'Đơn hàng, hóa đơn tại quầy và đồng bộ',
       gradient: 'linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0ea5e9 100%)',
       lightBg: 'linear-gradient(135deg, rgba(240, 249, 255, 0.95) 0%, rgba(224, 242, 254, 0.88) 50%, rgba(186, 230, 253, 0.82) 100%)',
@@ -1452,10 +1452,10 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                               <button
                                 type="button"
                                 onClick={(e) => handleOpenUrl(e, item.url)}
-                                className="px-2.5 py-1 rounded-lg text-[10px] font-bold text-white shadow-2xs inline-flex items-center gap-1 cursor-pointer hover:brightness-110"
+                                className="px-3 py-1 rounded-[999px] text-[10px] font-bold text-white shadow-2xs inline-flex items-center gap-1 cursor-pointer hover:brightness-110"
                                 style={{ background: config.gradient }}
                               >
-                                <span>Mở</span>
+                                <span>Website</span>
                                 <ExternalLink className="w-2.5 h-2.5" />
                               </button>
                             )}
@@ -1476,6 +1476,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
               {filteredSystems.map((item) => {
                 const isFlipped = !!flippedCardIds[item.id];
                 const isExpanded = expandedSystemId === item.id;
+                const isCrm = item.id === 'crm';
                 const config = SYSTEM_DESIGN_MAP[item.id] || {
                   displayTitle: formatCardTitle(item.nameVi),
                   subtitle: item.descVi,
@@ -1629,13 +1630,11 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                               <button
                                 type="button"
                                 onClick={(e) => handleOpenUrl(e, item.url)}
-                                className="px-3 py-1.5 rounded-lg text-[11px] font-bold text-white shadow-sm transition flex items-center gap-1 cursor-pointer hover:brightness-110 active:scale-95"
+                                className="px-3.5 py-1.5 rounded-[999px] text-[11px] font-bold text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer hover:brightness-110 active:scale-95"
                                 style={{ background: config.gradient }}
                               >
-                                <span>Mở cổng</span>
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7H7M17 7V17" />
-                                </svg>
+                                <span>Website</span>
+                                <ExternalLink className="w-3 h-3" />
                               </button>
                             )}
                             <button
@@ -1659,7 +1658,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                           onMouseEnter={() => setHoveredCardId(item.id)}
                           onMouseLeave={() => setHoveredCardId(null)}
                           title={`Nhấp để mở rộng chi tiết thẻ: ${config.displayTitle} (${item.abbr})`}
-                          className="system-flip-front system-item cursor-pointer relative overflow-hidden p-2.5 sm:p-3 flex flex-col justify-between select-none transition-all duration-300 border rounded-[14px] hover:border-sky-400/60 dark:hover:border-cyan-400/60 hover:shadow-xl group"
+                          className="system-flip-front system-item cursor-pointer relative overflow-hidden p-2.5 sm:p-3 flex flex-col justify-between select-none rounded-[14px] group transition-all duration-300 border hover:border-sky-400/60 dark:hover:border-cyan-400/60 hover:shadow-xl"
                           style={{
                             background: config.gradient,
                             borderColor: 'rgba(255, 255, 255, 0.28)',
@@ -1667,7 +1666,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                             color: '#ffffff',
                           }}
                         >
-                          {/* KHI RÊ CHUỘT VÀO THẺ HỆ THỐNG: HIỂN THỊ VIDEO TOÀN THẺ HỆ THỐNG, VIDEO HIỂN THỊ RÕ RÀNG KHÔNG HIỂN THỊ GÌ KHÁC NGOÀI VIDEO */}
+                          {/* KHI RÊ CHUỘT VÀO THẺ HỆ THỐNG: HIỂN THỊ VIDEO TOÀN THẺ HỆ THỐNG */}
                           {item.videoUrl && (
                             <FullCardVideoPlayer
                               videoUrl={item.videoUrl}
@@ -1687,15 +1686,28 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
 
                           {/* Nội dung Mặt Trước: Tên viết tắt, Tiêu đề 4 từ, Mô tả & Khung hình gấp đôi */}
                           <div className="relative z-10 flex flex-col justify-between h-full text-left">
-                            {/* Hàng Đỉnh: Tên viết tắt (Trái) & Tên đầy đủ + Nút Lật (Phải) */}
-                            {/* Hàng Đỉnh: Tên đầy đủ */}
-                            <div className="flex items-center justify-end gap-1.5 pb-1.5 border-b border-white/20">
+                            {/* Hàng Đỉnh: Tên đầy đủ + Nút website bo cong 999px */}
+                            <div className="flex items-center justify-between gap-1.5 pb-1.5 border-b border-white/20">
                               <span
-                                className="text-[10px] sm:text-[10.5px] font-bold font-mono tracking-tight truncate text-right text-white/90"
+                                className="text-[10px] sm:text-[10.5px] font-bold font-mono tracking-tight truncate text-white/90"
                                 title={item.fullName}
                               >
                                 {item.fullName}
                               </span>
+                              {item.url && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenUrl(e, item.url);
+                                  }}
+                                  className="px-2.5 py-0.5 rounded-[999px] text-[9.5px] font-bold bg-white/20 hover:bg-white text-white hover:text-slate-900 border border-white/30 transition-all flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs"
+                                  title={`Mở website hệ thống ${item.abbr}`}
+                                >
+                                  <span>Website</span>
+                                  <ExternalLink className="w-2.5 h-2.5" />
+                                </button>
+                              )}
                             </div>
 
                             {/* Thân Thẻ: Tiêu đề, Mô tả hiển thị rõ ràng */}
@@ -1888,16 +1900,14 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                                     e.stopPropagation();
                                     handleOpenUrl(e, item.url);
                                   }}
-                                  className="px-2.5 py-1 rounded-lg text-[10px] font-bold text-white shadow-sm transition flex items-center gap-1 cursor-pointer hover:brightness-110"
+                                  className="px-3 py-1 rounded-[999px] text-[10px] font-bold text-white shadow-sm transition flex items-center gap-1 cursor-pointer hover:brightness-110"
                                   style={{
                                     background: config.gradient,
                                     boxShadow: isDark ? `0 0 12px ${config.cardTheme}80` : `0 2px 8px ${config.cardTheme}40`,
                                   }}
                                 >
-                                  <span>Mở cổng</span>
-                                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M7 7H7M17 7V17" />
-                                  </svg>
+                                  <span>Website</span>
+                                  <ExternalLink className="w-2.5 h-2.5" />
                                 </button>
                               )}
                             </div>
@@ -2143,14 +2153,14 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                   <button
                     type="button"
                     onClick={(e) => handleOpenUrl(e, selectedSystem.url)}
-                    className="px-4 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-1.5 shadow-md transition cursor-pointer hover:brightness-110"
+                    className="px-4 py-2 rounded-[999px] text-xs font-bold text-white flex items-center gap-1.5 shadow-md transition cursor-pointer hover:brightness-110 active:scale-95"
                     style={{
                       background:
                         SYSTEM_DESIGN_MAP[selectedSystem.id]?.gradient || selectedSystem.gradient,
                     }}
                   >
-                    <span>Mở Cổng Vận Hành</span>
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M7 17 17 7M7 7h10v10" /></svg>
+                    <span>Mở Website Cổng Vận Hành</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>

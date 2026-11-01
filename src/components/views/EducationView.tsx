@@ -24,7 +24,10 @@ import {
   Award,
   Briefcase,
   Cpu,
+  Brain,
 } from 'lucide-react';
+import { SkillsView } from './SkillsView';
+import { cn } from '@/lib/utils';
 import {
   EDUCATION_COURSES,
   EducationCourse,
@@ -94,14 +97,13 @@ function renderCategoryIcon(category: string, className = 'w-3.5 h-3.5 shrink-0'
 export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) => {
   const isDark = currentTheme === 'dark-neon';
 
+  const [mainSection, setMainSection] = useState<'education' | 'skills'>('education');
   const [activeCategory, setActiveCategory] = useState<string>('all');
-  // 4 chế độ xem với tiêu đề nút đúng 2 chữ: 'grid' (Dạng lưới) | 'compact' (Tiêu đề) | 'carousel' (Trình chiếu) | 'radar' (Ma trận)
-  const [viewMode, setViewMode] = useState<'grid' | 'compact' | 'carousel' | 'radar'>('grid');
+  // Chế độ xem: cố định duy nhất 'grid'
+  const [viewMode] = useState<'grid'>('grid');
   // Bộ lọc năm tốt nghiệp Timeline (2005 - 2026)
   const [maxYearFilter, setMaxYearFilter] = useState<number>(2026);
   const [exactYearFilter, setExactYearFilter] = useState<number | null>(null);
-  // Bộ lọc theo trục năng lực Radar
-  const [selectedRadarAxisId, setSelectedRadarAxisId] = useState<string | null>(null);
 
   const [selectedCourse, setSelectedCourse] = useState<EducationCourse | null>(null);
   const [verifyingCourse, setVerifyingCourse] = useState<EducationCourse | null>(null);
@@ -115,18 +117,15 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
 
   const bannerVideoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Lọc danh sách theo danh mục + năm tốt nghiệp (2003 - 2024) + trục Radar
+  // Lọc danh sách theo danh mục + năm tốt nghiệp (2003 - 2024)
   const filteredCourses = useMemo(() => {
-    const activeRadarAxis = ACADEMIC_COMPETENCY_RADAR.find((a) => a.id === selectedRadarAxisId);
-
     return EDUCATION_COURSES.filter((c) => {
       const courseYear = parseInt(c.year, 10) || 2024;
       const matchCategory = activeCategory === 'all' || c.category === activeCategory;
       const matchYear = exactYearFilter !== null ? courseYear === exactYearFilter : courseYear <= maxYearFilter;
-      const matchRadar = activeRadarAxis ? activeRadarAxis.courseIds.includes(c.id) : true;
-      return matchCategory && matchYear && matchRadar;
+      return matchCategory && matchYear;
     });
-  }, [activeCategory, maxYearFilter, exactYearFilter, selectedRadarAxisId]);
+  }, [activeCategory, maxYearFilter, exactYearFilter]);
 
   const handleOpenDetail = (course: EducationCourse) => {
     SoundEngine.playTap();
@@ -181,7 +180,6 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
     setActiveCategory('all');
     setMaxYearFilter(2026);
     setExactYearFilter(null);
-    setSelectedRadarAxisId(null);
     setActiveCarouselIdx(0);
   };
 
@@ -235,6 +233,48 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
 
   return (
     <div className="w-full h-full flex flex-col gap-3 sm:gap-3.5 overflow-y-auto no-scrollbar pb-6 select-none text-left">
+      {/* Cụm Tabs Chuyển Đổi Nhanh: 04. Học Vấn & 07. Khung Kỹ Năng SWOT */}
+      <div className="w-full flex items-center justify-between p-1.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/80 dark:border-white/10 backdrop-blur-xl shadow-xs shrink-0">
+        <button
+          type="button"
+          onClick={() => {
+            SoundEngine.playTap();
+            setMainSection('education');
+          }}
+          className={cn(
+            "flex-1 py-2 px-3 rounded-xl text-xs font-bold font-play flex items-center justify-center gap-2 transition cursor-pointer",
+            mainSection === 'education'
+              ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-sm"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+          )}
+        >
+          <GraduationCap className="w-4 h-4" />
+          <span>04. Hồ Sơ Học Vấn &amp; Bằng Cấp (14)</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            SoundEngine.playTap();
+            setMainSection('skills');
+          }}
+          className={cn(
+            "flex-1 py-2 px-3 rounded-xl text-xs font-bold font-play flex items-center justify-center gap-2 transition cursor-pointer",
+            mainSection === 'skills'
+              ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 text-white shadow-sm"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+          )}
+        >
+          <Brain className="w-4 h-4" />
+          <span>07. Khung Năng Lực &amp; Kỹ Năng SWOT (7.1 - 7.5)</span>
+        </button>
+      </div>
+
+      {mainSection === 'skills' ? (
+        <div className="w-full flex-1 min-h-0">
+          <SkillsView currentTheme={currentTheme} />
+        </div>
+      ) : (
+        <>
       {/* 1. HERO BANNER: HỌC VẤN & BẰNG CẤP CHUYÊN MÔN */}
       <section
         className={`relative w-full rounded-2xl overflow-hidden border shadow-lg shrink-0 transition-all ${
@@ -246,18 +286,20 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
           backdropFilter: 'blur(16px)',
         }}
       >
-        <div className="relative h-28 sm:h-32 md:h-36 w-full overflow-hidden">
+        <div className="relative min-h-[185px] sm:min-h-[210px] w-full overflow-hidden flex flex-col justify-between">
           <img
-            src="/images/education/hero-banner.png"
+            src="https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042016/H%E1%BB%8Dc_v%E1%BA%A5n.png"
             alt="Học Vấn & Bằng Cấp"
-            className="w-full h-full object-cover object-center filter brightness-[0.88] dark:brightness-[0.75]"
+            className="absolute inset-0 w-full h-full object-cover object-[75%_22%] sm:object-[center_20%] filter brightness-100 dark:brightness-[0.95] contrast-[1.05] opacity-95 dark:opacity-90 transition-all duration-300"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/60 to-transparent flex items-center justify-between p-4 sm:p-5">
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/40 to-black/15 pointer-events-none z-0" />
+          
+          <div className="relative z-10 flex items-center justify-between p-4 sm:p-5">
             <div className="space-y-1 max-w-xl">
               <div className="flex items-center gap-2">
                 <span className="px-2.5 py-0.5 rounded-full text-[10.5px] font-mono font-bold bg-emerald-500/30 text-emerald-300 border border-emerald-400/50 backdrop-blur-md flex items-center gap-1">
                   <GraduationCap className="w-3.5 h-3.5" />
-                  <span>Hồ Sơ Học Vấn &amp; Năng Lực Cốt Lõi</span>
+                  <span>Hồ Sơ Học Vấn &amp; Chứng Chỉ Chuyên Môn</span>
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-cyan-500/20 text-cyan-200 border border-cyan-400/30 backdrop-blur-md">
                   14 Chứng chỉ chính quy
@@ -282,326 +324,67 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
               </button>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* 2. THANH CÔNG CỤ: DANH MỤC 2 CHỮ, CHẾ ĐỘ XEM & TIMELINE NĂM */}
-      <section
-        className={`w-full p-2.5 sm:p-3 rounded-2xl border shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 shrink-0 ${
-          isDark
-            ? 'bg-slate-900/50 border-slate-700/70 text-slate-100'
-            : 'bg-white/50 border-slate-200/90 text-slate-800'
-        }`}
-        style={{
-          backdropFilter: 'blur(16px)',
-        }}
-      >
-        {/* Bộ lọc danh mục 2 chữ */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          {TWO_WORD_CATEGORIES.map((cat) => {
-            const isActive = activeCategory === cat.id;
-            const count = cat.id === 'all'
-              ? EDUCATION_COURSES.length
-              : EDUCATION_COURSES.filter((c) => c.category === cat.id).length;
+          {/* Integrated Toolbar Section Inside Banner */}
+          <div className="relative z-20 w-full p-2.5 sm:p-3 bg-black/20 backdrop-blur-md border-t border-white/10 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5">
+            {/* Bộ lọc danh mục 2 chữ */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+              {TWO_WORD_CATEGORIES.map((cat) => {
+                const isActive = activeCategory === cat.id;
+                const count = cat.id === 'all'
+                  ? EDUCATION_COURSES.length
+                  : EDUCATION_COURSES.filter((c) => c.category === cat.id).length;
 
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => {
-                  SoundEngine.playTap();
-                  setActiveCategory(cat.id);
-                }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold font-play flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
-                  isActive
-                    ? 'bg-emerald-600 text-white shadow-sm border border-emerald-500 scale-[1.02]'
-                    : isDark
-                    ? 'bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-slate-700/60'
-                    : 'bg-slate-100/80 hover:bg-slate-200 text-slate-700 border border-slate-200'
-                }`}
-              >
-                {renderCategoryIcon(cat.id, 'w-3.5 h-3.5')}
-                <span>{cat.label}</span>
-                <span
-                  className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-black/10 dark:bg-white/10 opacity-80'
-                  }`}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Cụm Chế độ xem (4 chế độ 2 chữ) & Nút Đặt lại */}
-        <div className="flex items-center gap-1.5 self-end md:self-auto shrink-0 flex-wrap">
-          <div className="flex items-center rounded-xl p-0.5 bg-black/10 dark:bg-white/10 border border-black/5 dark:border-white/10">
-            <button
-              type="button"
-              onClick={() => {
-                SoundEngine.playTap();
-                setViewMode('grid');
-              }}
-              title="Xem dạng lưới đầy đủ"
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold font-play flex items-center gap-1 transition cursor-pointer ${
-                viewMode === 'grid'
-                  ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-xs'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
-              }`}
-            >
-              <LayoutGrid className="w-3.5 h-3.5" />
-              <span>Dạng lưới</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                SoundEngine.playTap();
-                setViewMode('compact');
-              }}
-              title="Xem tiêu đề 2 chữ súc tích"
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold font-play flex items-center gap-1 transition cursor-pointer ${
-                viewMode === 'compact'
-                  ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-xs'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>Tiêu đề</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                SoundEngine.playTap();
-                setViewMode('carousel');
-              }}
-              title="Xem trình chiếu toàn cảnh"
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold font-play flex items-center gap-1 transition cursor-pointer ${
-                viewMode === 'carousel'
-                  ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-xs'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Trình chiếu</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                SoundEngine.playTap();
-                setViewMode('radar');
-              }}
-              title="Xem ma trận năng lực Radar"
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold font-play flex items-center gap-1 transition cursor-pointer ${
-                viewMode === 'radar'
-                  ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-xs'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900'
-              }`}
-            >
-              <Radar className="w-3.5 h-3.5" />
-              <span>Ma trận</span>
-            </button>
-          </div>
-
-          {(activeCategory !== 'all' || selectedRadarAxisId !== null || exactYearFilter !== null) && (
-            <button
-              type="button"
-              onClick={handleResetFilters}
-              title="Đặt lại tất cả bộ lọc"
-              className="p-1.5 rounded-xl border border-slate-300 dark:border-white/15 bg-white/60 dark:bg-slate-800/60 hover:bg-rose-500 hover:text-white transition cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </div>
-      </section>
-
-      {/* 3. BIỂU ĐỒ RADAR NĂNG LỰC HỌC VẤN (ACADEMIC COMPETENCY MATRIX) - HIỂN THỊ KHI CHỌN VIEW 'RADAR' HOẶC ĐANG LỌC TRỤC RADAR */}
-      {(viewMode === 'radar' || selectedRadarAxisId !== null) && (
-        <section
-          className={`w-full rounded-2xl p-4 sm:p-5 border shadow-lg grid grid-cols-1 lg:grid-cols-12 gap-5 items-center shrink-0 ${
-            isDark
-              ? 'bg-slate-900/50 border-cyan-500/40 text-slate-100'
-              : 'bg-white/50 border-cyan-300/80 text-slate-800'
-          }`}
-          style={{
-            backgroundColor: isDark ? 'rgba(15, 23, 42, 0.5)' : 'rgba(255, 255, 255, 0.5)',
-            backdropFilter: 'blur(16px)',
-          }}
-        >
-          {/* Cột Trái (5 cols): Biểu đồ Radar SVG tương tác */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center">
-            <div className="flex items-center gap-2 mb-2">
-              <Radar className="w-4 h-4 text-cyan-500 animate-pulse" />
-              <h2 className="text-sm sm:text-base font-black font-play text-cyan-600 dark:text-cyan-300">
-                {formatCardTitle('Ma trận năng lực')}
-              </h2>
-            </div>
-
-            <div className="relative w-full max-w-[310px] aspect-square flex items-center justify-center">
-              <svg viewBox="0 0 300 300" className="w-full h-full overflow-visible select-none">
-                <defs>
-                  <linearGradient id="academicRadarFill" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.45" />
-                    <stop offset="50%" stopColor="#10b981" stopOpacity="0.38" />
-                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.45" />
-                  </linearGradient>
-                </defs>
-
-                {/* Lưới đa giác đồng tâm */}
-                {radarGeometry.gridLevels.map((pts, idx) => (
-                  <polygon
-                    key={idx}
-                    points={pts}
-                    fill="none"
-                    stroke={isDark ? 'rgba(148, 163, 184, 0.22)' : 'rgba(71, 85, 105, 0.2)'}
-                    strokeWidth="1"
-                    strokeDasharray={idx < 3 ? '3 3' : undefined}
-                  />
-                ))}
-
-                {/* Các trục từ tâm ra đỉnh */}
-                {radarGeometry.dataPoints.map((d) => (
-                  <line
-                    key={`axis-${d.axis.id}`}
-                    x1={radarGeometry.cx}
-                    y1={radarGeometry.cy}
-                    x2={d.outerX}
-                    y2={d.outerY}
-                    stroke={isDark ? 'rgba(148, 163, 184, 0.28)' : 'rgba(71, 85, 105, 0.25)'}
-                    strokeWidth="1"
-                  />
-                ))}
-
-                {/* Vùng đa giác năng lực học vấn */}
-                <polygon
-                  points={radarGeometry.polygonPoints}
-                  fill="url(#academicRadarFill)"
-                  stroke="#10b981"
-                  strokeWidth="2.5"
-                />
-
-                {/* Các điểm nút tương tác & Nhãn trên đỉnh */}
-                {radarGeometry.dataPoints.map((d) => {
-                  const isSelected = selectedRadarAxisId === d.axis.id;
-                  return (
-                    <g
-                      key={d.axis.id}
-                      onClick={() => {
-                        SoundEngine.playTap();
-                        setSelectedRadarAxisId((prev) => (prev === d.axis.id ? null : d.axis.id));
-                      }}
-                      className="cursor-pointer group/node"
-                    >
-                      <circle
-                        cx={d.x}
-                        cy={d.y}
-                        r={isSelected ? 7 : 5}
-                        fill={d.axis.color}
-                        stroke="#ffffff"
-                        strokeWidth="2"
-                      />
-                      <text
-                        x={d.labelX}
-                        y={d.labelY}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                        className={`text-[9.5px] font-bold font-play transition-all ${
-                          isSelected
-                            ? 'fill-emerald-500 font-black'
-                            : isDark
-                            ? 'fill-slate-200 group-hover/node:fill-cyan-300'
-                            : 'fill-slate-800 group-hover/node:fill-cyan-700'
-                        }`}
-                      >
-                        {d.axis.shortLabel} ({d.axis.score}%)
-                      </text>
-                    </g>
-                  );
-                })}
-              </svg>
-            </div>
-            <p className="text-[11px] text-center opacity-80 mt-1">
-              💡 Nhấp vào đỉnh biểu đồ hoặc thẻ bên phải để lọc văn bằng tương ứng.
-            </p>
-          </div>
-
-          {/* Cột Phải (7 cols): Sự giao thoa giữa Nền tảng Công nghệ & Năng lực Quản trị */}
-          <div className="lg:col-span-7 flex flex-col justify-between gap-3">
-            <div className="flex items-center justify-between gap-2 flex-wrap border-b border-black/10 dark:border-white/10 pb-2">
-              <div>
-                <h3 className="text-sm sm:text-base font-black font-play text-emerald-700 dark:text-emerald-300">
-                  Sự kết hợp hài hòa: Nền tảng Công nghệ &amp; Năng lực Quản trị
-                </h3>
-                <p className="text-xs opacity-80">
-                  Cấu trúc tri thức kép giúp thấu hiểu sâu kiến trúc kỹ thuật (CNTT, CCNA, MCSA) lẫn quản trị vận hành cấp cao (PMP, Risk, TTT).
-                </p>
-              </div>
-              {selectedRadarAxisId && (
-                <button
-                  type="button"
-                  onClick={() => setSelectedRadarAxisId(null)}
-                  className="px-2.5 py-1 rounded-full text-[10.5px] font-bold bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-400/40 cursor-pointer"
-                >
-                  Bỏ lọc trục Radar
-                </button>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {ACADEMIC_COMPETENCY_RADAR.map((axis: AcademicRadarAxis) => {
-                const isSelected = selectedRadarAxisId === axis.id;
                 return (
-                  <div
-                    key={axis.id}
+                  <button
+                    key={cat.id}
+                    type="button"
                     onClick={() => {
                       SoundEngine.playTap();
-                      setSelectedRadarAxisId((prev) => (prev === axis.id ? null : axis.id));
+                      setActiveCategory(cat.id);
                     }}
-                    className={`p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
-                      isSelected
-                        ? 'bg-emerald-500/20 border-emerald-400 shadow-md scale-[1.01]'
-                        : 'bg-white/40 dark:bg-slate-800/40 border-black/10 dark:border-white/10 hover:border-emerald-400/50'
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold font-play flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
+                      isActive
+                        ? 'bg-emerald-600 text-white shadow-sm border border-emerald-500 scale-[1.02]'
+                        : isDark
+                        ? 'bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-slate-700/60'
+                        : 'bg-white/60 hover:bg-white text-slate-700 border border-slate-200'
                     }`}
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <span
-                        className="px-2 py-0.5 rounded-full text-[9.5px] font-mono font-bold text-white"
-                        style={{ backgroundColor: axis.color }}
-                      >
-                        {axis.pillarLabel}
-                      </span>
-                      <span className="text-xs font-mono font-black text-emerald-600 dark:text-emerald-400">
-                        {axis.score}%
-                      </span>
-                    </div>
-
-                    <h4 className="text-xs sm:text-[13px] font-black font-play">
-                      {axis.label}
-                    </h4>
-
-                    <p className="text-[11px] opacity-80 truncate">
-                      Chứng chỉ: <span className="font-semibold">{axis.certs}</span>
-                    </p>
-
-                    <div className="w-full h-1.5 rounded-full bg-black/10 dark:bg-white/10 overflow-hidden mt-0.5">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{ width: `${axis.score}%`, backgroundColor: axis.color }}
-                      />
-                    </div>
-                  </div>
+                    {renderCategoryIcon(cat.id, 'w-3.5 h-3.5')}
+                    <span>{cat.label}</span>
+                    <span
+                      className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
+                        isActive ? 'bg-white/20 text-white' : 'bg-black/10 dark:bg-white/10 opacity-80'
+                      }`}
+                    >
+                      {count}
+                    </span>
+                  </button>
                 );
               })}
             </div>
-          </div>
-        </section>
-      )}
 
-      {/* 4. NỘI DUNG CHÍNH: DẠNG LƯỚI / DẠNG VIEW TIÊU ĐỀ 2 CHỮ / TRÌNH CHIẾU (ĐỘ TRONG SUỐT NỀN 50%) */}
+            {/* Cụm Nút Đặt lại */}
+            <div className="flex items-center gap-1.5 self-end md:self-auto shrink-0 flex-wrap">
+              {(activeCategory !== 'all' || exactYearFilter !== null) && (
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  title="Đặt lại tất cả bộ lọc"
+                  className="px-3 py-1.5 rounded-xl border border-white/20 bg-white/10 hover:bg-rose-500 text-white transition cursor-pointer text-xs font-bold font-play flex items-center gap-1.5 backdrop-blur-sm"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Đặt lại bộ lọc</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* 4. NỘI DUNG CHÍNH: DẠNG LƯỚI HOẶC CHI TIẾT (NỀN TRONG SUỐT 50%) */}
       {filteredCourses.length === 0 ? (
         <div
           className="w-full p-8 rounded-2xl border border-slate-300/60 dark:border-slate-700/60 text-center space-y-2"
@@ -610,7 +393,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
             backdropFilter: 'blur(16px)',
           }}
         >
-          <p className="text-sm font-bold font-play">Không tìm thấy chứng chỉ nào khớp với bộ lọc năm hoặc danh mục hiện tại.</p>
+          <p className="text-sm font-bold font-play">Không tìm thấy chứng chỉ nào khớp với bộ lọc hiện tại.</p>
           <button
             type="button"
             onClick={handleResetFilters}
@@ -619,158 +402,15 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
             Hiển thị tất cả 14 chứng chỉ
           </button>
         </div>
-      ) : viewMode === 'carousel' ? (
-        /* CHẾ ĐỘ TRÌNH CHIẾU / BĂNG CHUYỀN (CAROUSEL VIEW - NỀN TRONG SUỐT 50%) */
-        <div className="flex flex-col gap-3">
-          {filteredCourses[safeCarouselIndex] && (() => {
-            const activeCourse = filteredCourses[safeCarouselIndex];
-            const verifyInfo = CREDENTIAL_VERIFICATION_MAP[activeCourse.id];
-            return (
-              <div
-                className={`p-4 sm:p-6 rounded-2xl border shadow-xl flex flex-col lg:flex-row gap-5 items-stretch ${
-                  isDark ? 'border-slate-700/70 text-white' : 'border-slate-200/90 text-slate-900'
-                }`}
-                style={{
-                  backgroundColor: isDark ? 'rgba(15, 23, 42, 0.5)' : 'rgba(255, 255, 255, 0.5)',
-                  backdropFilter: 'blur(16px)',
-                }}
-              >
-                {/* Cột trái: Ảnh bằng cấp lớn */}
-                <div className="lg:w-1/2 flex flex-col justify-between">
-                  <div
-                    onClick={() => handleOpenLightbox(activeCourse.image, activeCourse.title)}
-                    className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-black/50 shadow-md border border-white/20 cursor-pointer group"
-                  >
-                    <img
-                      src={activeCourse.image}
-                      alt={activeCourse.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors flex items-center justify-center">
-                      <span className="px-3 py-1.5 rounded-full bg-black/70 text-white text-xs font-bold backdrop-blur-md opacity-0 group-hover:opacity-100 transition flex items-center gap-1.5">
-                        <Maximize2 className="w-3.5 h-3.5" />
-                        <span>Phóng to toàn cảnh</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Điều hướng Carousel mini */}
-                  <div className="flex items-center justify-between gap-2 pt-3">
-                    <span className="text-xs font-mono font-bold text-slate-600 dark:text-slate-300">
-                      Bằng cấp {safeCarouselIndex + 1} / {filteredCourses.length}
-                    </span>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={handlePrevCarousel}
-                        className="p-1.5 rounded-lg border border-slate-300 dark:border-white/20 bg-white/50 dark:bg-slate-800/50 hover:bg-emerald-50 dark:hover:bg-emerald-950 text-slate-700 dark:text-white transition cursor-pointer"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleNextCarousel}
-                        className="p-1.5 rounded-lg border border-slate-300 dark:border-white/20 bg-white/50 dark:bg-slate-800/50 hover:bg-emerald-50 dark:hover:bg-emerald-950 text-slate-700 dark:text-white transition cursor-pointer"
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Cột phải: Thông tin sâu khóa học & Xác thực số */}
-                <div className="lg:w-1/2 flex flex-col justify-between space-y-3">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-400/40">
-                        {getShortCategoryLabel(activeCourse.category)}
-                      </span>
-                      <span className="text-xs font-mono font-bold opacity-80">
-                        Năm {activeCourse.year} • Mã {activeCourse.code}
-                      </span>
-                      {verifyInfo && (
-                        <button
-                          type="button"
-                          onClick={(e) => handleOpenVerifyModal(activeCourse, e)}
-                          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-cyan-500/20 text-cyan-700 dark:text-cyan-300 border border-cyan-400/50 hover:bg-cyan-500 hover:text-white transition cursor-pointer"
-                        >
-                          <ShieldCheck className="w-3.5 h-3.5" />
-                          <span>Xác thực: {verifyInfo.credentialId}</span>
-                        </button>
-                      )}
-                    </div>
-
-                    <h2 className="text-xl sm:text-2xl font-black font-play tracking-tight text-emerald-700 dark:text-emerald-400">
-                      {formatCardTitle(activeCourse.title)}
-                    </h2>
-
-                    <p className="text-xs font-bold font-mono opacity-85">
-                      Đơn vị cấp: {activeCourse.issuer}
-                    </p>
-
-                    <p className="text-xs sm:text-sm leading-relaxed font-medium">
-                      {activeCourse.desc}
-                    </p>
-
-                    {/* Modules chuyên đề */}
-                    <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-white/40 dark:bg-slate-950/40 space-y-1.5">
-                      <span className="text-xs font-bold tracking-wider block text-emerald-700 dark:text-emerald-400">
-                        Chuyên đề đào tạo cốt lõi
-                      </span>
-                      <ul className="space-y-1">
-                        {activeCourse.modules.map((m, mIdx) => (
-                          <li key={mIdx} className="text-xs flex items-start gap-1.5 font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                            <span>{m}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="pt-2 flex items-center justify-between gap-3 flex-wrap">
-                    <div className="flex items-center gap-1 flex-wrap">
-                      {activeCourse.skills.map((s, idx) => (
-                        <span key={idx} className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-white/60 dark:bg-slate-800/60 text-slate-800 dark:text-slate-200 border border-black/5 dark:border-white/10">
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={(e) => handleOpenVerifyModal(activeCourse, e)}
-                        className="px-3 py-2 rounded-xl text-xs font-bold font-play text-cyan-700 dark:text-cyan-300 bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/40 transition cursor-pointer flex items-center gap-1.5"
-                      >
-                        <ShieldCheck className="w-3.5 h-3.5" />
-                        <span>Tra cứu mã số</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => handleOpenDetail(activeCourse)}
-                        className="px-4 py-2 rounded-xl text-xs font-bold font-play text-white bg-emerald-600 hover:bg-emerald-700 shadow-md transition cursor-pointer flex items-center gap-1.5 shrink-0"
-                      >
-                        <span>Xem toàn bộ hồ sơ</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
-        </div>
+      ) : selectedCourse ? (
+        /* Rendered below as a conditional block to maintain clean logic */
+        null
       ) : (
-        /* CHẾ ĐỘ LƯỚI (GRID VIEW & COMPACT 2-WORD TITLE VIEW) - NỀN TRONG SUỐT 50% */
+        /* CHẾ ĐỘ LƯỚI (GRID VIEW) - NỀN TRONG SUỐT 50% */
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4 items-stretch">
           {filteredCourses.map((course) => {
             const verifyInfo = CREDENTIAL_VERIFICATION_MAP[course.id];
-            const isTwoWordMode = viewMode === 'compact';
-            const displayTitle = isTwoWordMode
-              ? formatTwoWordTitle(course)
-              : formatCardTitle(course.title);
+            const displayTitle = formatCardTitle(course.title);
 
             return (
               <motion.article
@@ -779,11 +419,10 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                 onClick={() => handleOpenDetail(course)}
                 className={`group relative rounded-2xl overflow-hidden p-3 sm:p-3.5 flex flex-col justify-between border select-none transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${
                   isDark
-                    ? 'bg-slate-900/50 border-slate-700/70 hover:border-emerald-400/60 shadow-[0_4px_20px_rgba(0,0,0,0.4)] text-slate-100'
-                    : 'bg-white/50 border-slate-200/90 hover:border-emerald-500/60 shadow-md text-slate-800'
+                    ? 'bg-slate-900/80 border-slate-700/70 hover:border-emerald-400/60 shadow-[0_4px_20px_rgba(0,0,0,0.5)] text-slate-100'
+                    : 'bg-white/90 border-slate-200/90 hover:border-emerald-500/60 shadow-md text-slate-800'
                 }`}
                 style={{
-                  backgroundColor: isDark ? 'rgba(15, 23, 42, 0.5)' : 'rgba(255, 255, 255, 0.5)',
                   backdropFilter: 'blur(16px)',
                 }}
               >
@@ -857,7 +496,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                       >
                         {displayTitle}
                       </h3>
-                      {!isTwoWordMode && verifyInfo && (
+                      {verifyInfo && (
                         <span className="text-[9.5px] font-mono font-semibold text-slate-500 dark:text-slate-400 shrink-0">
                           {verifyInfo.twoWordTitle}
                         </span>
@@ -1107,64 +746,108 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
 
             {/* Body of detail view */}
             <div className="py-3 space-y-3.5 flex-1 min-h-0 overflow-y-auto no-scrollbar relative z-10">
-              <div
-                onClick={() => handleOpenLightbox(course.image, course.title)}
-                className="relative aspect-[16/10] w-full rounded-xl overflow-hidden bg-black shadow-md border border-black/15 dark:border-white/15 cursor-pointer group"
-              >
-                <img
-                  src={course.image}
-                  alt={course.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition flex items-center justify-center">
-                  <span className="px-3.5 py-1.5 rounded-full bg-black/80 text-white text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-md">
-                    <Maximize2 className="w-3.5 h-3.5" />
-                    <span>Bấm để phóng to chứng chỉ</span>
-                  </span>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div
+                  onClick={() => handleOpenLightbox(course.courseImg || course.image, course.title)}
+                  className="relative aspect-[16/10] w-full rounded-xl overflow-hidden bg-black shadow-md border border-black/15 dark:border-white/15 cursor-pointer group"
+                >
+                  <img
+                    src={course.courseImg || course.image}
+                    alt={course.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition flex items-center justify-center">
+                    <span className="px-3.5 py-1.5 rounded-full bg-black/80 text-white text-[10px] font-bold backdrop-blur-md flex items-center gap-1.5 shadow-md">
+                      <Maximize2 className="w-3.5 h-3.5" />
+                      <span>Xem ảnh khóa học</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div
+                  onClick={() => handleOpenLightbox(course.certImg || course.image, `Bằng cấp/Chứng chỉ: ${course.title}`)}
+                  className="relative aspect-[16/10] w-full rounded-xl overflow-hidden bg-black shadow-md border border-black/15 dark:border-white/15 cursor-pointer group"
+                >
+                  <img
+                    src={course.certImg || course.image}
+                    alt="Chứng chỉ"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition flex items-center justify-center">
+                    <span className="px-3.5 py-1.5 rounded-full bg-emerald-600/90 text-white text-[10px] font-bold backdrop-blur-md flex items-center gap-1.5 shadow-md">
+                      <Award className="w-3.5 h-3.5" />
+                      <span>Xem bằng cấp chính quy</span>
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50">
-                <span className="text-[10px] font-black uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400">
-                  Tổng quan mục tiêu giá trị
-                </span>
-                <p className="text-xs leading-relaxed font-medium">
-                  {course.desc}
-                </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50">
+                  <span className="text-[10px] font-black uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400">
+                    Hình thức & Định hướng học tập
+                  </span>
+                  <p className="text-xs leading-relaxed font-bold text-slate-800 dark:text-slate-200">
+                    {course.type}
+                  </p>
+                  <p className="text-[11px] leading-relaxed mt-1 opacity-90 italic">
+                    {course.orientation}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50">
+                  <span className="text-[10px] font-black uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400">
+                    Trọng tâm chuyên môn
+                  </span>
+                  <p className="text-xs leading-relaxed font-medium">
+                    {course.focus}
+                  </p>
+                </div>
               </div>
 
               <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 space-y-2">
                 <span className="text-[10px] font-black uppercase tracking-wider block text-emerald-600 dark:text-emerald-400">
-                  Học phần chuyên đề đào tạo
+                  Nội dung môn học & Học phần chuyên đề
                 </span>
-                <ul className="space-y-1.5">
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5">
                   {course.modules.map((mod, idx) => (
-                    <li key={idx} className="text-xs leading-snug flex items-start gap-2 font-medium">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <li key={idx} className="text-[11.5px] leading-snug flex items-start gap-2 font-medium">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
                       <span>{mod}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50">
-                <span className="text-[10px] font-black uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400">
-                  Ứng dụng trong thực chiến quản trị
-                </span>
-                <p className="text-xs leading-relaxed font-medium">
-                  {course.application}
-                </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="p-3 rounded-xl border border-black/10 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50">
+                  <span className="text-[10px] font-black uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400">
+                    Áp dụng thực tiễn công việc
+                  </span>
+                  <p className="text-xs leading-relaxed font-medium">
+                    {course.application}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-xl border border-emerald-500/20 dark:border-emerald-500/30 bg-emerald-500/5 dark:bg-emerald-500/10 flex flex-col justify-center">
+                  <span className="text-[10px] font-black uppercase tracking-wider block mb-1 text-emerald-600 dark:text-emerald-400">
+                    Kết quả & Chứng nhận đạt được
+                  </span>
+                  <p className="text-xs leading-relaxed font-black text-emerald-700 dark:text-emerald-300">
+                    {course.result}
+                  </p>
+                </div>
               </div>
 
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider block mb-1.5 text-slate-500 dark:text-slate-400">
-                  Năng lực kỹ năng đạt được:
+                  Năng lực kỹ năng đã được chuẩn hóa:
                 </span>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {course.skills.map((sk, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700"
+                      className="px-2 py-0.5 rounded-md text-[10.5px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700"
                     >
                       {sk}
                     </span>
@@ -1178,11 +861,11 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => handleOpenLightbox(course.image, course.title)}
+                  onClick={() => handleOpenLightbox(course.certImg || course.image, `Bằng cấp: ${course.title}`)}
                   className="px-3.5 py-1.5 rounded-xl text-xs font-bold font-play flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white transition cursor-pointer shadow-sm"
                 >
-                  <Maximize2 className="w-3.5 h-3.5" />
-                  <span>Xem ảnh bằng cấp</span>
+                  <Award className="w-3.5 h-3.5" />
+                  <span>Xem văn bằng</span>
                 </button>
 
                 {CREDENTIAL_VERIFICATION_MAP[course.id] && (
@@ -1192,7 +875,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                     className="px-3.5 py-1.5 rounded-xl text-xs font-bold font-play flex items-center gap-1.5 bg-cyan-600 hover:bg-cyan-700 text-white transition cursor-pointer shadow-sm"
                   >
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>Kiểm tra mã chứng chỉ</span>
+                    <span>Xác thực số</span>
                   </button>
                 )}
               </div>
@@ -1202,7 +885,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
                 onClick={() => setSelectedCourse(null)}
                 className="px-4 py-1.5 rounded-xl text-xs font-bold font-play border border-slate-300 dark:border-white/20 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition cursor-pointer"
               >
-                Đóng
+                Đóng chi tiết
               </button>
             </div>
           </motion.div>
@@ -1235,6 +918,8 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
             </p>
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );
