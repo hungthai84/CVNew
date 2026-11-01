@@ -216,7 +216,7 @@ export const MemoriesView: React.FC<MemoriesViewProps> = ({ currentTheme = 'ligh
       )}
 
       {/* Thanh Công Cụ Lọc Nhanh & Tìm Kiếm Kỷ Niệm (Glass Soft Toolbar) */}
-      <div className="w-full rounded-[14px] p-2.5 sm:p-3 bg-white/85 dark:bg-slate-900/85 border border-white/80 dark:border-white/10 backdrop-blur-xl shadow-xs flex flex-wrap items-center justify-between gap-2.5">
+      <div className="w-full rounded-[12px] p-2.5 sm:p-3 bg-white/85 dark:bg-slate-900/85 border border-white/80 dark:border-white/10 backdrop-blur-xl shadow-xs flex flex-wrap items-center justify-between gap-2.5">
         {/* Danh mục kỷ niệm & Nút chọn Đơn vị */}
         <div className="flex items-center gap-1.5 flex-wrap">
           <button

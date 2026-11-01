@@ -70,6 +70,22 @@ export const PAGES: PageMeta[] = [
   },
   {
     id: 4,
+    shortTitle: 'Kỹ Năng',
+    shortTitleEn: 'Skills',
+    fullName: '07. Khung Năng Lực & Kỹ Năng Cốt Lõi (SWOT & Ngôn Ngữ)',
+    fullNameEn: '07. Core Competency Framework & SWOT Matrix',
+    theme: '#06b6d4',
+    bgLight: 'rgba(207, 250, 254, 0.85)',
+    bgNormal: 'rgba(207, 250, 254, 0.55)',
+    borderColor: 'rgba(34, 211, 238, 0.7)',
+    iconSvg: (
+      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+    ),
+  },
+  {
+    id: 5,
     shortTitle: 'Học Vấn',
     shortTitleEn: 'Education',
     fullName: 'Hồ Sơ Học Vấn & Chứng Chỉ Chuyên Môn',
@@ -86,7 +102,7 @@ export const PAGES: PageMeta[] = [
     ),
   },
   {
-    id: 5,
+    id: 6,
     shortTitle: 'Kinh Nghiệm',
     shortTitleEn: 'Experience',
     fullName: 'Kinh Nghiệm Thực Chiến & Cột Mốc Quản Trị (2003 - 2026+)',
@@ -102,7 +118,7 @@ export const PAGES: PageMeta[] = [
     ),
   },
   {
-    id: 6,
+    id: 7,
     shortTitle: 'Dự Án',
     shortTitleEn: 'Projects',
     fullName: 'Kho 21 Dự Án & Sáng Kiến Vận Hành Trọng Điểm',
@@ -119,7 +135,7 @@ export const PAGES: PageMeta[] = [
     ),
   },
   {
-    id: 7,
+    id: 8,
     shortTitle: 'Hệ Thống',
     shortTitleEn: 'Systems',
     fullName: 'Cổng Bento Hệ Thống CSKH (12 Hệ Thống C-Level)',
@@ -137,7 +153,7 @@ export const PAGES: PageMeta[] = [
     ),
   },
   {
-    id: 8,
+    id: 9,
     shortTitle: 'Phỏng Vấn',
     shortTitleEn: 'Interview',
     fullName: 'Đối Thoại Mô Phỏng AI & Q&A Tuyển Dụng',
@@ -153,7 +169,7 @@ export const PAGES: PageMeta[] = [
     ),
   },
   {
-    id: 9,
+    id: 10,
     shortTitle: 'Tử Vi',
     shortTitleEn: 'Horoscope',
     fullName: 'Bản Đồ Tử Vi, Bát Trạch & Phong Thủy Quản Trị',
@@ -169,7 +185,7 @@ export const PAGES: PageMeta[] = [
     ),
   },
   {
-    id: 10,
+    id: 11,
     shortTitle: 'Kỷ Niệm',
     shortTitleEn: 'Memories',
     fullName: 'Khoảnh Khắc Hành Trình & Kỷ Niệm Đáng Nhớ',
@@ -185,7 +201,7 @@ export const PAGES: PageMeta[] = [
     ),
   },
   {
-    id: 11,
+    id: 12,
     shortTitle: 'Liên Hệ',
     shortTitleEn: 'Contact',
     fullName: 'Kênh Kết Nối & Hợp Tác Với Hùng Thái',
@@ -201,7 +217,7 @@ export const PAGES: PageMeta[] = [
     ),
   },
   {
-    id: 12,
+    id: 13,
     shortTitle: 'Hình Nền',
     shortTitleEn: 'Wallpaper',
     fullName: 'Tùy Chỉnh Hình Nền & Giao Diện',

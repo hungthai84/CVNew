@@ -455,7 +455,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             id="sec-mindmap"
             data-section-card="true"
             style={{ background: getStackGradient(0) }}
-            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[14px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
+            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[12px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
               isLightMode
                 ? 'border border-slate-300/80 shadow-[0_14px_36px_rgba(30,27,75,0.08)]'
                 : 'border border-white/20 dark:border-white/10 shadow-[0_14px_36px_rgba(99,102,241,0.25)]'
@@ -879,7 +879,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             id="sec-overview"
             data-section-card="true"
             style={{ background: getStackGradient(1) }}
-            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[14px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
+            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[12px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
               isLightMode
                 ? 'border border-slate-300/80 shadow-[0_14px_36px_rgba(30,27,75,0.08)]'
                 : 'border border-white/20 dark:border-white/10 shadow-[0_14px_36px_rgba(2,132,199,0.25)]'
@@ -1074,7 +1074,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             id="sec-context"
             data-section-card="true"
             style={{ background: getStackGradient(2) }}
-            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[14px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
+            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[12px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
               isLightMode
                 ? 'border border-slate-300/80 shadow-[0_14px_36px_rgba(30,27,75,0.08)]'
                 : 'border border-white/20 dark:border-white/10 shadow-[0_14px_36px_rgba(217,119,6,0.25)]'
@@ -1180,7 +1180,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             id="sec-objectives"
             data-section-card="true"
             style={{ background: getStackGradient(3) }}
-            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[14px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
+            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[12px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
               isLightMode
                 ? 'border border-slate-300/80 shadow-[0_14px_36px_rgba(30,27,75,0.08)]'
                 : 'border border-white/20 dark:border-white/10 shadow-[0_14px_36px_rgba(13,148,136,0.25)]'
@@ -1302,7 +1302,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             id="sec-scope"
             data-section-card="true"
             style={{ background: getStackGradient(4) }}
-            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[14px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
+            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[12px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
               isLightMode
                 ? 'border border-slate-300/80 shadow-[0_14px_36px_rgba(30,27,75,0.08)]'
                 : 'border border-white/20 dark:border-white/10 shadow-[0_16px_40px_rgba(124,58,237,0.25)]'
@@ -1432,7 +1432,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             id="sec-methodology"
             data-section-card="true"
             style={{ background: getStackGradient(5) }}
-            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[14px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
+            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[12px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
               isLightMode
                 ? 'border border-slate-300/80 shadow-[0_14px_36px_rgba(30,27,75,0.08)]'
                 : 'border border-white/20 dark:border-white/10 shadow-[0_14px_36px_rgba(6,182,212,0.25)]'
@@ -1544,7 +1544,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             id="sec-metrics"
             data-section-card="true"
             style={{ background: getStackGradient(6) }}
-            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[14px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
+            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[12px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
               isLightMode
                 ? 'border border-slate-300/80 shadow-[0_14px_36px_rgba(30,27,75,0.08)]'
                 : 'border border-white/20 dark:border-white/10 shadow-[0_16px_40px_rgba(5,150,105,0.25)]'
@@ -1668,7 +1668,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             id="sec-roles"
             data-section-card="true"
             style={{ background: getStackGradient(7) }}
-            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[14px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
+            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[12px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
               isLightMode
                 ? 'border border-slate-300/80 shadow-[0_16px_40px_rgba(30,27,75,0.08)]'
                 : 'border border-white/20 dark:border-white/10 shadow-[0_16px_40px_rgba(225,29,72,0.25)]'
@@ -1775,7 +1775,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             id="sec-outcomes"
             data-section-card="true"
             style={{ background: getStackGradient(7) }}
-            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[14px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
+            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[12px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
               isLightMode
                 ? 'border border-slate-300/80 shadow-[0_16px_40px_rgba(30,27,75,0.08)]'
                 : 'border border-white/20 dark:border-white/10 shadow-[0_16px_40px_rgba(13,148,136,0.25)]'
@@ -1887,7 +1887,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
             id="sec-philosophy"
             data-section-card="true"
             style={{ background: getStackGradient(8) }}
-            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[14px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
+            className={`u223-c relative overflow-hidden w-full h-[620px] sm:h-[660px] lg:h-[calc(100vh-210px)] min-h-[560px] max-h-[760px] p-5 sm:p-6 rounded-[12px] flex flex-col justify-between shrink-0 backdrop-blur-2xl transition-all duration-300 ${
               isLightMode
                 ? 'border border-slate-300/80 shadow-[0_20px_48px_rgba(30,27,75,0.08)]'
                 : 'border border-white/20 dark:border-white/10 shadow-[0_20px_48px_rgba(109,40,217,0.25)]'
@@ -2064,7 +2064,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
           data-banner-aspect="sidebar"
           className="w-full lg:w-[230px] xl:w-[255px] shrink-0 h-auto lg:h-full flex flex-col pointer-events-auto"
         >
-          <div className={`w-full h-full rounded-[14px] ${
+          <div className={`w-full h-full rounded-[12px] ${
             isLightMode
               ? 'bg-white/40 text-slate-800 border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.12)]'
               : 'bg-slate-950/60 text-white border-white/15 shadow-[0_8px_32px_0_rgba(0,0,0,0.5)]'
@@ -2087,10 +2087,7 @@ export const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({
                 : 'bg-gradient-to-b from-slate-950/35 via-slate-950/15 to-slate-950/45'
             } backdrop-blur-[0.5px] pointer-events-none`} />
 
-            {/* Ambient Specular Highlight */}
-            <div className={`absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent ${
-              isLightMode ? 'via-indigo-500/50' : 'via-cyan-400/80'
-            } to-transparent pointer-events-none`} />
+            {/* Ambient Specular Highlight Đã Xóa Theo Yêu Cầu */}
 
             {/* Header: TIÊU ĐỀ KHÔNG ĐÓNG KHUNG THẺ, ICON & TIÊU ĐỀ KÍCH THƯỚC BẰNG NHAU, ĐỒNG MÀU */}
             <div className={`relative z-10 flex items-center justify-between pb-2 border-b ${

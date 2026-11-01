@@ -143,11 +143,11 @@ export function Skills({ currentTheme }: SkillsViewProps = {}) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35 }}
-              style={{ borderRadius: "var(--theme-radius-card, 10px)" }}
+              style={{ borderRadius: "var(--radius-global, 12px)" }}
               onClick={() => setSelectedSwot('S')}
               className={cn(
                 "p-[15px] border transition-all duration-300 flex flex-col justify-between overflow-hidden group/main cursor-pointer relative text-left min-h-[280px]",
-                "rounded-[var(--theme-radius-card,10px)]",
+                "rounded-[12px]",
                 getGlassCardClass(),
                 selectedSwot === 'S' && "ring-2 ring-blue-500/30 border-blue-400 dark:border-cyan-400"
               )}
@@ -204,7 +204,7 @@ export function Skills({ currentTheme }: SkillsViewProps = {}) {
                             </span>
                           </div>
                           
-                          <span className="px-2 py-0.5 rounded-[6px] bg-blue-500/10 text-blue-700 dark:text-cyan-300 border border-blue-500/25 dark:border-cyan-500/20 text-xs font-mono font-black tracking-wide">
+                          <span className="px-2 py-0.5 rounded-[12px] bg-blue-500/10 text-blue-700 dark:text-cyan-300 border border-blue-500/25 dark:border-cyan-500/20 text-xs font-mono font-black tracking-wide">
                             {item.percent}%
                           </span>
                         </div>
@@ -230,11 +230,11 @@ export function Skills({ currentTheme }: SkillsViewProps = {}) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: 0.05 }}
-              style={{ borderRadius: "var(--theme-radius-card, 10px)" }}
+              style={{ borderRadius: "var(--radius-global, 12px)" }}
               onClick={() => setSelectedSwot('W')}
               className={cn(
                 "p-[15px] border transition-all duration-300 flex flex-col justify-between overflow-hidden group/main cursor-pointer relative text-left min-h-[280px]",
-                "rounded-[var(--theme-radius-card,10px)]",
+                "rounded-[12px]",
                 getGlassCardClass(),
                 selectedSwot === 'W' && "ring-2 ring-orange-500/30 border-orange-400 dark:border-amber-400"
               )}
@@ -285,7 +285,7 @@ export function Skills({ currentTheme }: SkillsViewProps = {}) {
                               {isVi ? item.labelVi : item.labelEn}
                             </span>
                           </div>
-                          <span className="px-2 py-0.5 rounded-[6px] bg-orange-500/10 text-orange-700 dark:text-amber-300 border border-orange-500/25 dark:border-amber-500/20 text-xs font-mono font-black tracking-wide">
+                          <span className="px-2 py-0.5 rounded-[12px] bg-orange-500/10 text-orange-700 dark:text-amber-300 border border-orange-500/25 dark:border-amber-500/20 text-xs font-mono font-black tracking-wide">
                             {item.percent}%
                           </span>
                         </div>
@@ -311,11 +311,11 @@ export function Skills({ currentTheme }: SkillsViewProps = {}) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: 0.1 }}
-              style={{ borderRadius: "var(--theme-radius-card, 10px)" }}
+              style={{ borderRadius: "var(--radius-global, 12px)" }}
               onClick={() => setSelectedSwot('O')}
               className={cn(
                 "p-[15px] border transition-all duration-300 flex flex-col justify-between overflow-hidden group/main cursor-pointer relative text-left min-h-[280px]",
-                "rounded-[var(--theme-radius-card,10px)]",
+                "rounded-[12px]",
                 getGlassCardClass(),
                 selectedSwot === 'O' && "ring-2 ring-purple-500/30 border-purple-400 dark:border-purple-400"
               )}
@@ -366,7 +366,7 @@ export function Skills({ currentTheme }: SkillsViewProps = {}) {
                               {isVi ? item.labelVi : item.labelEn}
                             </span>
                           </div>
-                          <span className="px-2 py-0.5 rounded-[6px] bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/25 dark:border-purple-500/20 text-xs font-mono font-black tracking-wide">
+                          <span className="px-2 py-0.5 rounded-[12px] bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/25 dark:border-purple-500/20 text-xs font-mono font-black tracking-wide">
                             {item.percent}%
                           </span>
                         </div>
@@ -392,11 +392,11 @@ export function Skills({ currentTheme }: SkillsViewProps = {}) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35, delay: 0.15 }}
-              style={{ borderRadius: "var(--theme-radius-card, 10px)" }}
+              style={{ borderRadius: "var(--radius-global, 12px)" }}
               onClick={() => setSelectedSwot('T')}
               className={cn(
                 "p-[15px] border transition-all duration-300 flex flex-col justify-between overflow-hidden group/main cursor-pointer relative text-left min-h-[280px]",
-                "rounded-[var(--theme-radius-card,10px)]",
+                "rounded-[12px]",
                 getGlassCardClass(),
                 selectedSwot === 'T' && "ring-2 ring-red-500/30 border-red-400 dark:border-rose-400"
               )}
@@ -453,7 +453,7 @@ export function Skills({ currentTheme }: SkillsViewProps = {}) {
                             <span className="hidden xs:inline-block text-[10px] text-red-600/80 dark:text-rose-400/80 font-mono font-medium">
                               {isVi ? "Mức độ tác động" : "Impact level"}
                             </span>
-                            <span className="px-2 py-0.5 rounded-[6px] bg-red-500/10 text-red-700 dark:text-rose-300 border border-red-500/25 dark:border-rose-500/20 text-xs font-mono font-black tracking-wide">
+                            <span className="px-2 py-0.5 rounded-[12px] bg-red-500/10 text-red-700 dark:text-rose-300 border border-red-500/25 dark:border-rose-500/20 text-xs font-mono font-black tracking-wide">
                               {item.percent}%
                             </span>
                           </div>
@@ -485,10 +485,10 @@ export function Skills({ currentTheme }: SkillsViewProps = {}) {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45 }}
-          style={{ borderRadius: "var(--theme-radius-card, 10px)" }}
+          style={{ borderRadius: "var(--radius-global, 12px)" }}
           className={cn(
             "w-full p-5 sm:p-6 border select-none flex flex-col gap-4 text-left transition-all duration-300",
-            "rounded-[var(--theme-radius-card,10px)]",
+            "rounded-[12px]",
             getGlassCardClass()
           )}
         >

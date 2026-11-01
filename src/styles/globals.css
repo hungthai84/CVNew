@@ -14,7 +14,7 @@
     background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(15px) saturate(200%);
     border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 20px;
+    border-radius: var(--radius-global, 12px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   }
 }
@@ -493,15 +493,57 @@ section {
   display: none !important;
 }
 
-/* Global 999px border radius for all buttons */
+/* =========================================================================
+   STANDARDIZE ALL BORDER RADIUS TO 12PX NATIONWIDE
+   Áp dụng border-radius: var(--radius-global, 12px)(var(--radius-global)) cho tất cả thành phần:
+   - Main Container, Dashboard Container và các khung bố cục
+   - Glass Card, Bento Card, thẻ nội dung và thẻ mở rộng
+   - Button, Input, Search, Dropdown và các thành phần điều khiển
+   - Ảnh đại diện, Banner, Thumbnail và hình ảnh trong Card
+   - Modal, Dialog, Popup, Tooltip và các thành phần nổi
+   - Huy hiệu Badge, Tag, Pill và toàn bộ các thành phần UI
+   ========================================================================= */
+:root {
+  --radius-global: 12px;
+}
+
+*,
+*::before,
+*::after {
+  --radius-global: 12px;
+}
+
 button,
 .btn,
 [type="button"],
 [type="submit"],
 [type="reset"] {
-  border-radius: 999px !important;
+  border-radius: var(--radius-global) !important;
   user-select: none;
   -webkit-user-select: none;
+}
+
+/* Enforce 12px border radius across all UI elements */
+[class*="rounded"]:not([class*="rounded-none"]):not([class*="rounded-t-none"]):not([class*="rounded-b-none"]):not([class*="rounded-l-none"]):not([class*="rounded-r-none"]),
+[class*="rounded-"]:not([class*="rounded-none"]):not([class*="rounded-t-none"]):not([class*="rounded-b-none"]):not([class*="rounded-l-none"]):not([class*="rounded-r-none"]),
+input,
+select,
+textarea,
+.badge,
+.pill,
+.card,
+.glass-card,
+.glass-pastel,
+.bento-card,
+.modal,
+.dialog,
+.popup,
+.tooltip,
+.banner,
+.avatar,
+.smart-adaptive-card,
+.theme-pastel-card {
+  border-radius: var(--radius-global) !important;
 }
 
 /* Enhanced Theme Transition Blur-Fade Animation for Glass UI & Flat UI switching */
@@ -720,7 +762,7 @@ html.a11y-wide-line-height span {
 /* Lucian UX/UI Prompt #223 · Executive Section Card (Non-motion, standard card flow) */
 .u223-c {
   position: relative;
-  border-radius: 14px;
+  border-radius: var(--radius-global, 12px);
   transform: none !important;
   will-change: auto;
   box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.08);
@@ -732,7 +774,7 @@ html.a11y-wide-line-height span {
   top: 18px;
   width: 90px;
   height: 90px;
-  border-radius: 26px;
+  border-radius: var(--radius-global, 12px);
   background: rgba(255, 255, 255, 0.18);
   transform: rotate(12deg);
   pointer-events: none;
@@ -741,7 +783,7 @@ html.a11y-wide-line-height span {
   content: "";
   position: absolute;
   inset: 22px;
-  border-radius: 50%;
+  border-radius: var(--radius-global, 12px);
   background: rgba(255, 255, 255, 0.35);
 }
 .u223-sh {
@@ -763,7 +805,7 @@ html.a11y-wide-line-height span {
   color: #fff !important;
   background: rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
   padding: 13px 26px;
   cursor: pointer;
   -webkit-backdrop-filter: blur(12px);
@@ -796,7 +838,7 @@ html.a11y-wide-line-height span {
   color: #f1f5f9 !important;
   background: rgba(15, 23, 42, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 12px;
+  border-radius: var(--radius-global, 12px);
   padding: 12px 24px;
   cursor: pointer;
   -webkit-backdrop-filter: blur(10px) saturate(1.4);
@@ -851,7 +893,7 @@ body, code, kbd, samp {
 .fx-072 p {
   margin: 0;
   padding: 6px 14px 8px;
-  border-radius: 10px;
+  border-radius: var(--radius-global, 12px);
   background: #fff;
   border: 1px solid #e4dccf;
   font-size: 30px;
@@ -880,7 +922,7 @@ body, code, kbd, samp {
   width: 300px;
   padding: 12px;
   background: #fafaf9;
-  border-radius: 20px;
+  border-radius: var(--radius-global, 12px);
   font-family: system-ui, sans-serif;
   color: #1c1917;
   box-shadow: 0 1px 2px rgba(0,0,0,.06);
@@ -889,7 +931,7 @@ body, code, kbd, samp {
 .card-002__img {
   position: relative;
   height: 180px;
-  border-radius: 14px;
+  border-radius: var(--radius-global, 12px);
   background: linear-gradient(160deg, #fed7aa, #fb923c 70%, #ea580c);
   overflow: hidden;
 }
@@ -899,7 +941,7 @@ body, code, kbd, samp {
   top: 12px;
   padding: 4px 10px;
   background: rgba(255, 255, 255, .85);
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
   font-size: 12px;
   font-weight: 600;
   color: #9a3412;
@@ -938,7 +980,7 @@ body, code, kbd, samp {
   position: relative;
   width: 300px;
   height: 380px;
-  border-radius: 18px;
+  border-radius: var(--radius-global, 12px);
   overflow: hidden;
   box-sizing: border-box;
   display: flex;
@@ -964,7 +1006,7 @@ body, code, kbd, samp {
   inset: 0;
   width: 100%;
   height: 100%;
-  border-radius: 18px;
+  border-radius: var(--radius-global, 12px);
   background: linear-gradient(200deg, #0ea5e9, #6366f1, #312e81);
   overflow: hidden;
   z-index: 1;
@@ -980,7 +1022,7 @@ body, code, kbd, samp {
 .card-003__overlay {
   position: absolute;
   inset: 0;
-  border-radius: 18px;
+  border-radius: var(--radius-global, 12px);
   background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 55%);
   z-index: 2;
   pointer-events: none;
@@ -1021,7 +1063,7 @@ body, code, kbd, samp {
   width: 264px;
   background: #ffffff;
   border: 1px solid #dfe4e1;
-  border-radius: 18px;
+  border-radius: var(--radius-global, 12px);
   overflow: hidden;
   box-sizing: border-box;
   display: flex;
@@ -1074,7 +1116,7 @@ body, code, kbd, samp {
   font-size: 12px;
   font-weight: 700;
   padding: 3px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
   line-height: 1.2;
   box-shadow: 0 1px 4px rgba(10, 55, 80, 0.12);
   z-index: 2;
@@ -1088,7 +1130,7 @@ body, code, kbd, samp {
   bottom: 0;
   height: 30px;
   background: #ffffff;
-  border-top-right-radius: 12px;
+  border-radius: var(--radius-global, 12px);
   padding: 0 10px 0 12px;
   display: inline-flex;
   align-items: center;
@@ -1235,7 +1277,7 @@ article.u308-it,
 div[class*="theme-pastel-card"],
 div[class*="bento-view-card"],
 div[class*="edu-grid-card"] {
-  border-radius: 14px !important;
+  border-radius: var(--radius-global, 12px) !important;
 }
 
 /* =========================================================================
@@ -1574,26 +1616,10 @@ div[class*="theme-pastel-card"] h4 {
     inset 0 -1px 2px rgba(34, 211, 238, 0.15) !important;
 }
 
-/* 2. Dải Viền Phản Quang Đa Sắc Mép Trên (Prismatic Top Edge Beam) */
+/* 2. Dải Viền Mép Trên Đã Xóa Theo Yêu Cầu */
 #center-card.glass-panel::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 5%;
-  right: 5%;
-  height: 1.5px;
-  background: linear-gradient(
-    90deg, 
-    transparent 0%, 
-    rgba(56, 189, 248, 0.8) 25%, 
-    rgba(168, 85, 247, 0.8) 50%, 
-    rgba(251, 113, 133, 0.8) 75%, 
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 25;
-  border-radius: 999px;
-  opacity: 0.85;
+  display: none !important;
+  content: none !important;
 }
 
 /* 3. Hệ Thống 6 Biến Thể Thẻ Kính Đa Sắc Hiện Đại (Modern Multicolor Glass Cards) */
@@ -1702,12 +1728,12 @@ div[class*="theme-pastel-card"] h4 {
 .glass-scrollbar::-webkit-scrollbar-track,
 #content-display::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
 }
 .glass-scrollbar::-webkit-scrollbar-thumb,
 #content-display::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, rgba(56, 189, 248, 0.55) 0%, rgba(129, 140, 248, 0.55) 50%, rgba(232, 121, 249, 0.55) 100%);
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
   border: 1px solid rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(8px);
 }
@@ -1723,7 +1749,7 @@ div[class*="theme-pastel-card"] h4 {
   align-items: center;
   gap: 0.5rem;
   padding: 0.35rem 0.75rem;
-  border-radius: 9999px;
+  border-radius: var(--radius-global, 12px);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2233,10 +2259,10 @@ img, video {
   text-transform: uppercase !important;
 }
 
-/* Standardized Corner Radii: 40px large container, 16px-24px internal cards */
+/* Standardized Corner Radii: 12px nationwide */
 [data-theme="dark-neon"] #center-card,
 [data-theme="dark-neon"] .main-container {
-  border-radius: 40px !important;
+  border-radius: var(--radius-global) !important;
 }
 
 [data-theme="dark-neon"] .bento-card,
@@ -2244,7 +2270,7 @@ img, video {
 [data-theme="dark-neon"] .theme-pastel-card,
 [data-theme="dark-neon"] .edu-stack-card,
 [data-theme="dark-neon"] .glass-panel {
-  border-radius: 20px !important;
+  border-radius: var(--radius-global) !important;
   background: rgba(255, 255, 255, 0.05) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;

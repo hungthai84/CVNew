@@ -147,7 +147,7 @@ export const Footer: React.FC<FooterProps> = ({
         className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-50 pointer-events-auto flex items-center justify-center shrink-0"
       >
         <div
-          className={`relative inline-flex items-center p-[2px] rounded-[999px] overflow-hidden group transition-all duration-300 hover:scale-[1.03] ${
+          className={`relative inline-flex items-center p-[2px] rounded-[12px] overflow-hidden group transition-all duration-300 hover:scale-[1.03] ${
             isDark
               ? 'shadow-[0_0_24px_rgba(34,211,238,0.45)] hover:shadow-[0_0_35px_rgba(34,211,238,0.7)]'
               : 'shadow-[0_0_18px_rgba(99,102,241,0.4)] hover:shadow-[0_0_28px_rgba(99,102,241,0.65)]'
@@ -164,7 +164,7 @@ export const Footer: React.FC<FooterProps> = ({
 
           {/* Glassmorphism Inner Capsule (122px × 46px, bo cong 4 góc 999px hài hòa với Footer) */}
           <div
-            className={`relative z-10 w-[122px] h-[46px] flex items-center justify-between px-1 rounded-[999px] backdrop-blur-xl border shadow-inner transition-colors duration-300 ${
+            className={`relative z-10 w-[122px] h-[46px] flex items-center justify-between px-1 rounded-[12px] backdrop-blur-xl border shadow-inner transition-colors duration-300 ${
               isDark
                 ? 'bg-slate-900/95 border-cyan-400/40 text-cyan-300 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)]'
                 : 'bg-white/90 border-white/90 text-indigo-900'
@@ -175,7 +175,7 @@ export const Footer: React.FC<FooterProps> = ({
               type="button"
               onClick={onPrevPage}
               title="Trang trước (Lùi trang)"
-              className={`w-[34px] h-[34px] rounded-[999px] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0 group/prev ${
+              className={`w-[34px] h-[34px] rounded-[12px] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0 group/prev ${
                 isDark
                   ? 'bg-slate-800 hover:bg-cyan-950/80 text-slate-200 hover:text-cyan-300 border border-white/10'
                   : 'bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600'
@@ -230,7 +230,7 @@ export const Footer: React.FC<FooterProps> = ({
               type="button"
               onClick={onNextPage}
               title="Trang kế tiếp (Tới trang)"
-              className={`w-[34px] h-[34px] rounded-[999px] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0 group/next ${
+              className={`w-[34px] h-[34px] rounded-[12px] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0 group/next ${
                 isDark
                   ? 'bg-slate-800 hover:bg-cyan-950/80 text-slate-200 hover:text-cyan-300 border border-white/10'
                   : 'bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600'

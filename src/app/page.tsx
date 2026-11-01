@@ -37,6 +37,7 @@ import { HomeView } from '@/components/views/HomeView';
 import { LetterView } from '@/components/views/LetterView';
 import { AboutView } from '@/components/views/AboutView';
 import { ServicesView } from '@/components/views/ServicesView';
+import { SkillsView } from '@/components/views/SkillsView';
 import EducationView from '@/components/views/EducationView';
 import { ExperienceView } from '@/components/views/ExperienceView';
 import { ProjectsView } from '@/components/views/ProjectsView';
@@ -688,29 +689,17 @@ export default function HomePage() {
           CENTER CARD:
           - Chiều dài: 1200px đồng nhất với Header và Footer (mx-auto, max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)])
           - Khoảng cách với header & footer: my-[4px] sm:my-[8px] md:my-[10px]
-          - Bo cong cả 4 góc 14px (rounded-[14px])
+          - Bo cong cả 4 góc 14px (rounded-[12px])
           - Hiệu ứng nổi 3D, đổ bóng phân tầng cao cấp
         */}
         <main
           id="center-card"
           className={`w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto my-[4px] sm:my-[8px] md:my-[10px] flex-1 min-h-0 glass-panel overflow-hidden flex flex-col relative z-20 transition-all duration-500 elevated-float-card group/main ${
             currentTheme === 'dark-neon'
-              ? 'rounded-[24px] border border-cyan-400/40 shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_24px_rgba(34,211,238,0.18)]'
-              : 'rounded-[24px] border border-white/90 shadow-xl'
+              ? 'rounded-[12px] border border-cyan-400/40 shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_24px_rgba(34,211,238,0.18)]'
+              : 'rounded-[12px] border border-white/90 shadow-xl'
           }`}
         >
-          {/* Dynamic Page Transition Beam Indicator */}
-          <div
-            key={`beam-${currentPage}-${currentTheme}`}
-            className={`absolute top-0 h-[2px] w-52 rounded-full animate-page-beam pointer-events-none z-30 opacity-90 ${
-              currentTheme === 'dark-neon'
-                ? 'bg-gradient-to-r from-transparent via-cyan-400 to-fuchsia-500 shadow-[0_0_14px_rgba(34,211,238,0.9)]'
-                : 'bg-gradient-to-r from-transparent via-cyan-400 to-indigo-500 shadow-[0_0_12px_rgba(56,189,248,0.8)]'
-            }`}
-          />
-
-
-
           <div
             ref={contentDisplayRef}
             onScrollCapture={handleContentScrollCapture}
@@ -721,7 +710,7 @@ export default function HomePage() {
             {currentPage === 0 && (
               <HomeView
                 currentTheme={currentTheme}
-                onNavigateContact={() => setCurrentPage(13)}
+                onNavigateContact={() => setCurrentPage(12)}
                 onNavigatePage={setCurrentPage}
                 onOpenPagesCarousel={() => setIsPagesCarouselOpen(true)}
               />
@@ -733,15 +722,16 @@ export default function HomePage() {
             )}
             {currentPage === 2 && <AboutView currentTheme={currentTheme} onNavigatePage={setCurrentPage} />}
             {currentPage === 3 && <ServicesView currentTheme={currentTheme} />}
-            {currentPage === 4 && <EducationView currentTheme={currentTheme} />}
-            {currentPage === 5 && <ExperienceView currentTheme={currentTheme} />}
-            {currentPage === 6 && <ProjectsView currentTheme={currentTheme} />}
-            {currentPage === 7 && <SystemsView currentTheme={currentTheme} />}
-            {currentPage === 8 && <InterviewView currentTheme={currentTheme} />}
-            {currentPage === 9 && <HoroscopeView currentTheme={currentTheme} />}
-            {currentPage === 10 && <MemoriesView currentTheme={currentTheme} />}
-            {currentPage === 11 && <ContactView currentTheme={currentTheme} />}
-            {currentPage === 12 && (
+            {currentPage === 4 && <SkillsView currentTheme={currentTheme} />}
+            {currentPage === 5 && <EducationView currentTheme={currentTheme} />}
+            {currentPage === 6 && <ExperienceView currentTheme={currentTheme} />}
+            {currentPage === 7 && <ProjectsView currentTheme={currentTheme} />}
+            {currentPage === 8 && <SystemsView currentTheme={currentTheme} />}
+            {currentPage === 9 && <InterviewView currentTheme={currentTheme} />}
+            {currentPage === 10 && <HoroscopeView currentTheme={currentTheme} />}
+            {currentPage === 11 && <MemoriesView currentTheme={currentTheme} />}
+            {currentPage === 12 && <ContactView currentTheme={currentTheme} />}
+            {currentPage === 13 && (
               <WallpaperView
                 currentTheme={currentTheme}
                 onSelectTheme={handleChangeTheme}
@@ -791,7 +781,7 @@ export default function HomePage() {
         {/* 
           FOOTER:
           - Chiều dài: 1200px đồng nhất với Header và Center Card
-          - Đồng bộ bo cong cả 4 góc 20px (rounded-[20px])
+          - Đồng bộ bo cong cả 4 góc 20px (rounded-[12px])
           - Chiều cao h-[72px]
         */}
         <Footer

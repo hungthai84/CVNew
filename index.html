@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Media Gallery | Cloudinary</title>
+    <!-- Google Font: Play -->
+    <link href="https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Play', sans-serif;
+            background-color: #020617; /* slate-950 */
+            color: #f8fafc; /* slate-50 */
+        }
+        .neon-border {
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3), 0 0 20px rgba(6, 182, 212, 0.1);
+        }
+        .neon-border:hover {
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.6), 0 0 30px rgba(6, 182, 212, 0.2);
+            border-color: #22d3ee; /* cyan-400 */
+        }
+        .neon-text {
+            text-shadow: 0 0 8px rgba(6, 182, 212, 0.8);
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold neon-text text-cyan-400 mb-2">MEDIA LIBRARY</h1>
+            <p class="text-slate-400 uppercase tracking-[0.2em] text-xs">Cloudinary Powered &bull; Neon Edition</p>
+        </header>
+
+        <!-- Gallery Grid -->
+        <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Items injected here -->
+        </div>
+
+        <!-- States -->
+        <div id="loading-state" class="hidden mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Skeletons -->
+            <div class="h-64 rounded-2xl skeleton"></div>
+            <div class="h-64 rounded-2xl skeleton"></div>
+            <div class="h-64 rounded-2xl skeleton"></div>
+            <div class="h-64 rounded-2xl skeleton"></div>
+        </div>
+
+        <div id="error-state" class="hidden mt-10 p-6 bg-rose-500/10 border border-rose-500/50 rounded-2xl text-center">
+            <p class="text-rose-400 font-bold">Lỗi: Không thể kết nối tới API. Vui lòng kiểm tra lại server.</p>
+        </div>
+
+        <div id="empty-state" class="hidden mt-10 text-center p-20 border-2 border-dashed border-slate-800 rounded-3xl">
+            <p class="text-slate-500">Thư viện hiện đang trống.</p>
+        </div>
+
+        <!-- Footer / Load More -->
+        <footer class="mt-12 text-center">
+            <button id="load-more-btn" class="hidden px-8 py-3 bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold rounded-full transition-all neon-border active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                TẢI THÊM ẢNH
+            </button>
+        </footer>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:4000/api/media';
+        const LIMIT = 8;
+        
+        let currentCursor = null;
+        let isFetching = false;
+
+        const grid = document.getElementById('gallery-grid');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const loadingState = document.getElementById('loading-state');
+        const errorState = document.getElementById('error-state');
+        const emptyState = document.getElementById('empty-state');
+
+        /**
+         * Tối ưu URL Cloudinary với f_auto (format) và q_auto (quality)
+         */
+        function optimizeCloudinaryUrl(url) {
+            if (!url || !url.includes('cloudinary.com')) return url;
+            // Inject transformation vào sau segment /upload/
+            return url.replace('/upload/', '/upload/f_auto,q_auto/');
+        }
+
+        /**
+         * Render card cho từng item
+         */
+        function createMediaCard(item) {
+            const optimizedUrl = optimizeCloudinaryUrl(item.secure_url || item.url);
+            return `
+                <div class="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 transition-all duration-500 hover:-translate-y-2 neon-border">
+                    <img src="${optimizedUrl}" 
+                         alt="${item.public_id || 'Media'}" 
+                         class="h-64 w-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 transition-transform">
+                        <p class="text-[10px] text-cyan-400 font-bold uppercase tracking-wider mb-1">
+                            ${item.resource_type || 'Image'}
+                        </p>
+                        <p class="text-sm font-medium truncate text-white">
+                            ${item.public_id.split('/').pop()}
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Fetch dữ liệu từ API
+         */
+        async function fetchMedia() {
+            if (isFetching) return;
+            
+            isFetching = true;
+            errorState.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            loadMoreBtn.disabled = true;
+
+            try {
+                const url = new URL(API_URL);
+                url.searchParams.set('limit', LIMIT);
+                if (currentCursor) {
+                    url.searchParams.set('next_cursor', currentCursor);
+                }
+
+                const response = await fetch(url.toString());
+                
+                if (!response.ok) throw new Error('API request failed');
+                
+                const data = await response.json();
+                
+                // Giả lập độ trễ để thấy Skeleton (Xóa khi deploy thực tế)
+                // await new Promise(r => setTimeout(r, 1000));
+
+                if (data.resources && data.resources.length > 0) {
+                    const cardsHtml = data.resources.map(item => createMediaCard(item)).join('');
+                    grid.insertAdjacentHTML('beforeend', cardsHtml);
+                    
+                    currentCursor = data.next_cursor || null;
+                    emptyState.classList.add('hidden');
+                } else if (!currentCursor) {
+                    emptyState.classList.remove('hidden');
+                }
+
+                // Cập nhật nút Load More
+                if (currentCursor) {
+                    loadMoreBtn.classList.remove('hidden');
+                } else {
+                    loadMoreBtn.classList.add('hidden');
+                }
+
+            } catch (err) {
+                console.error(err);
+                if (grid.children.length === 0) {
+                    errorState.classList.remove('hidden');
+                }
+            } finally {
+                isFetching = false;
+                loadingState.classList.add('hidden');
+                loadMoreBtn.disabled = false;
+            }
+        }
+
+        // Event Listeners
+        loadMoreBtn.addEventListener('click', fetchMedia);
+
+        // Khởi tạo lần đầu
+        document.addEventListener('DOMContentLoaded', fetchMedia);
+    </script>
+</body>
+</html>

@@ -419,7 +419,7 @@ export const LetterBentoDashboard: React.FC<LetterBentoDashboardProps> = ({
   };
 
   const cardSurfaceClass =
-    'bg-white/75 dark:bg-slate-900/85 backdrop-blur-[20px] border border-white/88 dark:border-white/10 shadow-[0_10px_30px_0_rgba(100,110,140,0.08)] dark:shadow-none rounded-[20px]';
+    'bg-white/75 dark:bg-slate-900/85 backdrop-blur-[20px] border border-white/88 dark:border-white/10 shadow-[0_10px_30px_0_rgba(100,110,140,0.08)] dark:shadow-none rounded-[12px]';
 
   return (
     <div className="w-full h-full flex-1 min-h-0 overflow-y-auto lg:overflow-y-auto glass-scrollbar p-2 sm:p-3 flex flex-col justify-between gap-2.5 select-none font-play text-slate-800 dark:text-slate-100">
@@ -433,7 +433,7 @@ export const LetterBentoDashboard: React.FC<LetterBentoDashboardProps> = ({
         <div
           className={`lg:col-span-4 ${cardSurfaceClass} p-1.5 relative overflow-hidden flex flex-col justify-between min-h-[235px] sm:min-h-[250px] group/vid`}
         >
-          <div className="relative w-full h-full flex-1 rounded-[16px] overflow-hidden bg-slate-900 flex flex-col justify-between">
+          <div className="relative w-full h-full flex-1 rounded-[12px] overflow-hidden bg-slate-900 flex flex-col justify-between">
             <video
               ref={videoRef}
               src={LETTER_VIDEO_URL}

@@ -315,7 +315,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ currentPreset, onC
       onClick={handleCardClick}
       onMouseEnter={handleCardMouseEnter}
       title={`Nhấp để đổi trạng thái thời tiết • Thời khắc: ${sunConfig.label} (${sunConfig.timeString}) • Nhấp vào radar GPS để lấy thời tiết thực tế`}
-      className="relative w-max max-w-full h-[46px] sm:h-[50px] rounded-[16px] px-1 sm:px-2 flex items-center gap-2 sm:gap-2.5 cursor-pointer select-none transition-all duration-300 bg-transparent border-0 shadow-none overflow-visible group active:scale-[0.98]"
+      className="relative w-max max-w-full h-[46px] sm:h-[50px] rounded-[12px] px-1 sm:px-2 flex items-center gap-2 sm:gap-2.5 cursor-pointer select-none transition-all duration-300 bg-transparent border-0 shadow-none overflow-visible group active:scale-[0.98]"
       style={getContainerThemeStyle()}
     >
       <style jsx>{`

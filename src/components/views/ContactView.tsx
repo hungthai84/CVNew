@@ -189,7 +189,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
       {/* 2. Hai Thẻ Liên Hệ Side-by-Side (5 cols & 7 cols) - Căn chỉnh chiều cao nằm gọn trong thẻ chính */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-[15px] items-stretch flex-1 min-h-0 overflow-hidden">
         {/* CARD 1: Contact Hub, Direct Channels & Trust Badges */}
-        <div className="lg:col-span-5 relative overflow-hidden rounded-[14px] border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(99,102,241,0.2)] flex flex-col justify-between p-[15px] gap-2.5 text-left backdrop-blur-xl h-full">
+        <div className="lg:col-span-5 relative overflow-hidden rounded-[12px] border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(99,102,241,0.2)] flex flex-col justify-between p-[15px] gap-2.5 text-left backdrop-blur-xl h-full">
           {/* Header Card 1 */}
           <div className="space-y-1 relative z-10 shrink-0 bg-transparent border-0 shadow-none backdrop-blur-none p-0">
             <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
@@ -237,7 +237,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
                   type="button"
                   onClick={handleCopyEmail}
                   title="Sao chép Email"
-                  className="p-1.5 rounded-[999px] bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50 dark:hover:bg-slate-600 transition border border-slate-200 dark:border-slate-600 shadow-2xs cursor-pointer"
+                  className="p-1.5 rounded-[12px] bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50 dark:hover:bg-slate-600 transition border border-slate-200 dark:border-slate-600 shadow-2xs cursor-pointer"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
@@ -246,7 +246,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
                 <a
                   href="mailto:hungthai84@gmail.com"
                   title="Gửi mail trực tiếp"
-                  className="p-1.5 rounded-[999px] bg-sky-500 text-white hover:bg-sky-600 transition shadow-2xs"
+                  className="p-1.5 rounded-[12px] bg-sky-500 text-white hover:bg-sky-600 transition shadow-2xs"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -350,15 +350,15 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
         </div>
 
         {/* CARD 2: Tabbed Interface - Gửi Thông Điệp Trực Tiếp & Câu Hỏi Thường Gặp */}
-        <div className="lg:col-span-7 relative overflow-hidden rounded-[14px] border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(99,102,241,0.2)] flex flex-col justify-between p-[15px] gap-2.5 text-left backdrop-blur-xl h-full">
+        <div className="lg:col-span-7 relative overflow-hidden rounded-[12px] border border-white/80 dark:border-white/10 bg-white/85 dark:bg-slate-900/85 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08),0_4px_12px_rgba(15,23,42,0.04)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_rgba(99,102,241,0.2)] flex flex-col justify-between p-[15px] gap-2.5 text-left backdrop-blur-xl h-full">
           {/* Tab Selector Header */}
           <div className="flex items-center justify-between gap-2 relative z-10 pb-2 border-b border-slate-200/80 dark:border-slate-800 shrink-0">
             {/* Pill Tabs */}
-            <div className="flex items-center p-0.5 bg-slate-100/90 dark:bg-slate-800/90 rounded-[999px] border border-slate-200/90 dark:border-slate-700/90 flex-wrap">
+            <div className="flex items-center p-0.5 bg-slate-100/90 dark:bg-slate-800/90 rounded-[12px] border border-slate-200/90 dark:border-slate-700/90 flex-wrap">
               <button
                 type="button"
                 onClick={() => setActiveTab('message')}
-                className={`px-3 py-1 rounded-[999px] text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`px-3 py-1 rounded-[12px] text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === 'message'
                     ? 'bg-white dark:bg-slate-900 text-indigo-700 dark:text-indigo-300 shadow-2xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -370,7 +370,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
               <button
                 type="button"
                 onClick={() => setActiveTab('schedule')}
-                className={`px-3 py-1 rounded-[999px] text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`px-3 py-1 rounded-[12px] text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === 'schedule'
                     ? 'bg-white dark:bg-slate-900 text-emerald-700 dark:text-emerald-300 shadow-2xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -382,7 +382,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
               <button
                 type="button"
                 onClick={() => setActiveTab('faq')}
-                className={`px-3 py-1 rounded-[999px] text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`px-3 py-1 rounded-[12px] text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === 'faq'
                     ? 'bg-white dark:bg-slate-900 text-indigo-700 dark:text-indigo-300 shadow-2xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -394,7 +394,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
               <button
                 type="button"
                 onClick={() => setActiveTab('card')}
-                className={`px-3 py-1 rounded-[999px] text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
+                className={`px-3 py-1 rounded-[12px] text-[11px] sm:text-xs font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
                   activeTab === 'card'
                     ? 'bg-white dark:bg-slate-900 text-indigo-700 dark:text-indigo-300 shadow-2xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -538,7 +538,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
                 {/* Row 5: Submit Button */}
                 <button
                   type="submit"
-                  className="w-full py-2 sm:py-2.5 rounded-[999px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:brightness-105 active:scale-[0.99] text-white font-black text-xs sm:text-[13px] flex items-center justify-center gap-2 shadow-md shadow-indigo-500/25 transition cursor-pointer shrink-0"
+                  className="w-full py-2 sm:py-2.5 rounded-[12px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:brightness-105 active:scale-[0.99] text-white font-black text-xs sm:text-[13px] flex items-center justify-center gap-2 shadow-md shadow-indigo-500/25 transition cursor-pointer shrink-0"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -751,7 +751,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
                 <div className="flex flex-col sm:flex-row items-center gap-2 pt-1 shrink-0">
                   <button
                     type="submit"
-                    className="flex-1 w-full py-2 px-4 rounded-[999px] bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 hover:brightness-105 active:scale-[0.99] text-white font-black text-xs sm:text-[12.5px] flex items-center justify-center gap-2 shadow-md shadow-emerald-500/25 transition cursor-pointer"
+                    className="flex-1 w-full py-2 px-4 rounded-[12px] bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 hover:brightness-105 active:scale-[0.99] text-white font-black text-xs sm:text-[12.5px] flex items-center justify-center gap-2 shadow-md shadow-emerald-500/25 transition cursor-pointer"
                   >
                     <WebIcon name="calendar" className="w-3.5 h-3.5" />
                     <span>Xác Nhận & Thêm Vào Google Calendar</span>
@@ -760,7 +760,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
                   <button
                     type="button"
                     onClick={handleDownloadIcs}
-                    className="px-3.5 py-2 rounded-[999px] bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shrink-0"
+                    className="px-3.5 py-2 rounded-[12px] bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer shrink-0"
                     title="Tải tệp lịch .ics dùng cho Apple Calendar, Outlook, Thunderbird"
                   >
                     <WebIcon name="download" className="w-3.5 h-3.5" />
@@ -839,7 +839,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
                 <button
                   type="button"
                   onClick={() => setActiveTab('message')}
-                  className="px-3.5 py-1.5 rounded-[999px] bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] flex items-center gap-1.5 shadow-xs transition active:scale-95 cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-[12px] bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] flex items-center gap-1.5 shadow-xs transition active:scale-95 cursor-pointer"
                 >
                   <span>Gửi tin nhắn trao đổi ngay</span>
                   <span>→</span>

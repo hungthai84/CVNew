@@ -11,7 +11,7 @@ interface PageCardHeaderProps {
 
 export const PageCardHeader: React.FC<PageCardHeaderProps> = ({ pageId, className }) => {
   return (
-    <div className={cn("relative overflow-hidden w-full flex items-center justify-between p-3.5 sm:p-4 rounded-[14px] bg-white/80 dark:bg-slate-900/85 border border-slate-200/80 dark:border-white/10 shadow-xs backdrop-blur-xl mb-1", className)}>
+    <div className={cn("relative overflow-hidden w-full flex items-center justify-between p-3.5 sm:p-4 rounded-[12px] bg-white/80 dark:bg-slate-900/85 border border-slate-200/80 dark:border-white/10 shadow-xs backdrop-blur-xl mb-1", className)}>
       <img
         src="https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042012/K%E1%BB%B7_n%C4%83ng.png"
         alt="Kỹ năng Banner"

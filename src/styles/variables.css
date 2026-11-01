@@ -143,28 +143,31 @@
   --color-danger: #FB7185;
 
   /* ========================================================
-     MASTER BORDER RADIUS DESIGN TOKENS (CHUẨN HÓA TOÀN WEBSITE)
+     MASTER BORDER RADIUS DESIGN TOKENS (CHUẨN HÓA 12PX TOÀN WEBSITE)
      ======================================================== */
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 24px;
-  --radius-3xl: 32px;
-  --radius-full: 9999px;
+  --radius-global: 12px;
+  --radius-xs: var(--radius-global);
+  --radius-sm: var(--radius-global);
+  --radius-md: var(--radius-global);
+  --radius-lg: var(--radius-global);
+  --radius-xl: var(--radius-global);
+  --radius-2xl: var(--radius-global);
+  --radius-3xl: var(--radius-global);
+  --radius-full: var(--radius-global);
 
   /* Phân cấp theo thành phần */
-  --radius-main-container: 24px;
-  --radius-dashboard-container: 24px;
-  --radius-bento-card: 20px;
-  --radius-glass-card: 20px;
-  --card-radius: 20px;
-  --radius-modal: 24px;
-  --radius-button: 12px;
-  --radius-input: 12px;
-  --radius-image: 14px;
-  --radius-badge: 9999px;
+  --radius-main-container: var(--radius-global);
+  --radius-dashboard-container: var(--radius-global);
+  --radius-bento-card: var(--radius-global);
+  --radius-glass-card: var(--radius-global);
+  --card-radius: var(--radius-global);
+  --radius-modal: var(--radius-global);
+  --radius-button: var(--radius-global);
+  --radius-input: var(--radius-global);
+  --radius-image: var(--radius-global);
+  --radius-badge: var(--radius-global);
+  --container-radius: var(--radius-global);
+  --theme-radius-card: var(--radius-global);
 
   /* Focus & Interaction Tokens */
   --focus-ring: 0 0 0 3px rgba(96, 165, 250, 0.45);
@@ -329,7 +332,7 @@
 [data-theme="light-glass-dashboard"] .glass-scrollbar::-webkit-scrollbar-thumb,
 [data-theme="light-glass-dashboard"] #content-display::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, rgba(59, 130, 246, 0.65), rgba(34, 193, 220, 0.65));
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
   border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
@@ -444,7 +447,7 @@
 [data-theme="soft-minimal"] .glass-scrollbar::-webkit-scrollbar-thumb,
 [data-theme="soft-minimal"] #content-display::-webkit-scrollbar-thumb {
   background: #6F91F7;
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
 }
 
 /* ========================================================
@@ -498,12 +501,12 @@
   --text-muted: #71717A;
   --text-disabled: #52525B;
 
-  /* Standardized Corner Radii (Containers: 40px, Cards: 20px) */
-  --container-radius: 40px;
-  --card-radius: 20px;
-  --radius-2xl: 40px;
-  --radius-xl: 20px;
-  --radius-lg: 16px;
+  /* Standardized Corner Radii (All standardized to 12px) */
+  --container-radius: var(--radius-global);
+  --card-radius: var(--radius-global);
+  --radius-2xl: var(--radius-global);
+  --radius-xl: var(--radius-global);
+  --radius-lg: var(--radius-global);
 
   /* Card Themes */
   --card-theme-color: #34D399;
@@ -673,7 +676,7 @@ body {
   content: '';
   position: absolute;
   inset: -2px;
-  border-radius: 9999px;
+  border-radius: var(--radius-global, 12px);
   padding: 2px;
   background: conic-gradient(from 0deg, transparent 15%, var(--glow-color, #38bdf8), transparent 75%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -710,7 +713,7 @@ body {
 .footer-util-btn {
   width: 130px;
   height: 50px;
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
   padding: 4px 12px 4px 6px;
   display: flex;
   align-items: center;
@@ -768,7 +771,7 @@ body {
   text-decoration: none;
   font-weight: 600;
   font-size: 11.5px;
-  border-radius: 25px;
+  border-radius: var(--radius-global, 12px);
   position: relative;
   overflow: hidden;
   white-space: nowrap;
@@ -790,7 +793,7 @@ body {
   width: 100%;
   height: 100%;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
-  border-radius: 25px;
+  border-radius: var(--radius-global, 12px);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -820,7 +823,7 @@ body {
 .neonav-icon-box {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--radius-global, 12px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -995,7 +998,7 @@ body {
   grid-template-rows: 40px auto;
   width: 100%;
   height: fit-content;
-  border-radius: 14px;
+  border-radius: var(--radius-global, 12px);
   position: relative;
   background: rgba(255, 255, 255, 0.85);
   box-shadow: 0 10px 25px rgba(70, 65, 150, 0.1);
@@ -1020,8 +1023,8 @@ body {
 
 .img-section {
   transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), filter 0.38s ease;
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
+  border-radius: var(--radius-global, 12px);
+  border-radius: var(--radius-global, 12px);
   overflow: hidden;
   display: flex;
   justify-content: flex-end;
@@ -1053,7 +1056,7 @@ body {
 }
 
 .card-desc {
-  border-radius: 14px;
+  border-radius: var(--radius-global, 12px);
   padding: 10px 14px;
   position: relative;
   top: -8px;
@@ -1079,7 +1082,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 14px;
+  border-radius: var(--radius-global, 12px);
   background: linear-gradient(
     180deg,
     var(--card-wave-color) 0%,
@@ -1162,7 +1165,7 @@ body {
   gap: 3.5px;
   align-items: center;
   padding: 4px 6px;
-  border-radius: 8px;
+  border-radius: var(--radius-global, 12px);
   transition: background 0.15s ease;
 }
 
@@ -1173,7 +1176,7 @@ body {
 .card-system .dot {
   width: 4.5px;
   height: 4.5px;
-  border-radius: 50%;
+  border-radius: var(--radius-global, 12px);
   background: var(--card-theme-color, #7C5CDB);
 }
 
@@ -1183,7 +1186,7 @@ body {
   position: relative; isolation: isolate; overflow: hidden;
   display: flex; align-items: center; gap: 18px;
   min-height: 120px; padding: 20px 24px;
-  color: #fff; border-radius: 22px;
+  color: #fff; border-radius: var(--radius-global, 12px);
   background: linear-gradient(112deg, var(--c1), var(--c2));
   box-shadow: 0 10px 20px rgba(67, 105, 183, 0.12);
   transition: transform .25s ease, box-shadow .25s ease;
@@ -1198,7 +1201,7 @@ body {
 .weather-card-showcase::after {
   content: ""; position: absolute; z-index: -1;
   width: 100px; height: 100px; right: -15px; top: -35px;
-  border: 1px solid rgba(255,255,255,.18); border-radius: 28px;
+  border: 1px solid rgba(255,255,255,.18); border-radius: var(--radius-global, 12px);
   transform: rotate(34deg); pointer-events: none;
 }
 .weather-card-showcase:hover { transform: translateY(-5px); box-shadow: 0 16px 30px rgba(67, 105, 183, 0.20); }
@@ -1406,7 +1409,7 @@ body {
 [data-theme="light-glass"] .glass-scrollbar::-webkit-scrollbar-thumb,
 [data-theme="light-glass"] #content-display::-webkit-scrollbar-thumb {
   background: rgba(167, 139, 250, 0.35) !important;
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
   border: 2px solid transparent;
   background-clip: padding-box;
 }
@@ -1611,7 +1614,7 @@ body {
   background: rgba(255, 255, 255, 0.85) !important;
   border: 1.5px solid rgba(226, 232, 240, 0.9) !important;
   color: #1E1B4B !important;
-  border-radius: 12px;
+  border-radius: var(--radius-global, 12px);
   transition: all 0.2s ease;
 }
 
@@ -2660,7 +2663,7 @@ html.dark {
   aspect-ratio: 16 / 2 !important;
   min-height: 80px;
   height: auto;
-  border-radius: 20px;
+  border-radius: var(--radius-global, 12px);
   overflow: visible;
 }
 
@@ -2695,7 +2698,7 @@ html.dark {
   min-height: 64px !important;
   height: 64px !important;
   max-height: 64px !important;
-  border-radius: 16px !important;
+  border-radius: var(--radius-global, 12px) !important;
   overflow: visible !important;
 }
 
@@ -2737,7 +2740,7 @@ aside:has(> .hero-banner-compact) {
   max-width: 260px;
   height: 100%;
   aspect-ratio: 1.5 / 16 !important;
-  border-radius: 20px;
+  border-radius: var(--radius-global, 12px);
   overflow: visible;
 }
 
@@ -3044,7 +3047,7 @@ main#center-card:hover,
   min-width: 375px;
   height: 100%;
   min-height: 420px;
-  border-radius: 22px;
+  border-radius: var(--radius-global, 12px);
   transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s cubic-bezier(0.25, 1, 0.5, 1);
   box-shadow: -14px 0 28px rgba(15, 23, 42, 0.14);
   position: relative;
@@ -3129,7 +3132,7 @@ main#center-card:hover,
 .avatar-morph-btn {
   width: 130px;
   height: 50px;
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
   padding: 4px 12px 4px 6px;
   display: flex;
   align-items: center;
@@ -3168,7 +3171,7 @@ main#center-card:hover,
   width: 48px !important;
   height: 48px !important;
   padding: 0 !important;
-  border-radius: 50% !important;
+  border-radius: var(--radius-global, 12px) !important;
   transform: translateY(-56px) scale(1.08) !important;
   z-index: 100 !important;
   background: rgba(2, 132, 199, 0.95) !important;
@@ -3192,7 +3195,7 @@ main#center-card:hover,
 .avatar-morph-inner {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: var(--radius-global, 12px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3232,7 +3235,7 @@ main#center-card:hover,
   right: -2px;
   width: 17px;
   height: 17px;
-  border-radius: 50%;
+  border-radius: var(--radius-global, 12px);
   background: #f43f5e;
   color: #ffffff;
   display: flex;
@@ -3273,7 +3276,7 @@ main#center-card:hover,
   top: -160px;
   width: 200px;
   height: 200px;
-  border-radius: 50%;
+  border-radius: var(--radius-global, 12px);
   background: radial-gradient(circle, rgba(56, 189, 248, 0.16) 0%, rgba(56, 189, 248, 0.04) 65%, transparent 75%);
   pointer-events: none;
   opacity: 0;
@@ -3293,7 +3296,7 @@ main#center-card:hover,
   top: -20px;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: var(--radius-global, 12px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3376,7 +3379,7 @@ main#center-card:hover,
   left: 50%;
   transform: translateX(-50%) translateY(4px);
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-global, 12px);
   background: rgba(15, 23, 42, 0.92);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -3511,7 +3514,7 @@ main#center-card:hover,
   left: 50%;
   width: 150vmax;
   height: 150vmax;
-  border-radius: 50%;
+  border-radius: var(--radius-global, 12px);
   transform: translate(-50%, -50%) scale(0.05);
   background: radial-gradient(circle, rgba(56, 189, 248, 0.4) 0%, rgba(168, 85, 247, 0.35) 30%, rgba(244, 63, 94, 0.25) 55%, rgba(251, 191, 36, 0.15) 75%, transparent 100%);
   filter: blur(24px);
@@ -3840,7 +3843,7 @@ html.theme-transitioning article {
 /* Floating Colorful Glass Orbs in Background */
 .luminous-blob {
   position: absolute;
-  border-radius: 50%;
+  border-radius: var(--radius-global, 12px);
   filter: blur(50px);
   z-index: 0;
   opacity: 0.65;
@@ -4038,7 +4041,7 @@ html.theme-transitioning article {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
+  border-radius: var(--radius-global, 12px);
   background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);

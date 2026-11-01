@@ -158,7 +158,7 @@ const FullCardVideoPlayer: React.FC<FullCardVideoPlayerProps> = ({ videoUrl, isH
 
   return (
     <div
-      className={`absolute inset-0 z-30 w-full h-full rounded-[14px] overflow-hidden bg-black transition-opacity duration-200 pointer-events-none ${
+      className={`absolute inset-0 z-30 w-full h-full rounded-[12px] overflow-hidden bg-black transition-opacity duration-200 pointer-events-none ${
         isHovered ? 'opacity-100' : 'opacity-0'
       }`}
     >
@@ -169,7 +169,7 @@ const FullCardVideoPlayer: React.FC<FullCardVideoPlayerProps> = ({ videoUrl, isH
         muted
         playsInline
         preload="auto"
-        className="w-full h-full object-cover rounded-[14px]"
+        className="w-full h-full object-cover rounded-[12px]"
       />
     </div>
   );
@@ -1452,7 +1452,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                               <button
                                 type="button"
                                 onClick={(e) => handleOpenUrl(e, item.url)}
-                                className="px-3 py-1 rounded-[999px] text-[10px] font-bold text-white shadow-2xs inline-flex items-center gap-1 cursor-pointer hover:brightness-110"
+                                className="px-3 py-1 rounded-[12px] text-[10px] font-bold text-white shadow-2xs inline-flex items-center gap-1 cursor-pointer hover:brightness-110"
                                 style={{ background: config.gradient }}
                               >
                                 <span>Website</span>
@@ -1509,7 +1509,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                       /* THẺ MỞ RỘNG THEO CHIỀU DỌC: Kích thước bằng 4 thẻ theo chiều dọc (row-span-4) */
                       <article
                         onClick={(e) => e.stopPropagation()}
-                        className="relative w-full h-full rounded-[14px] overflow-hidden p-3 sm:p-4 flex flex-col justify-between select-none border transition-all duration-500 shadow-2xl backdrop-blur-xl"
+                        className="relative w-full h-full rounded-[12px] overflow-hidden p-3 sm:p-4 flex flex-col justify-between select-none border transition-all duration-500 shadow-2xl backdrop-blur-xl"
                         style={{
                           background: config.gradient,
                           borderColor: 'rgba(255, 255, 255, 0.28)',
@@ -1630,7 +1630,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                               <button
                                 type="button"
                                 onClick={(e) => handleOpenUrl(e, item.url)}
-                                className="px-3.5 py-1.5 rounded-[999px] text-[11px] font-bold text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer hover:brightness-110 active:scale-95"
+                                className="px-3.5 py-1.5 rounded-[12px] text-[11px] font-bold text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer hover:brightness-110 active:scale-95"
                                 style={{ background: config.gradient }}
                               >
                                 <span>Website</span>
@@ -1658,7 +1658,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                           onMouseEnter={() => setHoveredCardId(item.id)}
                           onMouseLeave={() => setHoveredCardId(null)}
                           title={`Nhấp để mở rộng chi tiết thẻ: ${config.displayTitle} (${item.abbr})`}
-                          className="system-flip-front system-item cursor-pointer relative overflow-hidden p-2.5 sm:p-3 flex flex-col justify-between select-none rounded-[14px] group transition-all duration-300 border hover:border-sky-400/60 dark:hover:border-cyan-400/60 hover:shadow-xl"
+                          className="system-flip-front system-item cursor-pointer relative overflow-hidden p-2.5 sm:p-3 flex flex-col justify-between select-none rounded-[12px] group transition-all duration-300 border hover:border-sky-400/60 dark:hover:border-cyan-400/60 hover:shadow-xl"
                           style={{
                             background: config.gradient,
                             borderColor: 'rgba(255, 255, 255, 0.28)',
@@ -1701,7 +1701,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                                     e.stopPropagation();
                                     handleOpenUrl(e, item.url);
                                   }}
-                                  className="px-2.5 py-0.5 rounded-[999px] text-[9.5px] font-bold bg-white/20 hover:bg-white text-white hover:text-slate-900 border border-white/30 transition-all flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs"
+                                  className="px-2.5 py-0.5 rounded-[12px] text-[9.5px] font-bold bg-white/20 hover:bg-white text-white hover:text-slate-900 border border-white/30 transition-all flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs"
                                   title={`Mở website hệ thống ${item.abbr}`}
                                 >
                                   <span>Website</span>
@@ -1900,7 +1900,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                                     e.stopPropagation();
                                     handleOpenUrl(e, item.url);
                                   }}
-                                  className="px-3 py-1 rounded-[999px] text-[10px] font-bold text-white shadow-sm transition flex items-center gap-1 cursor-pointer hover:brightness-110"
+                                  className="px-3 py-1 rounded-[12px] text-[10px] font-bold text-white shadow-sm transition flex items-center gap-1 cursor-pointer hover:brightness-110"
                                   style={{
                                     background: config.gradient,
                                     boxShadow: isDark ? `0 0 12px ${config.cardTheme}80` : `0 2px 8px ${config.cardTheme}40`,
@@ -2153,7 +2153,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                   <button
                     type="button"
                     onClick={(e) => handleOpenUrl(e, selectedSystem.url)}
-                    className="px-4 py-2 rounded-[999px] text-xs font-bold text-white flex items-center gap-1.5 shadow-md transition cursor-pointer hover:brightness-110 active:scale-95"
+                    className="px-4 py-2 rounded-[12px] text-xs font-bold text-white flex items-center gap-1.5 shadow-md transition cursor-pointer hover:brightness-110 active:scale-95"
                     style={{
                       background:
                         SYSTEM_DESIGN_MAP[selectedSystem.id]?.gradient || selectedSystem.gradient,

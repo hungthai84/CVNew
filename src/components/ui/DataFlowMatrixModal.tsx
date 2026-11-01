@@ -416,7 +416,7 @@ export const DataFlowMatrixModal: React.FC<DataFlowMatrixModalProps> = ({
   return (
     <AnimatePresence>
       <div
-        className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md select-none font-play rounded-[14px]"
+        className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md select-none font-play rounded-[12px]"
         onClick={() => {
           SoundEngine.playTap();
           onClose();
@@ -428,7 +428,7 @@ export const DataFlowMatrixModal: React.FC<DataFlowMatrixModalProps> = ({
           exit={{ opacity: 0, scale: 0.96 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className={`relative w-full h-full overflow-hidden rounded-[14px] border shadow-2xl flex flex-col backdrop-blur-2xl transition-all duration-300 ${
+          className={`relative w-full h-full overflow-hidden rounded-[12px] border shadow-2xl flex flex-col backdrop-blur-2xl transition-all duration-300 ${
             isDark
               ? 'bg-slate-950/95 border-cyan-500/40 shadow-[0_0_50px_rgba(34,211,238,0.25)] text-white'
               : 'bg-white/95 border-blue-200/90 shadow-[0_20px_60px_rgba(15,23,42,0.25)] text-slate-900'

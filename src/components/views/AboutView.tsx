@@ -240,7 +240,7 @@ const IntegrationsUI: React.FC<IntegrationsUIProps> = ({ onOpenMap, onNavigatePa
       rdir: 'reverse',
       deg: 90,
       type: 'page' as const,
-      pageIndex: 9,
+      pageIndex: 10,
     },
     {
       id: 'temp_residence',
@@ -325,7 +325,7 @@ const IntegrationsUI: React.FC<IntegrationsUIProps> = ({ onOpenMap, onNavigatePa
       rdir: 'normal',
       deg: 225,
       type: 'page' as const,
-      pageIndex: 5,
+      pageIndex: 6,
     },
     {
       id: 'degree',
@@ -340,7 +340,7 @@ const IntegrationsUI: React.FC<IntegrationsUIProps> = ({ onOpenMap, onNavigatePa
       rdir: 'normal',
       deg: 315,
       type: 'page' as const,
-      pageIndex: 4,
+      pageIndex: 5,
     },
   ];
 
@@ -1426,7 +1426,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
             }`}
           >
             <div
-              className={`relative overflow-hidden rounded-[14px] border border-slate-200/90 dark:border-white/10 p-5 sm:p-6 lg:p-7 flex flex-col justify-between shadow-xs backdrop-blur-xl bg-slate-900 text-left transition-all duration-500 group/hero flex-1 min-h-[360px] sm:min-h-[420px] ${
+              className={`relative overflow-hidden rounded-[12px] border border-slate-200/90 dark:border-white/10 p-5 sm:p-6 lg:p-7 flex flex-col justify-between shadow-xs backdrop-blur-xl bg-slate-900 text-left transition-all duration-500 group/hero flex-1 min-h-[360px] sm:min-h-[420px] ${
                 isPlayingIntro ? 'h-full min-h-[480px] sm:min-h-[540px] lg:min-h-[580px] shadow-2xl ring-1 ring-cyan-400/30' : ''
               }`}
             >
@@ -1632,7 +1632,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
             }`}
           >
             <div
-              className={`w-full p-4 sm:p-5 lg:p-6 rounded-[14px] border flex-1 min-h-0 flex flex-col justify-between gap-4 text-left ${glassCardClass}`}
+              className={`w-full p-4 sm:p-5 lg:p-6 rounded-[12px] border flex-1 min-h-0 flex flex-col justify-between gap-4 text-left ${glassCardClass}`}
             >
               {/* Header Card */}
               <div className="flex items-center justify-between pb-3 border-b border-slate-200/70 dark:border-white/10 shrink-0">
@@ -1654,11 +1654,11 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch flex-1 min-h-0">
                   {/* Left: Giới thiệu bản thân tôi với hình GIF làm nền card + Prismatic Border Shimmer */}
                   <div
-                    className="lg:col-span-5 rounded-[14px] border border-blue-100/90 dark:border-white/10 p-4 sm:p-4.5 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-500 relative overflow-hidden group select-none min-h-[175px]"
+                    className="lg:col-span-5 rounded-[12px] border border-blue-100/90 dark:border-white/10 p-4 sm:p-4.5 flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-500 relative overflow-hidden group select-none min-h-[175px]"
                   >
                     {/* Prismatic Border Shimmer: Ánh sáng phản chiếu quét viền lướt quanh mép kính khi hover */}
-                    <div className="absolute inset-0 rounded-[14px] border border-transparent group-hover:border-cyan-400/80 dark:group-hover:border-cyan-300/80 transition-all duration-500 pointer-events-none z-20 shadow-[inset_0_0_18px_rgba(56,189,248,0.22)]" />
-                    <div className="absolute -inset-[1px] rounded-[15px] bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-500 opacity-0 group-hover:opacity-35 transition-opacity duration-700 blur-[2.5px] pointer-events-none z-0" />
+                    <div className="absolute inset-0 rounded-[12px] border border-transparent group-hover:border-cyan-400/80 dark:group-hover:border-cyan-300/80 transition-all duration-500 pointer-events-none z-20 shadow-[inset_0_0_18px_rgba(56,189,248,0.22)]" />
+                    <div className="absolute -inset-[1px] rounded-[12px] bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-500 opacity-0 group-hover:opacity-35 transition-opacity duration-700 blur-[2.5px] pointer-events-none z-0" />
 
                     {/* GIF Animation Background Layer */}
                     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -1726,7 +1726,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           showToast('Trụ cột 01: Hiệu Quả - Tối ưu kết quả thực chiến');
                         }}
                         className={cn(
-                          'pillar-gradient-card rounded-[14px] bg-gradient-to-br from-blue-600 via-blue-500 to-sky-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[145px] relative overflow-hidden transition-all duration-300  hover:shadow-md border border-white/20 text-left group cursor-pointer',
+                          'pillar-gradient-card rounded-[12px] bg-gradient-to-br from-blue-600 via-blue-500 to-sky-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[145px] relative overflow-hidden transition-all duration-300  hover:shadow-md border border-white/20 text-left group cursor-pointer',
                           isPillarHighlighted('pillar-1') &&
                             'ring-2 ring-cyan-300 dark:ring-cyan-400 shadow-[0_0_24px_rgba(56,189,248,0.7)] scale-[1.02] -translate-y-1'
                         )}
@@ -1798,7 +1798,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           showToast('Trụ cột 02: Nhân Văn - Đồng cảm và thấu hiểu');
                         }}
                         className={cn(
-                          'pillar-gradient-card rounded-[14px] bg-gradient-to-br from-rose-500 via-rose-600 to-pink-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[145px] relative overflow-hidden transition-all duration-300  hover:shadow-md border border-white/20 text-left group cursor-pointer',
+                          'pillar-gradient-card rounded-[12px] bg-gradient-to-br from-rose-500 via-rose-600 to-pink-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[145px] relative overflow-hidden transition-all duration-300  hover:shadow-md border border-white/20 text-left group cursor-pointer',
                           isPillarHighlighted('pillar-2') &&
                             'ring-2 ring-pink-300 dark:ring-pink-400 shadow-[0_0_24px_rgba(244,114,182,0.7)] scale-[1.02] -translate-y-1'
                         )}
@@ -1870,7 +1870,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           showToast('Trụ cột 03: Bền Vững - Giá trị dài hạn và tin cậy');
                         }}
                         className={cn(
-                          'pillar-gradient-card rounded-[14px] bg-gradient-to-br from-emerald-600 via-teal-600 to-teal-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[145px] relative overflow-hidden transition-all duration-300  hover:shadow-md border border-white/20 text-left group cursor-pointer',
+                          'pillar-gradient-card rounded-[12px] bg-gradient-to-br from-emerald-600 via-teal-600 to-teal-500 text-white p-3.5 shadow-sm flex flex-col justify-between min-h-[145px] relative overflow-hidden transition-all duration-300  hover:shadow-md border border-white/20 text-left group cursor-pointer',
                           isPillarHighlighted('pillar-3') &&
                             'ring-2 ring-emerald-300 dark:ring-emerald-400 shadow-[0_0_24px_rgba(52,211,153,0.7)] scale-[1.02] -translate-y-1'
                         )}
@@ -1972,7 +1972,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           <div
                             onClick={() => toggleFlipCoreValue('val-1')}
                             className={cn(
-                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[14px] bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/20 text-left group cursor-pointer',
+                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[12px] bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/20 text-left group cursor-pointer',
                               isValueHighlighted('val-1') &&
                                 'ring-2 ring-amber-300 dark:ring-amber-400 shadow-[0_0_24px_rgba(245,158,11,0.75)]'
                             )}
@@ -2048,7 +2048,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           <div
                             onClick={() => toggleFlipCoreValue('val-1')}
                             className={cn(
-                              'absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[14px] bg-gradient-to-br from-amber-700 via-orange-700 to-amber-800 text-white p-3 sm:p-3.5 shadow-md flex flex-col justify-between overflow-hidden border border-white/30 text-left cursor-pointer group',
+                              'absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[12px] bg-gradient-to-br from-amber-700 via-orange-700 to-amber-800 text-white p-3 sm:p-3.5 shadow-md flex flex-col justify-between overflow-hidden border border-white/30 text-left cursor-pointer group',
                               isValueHighlighted('val-1') &&
                                 'ring-2 ring-amber-300 dark:ring-amber-400 shadow-[0_0_24px_rgba(245,158,11,0.75)]'
                             )}
@@ -2106,7 +2106,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           <div
                             onClick={() => toggleFlipCoreValue('val-2')}
                             className={cn(
-                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[14px] bg-gradient-to-br from-orange-500 via-rose-500 to-pink-600 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/20 text-left group cursor-pointer',
+                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[12px] bg-gradient-to-br from-orange-500 via-rose-500 to-pink-600 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/20 text-left group cursor-pointer',
                               isValueHighlighted('val-2') &&
                                 'ring-2 ring-pink-300 dark:ring-pink-400 shadow-[0_0_24px_rgba(244,114,182,0.75)]'
                             )}
@@ -2182,7 +2182,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           <div
                             onClick={() => toggleFlipCoreValue('val-2')}
                             className={cn(
-                              'absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[14px] bg-gradient-to-br from-rose-700 via-pink-700 to-rose-800 text-white p-3 sm:p-3.5 shadow-md flex flex-col justify-between overflow-hidden border border-white/30 text-left cursor-pointer group',
+                              'absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[12px] bg-gradient-to-br from-rose-700 via-pink-700 to-rose-800 text-white p-3 sm:p-3.5 shadow-md flex flex-col justify-between overflow-hidden border border-white/30 text-left cursor-pointer group',
                               isValueHighlighted('val-2') &&
                                 'ring-2 ring-pink-300 dark:ring-pink-400 shadow-[0_0_24px_rgba(244,114,182,0.75)]'
                             )}
@@ -2240,7 +2240,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           <div
                             onClick={() => toggleFlipCoreValue('val-3')}
                             className={cn(
-                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[14px] bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/20 text-left group cursor-pointer',
+                              'pillar-gradient-card absolute inset-0 [backface-visibility:hidden] rounded-[12px] bg-gradient-to-br from-pink-500 via-purple-600 to-indigo-700 text-white p-3.5 shadow-sm flex flex-col justify-between overflow-hidden transition-all duration-300 hover:shadow-md border border-white/20 text-left group cursor-pointer',
                               isValueHighlighted('val-3') &&
                                 'ring-2 ring-purple-300 dark:ring-purple-400 shadow-[0_0_24px_rgba(192,132,252,0.75)]'
                             )}
@@ -2316,7 +2316,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                           <div
                             onClick={() => toggleFlipCoreValue('val-3')}
                             className={cn(
-                              'absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[14px] bg-gradient-to-br from-purple-800 via-indigo-800 to-purple-900 text-white p-3 sm:p-3.5 shadow-md flex flex-col justify-between overflow-hidden border border-white/30 text-left cursor-pointer group',
+                              'absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[12px] bg-gradient-to-br from-purple-800 via-indigo-800 to-purple-900 text-white p-3 sm:p-3.5 shadow-md flex flex-col justify-between overflow-hidden border border-white/30 text-left cursor-pointer group',
                               isValueHighlighted('val-3') &&
                                 'ring-2 ring-purple-300 dark:ring-purple-400 shadow-[0_0_24px_rgba(192,132,252,0.75)]'
                             )}
@@ -2359,7 +2359,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
 
                   {/* Triết lý và tầm nhìn (lg:col-span-5) - Nơi chuyển "Khách hàng là trung tâm ♡" sang */}
                   <div
-                    className="lg:col-span-5 p-4 sm:p-5 rounded-[14px] bg-gradient-to-br from-sky-50/90 via-cyan-50/70 to-blue-100/60 dark:from-sky-950/40 dark:via-cyan-950/30 dark:to-blue-950/40 border border-sky-200/80 dark:border-sky-800/50 shadow-2xs flex flex-col justify-between relative hover:shadow-xs transition-all duration-300 min-h-[175px]"
+                    className="lg:col-span-5 p-4 sm:p-5 rounded-[12px] bg-gradient-to-br from-sky-50/90 via-cyan-50/70 to-blue-100/60 dark:from-sky-950/40 dark:via-cyan-950/30 dark:to-blue-950/40 border border-sky-200/80 dark:border-sky-800/50 shadow-2xs flex flex-col justify-between relative hover:shadow-xs transition-all duration-300 min-h-[175px]"
                   >
                     <div>
                       <div className="flex items-center justify-between pb-2 border-b border-sky-200/60 dark:border-sky-800/40">
@@ -2419,7 +2419,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.92, y: 15 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              style={{ borderRadius: '22px' }}
+              style={{ borderRadius: "var(--radius-global, 12px)" }}
               className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-white/15 p-4 sm:p-6 shadow-2xl z-10 flex flex-col gap-3 text-slate-800 dark:text-slate-100 font-play overflow-hidden"
             >
               <div className="flex items-center justify-between pb-3 border-b border-slate-200/80 dark:border-white/10">

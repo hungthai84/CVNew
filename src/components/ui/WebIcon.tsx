@@ -1,323 +1,254 @@
 'use client';
 
-import React, { useState } from 'react';
-import * as HeroOutlineIcons from '@heroicons/react/24/outline';
-import * as LucideIcons from 'lucide-react';
-import { LucideProps } from 'lucide-react';
+import React from 'react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { motion } from 'motion/react';
+import * as HugeIconsAll from '@hugeicons/core-free-icons';
 import { getCategoryTheme } from '@/utils/categoryTheme';
 import { GlassmorphicIconFrame } from './GlassmorphicIconFrame';
+import { cn } from '@/lib/utils';
 
 export interface WebIconProps {
   name: string;
   className?: string;
+  size?: number;
+  color?: string;
   animateOnHover?: boolean;
+  animateOnTap?: boolean;
   strokeWidth?: number;
   category?: string; // Tự động áp dụng màu sắc tương ứng theo phân hệ (MobiFone, VED/Shopee, MoMo, Finviet...)
   sparkle?: boolean; // Hiệu ứng nhấp nháy cho SparklesIcon
   springBounce?: boolean; // Hiệu ứng nảy nhẹ tự nhiên khi rê chuột
   rotateOnClick?: boolean; // Hiệu ứng xoay nhẹ khi click nút làm mới
   isRotating?: boolean; // Trạng thái đang xoay
-  framed?: boolean; // Bọc trong khung tròn kính mờ Glassmorphic Glow Icon Frame
+  framed?: boolean; // Bọc trong khung kính mờ Glassmorphic Glow Icon Frame
   frameSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   style?: React.CSSProperties;
   onClick?: (e: React.MouseEvent) => void;
 }
 
 /**
- * Bảng ánh xạ các alias đặc thù toàn bộ website sang tên icon chính thức trong thư viện @heroicons/react/24/outline
+ * Bảng ánh xạ các alias của website sang Hugeicons chính thức
  */
-const HEROICONS_ALIAS_MAP: Record<string, string> = {
-  // Navigation & Core Pages
-  home: 'HomeIcon',
-  menu: 'Bars3Icon',
-  bars: 'Bars3Icon',
-  'bars-3': 'Bars3Icon',
-  layoutdashboard: 'Squares2X2Icon',
-  'layout-dashboard': 'Squares2X2Icon',
-  panelstopleft: 'ViewColumnsIcon',
-  'panels-top-left': 'ViewColumnsIcon',
-  briefcase: 'BriefcaseIcon',
-  'briefcase-business': 'BriefcaseIcon',
-  briefcasebusiness: 'BriefcaseIcon',
-  corp: 'BriefcaseIcon',
-  hrm: 'UsersIcon',
-  chart: 'ChartBarIcon',
-  chartnoaxescombined: 'ChartBarIcon',
-  'chart-no-axes-combined': 'ChartBarIcon',
-  erp: 'ChartBarSquareIcon',
-  analytics: 'ChartPieIcon',
-  'trend-up': 'ArrowTrendingUpIcon',
-  trending: 'ArrowTrendingUpIcon',
-  'trend-down': 'ArrowTrendingDownIcon',
-  upgrade: 'ArrowUpRightIcon',
-  bi: 'ChartPieIcon',
-  globe: 'GlobeAltIcon',
-  standard: 'ShieldCheckIcon',
-  all: 'Squares2X2Icon',
-  graduation: 'AcademicCapIcon',
-  'graduation-cap': 'AcademicCapIcon',
-  lms: 'AcademicCapIcon',
-  book: 'BookOpenIcon',
-  'book-open': 'BookOpenIcon',
-  bookopen: 'BookOpenIcon',
-  books: 'BookmarkSquareIcon',
-  calendar: 'CalendarIcon',
-  milestones: 'FlagIcon',
-  milestone: 'FlagIcon',
-  clock: 'ClockIcon',
-  trophy: 'TrophyIcon',
-  award: 'SparklesIcon',
-  awards: 'TrophyIcon',
-  play: 'PlayIcon',
-  pause: 'PauseIcon',
-  stop: 'StopIcon',
-  square: 'StopIcon',
-  volume: 'SpeakerWaveIcon',
-  'volume-2': 'SpeakerWaveIcon',
-  'volume-x': 'SpeakerXMarkIcon',
-  volumex: 'SpeakerXMarkIcon',
-  mute: 'SpeakerXMarkIcon',
-  unmute: 'SpeakerWaveIcon',
-  music: 'MusicalNoteIcon',
-  layers: 'Square3Stack3DIcon',
-  target: 'AdjustmentsHorizontalIcon',
-  sparkles: 'SparklesIcon',
-  star: 'StarIcon',
-  user: 'UserIcon',
-  users: 'UsersIcon',
-  'user-check': 'CheckBadgeIcon',
-  settings: 'Cog6ToothIcon',
-  cog: 'Cog6ToothIcon',
-  sliders: 'AdjustmentsHorizontalIcon',
-  filter: 'FunnelIcon',
-  phone: 'PhoneIcon',
-  'phone-call': 'PhoneIcon',
-  mail: 'EnvelopeIcon',
-  heart: 'HeartIcon',
-  chat: 'ChatBubbleLeftRightIcon',
-  'message-square': 'ChatBubbleLeftRightIcon',
-  'message-circle': 'ChatBubbleOvalLeftEllipsisIcon',
-  bolt: 'BoltIcon',
-  zap: 'BoltIcon',
-  grid: 'Squares2X2Icon',
-  'layout-grid': 'Squares2X2Icon',
-  palette: 'SwatchIcon',
-  download: 'ArrowDownTrayIcon',
-  save: 'BookmarkIcon',
-  refresh: 'ArrowPathIcon',
-  'refresh-cw': 'ArrowPathIcon',
-  'rotate-cw': 'ArrowPathIcon',
-  sync: 'ArrowPathIcon',
-  check: 'CheckIcon',
-  'check-circle': 'CheckCircleIcon',
-  'check-circle2': 'CheckCircleIcon',
-  x: 'XMarkIcon',
-  close: 'XMarkIcon',
-  'chevron-left': 'ChevronLeftIcon',
-  'chevron-right': 'ChevronRightIcon',
-  'chevron-up': 'ChevronUpIcon',
-  'chevron-down': 'ChevronDownIcon',
-  'arrow-left': 'ArrowLeftIcon',
-  'arrow-right': 'ArrowRightIcon',
-  'arrow-up': 'ArrowUpIcon',
-  'arrow-down': 'ArrowDownIcon',
-  'external-link': 'ArrowTopRightOnSquareIcon',
-  search: 'MagnifyingGlassIcon',
-  moon: 'MoonIcon',
-  sun: 'SunIcon',
-  eye: 'EyeIcon',
-  'eye-off': 'EyeSlashIcon',
-  copy: 'DocumentDuplicateIcon',
-  share: 'ShareIcon',
-  'share-2': 'ShareIcon',
-  cpu: 'CpuChipIcon',
-  bot: 'CpuChipIcon',
-  shield: 'ShieldCheckIcon',
-  'shield-check': 'ShieldCheckIcon',
-  gem: 'SparklesIcon',
-  rocket: 'RocketLaunchIcon',
-  monitor: 'ComputerDesktopIcon',
-  smartphone: 'DevicePhoneMobileIcon',
-  tablet: 'DeviceTabletIcon',
-  laptop: 'ComputerDesktopIcon',
-  code: 'CodeBracketIcon',
-  terminal: 'CommandLineIcon',
-  database: 'CircleStackIcon',
-  server: 'ServerIcon',
-  cloud: 'CloudIcon',
-  lock: 'LockClosedIcon',
-  unlock: 'LockOpenIcon',
-  key: 'KeyIcon',
-  flag: 'FlagIcon',
-  pin: 'MapPinIcon',
-  bookmark: 'BookmarkIcon',
-  tag: 'TagIcon',
-  tags: 'TagIcon',
-  folder: 'FolderIcon',
-  'folder-open': 'FolderOpenIcon',
-  file: 'DocumentTextIcon',
-  'file-text': 'DocumentTextIcon',
-  image: 'PhotoIcon',
-  video: 'VideoCameraIcon',
-  mic: 'MicrophoneIcon',
-  'mic-off': 'MicrophoneIcon',
-  wifi: 'WifiIcon',
-  'wifi-off': 'WifiIcon',
-  info: 'InformationCircleIcon',
-  help: 'QuestionMarkCircleIcon',
-  'help-circle': 'QuestionMarkCircleIcon',
-  scale: 'ScaleIcon',
-  bell: 'BellIcon',
-  'shopping-cart': 'ShoppingCartIcon',
-  wallet: 'WalletIcon',
-  factory: 'BuildingOfficeIcon',
-  building: 'BuildingOfficeIcon',
-  radio: 'SignalIcon',
-  printer: 'PrinterIcon',
-  compass: 'GlobeAltIcon',
-  activity: 'ChartBarIcon',
-  'arrow-right-left': 'ArrowsRightLeftIcon',
-  arrowrightleft: 'ArrowsRightLeftIcon',
+const HUGEICONS_MAP: Record<string, any> = {
+  // 1. Navigation & Core Pages
+  home: HugeIconsAll.Home03Icon,
+  'home-03': HugeIconsAll.Home03Icon,
+  menu: HugeIconsAll.Menu01Icon,
+  'menu-01': HugeIconsAll.Menu01Icon,
+  bars: HugeIconsAll.Menu01Icon,
+  'bars-3': HugeIconsAll.Menu01Icon,
+  dashboard: (HugeIconsAll as any).Grid02Icon || HugeIconsAll.Home03Icon,
+  'layout-dashboard': (HugeIconsAll as any).Grid02Icon || HugeIconsAll.Home03Icon,
+  layoutdashboard: (HugeIconsAll as any).Grid02Icon || HugeIconsAll.Home03Icon,
+  briefcase: HugeIconsAll.Briefcase01Icon,
+  'briefcase-business': HugeIconsAll.Briefcase01Icon,
+  corp: HugeIconsAll.Briefcase01Icon,
+  hrm: HugeIconsAll.UserIcon,
+  chart: HugeIconsAll.ChartBarLineIcon,
+  'chart-no-axes-combined': HugeIconsAll.ChartBarLineIcon,
+  erp: HugeIconsAll.ChartBarLineIcon,
+  analytics: HugeIconsAll.ChartBarLineIcon,
+  'trend-up': HugeIconsAll.ChartBarLineIcon,
+  trending: HugeIconsAll.ChartBarLineIcon,
+  'trend-down': HugeIconsAll.ChartBarLineIcon,
+  globe: HugeIconsAll.Globe02Icon,
+  global: HugeIconsAll.GlobalIcon,
+  standard: HugeIconsAll.ShieldCheckIcon,
+  all: (HugeIconsAll as any).Grid02Icon || HugeIconsAll.Home03Icon,
+  graduation: HugeIconsAll.Mortarboard01Icon,
+  'graduation-cap': HugeIconsAll.Mortarboard01Icon,
+  lms: HugeIconsAll.Mortarboard01Icon,
+  book: HugeIconsAll.Mortarboard01Icon,
+  'book-open': HugeIconsAll.Mortarboard01Icon,
+  calendar: HugeIconsAll.Calendar01Icon,
+  milestones: (HugeIconsAll as any).Flag01Icon || HugeIconsAll.Award01Icon,
+  milestone: (HugeIconsAll as any).Flag01Icon || HugeIconsAll.Award01Icon,
+  clock: HugeIconsAll.Clock01Icon,
+  trophy: HugeIconsAll.TrophyIcon,
+  award: HugeIconsAll.Award01Icon,
+  awards: HugeIconsAll.TrophyIcon,
+  play: HugeIconsAll.PlayIcon,
+  pause: HugeIconsAll.PauseIcon,
+  stop: (HugeIconsAll as any).StopIcon || HugeIconsAll.Cancel01Icon,
+  volume: HugeIconsAll.VolumeHighIcon,
+  'volume-2': HugeIconsAll.VolumeHighIcon,
+  'volume-x': HugeIconsAll.VolumeMute01Icon,
+  mute: HugeIconsAll.VolumeMute01Icon,
+  unmute: HugeIconsAll.VolumeHighIcon,
+  layers: HugeIconsAll.Layers01Icon,
+  target: HugeIconsAll.Target01Icon,
+  sparkles: HugeIconsAll.SparklesIcon,
+  star: HugeIconsAll.StarIcon,
+  user: HugeIconsAll.UserIcon,
+  users: HugeIconsAll.UserIcon,
+  'user-check': HugeIconsAll.UserCheck01Icon,
+  settings: HugeIconsAll.Settings02Icon,
+  'settings-02': HugeIconsAll.Settings02Icon,
+  'settings-05': HugeIconsAll.Settings05Icon,
+  cog: HugeIconsAll.Settings02Icon,
+  sliders: HugeIconsAll.Settings05Icon,
+  filter: HugeIconsAll.FilterIcon,
+  phone: HugeIconsAll.Call02Icon,
+  'phone-call': HugeIconsAll.Call02Icon,
+  call: HugeIconsAll.Call02Icon,
+  mail: HugeIconsAll.Mail01Icon,
+  'mail-01': HugeIconsAll.Mail01Icon,
+  email: HugeIconsAll.Mail01Icon,
+  heart: HugeIconsAll.HeartIcon,
+  chat: HugeIconsAll.Message01Icon,
+  'message-square': HugeIconsAll.BotMessageSquareIcon,
+  'message-circle': HugeIconsAll.Message01Icon,
+  bolt: HugeIconsAll.ZapIcon,
+  zap: HugeIconsAll.ZapIcon,
+  grid: (HugeIconsAll as any).Grid02Icon || HugeIconsAll.Home03Icon,
+  palette: HugeIconsAll.PaintbrushIcon,
+  paintbrush: HugeIconsAll.PaintbrushIcon,
+  download: HugeIconsAll.Download01Icon,
+  'download-01': HugeIconsAll.Download01Icon,
+  upload: HugeIconsAll.Upload01Icon,
+  'upload-01': HugeIconsAll.Upload01Icon,
+  refresh: HugeIconsAll.RefreshIcon,
+  sync: HugeIconsAll.RefreshIcon,
+  search: HugeIconsAll.Search01Icon,
+  'search-01': HugeIconsAll.Search01Icon,
+  edit: HugeIconsAll.PencilEdit02Icon,
+  'pencil-edit-02': HugeIconsAll.PencilEdit02Icon,
+  bot: HugeIconsAll.BotIcon,
+  ai: HugeIconsAll.BotIcon,
+  notification: HugeIconsAll.Notification01Icon,
+  'notification-01': HugeIconsAll.Notification01Icon,
+  bell: HugeIconsAll.Notification01Icon,
+  camera: HugeIconsAll.Camera01Icon,
+  image: HugeIconsAll.Image01Icon,
+  gallery: HugeIconsAll.Image01Icon,
+  clapperboard: HugeIconsAll.ClapperboardIcon,
+  video: HugeIconsAll.ClapperboardIcon,
+  link: HugeIconsAll.Link01Icon,
+  'link-01': HugeIconsAll.Link01Icon,
+  maximize: HugeIconsAll.Maximize01Icon,
+  'maximize-01': HugeIconsAll.Maximize01Icon,
+  minimize: HugeIconsAll.Minimize01Icon,
+  'minimize-01': HugeIconsAll.Minimize01Icon,
+  cancel: HugeIconsAll.Cancel01Icon,
+  'cancel-01': HugeIconsAll.Cancel01Icon,
+  close: HugeIconsAll.Cancel01Icon,
+  x: HugeIconsAll.Cancel01Icon,
+  check: HugeIconsAll.CheckmarkCircle01Icon,
+  'check-circle': HugeIconsAll.CheckmarkCircle01Icon,
+  arrowleft: HugeIconsAll.ArrowLeft01Icon,
+  'arrow-left': HugeIconsAll.ArrowLeft01Icon,
+  arrowright: HugeIconsAll.ArrowRight01Icon,
+  'arrow-right': HugeIconsAll.ArrowRight01Icon,
+  sun: HugeIconsAll.Sun03Icon,
+  'sun-03': HugeIconsAll.Sun03Icon,
+  moon: HugeIconsAll.Moon02Icon,
+  'moon-02': HugeIconsAll.Moon02Icon,
+  location: HugeIconsAll.Location01Icon,
+  'location-01': HugeIconsAll.Location01Icon,
+  weather: HugeIconsAll.SunCloud01Icon,
+  cloud: HugeIconsAll.SunCloud01Icon,
+  brain: HugeIconsAll.BrainIcon,
+  compass: HugeIconsAll.Compass01Icon,
+  database: HugeIconsAll.Database01Icon,
+  cpu: HugeIconsAll.CpuIcon,
+  shield: HugeIconsAll.ShieldCheckIcon,
+  'shield-alert': HugeIconsAll.ShieldAlertIcon,
+  copy: HugeIconsAll.Copy01Icon,
+  eye: HugeIconsAll.EyeIcon,
+  'eye-off': HugeIconsAll.EyeOffIcon,
+  share: HugeIconsAll.Share01Icon,
+  quote: HugeIconsAll.QuoteDownIcon,
+  thumbsup: HugeIconsAll.ThumbsUpIcon,
 };
 
-/**
- * Tự động chuyển đổi tên bất kỳ sang component icon @heroicons/react/24/outline
- */
-function resolveHeroIcon(rawName: string): React.ComponentType<any> {
-  if (!rawName) return HeroOutlineIcons.SparklesIcon;
-  const clean = rawName.trim().toLowerCase();
-
-  // 1. Tra trong bảng alias Heroicons (Ưu tiên Outline dạng Line 100%)
-  if (HEROICONS_ALIAS_MAP[clean]) {
-    const iconName = HEROICONS_ALIAS_MAP[clean];
-    const outlineComp = (HeroOutlineIcons as Record<string, any>)[iconName];
-    if (outlineComp) return outlineComp;
-  }
-
-  // 2. Chuyển kebab-case / snake-case sang PascalCase kèm hậu tố 'Icon'
-  const pascal = clean
-    .split(/[-_\s]+/)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join('');
-
-  const pascalWithIcon = pascal.endsWith('Icon') ? pascal : `${pascal}Icon`;
-
-  if ((HeroOutlineIcons as Record<string, any>)[pascalWithIcon]) {
-    return (HeroOutlineIcons as Record<string, any>)[pascalWithIcon];
-  }
-
-  if ((HeroOutlineIcons as Record<string, any>)[pascal]) {
-    return (HeroOutlineIcons as Record<string, any>)[pascal];
-  }
-
-  // 3. Tra exact name trong Outline
-  if ((HeroOutlineIcons as Record<string, any>)[rawName]) {
-    return (HeroOutlineIcons as Record<string, any>)[rawName];
-  }
-  const rawWithIcon = rawName.endsWith('Icon') ? rawName : `${rawName}Icon`;
-  if ((HeroOutlineIcons as Record<string, any>)[rawWithIcon]) {
-    return (HeroOutlineIcons as Record<string, any>)[rawWithIcon];
-  }
-
-  // 4. Fallback an toàn sang Lucide (dạng Line vector chuẩn)
-  const lucidePascal = pascal.replace(/Icon$/, '');
-  if ((LucideIcons as Record<string, any>)[lucidePascal]) {
-    return (LucideIcons as Record<string, any>)[lucidePascal];
-  }
-
-  return HeroOutlineIcons.SparklesIcon;
-}
-
-/**
- * Toàn bộ icon website được chuẩn hóa 100% sang dạng Line (Outline Vector Stroke)
- */
 export const WebIcon: React.FC<WebIconProps> = ({
   name,
-  className = 'w-4 h-4',
-  strokeWidth = 2,
+  className = '',
+  size = 20,
+  color,
+  strokeWidth = 1.75,
+  animateOnHover = true,
+  animateOnTap = true,
   category,
-  sparkle,
-  springBounce,
-  rotateOnClick,
-  isRotating,
+  sparkle = false,
+  springBounce = false,
+  rotateOnClick = false,
+  isRotating = false,
   framed = false,
-  frameSize = 'sm',
+  frameSize = 'md',
   style,
   onClick,
 }) => {
-  const [localRotating, setLocalRotating] = useState<boolean>(false);
-  const cleanName = (name || '').toLowerCase().trim();
+  const normKey = (name || '').toLowerCase().trim().replace(/[_\s]/g, '-');
+  const hugeIconData = HUGEICONS_MAP[normKey] || HUGEICONS_MAP[normKey.replace(/-/g, '')];
 
-  // 1. Nhận diện màu sắc năng động theo phân hệ (MobiFone, VED/Shopee, MoMo, Finviet...)
-  const categoryTheme = category ? getCategoryTheme(category) : undefined;
-  const dynamicColor = categoryTheme ? categoryTheme.color : undefined;
+  // Áp dụng màu tự động theo category nếu có
+  const catTheme = category ? getCategoryTheme(category) : null;
+  const computedColor = color || (catTheme ? catTheme.color : 'currentColor');
 
-  // 2. Vi tương tác: Nhấp nháy lấp lánh cho SparklesIcon
-  const isSparkle = sparkle || cleanName.includes('sparkle') || cleanName === 'award' || cleanName === 'gem';
-
-  // 3. Vi tương tác: Xoay nhẹ khi click nút làm mới (ArrowPathIcon / refresh)
-  const isRefreshIcon =
-    cleanName === 'refresh' ||
-    cleanName === 'refresh-cw' ||
-    cleanName === 'rotate-cw' ||
-    cleanName === 'sync' ||
-    cleanName === 'arrowpath';
-
-  const shouldRotate = isRotating || localRotating;
-
-  const handleClick = (e: React.MouseEvent) => {
-    if (rotateOnClick || isRefreshIcon) {
-      setLocalRotating(true);
-      setTimeout(() => setLocalRotating(false), 650);
-    }
-    if (onClick) onClick(e);
-  };
-
-  const IconComponent = resolveHeroIcon(name);
-
-  // Xây dựng class name tổng hợp (100% Line Icon)
-  const iconClasses = [
-    className,
-    className.includes('shrink-') ? '' : 'shrink-0',
-    'web-icon-line',
-    isSparkle ? 'icon-sparkle-twinkle' : '',
-    springBounce ? 'icon-spring-bounce' : '',
-    shouldRotate ? 'icon-rotate-click' : '',
-    isRefreshIcon && !shouldRotate ? 'hover:rotate-180 transition-transform duration-500 cursor-pointer' : '',
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const mergedStyle: React.CSSProperties = {
-    ...style,
-    color: dynamicColor || style?.color,
-    fill: 'none',
-  };
-
-  const renderedIcon = (
-    <IconComponent
-      className={iconClasses}
+  const content = hugeIconData ? (
+    <HugeiconsIcon
+      icon={hugeIconData}
+      size={size}
+      color={computedColor}
       strokeWidth={strokeWidth}
-      aria-hidden="true"
-      style={mergedStyle}
-      onClick={!framed ? handleClick : undefined}
+      className={cn('shrink-0 transition-transform duration-200', className)}
+    />
+  ) : (
+    // Fallback sang biểu tượng default nếu alias không có
+    <HugeiconsIcon
+      icon={HugeIconsAll.SparklesIcon}
+      size={size}
+      color={computedColor}
+      strokeWidth={strokeWidth}
+      className={cn('shrink-0 transition-transform duration-200', className)}
     />
   );
 
-  // 4. Bọc Khung Tròn Kính Mờ Hào Quang Siêu Thực nếu có framed
-  if (framed) {
+  const wrapped = (
+    <motion.span
+      className={cn('inline-flex items-center justify-center shrink-0 select-none', className)}
+      style={style}
+      onClick={onClick}
+      whileHover={
+        animateOnHover
+          ? {
+              scale: 1.1,
+              rotate: springBounce ? [0, -6, 6, 0] : 0,
+              transition: { duration: 0.25, ease: 'easeOut' },
+            }
+          : undefined
+      }
+      whileTap={animateOnTap ? { scale: 0.92, transition: { duration: 0.1 } } : undefined}
+      animate={
+        isRotating
+          ? { rotate: 360 }
+          : sparkle
+          ? { scale: [1, 1.12, 1], opacity: [0.85, 1, 0.85] }
+          : undefined
+      }
+      transition={
+        isRotating
+          ? { repeat: Infinity, duration: 1.2, ease: 'linear' }
+          : sparkle
+          ? { repeat: Infinity, duration: 2.5, ease: 'easeInOut' }
+          : undefined
+      }
+    >
+      {content}
+    </motion.span>
+  );
+
+  if (framed && catTheme) {
     return (
-      <GlassmorphicIconFrame
-        size={frameSize}
-        color={dynamicColor || '#06b6d4'}
-        glowColor={categoryTheme?.glow}
-        springBounce={springBounce}
-        onClick={handleClick}
-      >
-        {renderedIcon}
+      <GlassmorphicIconFrame color={catTheme.color} glowColor={catTheme.glow} size={frameSize}>
+        {wrapped}
       </GlassmorphicIconFrame>
     );
   }
 
-  return renderedIcon;
+  return wrapped;
 };
+
+export default WebIcon;

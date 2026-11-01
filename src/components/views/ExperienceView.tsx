@@ -961,7 +961,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
               {/* =====================================================================
                   2. 8-COLUMN 3-TIER INFOGRAPHIC TIMELINE WITH ANIMATED PULSE FLOW & QUICK KPI POPOVER (FULL CHIỀU CAO)
                   ===================================================================== */}
-              <div className="w-full h-full flex-1 min-h-0 px-3 py-2.5 sm:px-4 sm:py-3.5 rounded-[16px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_12px_32px_-8px_rgba(30,27,75,0.06)] dark:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] overflow-x-auto no-scrollbar relative flex flex-col justify-between">
+              <div className="w-full h-full flex-1 min-h-0 px-3 py-2.5 sm:px-4 sm:py-3.5 rounded-[12px] bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_12px_32px_-8px_rgba(30,27,75,0.06)] dark:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] overflow-x-auto no-scrollbar relative flex flex-col justify-between">
             {/* Story Narration Bar (Khi ở chế độ Trình Chiếu Hành Trình) */}
             {isStoryActive && (
               <div className="w-full mb-2.5 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-[#1E1B4B]/95 via-indigo-950/95 to-slate-950/95 text-white shadow-[0_16px_36px_-8px_rgba(30,27,75,0.3)] border border-white/20 backdrop-blur-2xl relative overflow-hidden animate-fadeIn shrink-0">
@@ -1236,7 +1236,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                             : undefined,
                           ['--card-accent-color' as string]: item.primaryColor,
                         }}
-                        className={`theme-pastel-card w-full flex-1 min-h-[230px] rounded-[16px] p-3 sm:p-3.5 border backdrop-blur-md transition-all duration-300 cursor-pointer flex flex-col items-center text-center justify-between gap-2 relative group ${
+                        className={`theme-pastel-card w-full flex-1 min-h-[230px] rounded-[12px] p-3 sm:p-3.5 border backdrop-blur-md transition-all duration-300 cursor-pointer flex flex-col items-center text-center justify-between gap-2 relative group ${
                           !isDark ? item.borderColor : ''
                         } ${
                           isSelected
@@ -1375,7 +1375,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
         /* CAREER DEVELOPMENT VIEW - FULL CHIỀU CAO */
         <div className="w-full flex-1 min-h-0 flex flex-col justify-between gap-4 animate-fadeIn">
           {/* Header Box */}
-          <div className="p-4 sm:p-5 rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+          <div className="p-4 sm:p-5 rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/70 border border-blue-200/80 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-cyan-400 shadow-2xs">
                 <TrendingUp className="w-5 h-5 stroke-[2.2]" />
@@ -1457,7 +1457,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
             ].map((stg, sIdx) => (
               <div
                 key={sIdx}
-                className="p-4 rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_8px_24px_-4px_rgba(30,27,75,0.05)] dark:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.5)] flex flex-col justify-between gap-3 hover:shadow-md  transition-all"
+                className="p-4 rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_8px_24px_-4px_rgba(30,27,75,0.05)] dark:shadow-[0_8px_24px_-4px_rgba(0,0,0,0.5)] flex flex-col justify-between gap-3 hover:shadow-md  transition-all"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-2">
@@ -1528,7 +1528,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
               return (
                 <div
                   key={pIdx}
-                  className="p-3.5 rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_6px_20px_-3px_rgba(30,27,75,0.04)] dark:shadow-[0_6px_20px_-3px_rgba(0,0,0,0.5)] flex flex-col gap-2 hover:shadow-md transition-all group/pillar"
+                  className="p-3.5 rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_6px_20px_-3px_rgba(30,27,75,0.04)] dark:shadow-[0_6px_20px_-3px_rgba(0,0,0,0.5)] flex flex-col gap-2 hover:shadow-md transition-all group/pillar"
                 >
                   <div className="flex items-center gap-2">
                     <GlassmorphicIconFrame
@@ -1718,7 +1718,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
         return (
           <div className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-3.5 sm:gap-4 text-left transition-all duration-300 animate-fadeIn font-play">
             {/* 1. TOP HEADER ROW: THẺ JOB CARD BO CONG 4 GÓC (NÚT QUAY LẠI & BỘ LỌC CỘT MỐC NHANH) */}
-            <div className="w-full p-3 sm:p-3.5 px-4 sm:px-5 rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_10px_30px_-5px_rgba(30,27,75,0.05)] dark:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="w-full p-3 sm:p-3.5 px-4 sm:px-5 rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_10px_30px_-5px_rgba(30,27,75,0.05)] dark:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5)] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={() => setShowJobCard(false)}
@@ -1769,7 +1769,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
             </div>
 
             {/* 2. SECTION 1: TOP PROFILE CARD (MASTER COMPANY & ROLES CARD) */}
-            <div className="w-full p-4 sm:p-5 rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_10px_30px_-5px_rgba(30,27,75,0.05)] dark:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5)] grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+            <div className="w-full p-4 sm:p-5 rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_10px_30px_-5px_rgba(30,27,75,0.05)] dark:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5)] grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
               {/* Col 1-5: Logo & Company Name & Roles & Scale */}
               <div className="lg:col-span-5 flex items-start sm:items-center gap-3.5 min-w-0">
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-white/10 shadow-xs p-2 flex items-center justify-center shrink-0">
@@ -1856,7 +1856,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
             {/* 3. SECTION 2: 2 CARDS (Hình ảnh kỷ niệm & Hero Banner) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
               {/* Left Card (Cols 1-5): Hình ảnh kỷ niệm */}
-              <div className="lg:col-span-5 rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 p-4 shadow-xs flex flex-col justify-between gap-2.5">
+              <div className="lg:col-span-5 rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 p-4 shadow-xs flex flex-col justify-between gap-2.5">
                 <div className="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-white/10">
                   <div className="flex items-center gap-2">
                     <Camera className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -1941,7 +1941,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
               </div>
 
               {/* Right Card (Cols 6-12): Hero Banner with Dynamic Gradient & Banner Image */}
-              <div className={`lg:col-span-7 rounded-[14px] bg-gradient-to-r ${customContent.gradient} text-white p-4 sm:p-5 shadow-md flex flex-col justify-between relative overflow-hidden min-h-[220px] group/banner`}>
+              <div className={`lg:col-span-7 rounded-[12px] bg-gradient-to-r ${customContent.gradient} text-white p-4 sm:p-5 shadow-md flex flex-col justify-between relative overflow-hidden min-h-[220px] group/banner`}>
                 {/* Right side banner image with automatic fallback to memoryImg if short link */}
                 <div className="absolute right-0 top-0 bottom-0 w-1/2 sm:w-[48%] opacity-90 sm:opacity-95 pointer-events-none flex items-center justify-end overflow-hidden">
                   <img
@@ -2001,7 +2001,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
             </div>
 
             {/* 4. SECTION 3: GIỚI THIỆU (3 TRỤ CỘT TRỌNG TÂM) & TRIẾT LÝ QUẢN TRỊ */}
-            <div className="w-full rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 p-4 sm:p-5 shadow-xs flex flex-col justify-between gap-3.5">
+            <div className="w-full rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 p-4 sm:p-5 shadow-xs flex flex-col justify-between gap-3.5">
               {/* Header */}
               <div className="flex items-center justify-between gap-3 border-b border-slate-100 dark:border-white/10 pb-2.5">
                 <div className="flex items-center gap-2.5">
@@ -2106,7 +2106,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
             {/* 5. SECTION 4: 3-COLUMN DETAILED WORK BREAKDOWN */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3.5 items-stretch">
               {/* Column 1: Mô tả công việc */}
-              <div className="rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 p-4 sm:p-5 shadow-xs flex flex-col justify-between gap-3">
+              <div className="rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 p-4 sm:p-5 shadow-xs flex flex-col justify-between gap-3">
                 <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-white/10">
                   <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-600 dark:text-blue-300 flex items-center justify-center shrink-0">
                     <Briefcase className="w-3.5 h-3.5" />
@@ -2131,7 +2131,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
               </div>
 
               {/* Column 2: Dự án trọng điểm */}
-              <div className="rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 p-4 sm:p-5 shadow-xs flex flex-col justify-between gap-3">
+              <div className="rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 p-4 sm:p-5 shadow-xs flex flex-col justify-between gap-3">
                 <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-white/10">
                   <div className="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-300 flex items-center justify-center shrink-0">
                     <FolderOpen className="w-3.5 h-3.5" />
@@ -2163,7 +2163,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
               </div>
 
               {/* Column 3: Cam kết chất lượng & Kết quả KPI */}
-              <div className="rounded-[14px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 p-4 sm:p-5 shadow-xs flex flex-col justify-between gap-3">
+              <div className="rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 p-4 sm:p-5 shadow-xs flex flex-col justify-between gap-3">
                 <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-white/10">
                   <div className="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 flex items-center justify-center shrink-0">
                     <TrendingUp className="w-3.5 h-3.5" />

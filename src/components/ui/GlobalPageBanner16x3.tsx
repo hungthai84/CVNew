@@ -76,7 +76,7 @@ export const GlobalPageBanner16x3: React.FC<GlobalPageBanner16x3Props> = ({
 
   return (
     <div
-      className={`group/banner16x3 relative w-full aspect-[16/3] min-h-[156px] sm:min-h-[178px] md:min-h-[205px] rounded-[18px] overflow-hidden shrink-0 transition-all duration-300 select-none ${
+      className={`group/banner16x3 relative w-full aspect-[16/3] min-h-[156px] sm:min-h-[178px] md:min-h-[205px] rounded-[12px] overflow-hidden shrink-0 transition-all duration-300 select-none ${
         isDark
           ? 'border border-cyan-400/40 shadow-[0_14px_34px_-6px_rgba(0,0,0,0.7),0_0_20px_rgba(34,211,238,0.16)]'
           : 'border border-white/90 shadow-[0_12px_32px_0_rgba(100,110,140,0.12),inset_0_1px_2px_rgba(255,255,255,0.95)]'

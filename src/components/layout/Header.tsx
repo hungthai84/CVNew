@@ -18,16 +18,17 @@ const PAGE_NEON_COLORS: Record<number, { neon: string; glow: string }> = {
   0: { neon: '#38BDF8', glow: 'rgba(56, 189, 248, 0.7)' },   // Trang Chủ
   1: { neon: '#FB7185', glow: 'rgba(251, 113, 133, 0.7)' },  // Thư Ngỏ
   2: { neon: '#C084FC', glow: 'rgba(192, 132, 252, 0.7)' },  // Giới Thiệu
-  3: { neon: '#FBBF24', glow: 'rgba(251, 191, 36, 0.7)' },   // Lĩnh Vực
-  4: { neon: '#22D3EE', glow: 'rgba(34, 211, 238, 0.7)' },   // Học Vấn
-  5: { neon: '#818CF8', glow: 'rgba(129, 140, 248, 0.7)' },  // Kinh Nghiệm
-  6: { neon: '#E879F9', glow: 'rgba(232, 121, 249, 0.7)' },  // Dự Án
-  7: { neon: '#FB923C', glow: 'rgba(251, 146, 60, 0.7)' },   // Hệ Thống
-  8: { neon: '#F472B6', glow: 'rgba(244, 114, 182, 0.7)' },  // Phỏng Vấn
-  9: { neon: '#F0ABFC', glow: 'rgba(240, 171, 252, 0.7)' },  // Tử Vi
-  10: { neon: '#4ADE80', glow: 'rgba(74, 222, 128, 0.7)' },  // Kỷ Niệm
-  11: { neon: '#2DD4BF', glow: 'rgba(45, 212, 191, 0.7)' },  // Liên Hệ
-  12: { neon: '#D946EF', glow: 'rgba(217, 70, 239, 0.7)' },  // Hình Nền
+  3: { neon: '#FBBF24', glow: 'rgba(251, 191, 36, 0.7)' },   // Dịch Vụ
+  4: { neon: '#06B6D4', glow: 'rgba(6, 182, 212, 0.7)' },    // Kỹ Năng (SWOT)
+  5: { neon: '#22D3EE', glow: 'rgba(34, 211, 238, 0.7)' },   // Học Vấn
+  6: { neon: '#818CF8', glow: 'rgba(129, 140, 248, 0.7)' },  // Kinh Nghiệm
+  7: { neon: '#E879F9', glow: 'rgba(232, 121, 249, 0.7)' },  // Dự Án
+  8: { neon: '#FB923C', glow: 'rgba(251, 146, 60, 0.7)' },   // Hệ Thống
+  9: { neon: '#F472B6', glow: 'rgba(244, 114, 182, 0.7)' },  // Phỏng Vấn
+  10: { neon: '#F0ABFC', glow: 'rgba(240, 171, 252, 0.7)' }, // Tử Vi
+  11: { neon: '#4ADE80', glow: 'rgba(74, 222, 128, 0.7)' },  // Kỷ Niệm
+  12: { neon: '#2DD4BF', glow: 'rgba(45, 212, 191, 0.7)' },  // Liên Hệ
+  13: { neon: '#D946EF', glow: 'rgba(217, 70, 239, 0.7)' },  // Hình Nền
 };
 
 export const Header: React.FC<HeaderProps> = ({

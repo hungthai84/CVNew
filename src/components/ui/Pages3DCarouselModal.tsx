@@ -51,7 +51,7 @@ export const Pages3DCarouselModal: React.FC<Pages3DCarouselModalProps> = ({
 
       {/* Modal Dialog Shell (Bo cong 14px theo quy tắc #6) */}
       <div
-        className={`relative z-10 w-full max-w-[1180px] max-h-[92vh] overflow-y-auto glass-scrollbar rounded-[14px] p-4 sm:p-6 md:p-8 border shadow-2xl transition-all duration-300 ${
+        className={`relative z-10 w-full max-w-[1180px] max-h-[92vh] overflow-y-auto glass-scrollbar rounded-[12px] p-4 sm:p-6 md:p-8 border shadow-2xl transition-all duration-300 ${
           isDark
             ? 'bg-slate-950/92 border-cyan-400/40 text-slate-100 shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_30px_rgba(34,211,238,0.2)]'
             : 'bg-white/94 border-white/90 text-slate-900 shadow-[0_25px_60px_rgba(30,27,75,0.22)]'

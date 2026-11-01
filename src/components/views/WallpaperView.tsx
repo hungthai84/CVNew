@@ -951,7 +951,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
         <div className="flex flex-wrap items-center justify-end gap-2.5 pt-1 px-1 relative z-10 pointer-events-auto ml-auto">
           {/* Nhóm nút lọc hình nền nằm góc dưới bên phải (kèm Bộ sưu tập Yêu thích) */}
           <div className="flex items-center gap-2 flex-wrap justify-end ml-auto">
-            <div className="flex items-center gap-1.5 p-1 rounded-[999px] bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/15 shadow-2xs backdrop-blur-md flex-wrap">
+            <div className="flex items-center gap-1.5 p-1 rounded-[12px] bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/15 shadow-2xs backdrop-blur-md flex-wrap">
               {[
                 { id: 'all', label: 'Tất cả' },
                 { id: 'favorites', label: `♥ Yêu thích (${favoriteIds.length})` },
@@ -968,7 +968,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                   key={tab.id}
                   type="button"
                   onClick={() => setFilterType(tab.id as typeof filterType)}
-                  className={`px-2.5 py-1 rounded-[999px] text-[11px] font-bold transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-[12px] text-[11px] font-bold transition-all cursor-pointer ${
                     filterType === tab.id
                       ? tab.id === 'favorites'
                         ? 'bg-rose-600 text-white shadow-xs'
@@ -986,7 +986,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
               <button
                 type="button"
                 onClick={handleRestoreDeleted}
-                className="px-2.5 py-1 rounded-[999px] text-[11px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-300/80 dark:border-amber-600/50 transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                className="px-2.5 py-1 rounded-[12px] text-[11px] font-bold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-300/80 dark:border-amber-600/50 transition cursor-pointer flex items-center gap-1 shadow-2xs"
                 title="Khôi phục các hình nền đã xóa"
               >
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" /></svg>
@@ -1006,7 +1006,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                   setIsAddingOpen(false);
                 }
               }}
-              className={`px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-[12px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer ${
                 isCustomizerOpen
                   ? 'bg-gradient-to-r from-cyan-600 to-indigo-600 text-white ring-2 ring-cyan-300 shadow-md'
                   : (settings.slideshowEnabled || settings.dimmerOpacity > 0 || settings.blurAmount > 0)
@@ -1026,7 +1026,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
             <button
               type="button"
               onClick={() => onSelectTheme && onSelectTheme(isDark ? 'light-glass' : 'dark-neon')}
-              className="px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer bg-white/95 dark:bg-slate-900/80 hover:bg-indigo-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200/90 dark:border-white/10 shadow-2xs active:scale-95"
+              className="px-3.5 py-1.5 rounded-[12px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer bg-white/95 dark:bg-slate-900/80 hover:bg-indigo-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200/90 dark:border-white/10 shadow-2xs active:scale-95"
               title="Chuyển đổi giao diện Sáng/Tối"
             >
               {isDark ? (
@@ -1046,7 +1046,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                   setIsCustomizerOpen(false);
                 }
               }}
-              className={`px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-[12px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer ${
                 isAddingOpen
                   ? 'bg-fuchsia-600 text-white shadow-fuchsia-500/25'
                   : 'bg-gradient-to-r from-fuchsia-600 to-indigo-600 hover:from-fuchsia-700 hover:to-indigo-700 text-white shadow-indigo-500/20 active:scale-95'
@@ -1065,7 +1065,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
               <button
                 type="button"
                 onClick={() => handleSetDefault(activeWallpaperObj)}
-                className="px-3.5 py-1.5 rounded-[999px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-amber-500/30 active:scale-95 animate-pulse"
+                className="px-3.5 py-1.5 rounded-[12px] text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all duration-200 cursor-pointer bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-amber-500/30 active:scale-95 animate-pulse"
                 title={`Lưu vĩnh viễn hình nền "${activeWallpaperObj.name}" làm mặc định khi tải trang`}
               >
                 <WebIcon name="star" className="w-3.5 h-3.5 text-white" />
@@ -1647,7 +1647,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3.5 py-2 rounded-[999px] text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center justify-center gap-1.5 transition cursor-pointer whitespace-nowrap shadow-2xs"
+                    className="px-3.5 py-2 rounded-[12px] text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center justify-center gap-1.5 transition cursor-pointer whitespace-nowrap shadow-2xs"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -1729,7 +1729,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 <button
                   type="button"
                   onClick={handleAddWallpaper}
-                  className="w-full mt-1 py-2 px-4 rounded-[999px] text-xs font-bold text-white bg-gradient-to-r from-fuchsia-600 to-indigo-600 hover:from-fuchsia-700 hover:to-indigo-700 shadow-md shadow-fuchsia-500/20 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full mt-1 py-2 px-4 rounded-[12px] text-xs font-bold text-white bg-gradient-to-r from-fuchsia-600 to-indigo-600 hover:from-fuchsia-700 hover:to-indigo-700 shadow-md shadow-fuchsia-500/20 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M20 6 9 17l-5-5" /></svg>
                   <span>Lưu & Áp Dụng Ngay</span>
@@ -2071,7 +2071,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 <button
                   type="button"
                   onClick={handlePreviewStudioOnSite}
-                  className="py-2 px-2.5 rounded-[999px] text-xs font-bold text-indigo-700 dark:text-indigo-200 bg-indigo-50 dark:bg-indigo-950/80 hover:bg-indigo-100 border border-indigo-200 dark:border-indigo-700 transition cursor-pointer flex items-center justify-center gap-1"
+                  className="py-2 px-2.5 rounded-[12px] text-xs font-bold text-indigo-700 dark:text-indigo-200 bg-indigo-50 dark:bg-indigo-950/80 hover:bg-indigo-100 border border-indigo-200 dark:border-indigo-700 transition cursor-pointer flex items-center justify-center gap-1"
                 >
                   <WebIcon name="eye" className="w-3.5 h-3.5" />
                   <span>Xem Thử</span>
@@ -2082,7 +2082,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                   disabled={isExportingPng}
                   onClick={() => handleExportStudio4kPng(3840, 2160)}
                   title="Kết xuất bảng phối màu hiện tại thành ảnh .PNG độ phân giải 4K UHD (3840×2160)"
-                  className="py-2 px-2.5 rounded-[999px] text-xs font-bold text-emerald-700 dark:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 border border-emerald-300 dark:border-emerald-700 transition cursor-pointer flex items-center justify-center gap-1"
+                  className="py-2 px-2.5 rounded-[12px] text-xs font-bold text-emerald-700 dark:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 border border-emerald-300 dark:border-emerald-700 transition cursor-pointer flex items-center justify-center gap-1"
                 >
                   <WebIcon name="download" className="w-3.5 h-3.5" />
                   <span>{isExportingPng ? 'Đang xuất...' : 'Ảnh 4K .PNG'}</span>
@@ -2091,7 +2091,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsSharePresetOpen(!isSharePresetOpen)}
-                  className={`py-2 px-2.5 rounded-[999px] text-xs font-bold border transition cursor-pointer flex items-center justify-center gap-1 ${
+                  className={`py-2 px-2.5 rounded-[12px] text-xs font-bold border transition cursor-pointer flex items-center justify-center gap-1 ${
                     isSharePresetOpen
                       ? 'bg-fuchsia-600 text-white border-fuchsia-600'
                       : 'bg-fuchsia-50 dark:bg-fuchsia-950/60 text-fuchsia-700 dark:text-fuchsia-300 border-fuchsia-200 dark:border-fuchsia-700 hover:bg-fuchsia-100'
@@ -2104,7 +2104,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                 <button
                   type="button"
                   onClick={handleSaveStudioWallpaper}
-                  className="py-2 px-3 rounded-[999px] text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:from-indigo-700 hover:to-fuchsia-700 shadow-md shadow-indigo-500/20 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1"
+                  className="py-2 px-3 rounded-[12px] text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-fuchsia-600 hover:from-indigo-700 hover:to-fuchsia-700 shadow-md shadow-indigo-500/20 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1"
                 >
                   <WebIcon name="sparkles" className="w-3.5 h-3.5" />
                   <span>Lưu & Áp Dụng</span>

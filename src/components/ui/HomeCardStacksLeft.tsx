@@ -573,7 +573,7 @@ export const HomeCardStacksLeft: React.FC<HomeCardStacksLeftProps> = ({
             <div
               key={item.pageId}
               onClick={isTop && !isDragging ? handleSwap : undefined}
-              className={`absolute top-1/2 left-1/2 w-[92%] h-[270px] sm:h-[285px] rounded-[22px] overflow-hidden backdrop-blur-2xl border ${
+              className={`absolute top-1/2 left-1/2 w-[92%] h-[270px] sm:h-[285px] rounded-[12px] overflow-hidden backdrop-blur-2xl border ${
                 isDragging && isTop ? 'cursor-grabbing transition-none' : 'transition-all duration-300 cursor-grab'
               } ${isSwapping ? 'animate-card-stack-swap' : ''} ${
                 isDark

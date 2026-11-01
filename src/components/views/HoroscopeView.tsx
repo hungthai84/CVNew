@@ -294,7 +294,7 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
   const renderSection1BatTrach = () => (
     <div
       id="tuvi-section-1"
-      className="w-full h-full bg-gradient-to-br from-white/95 via-purple-50/25 to-amber-50/30 dark:from-slate-900/95 dark:via-purple-950/20 dark:to-slate-900/95 border border-purple-200/80 dark:border-purple-800/60 rounded-[14px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(168,85,247,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden relative group text-left font-play"
+      className="w-full h-full bg-gradient-to-br from-white/95 via-purple-50/25 to-amber-50/30 dark:from-slate-900/95 dark:via-purple-950/20 dark:to-slate-900/95 border border-purple-200/80 dark:border-purple-800/60 rounded-[12px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(168,85,247,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden relative group text-left font-play"
     >
       <div className="absolute -top-24 -right-24 w-80 h-80 bg-purple-500/10 dark:bg-purple-500/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
@@ -579,7 +579,7 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
     return (
       <div
         id="tuvi-section-2"
-        className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-blue-200/90 dark:border-blue-400/30 rounded-[14px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(56,189,248,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
+        className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-blue-200/90 dark:border-blue-400/30 rounded-[12px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(56,189,248,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
       >
         <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-blue-200/50 dark:border-blue-800/50 shrink-0">
           <h2 className="text-base sm:text-lg font-bold text-blue-600 dark:text-cyan-400 flex items-center gap-2 font-play">
@@ -699,7 +699,7 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
     return (
       <div
         id="tuvi-section-3"
-        className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-emerald-200/90 dark:border-emerald-400/30 rounded-[14px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(16,185,129,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
+        className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-emerald-200/90 dark:border-emerald-400/30 rounded-[12px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(16,185,129,0.25)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
       >
         <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-emerald-200/50 dark:border-emerald-800/50 shrink-0">
           <h2 className="text-base sm:text-lg font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-2 font-play">
@@ -752,7 +752,7 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
   const renderSection4Philosophy = () => (
     <div
       id="tuvi-section-4"
-      className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-amber-200/90 dark:border-amber-500/30 rounded-[14px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(245,158,11,0.22)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
+      className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-amber-200/90 dark:border-amber-500/30 rounded-[12px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(245,158,11,0.22)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
     >
       <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-amber-200/50 dark:border-amber-800/50 shrink-0">
         <h2 className="text-base sm:text-lg font-bold text-amber-600 dark:text-amber-400 flex items-center gap-2 font-play">
@@ -807,7 +807,7 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
     return (
       <div
         id="tuvi-section-5"
-        className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-teal-200/90 dark:border-teal-500/30 rounded-[14px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(20,184,166,0.22)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
+        className="w-full h-full bg-white/90 dark:bg-slate-900/90 border border-teal-200/90 dark:border-teal-500/30 rounded-[12px] p-3.5 sm:p-4 shadow-[0_12px_32px_-4px_rgba(15,23,42,0.08)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_22px_-2px_rgba(20,184,166,0.22)] backdrop-blur-2xl flex flex-col justify-between overflow-hidden text-left font-play"
       >
         {/* Header Slide 5 */}
         <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-teal-200/50 dark:border-teal-800/50 shrink-0">

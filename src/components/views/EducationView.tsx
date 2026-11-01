@@ -249,7 +249,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
           )}
         >
           <GraduationCap className="w-4 h-4" />
-          <span>04. Hồ Sơ Học Vấn &amp; Bằng Cấp (14)</span>
+          <span>05. Hồ Sơ Học Vấn &amp; Bằng Cấp (14)</span>
         </button>
         <button
           type="button"
@@ -684,7 +684,7 @@ export const EducationView: React.FC<EducationViewProps> = ({ currentTheme }) =>
               duration: 0.55,
               ease: [0.25, 1, 0.5, 1],
             }}
-            className={`theme-pastel-card w-full h-full flex-1 min-h-0 rounded-[14px] border p-3.5 sm:p-4 lg:p-5 shadow-[0_16px_40px_-6px_rgba(15,23,42,0.18),0_6px_16px_-2px_rgba(15,23,42,0.08),inset_0_1px_2px_rgba(255,255,255,0.95)] dark:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_rgba(16,185,129,0.35),inset_0_1px_1.5px_rgba(255,255,255,0.18)] relative overflow-hidden flex flex-col justify-between text-left font-play transition-all duration-300 ${
+            className={`theme-pastel-card w-full h-full flex-1 min-h-0 rounded-[12px] border p-3.5 sm:p-4 lg:p-5 shadow-[0_16px_40px_-6px_rgba(15,23,42,0.18),0_6px_16px_-2px_rgba(15,23,42,0.08),inset_0_1px_2px_rgba(255,255,255,0.95)] dark:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_rgba(16,185,129,0.35),inset_0_1px_1.5px_rgba(255,255,255,0.18)] relative overflow-hidden flex flex-col justify-between text-left font-play transition-all duration-300 ${
               isDark ? 'bg-slate-900 border-emerald-400/50 text-white' : 'bg-white border-emerald-300 text-slate-900'
             }`}
           >

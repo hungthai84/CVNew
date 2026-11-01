@@ -255,7 +255,7 @@ export const Pages3DCarousel: React.FC<Pages3DCarouselProps> = ({
                     key={item.pageId}
                     onClick={() => updateIndex(idx)}
                     style={cardStyle}
-                    className="absolute inset-0 w-full h-full rounded-[14px] overflow-hidden cursor-pointer backdrop-blur-xl transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group"
+                    className="absolute inset-0 w-full h-full rounded-[12px] overflow-hidden cursor-pointer backdrop-blur-xl transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group"
                   >
                     {/* Hình Ảnh Nền Minh Họa Của Trang */}
                     <img
@@ -280,7 +280,7 @@ export const Pages3DCarousel: React.FC<Pages3DCarouselProps> = ({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-[10px] flex items-center justify-center shadow-md font-mono font-black text-xs sm:text-sm text-white"
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-[12px] flex items-center justify-center shadow-md font-mono font-black text-xs sm:text-sm text-white"
                             style={{ background: item.theme }}
                           >
                             {item.pageNumber}

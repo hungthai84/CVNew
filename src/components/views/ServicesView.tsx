@@ -1259,7 +1259,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                     onMouseEnter={() => setHoveredCardId(domain.id)}
                     onMouseLeave={() => setHoveredCardId(null)}
                     className={cn(
-                      'theme-pastel-card w-full h-full min-h-0 rounded-[14px] cursor-pointer relative flex flex-col text-left group/card transition-all duration-300 ease-out',
+                      'theme-pastel-card w-full h-full min-h-0 rounded-[12px] cursor-pointer relative flex flex-col text-left group/card transition-all duration-300 ease-out',
                       isBrandMatched &&
                         'ring-2 ring-cyan-400 dark:ring-cyan-300 shadow-[0_0_32px_rgba(56,189,248,0.55)] scale-[1.015] z-20',
                       isDimmed && 'opacity-35 grayscale-[50%]'
@@ -1281,7 +1281,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                     {/* MẶT TRƯỚC (FRONT): BỐ CỤC CODEPEN + AUDIO 15S + NÚT LẬT KPI */}
                     {/* ========================================================= */}
                     <div
-                      className="w-full h-full rounded-[14px] p-3.5 sm:p-4 border border-white/60 dark:border-white/10 shadow-[0_12px_32px_-6px_rgba(28,7,8,0.12),0_4px_10px_rgba(28,7,8,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_var(--card-accent-color,rgba(56,189,248,0.25))] hover:shadow-[0_24px_50px_-8px_rgba(28,7,8,0.22),inset_0_1px_2px_rgba(255,255,255,1)] dark:hover:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_var(--card-accent-color,rgba(56,189,248,0.45))] transition-all duration-300 ease-out flex flex-col justify-between overflow-hidden relative"
+                      className="w-full h-full rounded-[12px] p-3.5 sm:p-4 border border-white/60 dark:border-white/10 shadow-[0_12px_32px_-6px_rgba(28,7,8,0.12),0_4px_10px_rgba(28,7,8,0.06),inset_0_1px_2px_rgba(255,255,255,0.9)] dark:shadow-[0_16px_38px_-6px_rgba(0,0,0,0.75),0_0_20px_-2px_var(--card-accent-color,rgba(56,189,248,0.25))] hover:shadow-[0_24px_50px_-8px_rgba(28,7,8,0.22),inset_0_1px_2px_rgba(255,255,255,1)] dark:hover:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_var(--card-accent-color,rgba(56,189,248,0.45))] transition-all duration-300 ease-out flex flex-col justify-between overflow-hidden relative"
                       style={{
                         backfaceVisibility: 'hidden',
                         WebkitBackfaceVisibility: 'hidden',
@@ -1518,7 +1518,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                     {/* MẶT SAU (BACK): QUICK KPI FLIP MINI-CARD (4 CHỈ SỐ CỐT LÕI) */}
                     {/* ========================================================= */}
                     <div
-                      className="absolute inset-0 w-full h-full rounded-[14px] p-3.5 sm:p-4 border border-white/60 dark:border-white/10 shadow-[0_16px_36px_-6px_rgba(28,7,8,0.18)] dark:shadow-[0_18px_40px_-6px_rgba(0,0,0,0.8),0_0_22px_-2px_var(--card-accent-color,rgba(56,189,248,0.25))] flex flex-col justify-between overflow-hidden z-20 transition-all duration-300"
+                      className="absolute inset-0 w-full h-full rounded-[12px] p-3.5 sm:p-4 border border-white/60 dark:border-white/10 shadow-[0_16px_36px_-6px_rgba(28,7,8,0.18)] dark:shadow-[0_18px_40px_-6px_rgba(0,0,0,0.8),0_0_22px_-2px_var(--card-accent-color,rgba(56,189,248,0.25))] flex flex-col justify-between overflow-hidden z-20 transition-all duration-300"
                       style={{
                         backfaceVisibility: 'hidden',
                         WebkitBackfaceVisibility: 'hidden',
@@ -1573,7 +1573,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                         {detail.achievements.map((kpi, idx) => (
                           <div
                             key={idx}
-                            className="rounded-[10px] p-2 flex flex-col justify-between border border-black/5 dark:border-white/10 relative overflow-hidden transition-all duration-200 "
+                            className="rounded-[12px] p-2 flex flex-col justify-between border border-black/5 dark:border-white/10 relative overflow-hidden transition-all duration-200 "
                             style={{
                               background: isDark
                                 ? 'rgba(30, 41, 59, 0.75)'
@@ -1648,7 +1648,7 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                 background: cfg.cardBg,
                 ['--card-accent-color' as string]: cfg.accentColor,
               }}
-              className={`theme-pastel-card w-full h-full flex-1 min-h-0 rounded-[14px] border ${cfg.cardBorder} p-3.5 sm:p-4 lg:p-5 shadow-[0_16px_40px_-6px_rgba(15,23,42,0.18),0_6px_16px_-2px_rgba(15,23,42,0.08),inset_0_1px_2px_rgba(255,255,255,0.95)] dark:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_var(--card-accent-color,rgba(56,189,248,0.35)),inset_0_1px_1.5px_rgba(255,255,255,0.18)] relative overflow-hidden flex flex-col justify-between text-left font-play transition-all duration-300`}
+              className={`theme-pastel-card w-full h-full flex-1 min-h-0 rounded-[12px] border ${cfg.cardBorder} p-3.5 sm:p-4 lg:p-5 shadow-[0_16px_40px_-6px_rgba(15,23,42,0.18),0_6px_16px_-2px_rgba(15,23,42,0.08),inset_0_1px_2px_rgba(255,255,255,0.95)] dark:shadow-[0_24px_50px_-8px_rgba(0,0,0,0.85),0_0_32px_var(--card-accent-color,rgba(56,189,248,0.35)),inset_0_1px_1.5px_rgba(255,255,255,0.18)] relative overflow-hidden flex flex-col justify-between text-left font-play transition-all duration-300`}
             >
               {/* Soft ambient background glows */}
               <div

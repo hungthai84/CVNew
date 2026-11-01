@@ -5,7 +5,7 @@
   width: 100%;
   max-width: 480px;
   min-height: 360px;
-  border-radius: 28px;
+  border-radius: var(--radius-global, 12px);
   overflow: hidden;
   background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(20px);
@@ -53,7 +53,7 @@
 
 .u228-c {
   position: relative;
-  border-radius: 20px;
+  border-radius: var(--radius-global, 12px);
   padding: 1.5px;
   background: radial-gradient(
     180px circle at var(--cx, -500px) var(--cy, -500px),
@@ -86,7 +86,7 @@
 .u228-in {
   position: relative;
   height: 100%;
-  border-radius: 18.5px;
+  border-radius: var(--radius-global, 12px);
   background: radial-gradient(
     240px circle at var(--cx, -500px) var(--cy, -500px),
     rgba(99, 102, 241, calc(var(--o, 0) * 0.12)),
@@ -122,7 +122,7 @@
 .u228-ic {
   width: 36px;
   height: 36px;
-  border-radius: 12px;
+  border-radius: var(--radius-global, 12px);
   display: grid;
   place-items: center;
   background: rgba(99, 102, 241, 0.08);

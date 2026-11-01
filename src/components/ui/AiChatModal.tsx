@@ -622,7 +622,7 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
       {/* Cửa sổ Chat Glass UI */}
       <div
         ref={modalContainerRef}
-        className={`w-full sm:w-[420px] max-w-[calc(100vw-16px)] sm:max-w-[440px] rounded-[22px] border border-white/80 dark:border-slate-700/80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl transition-all duration-300 flex flex-col overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.18),0_10px_25px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] ${
+        className={`w-full sm:w-[420px] max-w-[calc(100vw-16px)] sm:max-w-[440px] rounded-[12px] border border-white/80 dark:border-slate-700/80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl transition-all duration-300 flex flex-col overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.18),0_10px_25px_rgba(0,0,0,0.08)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.6)] ${
           isMinimized ? 'h-[64px]' : 'h-[590px] max-h-[calc(100dvh-20px)] sm:max-h-[85vh]'
         }`}
       >
@@ -720,7 +720,7 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
           <div className="absolute inset-0 z-50 flex items-center justify-center p-3.5 bg-black/50 backdrop-blur-md animate-in fade-in duration-150">
             <div
               ref={settingsRef}
-              className="w-full max-w-[340px] max-h-[92%] overflow-y-auto glass-scrollbar rounded-[18px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-slate-200 dark:border-slate-700 shadow-2xl p-4 flex flex-col gap-3 text-left text-slate-800 dark:text-slate-100 animate-in zoom-in-95 duration-150 select-none"
+              className="w-full max-w-[340px] max-h-[92%] overflow-y-auto glass-scrollbar rounded-[12px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-slate-200 dark:border-slate-700 shadow-2xl p-4 flex flex-col gap-3 text-left text-slate-800 dark:text-slate-100 animate-in zoom-in-95 duration-150 select-none"
             >
               {/* Header Cài đặt */}
               <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700/80">
