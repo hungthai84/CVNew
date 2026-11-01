@@ -11,8 +11,13 @@ interface PageCardHeaderProps {
 
 export const PageCardHeader: React.FC<PageCardHeaderProps> = ({ pageId, className }) => {
   return (
-    <div className={cn("w-full flex items-center justify-between p-3.5 sm:p-4 rounded-[14px] bg-white/80 dark:bg-slate-900/85 border border-slate-200/80 dark:border-white/10 shadow-xs backdrop-blur-xl mb-1", className)}>
-      <div className="flex items-center gap-3">
+    <div className={cn("relative overflow-hidden w-full flex items-center justify-between p-3.5 sm:p-4 rounded-[14px] bg-white/80 dark:bg-slate-900/85 border border-slate-200/80 dark:border-white/10 shadow-xs backdrop-blur-xl mb-1", className)}>
+      <img
+        src="https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042012/K%E1%BB%B7_n%C4%83ng.png"
+        alt="Kỹ năng Banner"
+        className="absolute inset-0 w-full h-full object-cover object-[75%_25%] opacity-25 dark:opacity-20 pointer-events-none filter contrast-105"
+      />
+      <div className="relative z-10 flex items-center gap-3">
         <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 via-indigo-600 to-cyan-500 text-white flex items-center justify-center shrink-0 shadow-md">
           <Brain className="w-5 h-5" />
         </div>

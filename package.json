@@ -8,12 +8,14 @@
     "dev:raw": "next dev -p 3000 -H 0.0.0.0",
     "build": "next build",
     "start": "node .next/standalone/server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "sync:media": "node scripts/sync-cloudinary.mjs"
   },
   "dependencies": {
     "@animate-ui/react": "^2.3.0",
     "@google/genai": "^2.32.0",
     "@heroicons/react": "^2.2.0",
+    "cloudinary": "^2.11.0",
     "clsx": "^2.1.1",
     "css-pro-layout": "^1.1.0",
     "firebase": "^13.1.0",
