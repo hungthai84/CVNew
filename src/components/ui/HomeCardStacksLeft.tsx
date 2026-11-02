@@ -303,7 +303,7 @@ export const HomeCardStacksLeft: React.FC<HomeCardStacksLeftProps> = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* CSS Keyframes mô phỏng chính xác hiệu ứng Swap từ CodePen Card Stacks */}
-      <style jsx>{`
+      <style>{`
         @keyframes cardStackSwapKeyframe {
           0% {
             transform: translate(-50%, calc(-50% + 15px)) scale(1.05) rotate(0deg);

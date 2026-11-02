@@ -318,7 +318,7 @@ export const WeatherWidget: React.FC<WeatherWidgetProps> = ({ currentPreset, onC
       className="relative w-max max-w-full h-[46px] sm:h-[50px] rounded-[12px] px-1 sm:px-2 flex items-center gap-2 sm:gap-2.5 cursor-pointer select-none transition-all duration-300 bg-transparent border-0 shadow-none overflow-visible group active:scale-[0.98]"
       style={getContainerThemeStyle()}
     >
-      <style jsx>{`
+      <style>{`
         @keyframes weatherParticleBurst {
           0% {
             transform: translate(0, 0) scale(0.3);

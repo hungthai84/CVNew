@@ -386,7 +386,7 @@ export const LetterView: React.FC<LetterViewProps> = ({
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
   const [isAutoplayPresentation, setIsAutoplayPresentation] = useState<boolean>(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(false);
-  const [isVideoMuted, setIsVideoMuted] = useState<boolean>(false);
+  const [isVideoMuted, setIsVideoMuted] = useState<boolean>(true);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [narrationLanguage, setNarrationLanguage] = useState<'vi' | 'en'>('vi');
   const [activeSegmentIndex, setActiveSegmentIndex] = useState<number>(0);
@@ -1040,14 +1040,23 @@ export const LetterView: React.FC<LetterViewProps> = ({
 
   // Floating Video Presentation Handlers & Synchronization
   const handleFloatingVideoLoadedMetadata = useCallback(() => {
-    if (floatingVideoRef.current && savedVideoTimeRef.current > 0) {
-      floatingVideoRef.current.currentTime = savedVideoTimeRef.current;
+    if (floatingVideoRef.current) {
+      floatingVideoRef.current.muted = true;
+      floatingVideoRef.current.defaultMuted = true;
+      if (savedVideoTimeRef.current > 0) {
+        floatingVideoRef.current.currentTime = savedVideoTimeRef.current;
+      }
     }
   }, []);
 
-  // Tắt chế độ thuyết trình tự động khi mở trang Thư Ngỏ (chỉ phát khi người dùng chủ động nhấn nút)
+  // Tắt chế độ thuyết trình tự động và mặc định mute video khi mở trang Thư Ngỏ
   useEffect(() => {
     setIsAutoplayPresentation(false);
+    setIsVideoMuted(true);
+    if (floatingVideoRef.current) {
+      floatingVideoRef.current.muted = true;
+      floatingVideoRef.current.defaultMuted = true;
+    }
   }, []);
 
   const handleFloatingVideoTimeUpdate = useCallback(() => {
@@ -2025,7 +2034,7 @@ export const LetterView: React.FC<LetterViewProps> = ({
                     : 'hover:border-cyan-500/40'
                 }`}
               >
-                {/* Video làm hình nền bao phủ hoàn toàn - Tự động phát mượt mà, không nút bấm */}
+                {/* Video làm hình nền bao phủ hoàn toàn - Tự động phát mượt mà, mặc định mute */}
                 <video
                   ref={floatingVideoRef}
                   src={LETTER_SLIDE_1_VIDEO_URL}

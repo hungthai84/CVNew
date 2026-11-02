@@ -1,9 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Fleur+De+Leah&family=Inter:wght@300;400;500;600;700&family=Italianno&family=Play:ital,wght@0,400;0,700;1,400;1,700&family=Playwrite+NZ+Guides&family=Playwrite+New+Zealand+Guides&display=swap');
 @import './variables.css';
 @import './cursors.css';
-@import './lucian/tokens.css';
-@import './lucian/tilt.css';
-@import './lucian/lucian-228.css';
 
 @tailwind base;
 @tailwind components;
@@ -16,6 +13,14 @@
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: var(--radius-global, 12px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Chuẩn hóa thuộc tính bo cong 999px cho các thẻ button toàn website */
+  button,
+  [role="button"],
+  .btn,
+  .action-btn {
+    border-radius: 999px !important;
   }
 }
 
@@ -514,18 +519,27 @@ section {
 }
 
 button,
+button[class*="rounded"],
+button[class*="rounded-"],
+[role="button"],
+[role="button"][class*="rounded"],
+[role="button"][class*="rounded-"],
 .btn,
+.action-btn,
+.neonav-item,
+.btn-032,
+.btn-033,
 [type="button"],
 [type="submit"],
 [type="reset"] {
-  border-radius: var(--radius-global) !important;
+  border-radius: 999px !important;
   user-select: none;
   -webkit-user-select: none;
 }
 
-/* Enforce 12px border radius across all UI elements */
-[class*="rounded"]:not([class*="rounded-none"]):not([class*="rounded-t-none"]):not([class*="rounded-b-none"]):not([class*="rounded-l-none"]):not([class*="rounded-r-none"]),
-[class*="rounded-"]:not([class*="rounded-none"]):not([class*="rounded-t-none"]):not([class*="rounded-b-none"]):not([class*="rounded-l-none"]):not([class*="rounded-r-none"]),
+/* Enforce 12px border radius across non-button UI elements */
+:not(button):not([role="button"]):not(.btn):not(.action-btn):not(.neonav-item)[class*="rounded"]:not([class*="rounded-none"]):not([class*="rounded-t-none"]):not([class*="rounded-b-none"]):not([class*="rounded-l-none"]):not([class*="rounded-r-none"]):not([class*="rounded-full"]):not([class*="rounded-[999px]"]),
+:not(button):not([role="button"]):not(.btn):not(.action-btn):not(.neonav-item)[class*="rounded-"]:not([class*="rounded-none"]):not([class*="rounded-t-none"]):not([class*="rounded-b-none"]):not([class*="rounded-l-none"]):not([class*="rounded-r-none"]):not([class*="rounded-full"]):not([class*="rounded-[999px]"]),
 input,
 select,
 textarea,
@@ -759,7 +773,7 @@ html.a11y-wide-line-height span {
   line-height: 1.9 !important;
 }
 
-/* Lucian UX/UI Prompt #223 · Executive Section Card (Non-motion, standard card flow) */
+/* Executive Section Card (Non-motion, standard card flow) */
 .u223-c {
   position: relative;
   border-radius: var(--radius-global, 12px);
@@ -2130,42 +2144,6 @@ p, span, h1, h2, h3, h4, h5, h6, a, li, td, th {
 
 img, video {
   max-width: 100%;
-}
-
-/* Chế độ giả lập Tablet trực tiếp (data-responsive-viewport="tablet") */
-#app-root-layout[data-responsive-viewport="tablet"] header,
-#app-root-layout[data-responsive-viewport="tablet"] main#center-card,
-#app-root-layout[data-responsive-viewport="tablet"] footer {
-  width: calc(100% - 20px) !important;
-  max-width: 796px !important;
-}
-
-#app-root-layout[data-responsive-viewport="tablet"] #content-display .lg\:grid-cols-3,
-#app-root-layout[data-responsive-viewport="tablet"] #content-display .lg\:grid-cols-4 {
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-}
-
-/* Chế độ giả lập Mobile trực tiếp (data-responsive-viewport="mobile") */
-#app-root-layout[data-responsive-viewport="mobile"] header,
-#app-root-layout[data-responsive-viewport="mobile"] main#center-card,
-#app-root-layout[data-responsive-viewport="mobile"] footer {
-  width: calc(100% - 12px) !important;
-  max-width: 414px !important;
-}
-
-#app-root-layout[data-responsive-viewport="mobile"] #content-display {
-  padding: 12px !important;
-  overflow-y: auto !important;
-}
-
-#app-root-layout[data-responsive-viewport="mobile"] #content-display .grid-cols-2,
-#app-root-layout[data-responsive-viewport="mobile"] #content-display .sm\:grid-cols-2,
-#app-root-layout[data-responsive-viewport="mobile"] #content-display .md\:grid-cols-2,
-#app-root-layout[data-responsive-viewport="mobile"] #content-display .md\:grid-cols-3,
-#app-root-layout[data-responsive-viewport="mobile"] #content-display .lg\:grid-cols-3,
-#app-root-layout[data-responsive-viewport="mobile"] #content-display .lg\:grid-cols-4,
-#app-root-layout[data-responsive-viewport="mobile"] #content-display .lg\:grid-cols-12 {
-  grid-template-columns: minmax(0, 1fr) !important;
 }
 
 /* Responsive Breakpoints Thực Tế (1440px, 1280px, 1024px, 768px, 430px, 390px, 375px, 320px) */

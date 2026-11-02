@@ -1,3 +1,9 @@
+// Sanitize CLOUDINARY_URL if it is not a valid SDK connection string (e.g. collection URL)
+if (process.env.CLOUDINARY_URL && !process.env.CLOUDINARY_URL.startsWith('cloudinary://')) {
+  process.env.CLOUDINARY_COLLECTION_URL = process.env.CLOUDINARY_URL;
+  delete process.env.CLOUDINARY_URL;
+}
+
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
 import path from 'path';
@@ -8,7 +14,7 @@ const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
 const cloudinaryUrl = process.env.CLOUDINARY_URL;
 
-if (cloudinaryUrl) {
+if (cloudinaryUrl && typeof cloudinaryUrl === 'string' && cloudinaryUrl.startsWith('cloudinary://')) {
   cloudinary.config({
     cloudinary_url: cloudinaryUrl,
     secure: true,
@@ -68,7 +74,7 @@ export interface CloudinarySyncResult {
  * If credentials are not configured in environment, safely fallback to local snapshot.
  */
 export async function fetchAllCloudinaryAssets(): Promise<CloudinarySyncResult> {
-  const hasAuth = !!(cloudinaryUrl || (apiKey && apiSecret));
+  const hasAuth = !!((cloudinaryUrl && cloudinaryUrl.startsWith('cloudinary://')) || (apiKey && apiSecret));
 
   if (!hasAuth) {
     return loadStaticSnapshot();

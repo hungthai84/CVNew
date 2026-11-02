@@ -1,11 +1,22 @@
 import type { NextConfig } from "next";
 
+// Sanitize CLOUDINARY_URL if present as a web URL rather than cloudinary:// protocol
+if (process.env.CLOUDINARY_URL && !process.env.CLOUDINARY_URL.startsWith('cloudinary://')) {
+  process.env.CLOUDINARY_COLLECTION_URL = process.env.CLOUDINARY_URL;
+  delete process.env.CLOUDINARY_URL;
+}
+
 const nextConfig: NextConfig = {
+  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
+  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
   reactStrictMode: true,
+  compress: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
   images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 604800,
     remotePatterns: [
       { protocol: "https", hostname: "i.ibb.co" },
       { protocol: "https", hostname: "placehold.co" },
@@ -17,23 +28,28 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/:path*",
+        source: '/_next/static/(.*)',
         headers: [
           {
-            key: "Cache-Control",
-            value: "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate',
           },
           {
-            key: "Pragma",
-            value: "no-cache",
+            key: 'Pragma',
+            value: 'no-cache',
           },
           {
-            key: "Expires",
-            value: "0",
-          },
-          {
-            key: "Surrogate-Control",
-            value: "no-store",
+            key: 'Expires',
+            value: '0',
           },
         ],
       },

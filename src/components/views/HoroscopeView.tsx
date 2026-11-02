@@ -28,11 +28,23 @@ import {
   Calendar,
   Clock,
   Moon,
+  SlidersHorizontal,
+  ChevronDown,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { SoundEngine } from '@/components/ui/SoundEngine';
 
 export interface HoroscopeViewProps {
   currentTheme?: string;
 }
+
+const HOROSCOPE_SLIDES = [
+  { idx: 0, label: '01. Tử Vi Bát Trạch', shortLabel: 'Bát Trạch' },
+  { idx: 1, label: '02. Phong Cách Quản Trị', shortLabel: 'Quản Trị' },
+  { idx: 2, label: '03. Ưu Thế Làm Việc', shortLabel: 'Ưu Thế' },
+  { idx: 3, label: '04. Triết Lý Lãnh Đạo', shortLabel: 'Triết Lý' },
+  { idx: 4, label: '05. Công Cụ Hợp Việc', shortLabel: 'Hợp Việc' },
+];
 
 export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'light-glass' }) => {
   const { showToast } = useToast();
@@ -40,6 +52,20 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
   // Active Slide State: 0 (Bát Trạch), 1 (Quản Trị), 2 (Ưu Thế), 3 (Triết Lý), 4 (Công Cụ Hợp Việc)
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
+  const filterMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterMenuRef.current && !filterMenuRef.current.contains(event.target as Node)) {
+        setIsFilterDropdownOpen(false);
+      }
+    };
+    if (isFilterDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isFilterDropdownOpen]);
 
   const handlePrevSlide = useCallback(() => {
     setSlideDirection('prev');
@@ -259,37 +285,6 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
     },
   ];
 
-  const renderSlideSwitcherBar = () => {
-    const slides = [
-      { idx: 0, label: '01. Bát Trạch' },
-      { idx: 1, label: '02. Quản Trị' },
-      { idx: 2, label: '03. Ưu Thế' },
-      { idx: 3, label: '04. Triết Lý' },
-      { idx: 4, label: '05. Hợp Việc' },
-    ];
-    return (
-      <div className="inline-flex items-center gap-1 p-0.5 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-white/10">
-        {slides.map((s) => {
-          const isActive = currentSlide === s.idx;
-          return (
-            <button
-              key={s.idx}
-              type="button"
-              onClick={() => setCurrentSlide(s.idx)}
-              className={`px-2 sm:px-2.5 py-0.5 rounded-full text-[10px] font-bold font-play transition-all cursor-pointer ${
-                isActive
-                  ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 text-white shadow-2xs'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              {s.label}
-            </button>
-          );
-        })}
-      </div>
-    );
-  };
-
   // 1. SLIDE 1: Tử vi bát trạch - Tối ưu nội dung không trùng lặp, gọn gàng
   const renderSection1BatTrach = () => (
     <div
@@ -305,7 +300,6 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
           <Compass className="w-5 h-5 text-purple-600 dark:text-purple-300 animate-pulse shrink-0" />
           <span>{formatCardTitle("Tử Vi Bát Trạch")}</span>
         </h2>
-        {renderSlideSwitcherBar()}
       </div>
 
       {/* Body: La Bàn Âm Dương (Trái) & Hồ Sơ Nhân Thân + 4 Hướng Cát (Phải) */}
@@ -332,7 +326,7 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
             </div>
 
             {compassMode === 'yinyang' ? (
-              <div className="relative my-1">
+              <div className="relative my-1 flex items-center justify-center">
                 <div
                   role="button"
                   tabIndex={0}
@@ -343,18 +337,28 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
                       toggleAudio();
                     }
                   }}
-                  className={`w-28 h-28 sm:w-32 sm:h-32 rounded-full p-2 shadow-md flex items-center justify-center cursor-pointer transition-all duration-500 group relative ${
+                  style={{
+                    width: '120px',
+                    height: '120px',
+                    borderRadius: '50%',
+                    aspectRatio: '1 / 1',
+                  }}
+                  className={`w-[120px] h-[120px] aspect-square shrink-0 rounded-full p-2 shadow-md flex items-center justify-center cursor-pointer transition-all duration-500 group relative ${
                     isAudioPlaying
                       ? 'bg-gradient-to-br from-amber-300 via-amber-500 to-amber-600 ring-3 ring-amber-400/60 shadow-[0_0_20px_rgba(245,158,11,0.65)]'
                       : 'bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 ring-2 ring-amber-300/40 hover:brightness-105'
                   }`}
                   title={isAudioPlaying ? 'Tắt âm thanh tĩnh tâm' : 'Phát âm thanh thiền định 432Hz'}
                 >
-                  <div className="w-full h-full rounded-full bg-slate-950 border-2 border-amber-300 flex items-center justify-center relative overflow-hidden shadow-inner">
+                  <div
+                    style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                    className="w-full h-full aspect-square rounded-full bg-slate-950 border-2 border-amber-300 flex items-center justify-center relative overflow-hidden shadow-inner"
+                  >
                     <img
                       src="https://i.ibb.co/nsKpgT8V/Yin-Yan.jpg"
                       alt="Yin Yang Compass"
-                      className={`w-full h-full rounded-full object-cover transition-all duration-700 ${
+                      style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                      className={`w-full h-full aspect-square rounded-full object-cover transition-all duration-700 ${
                         isAudioPlaying ? 'animate-[spin_10s_linear_infinite]' : ''
                       }`}
                       onError={(e) => {
@@ -362,9 +366,13 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
                           'https://placehold.co/200x200/1e1b4b/fbbf24?text=Yin-Yang';
                       }}
                     />
-                    <div className="absolute inset-0 bg-slate-950/20 dark:bg-slate-950/30 rounded-full flex items-center justify-center transition-opacity group-hover:bg-slate-950/45">
+                    <div
+                      style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                      className="absolute inset-0 w-full h-full aspect-square bg-slate-950/20 dark:bg-slate-950/30 rounded-full flex items-center justify-center transition-opacity group-hover:bg-slate-950/45"
+                    >
                       <div
-                        className={`p-2 rounded-full text-white shadow-lg backdrop-blur-sm border border-white/50 transition-all ${
+                        style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                        className={`w-9 h-9 aspect-square rounded-full flex items-center justify-center text-white shadow-lg backdrop-blur-sm border border-white/50 transition-all ${
                           isAudioPlaying
                             ? 'bg-amber-500 shadow-amber-500/50 ring-2 ring-white'
                             : 'bg-black/70 hover:brightness-110'
@@ -586,7 +594,6 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
             <Target className="w-5 h-5 text-blue-600 dark:text-cyan-400 animate-pulse shrink-0" />
             <span>{formatCardTitle("Phong Cách Quản Trị")}</span>
           </h2>
-          {renderSlideSwitcherBar()}
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto glass-scrollbar pt-3 pr-0.5">
@@ -706,7 +713,6 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
             <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400 animate-pulse shrink-0" />
             <span>{formatCardTitle("Ưu Thế Làm Việc")}</span>
           </h2>
-          {renderSlideSwitcherBar()}
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto glass-scrollbar pt-3 pr-0.5">
@@ -759,7 +765,6 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
           <Award className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
           <span>{formatCardTitle("Triết Lý Lãnh Đạo & Hành Động")}</span>
         </h2>
-        {renderSlideSwitcherBar()}
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto glass-scrollbar pt-3 pr-0.5">
@@ -820,7 +825,6 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
               Chủ sự: Giáp Tý 1984 · Mệnh Hải Trung Kim
             </span>
           </div>
-          {renderSlideSwitcherBar()}
         </div>
 
         {/* Thanh tìm kiếm năm sinh & bộ lọc */}
@@ -995,8 +999,120 @@ export const HoroscopeView: React.FC<HoroscopeViewProps> = ({ currentTheme = 'li
   return (
     <section
       id="tuvi"
-      className="relative w-full h-full flex-1 min-h-0 flex flex-col justify-between items-stretch font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-hidden p-0 m-0"
+      className="relative w-full h-full flex-1 min-h-0 flex flex-col justify-between items-stretch gap-3 font-sans text-slate-800 dark:text-slate-100 transition-all duration-300 bg-transparent overflow-y-auto glass-scrollbar p-0 m-0"
     >
+      {/* BANNER TỬ VI: Tiêu đề 4 chữ viết hoa chữ đầu còn lại viết thường, icon + tiêu đề lấy màu menu icon (#c026d3), câu nói font viết tay màu chữ vàng, nhóm nút thành 1 filter icon bên dưới bên trái, trong suốt 100% */}
+      <motion.div
+        initial={{ opacity: 0, y: -15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="hero-banner w-full h-44 sm:h-52 rounded-2xl overflow-visible relative bg-transparent border-0 shadow-none shrink-0 flex flex-col justify-between p-5 sm:p-7 z-30"
+      >
+        <div className="absolute inset-0 rounded-2xl overflow-hidden bg-transparent pointer-events-none">
+          <img
+            src="/images/horoscope/hero-banner.png"
+            alt="Bản đồ tử vi"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/images/education/hero-banner.png';
+            }}
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-100 pointer-events-none filter brightness-110 contrast-110 saturate-110"
+          />
+          <div className="absolute inset-0 bg-transparent pointer-events-none" />
+        </div>
+
+        {/* Vùng Tiêu Đề: 4 chữ viết hoa chữ đầu còn lại viết thường, icon và tiêu đề lấy màu menu icon (#c026d3) */}
+        <div className="relative z-10 flex flex-col justify-start text-left max-w-2xl">
+          <div className="flex items-center gap-2.5" style={{ color: '#c026d3' }}>
+            <Compass
+              className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 bg-transparent border-0 p-0 shadow-none drop-shadow-[0_2px_8px_rgba(192,38,211,0.75)]"
+              style={{ color: '#c026d3', stroke: '#c026d3' }}
+            />
+            <h1
+              className="text-2xl sm:text-3xl md:text-4xl font-black font-play tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+              style={{ color: '#c026d3', textTransform: 'none' }}
+            >
+              Bản đồ tử vi
+            </h1>
+          </div>
+
+          {/* Sub tiêu đề là câu nói chuyển sang font viết tay màu chữ vàng */}
+          <p
+            className="font-handwriting text-yellow-300 text-lg sm:text-xl font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] mt-1.5 select-none"
+            style={{ color: '#facc15' }}
+          >
+            "Thuận thiên hành đạo, lấy đức trị nhân ♡"
+          </p>
+        </div>
+
+        {/* Nhóm nút thành 1 filter icon bên dưới banner bên trái - tiêu đề 4 từ */}
+        <div className="relative z-30 flex items-center justify-start mt-auto pt-2" ref={filterMenuRef}>
+          <div className="relative inline-block text-left">
+            <button
+              type="button"
+              onClick={() => {
+                SoundEngine.playTap();
+                setIsFilterDropdownOpen((prev) => !prev);
+              }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/85 hover:bg-slate-900 text-fuchsia-300 border border-fuchsia-400/70 shadow-[0_4px_16px_rgba(0,0,0,0.55)] backdrop-blur-md transition-all cursor-pointer text-xs font-bold font-play active:scale-95 group"
+              title="Bộ lọc tử vi"
+              aria-expanded={isFilterDropdownOpen}
+              aria-haspopup="listbox"
+            >
+              <SlidersHorizontal className="w-4 h-4 text-fuchsia-300 transition-transform group-hover:rotate-45 shrink-0" />
+              <span>Bộ lọc tử vi</span>
+              <span className="px-1.5 py-0.2 rounded-full bg-fuchsia-500/25 border border-fuchsia-400/50 text-[10px] font-mono text-fuchsia-200">
+                {HOROSCOPE_SLIDES[currentSlide]?.shortLabel}
+              </span>
+              <ChevronDown
+                className={cn(
+                  'w-3.5 h-3.5 text-fuchsia-300 transition-transform duration-200 shrink-0',
+                  isFilterDropdownOpen && 'rotate-180'
+                )}
+              />
+            </button>
+
+            <AnimatePresence>
+              {isFilterDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                  transition={{ duration: 0.16 }}
+                  role="listbox"
+                  className="absolute left-0 top-[calc(100%+8px)] w-60 rounded-xl bg-slate-950/95 border border-fuchsia-400/50 shadow-[0_12px_32px_rgba(0,0,0,0.75)] backdrop-blur-xl py-1.5 px-1.5 z-50 flex flex-col gap-1"
+                >
+                  {HOROSCOPE_SLIDES.map((s) => {
+                    const isActive = currentSlide === s.idx;
+                    return (
+                      <button
+                        key={s.idx}
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => {
+                          SoundEngine.playTap();
+                          setCurrentSlide(s.idx);
+                          setIsFilterDropdownOpen(false);
+                        }}
+                        className={cn(
+                          'w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold font-play transition-all cursor-pointer text-left',
+                          isActive
+                            ? 'bg-fuchsia-500/25 text-fuchsia-200 border border-fuchsia-400/60 shadow-xs'
+                            : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
+                        )}
+                      >
+                        <span>{s.label}</span>
+                        {isActive && <span className="w-2 h-2 rounded-full bg-fuchsia-400" />}
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </motion.div>
+
       {/* KHUNG SLIDE TOÀN MÀN HÌNH TRONG THẺ CHÍNH */}
       <div
         id="info-card-tuvi"

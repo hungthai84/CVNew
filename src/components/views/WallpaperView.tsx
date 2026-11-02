@@ -5,7 +5,7 @@ import { WALLPAPER_OPTIONS } from '@/data/wallpapers';
 import { WEATHER_PRESETS } from '@/data/weather';
 import { WallpaperOption, WeatherPreset, SiteTheme } from '@/types';
 
-import { Clock, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { Clock, ChevronLeft, ChevronRight, Sparkles, Filter, ChevronDown, Check } from 'lucide-react';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { SoundEngine } from '@/components/ui/SoundEngine';
@@ -193,21 +193,13 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
   const [isRightLanguageOpen, setIsRightLanguageOpen] = useState<boolean>(false);
   const [isRightDockCollapsed, setIsRightDockCollapsed] = useState<boolean>(false);
   const [selectedLanguage, setSelectedLanguage] = useState<'vi' | 'en'>('vi');
-  const [currentFontScalePercent, setCurrentFontScalePercent] = useState<number>(100);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
 
   const rightDockRef = useRef<HTMLElement>(null);
   const rightThemeContainerRef = useRef<HTMLDivElement>(null);
   const rightContactContainerRef = useRef<HTMLDivElement>(null);
   const rightLanguageContainerRef = useRef<HTMLDivElement>(null);
-
-  // Đọc mức zoom chữ hiện tại từ html tag
-  useEffect(() => {
-    if (typeof document !== 'undefined') {
-      const fs = document.documentElement.getAttribute('data-font-scale') || 'md';
-      const map: Record<string, number> = { sm: 90, md: 100, lg: 110, '2xl': 130 };
-      setCurrentFontScalePercent(map[fs] || 100);
-    }
-  }, []);
+  const filterDropdownRef = useRef<HTMLDivElement>(null);
 
   // Đóng các popup khi click bên ngoài
   useEffect(() => {
@@ -221,6 +213,9 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
       }
       if (rightLanguageContainerRef.current && !rightLanguageContainerRef.current.contains(target)) {
         setIsRightLanguageOpen(false);
+      }
+      if (filterDropdownRef.current && !filterDropdownRef.current.contains(target)) {
+        setIsFilterDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -937,49 +932,100 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
   }, []);
   const isDaytimeNow = currentHour >= 6 && currentHour < 18;
 
+  const wallpaperFilterTabs = [
+    { id: 'all', label: 'Tất cả hình nền' },
+    { id: 'favorites', label: `♥ Yêu thích (${favoriteIds.length})` },
+    { id: 'light', label: '☀️ Nền Sáng' },
+    { id: 'dark', label: '🌙 Nền Tối' },
+    { id: 'blurred', label: '🌫️ Nền Mờ' },
+    { id: 'image', label: 'Hình ảnh' },
+    { id: 'video', label: 'Video động' },
+    { id: 'gradient', label: 'Gradient' },
+    { id: 'css', label: 'Mã CSS' },
+    { id: 'codepen', label: '⚡ Nền CodePen' },
+  ] as const;
+
+  const activeWallpaperFilterObj =
+    wallpaperFilterTabs.find((t) => t.id === filterType) || wallpaperFilterTabs[0];
+
   return (
     <div className="w-full flex-grow flex flex-col gap-4 max-w-7xl mx-auto justify-start select-none relative text-slate-800 dark:text-slate-100 pb-10 text-left p-0">
-      {/* THANH TOOLBAR ĐIỀU KHIỂN & LỌC HÌNH NỀN (NỘI DUNG ĐÃ ĐƯỢC ĐƯA RA NGOÀI CONTAINER) */}
-      <div className="w-full flex flex-wrap items-center justify-between gap-2.5 shrink-0">
-        <div className="flex items-center gap-2">
-          <WebIcon name="palette" className="w-4 h-4 text-fuchsia-600 dark:text-fuchsia-400" />
-          <h2 className="text-xs sm:text-sm font-black font-play text-fuchsia-600 dark:text-fuchsia-400">
-            {formatCardTitle("Tùy Biến Giao Diện")}
-          </h2>
+      {/* BANNER TRANG HÌNH NỀN (TRONG SUỐT 100%, TIÊU ĐỀ 4 CHỮ HOA ĐẦU CÂU + ICON CÙNG MÀU MENU #d946ef, CÂU NÓI FONT VIẾT TAY MÀU VÀNG, BỘ LỌC DROPDOWN GÓC DƯỚI BÊN TRÁI) */}
+      <div className="w-full bg-transparent border-0 shadow-none p-0 mb-1 flex flex-col gap-2.5 relative z-30 shrink-0">
+        <div className="flex flex-col gap-1.5 items-start text-left">
+          <div className="inline-flex items-center gap-2.5" style={{ color: '#d946ef' }}>
+            <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 shrink-0 stroke-[2.2]" style={{ color: '#d946ef' }} />
+            <h1
+              className="text-xl sm:text-2xl md:text-[28px] font-black font-play tracking-tight leading-tight"
+              style={{ color: '#d946ef' }}
+            >
+              Không gian hình nền
+            </h1>
+          </div>
+
+          <p
+            className="font-handwriting text-lg sm:text-xl md:text-2xl font-bold tracking-wide leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.45)]"
+            style={{ color: '#facc15' }}
+          >
+            “Ánh sáng và sắc màu phản chiếu chiều sâu tâm hồn người kiến tạo.”
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-end gap-2.5 pt-1 px-1 relative z-10 pointer-events-auto ml-auto">
-          {/* Nhóm nút lọc hình nền nằm góc dưới bên phải (kèm Bộ sưu tập Yêu thích) */}
-          <div className="flex items-center gap-2 flex-wrap justify-end ml-auto">
-            <div className="flex items-center gap-1.5 p-1 rounded-[12px] bg-white/90 dark:bg-slate-900/90 border border-slate-200/90 dark:border-white/15 shadow-2xs backdrop-blur-md flex-wrap">
-              {[
-                { id: 'all', label: 'Tất cả' },
-                { id: 'favorites', label: `♥ Yêu thích (${favoriteIds.length})` },
-                { id: 'light', label: '☀️ Nền Sáng' },
-                { id: 'dark', label: '🌙 Nền Tối' },
-                { id: 'blurred', label: '🌫️ Nền Mờ' },
-                { id: 'image', label: 'Hình ảnh' },
-                { id: 'video', label: 'Video động' },
-                { id: 'gradient', label: 'Gradient' },
-                { id: 'css', label: 'Mã CSS' },
-                { id: 'codepen', label: '⚡ Nền CodePen' },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setFilterType(tab.id as typeof filterType)}
-                  className={`px-2.5 py-1 rounded-[12px] text-[11px] font-bold transition-all cursor-pointer ${
-                    filterType === tab.id
-                      ? tab.id === 'favorites'
-                        ? 'bg-rose-600 text-white shadow-xs'
-                        : 'bg-fuchsia-600 text-white shadow-xs'
-                      : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-800'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+        {/* Thanh dưới banner: Bên trái là Filter Drop Menu (4 từ), Bên phải là các nút công cụ */}
+        <div className="w-full flex flex-wrap items-center justify-between gap-2.5 pt-0.5">
+          <div ref={filterDropdownRef} className="relative inline-block">
+            <button
+              type="button"
+              onClick={() => {
+                SoundEngine.playTap();
+                setIsFilterDropdownOpen((prev) => !prev);
+              }}
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/85 dark:bg-slate-900/85 hover:bg-white dark:hover:bg-slate-800 border border-fuchsia-500/35 text-slate-800 dark:text-slate-100 shadow-sm backdrop-blur-md transition-all cursor-pointer"
+            >
+              <Filter className="w-4 h-4 shrink-0" style={{ color: '#d946ef' }} />
+              <span className="text-xs font-black font-play tracking-wide" style={{ color: '#d946ef' }}>
+                Bộ lọc hình nền
+              </span>
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/20">
+                {activeWallpaperFilterObj.label}
+              </span>
+              <ChevronDown
+                className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${
+                  isFilterDropdownOpen ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+
+            {isFilterDropdownOpen && (
+              <div className="absolute left-0 top-full mt-1.5 w-64 rounded-xl bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-700/90 shadow-xl backdrop-blur-xl py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                {wallpaperFilterTabs.map((tab) => {
+                  const isActive = filterType === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => {
+                        SoundEngine.playTap();
+                        setFilterType(tab.id as typeof filterType);
+                        setIsFilterDropdownOpen(false);
+                      }}
+                      className={`w-full px-3.5 py-2 text-left text-xs font-bold flex items-center justify-between gap-2 transition-colors cursor-pointer ${
+                        isActive
+                          ? 'bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-slate-800/80'
+                      }`}
+                    >
+                      <span className="truncate">{tab.label}</span>
+                      {isActive && <Check className="w-3.5 h-3.5 shrink-0" style={{ color: '#d946ef' }} />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center justify-end gap-2.5 relative z-10 pointer-events-auto ml-auto">
+            <div className="flex items-center gap-2 flex-wrap justify-end ml-auto">
 
             {/* Restore button if any are deleted */}
             {deletedIds.length > 0 && (
@@ -1083,6 +1129,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
             />
           </div>
         </div>
+      </div>
       </div>
 
       <div className="flex-1 min-w-0 w-full flex flex-col gap-4">
@@ -2342,7 +2389,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
         </span>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-2">
         {allWallpapers.map((wp) => {
           const isDefault = defaultId === wp.id;
           const isActive = activeWallpaperId === wp.id;
@@ -2357,7 +2404,7 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
               key={wp.id}
               onClick={() => handleSingleClick(wp)}
               onDoubleClick={() => handleDoubleClick(wp)}
-              className={`p-2.5 rounded-2xl border transition-all duration-300 cursor-pointer group flex flex-col gap-2 select-none relative hover:-translate-y-1.5 hover:scale-[1.02] hover:shadow-xl hover:border-fuchsia-400 dark:hover:border-cyan-400/60 ${
+              className={`p-1.5 rounded-xl border transition-all duration-300 cursor-pointer group flex flex-col select-none relative hover:-translate-y-1 hover:scale-[1.02] hover:shadow-lg hover:border-fuchsia-400 dark:hover:border-cyan-400/60 ${
                 isDefault
                   ? 'bg-amber-50/80 dark:bg-amber-950/30 border-amber-400 ring-2 ring-amber-300 shadow-md'
                   : isActive
@@ -2367,36 +2414,30 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
               title="Nhấp 1 lần: Xem thử • Nhấp 2 lần (double-click): Đặt làm mặc định"
             >
               {/* Badges: Default, Active, Tone (Sáng / Tối) */}
-              <div className="absolute top-3.5 left-3.5 z-10 flex flex-col gap-1 items-start pointer-events-none">
+              <div className="absolute top-2 left-2 z-20 flex flex-col gap-0.5 items-start pointer-events-none">
                 {isDefault && (
-                  <span className="px-2 py-0.5 rounded-full text-[9.5px] font-black bg-amber-500 text-white shadow-xs flex items-center gap-1 animate-pulse">
-                    <WebIcon name="sparkles" className="w-3 h-3" />
+                  <span className="px-1.5 py-0.2 rounded-full text-[8.5px] font-black bg-amber-500 text-white shadow-xs flex items-center gap-0.5 animate-pulse">
+                    <WebIcon name="sparkles" className="w-2.5 h-2.5" />
                     <span>Mặc định</span>
                   </span>
                 )}
                 {isActive && !isDefault && (
-                  <span className="px-2 py-0.5 rounded-full text-[9.5px] font-bold bg-fuchsia-600 text-white shadow-xs flex items-center gap-1">
-                    <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M20 6 9 17l-5-5" /></svg>
+                  <span className="px-1.5 py-0.2 rounded-full text-[8.5px] font-bold bg-fuchsia-600 text-white shadow-xs flex items-center gap-0.5">
+                    <svg className="w-2 h-2" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M20 6 9 17l-5-5" /></svg>
                     <span>Đang chọn</span>
                   </span>
                 )}
-                <span className={`px-1.5 py-0.2 rounded-full text-[8.5px] font-extrabold backdrop-blur-sm border shadow-2xs flex items-center gap-0.5 ${
+                <span className={`px-1 py-0.2 rounded-full text-[7.5px] font-extrabold backdrop-blur-sm border shadow-2xs flex items-center gap-0.5 ${
                   wpTone === 'light'
                     ? 'bg-amber-100/90 text-amber-900 border-amber-300/80'
                     : 'bg-slate-900/85 text-cyan-300 border-cyan-500/40'
                 }`}>
-                  <span>{wpTone === 'light' ? '☀️ Sáng' : '🌙 Tối'}</span>
+                  <span>{wpTone === 'light' ? '☀️' : '🌙'}</span>
                 </span>
-                {isBlurredWallpaper(wp) && (
-                  <span className="px-1.5 py-0.2 rounded-full text-[8.5px] font-extrabold bg-indigo-600/90 text-white border border-indigo-300/50 backdrop-blur-sm shadow-2xs flex items-center gap-0.5">
-                    <span>🌫️ Nền Mờ</span>
-                  </span>
-                )}
               </div>
 
-              {/* Action buttons top-right: Set Default Star, Favorite Heart, Copy CSS & Delete */}
-              <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1">
-                {/* Nút đặt mặc định dạng ngôi sao */}
+              {/* Action buttons top-right: Set Default Star, Favorite Heart & Delete */}
+              <div className="absolute top-2 right-2 z-20 flex items-center gap-0.5">
                 <button
                   type="button"
                   onClick={(e) => {
@@ -2406,15 +2447,15 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                   title={
                     isDefault
                       ? `"${wp.name}" đang là hình nền mặc định của bạn`
-                      : `Đặt "${wp.name}" làm hình nền mặc định vĩnh viễn`
+                      : `Đặt "${wp.name}" làm hình nền mặc định`
                   }
-                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm ${
+                  className={`w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xs ${
                     isDefault
-                      ? 'bg-amber-500 text-white opacity-100 scale-105 shadow-amber-500/50'
-                      : 'bg-black/50 hover:bg-amber-500 text-white opacity-0 group-hover:opacity-100 hover:scale-105'
+                      ? 'bg-amber-500 text-white opacity-100 scale-105'
+                      : 'bg-black/50 hover:bg-amber-500 text-white opacity-0 group-hover:opacity-100'
                   }`}
                 >
-                  <WebIcon name="star" className="w-3 h-3" />
+                  <WebIcon name="star" className="w-2.5 h-2.5" />
                 </button>
 
                 <button
@@ -2422,47 +2463,31 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                   onClick={(e) => handleToggleFavorite(e, wp)}
                   title={
                     isFavorite
-                      ? `Bỏ "${wp.name}" khỏi danh sách Yêu thích`
-                      : `Thêm "${wp.name}" vào danh sách Yêu thích`
+                      ? `Bỏ "${wp.name}" khỏi Yêu thích`
+                      : `Thêm "${wp.name}" vào Yêu thích`
                   }
-                  className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm ${
+                  className={`w-5 h-5 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xs ${
                     isFavorite
                       ? 'bg-rose-600 text-white opacity-100 scale-105'
                       : 'bg-black/50 hover:bg-rose-500 text-white opacity-0 group-hover:opacity-100'
                   }`}
                 >
-                  <WebIcon name="heart" className="w-3 h-3" />
+                  <WebIcon name="heart" className="w-2.5 h-2.5" />
                 </button>
-
-                {isCssCopyable && (
-                  <button
-                    type="button"
-                    onClick={(e) => handleCopyCardCss(e, wp)}
-                    title={`Sao chép mã CSS của "${wp.name}"`}
-                    className={`h-6 px-2 rounded-full text-white flex items-center justify-center gap-1 text-[10px] font-bold transition-all duration-200 cursor-pointer shadow-sm ${
-                      isCopied
-                        ? 'bg-emerald-600 opacity-100'
-                        : 'bg-black/55 hover:bg-indigo-600 opacity-0 group-hover:opacity-100'
-                    }`}
-                  >
-                    <WebIcon name={isCopied ? 'check' : 'copy'} className="w-3 h-3" />
-                    <span>{isCopied ? 'Đã chép' : 'CSS'}</span>
-                  </button>
-                )}
 
                 <button
                   type="button"
                   onClick={(e) => handleDeleteWallpaper(e, wp.id, wp.name)}
                   title={`Xóa "${wp.name}"`}
-                  className="w-6 h-6 rounded-full bg-black/50 hover:bg-rose-600 text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer shadow-sm"
+                  className="w-5 h-5 rounded-full bg-black/50 hover:bg-rose-600 text-white flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer shadow-xs"
                 >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" /></svg>
+                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M18 6 6 18M6 6l12 12" /></svg>
                 </button>
               </div>
 
-              {/* Thumbnail preview */}
+              {/* Thumbnail preview - Giảm 1/2 kích thước (h-14 sm:h-16) và tên hiển thị trực tiếp TRONG HÌNH */}
               <div
-                className={`w-full h-24 rounded-xl border border-black/10 overflow-hidden relative transition-transform duration-300 group-hover:scale-102 flex items-center justify-center bg-slate-100 dark:bg-slate-800 ${
+                className={`w-full h-14 sm:h-16 rounded-lg border border-black/10 overflow-hidden relative transition-transform duration-300 group-hover:scale-102 flex items-center justify-center bg-slate-100 dark:bg-slate-800 ${
                   wp.className || ''
                 }`}
                 style={
@@ -2474,27 +2499,20 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                     : undefined
                 }
               >
-                {/* 1. Video Thumbnail: Preload metadata and video loop muted */}
+                {/* 1. Video Thumbnail */}
                 {wp.type === 'video' && (
-                  <>
-                    <video
-                      src={wp.value}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="metadata"
-                      className="w-full h-full object-cover absolute inset-0 pointer-events-none"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
-                    <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/60 text-white backdrop-blur-xs flex items-center gap-1 shadow-xs">
-                      <WebIcon name="video" className="w-2.5 h-2.5 text-cyan-400" />
-                      <span>Video</span>
-                    </span>
-                  </>
+                  <video
+                    src={wp.value}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="w-full h-full object-cover absolute inset-0 pointer-events-none"
+                  />
                 )}
 
-                {/* 2. CodePen Thumbnail & Live Animation Preview */}
+                {/* 2. CodePen Thumbnail */}
                 {wp.type === 'codepen' && (
                   <div className="absolute inset-0 bg-slate-950 overflow-hidden pointer-events-none">
                     {wp.previewStyle?.backgroundImage ? (
@@ -2511,83 +2529,50 @@ export const WallpaperView: React.FC<WallpaperViewProps> = ({
                         loading="lazy"
                       />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 pointer-events-none" />
-                    <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-600/95 text-white backdrop-blur-xs shadow-xs flex items-center gap-1 border border-emerald-400/40">
-                      <WebIcon name="code" className="w-2.5 h-2.5" />
-                      <span>CodePen Live</span>
-                    </span>
                   </div>
                 )}
 
                 {/* 3. Image Thumbnail */}
-                {wp.type === 'image' && (
-                  <>
-                    {wp.value && (wp.value.startsWith('http') || wp.value.startsWith('data:')) && (
-                      <img
-                        src={wp.value}
-                        alt={wp.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover absolute inset-0 pointer-events-none"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
+                {wp.type === 'image' && wp.value && (wp.value.startsWith('http') || wp.value.startsWith('data:')) && (
+                  <img
+                    src={wp.value}
+                    alt={wp.name}
+                    loading="lazy"
+                    className="w-full h-full object-cover absolute inset-0 pointer-events-none"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                )}
+
+                {/* TÊN HÌNH NỀN HIỂN THỊ TRỰC TIẾP TRONG HÌNH THU NHỎ */}
+                <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/95 via-black/70 to-transparent pt-3 pb-1 px-1.5 flex items-center justify-between gap-1 pointer-events-none">
+                  <div className="flex items-center gap-1 truncate flex-1 min-w-0">
+                    <span className="shrink-0 flex items-center text-cyan-300">
+                      <WebIcon
+                        name={wp.type === 'video' ? 'video' : wp.type === 'image' ? 'image' : wp.type === 'codepen' ? 'code' : 'palette'}
+                        className="w-2.5 h-2.5"
                       />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
-                    <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/60 text-white backdrop-blur-xs shadow-xs">
-                      Ảnh
                     </span>
-                  </>
-                )}
-
-                {/* 4. CSS / Gradient Thumbnail */}
-                {(wp.type === 'css' || wp.type === 'gradient' || wp.type === 'color') && (
-                  <>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
-                    <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/60 text-white backdrop-blur-xs flex items-center gap-1 shadow-xs">
-                      <WebIcon name="palette" className="w-2.5 h-2.5 text-fuchsia-400" />
-                      <span>{wp.type === 'gradient' ? 'Gradient' : 'CSS'}</span>
+                    <span className="text-[10px] font-bold font-play text-white truncate drop-shadow-sm leading-tight">
+                      {formatCardTitle(wp.name)}
                     </span>
-                  </>
-                )}
-              </div>
-
-              {/* Tên hình nền & Icon đồng màu, kích thước bằng nhau, không đóng khung thẻ */}
-              <div className="flex items-center justify-between gap-1 mt-0.5">
-                <div className="flex items-center gap-1.5 truncate flex-1 min-w-0">
-                  <span
-                    className={`shrink-0 flex items-center ${
-                      isDefault
-                        ? 'text-amber-800 dark:text-amber-300'
-                        : isActive
-                        ? 'text-fuchsia-700 dark:text-fuchsia-300'
-                        : 'text-slate-600 dark:text-slate-300 group-hover:text-fuchsia-600 dark:group-hover:text-fuchsia-400'
-                    }`}
-                  >
-                    <WebIcon
-                      name={wp.type === 'video' ? 'video' : wp.type === 'image' ? 'image' : wp.type === 'codepen' ? 'code' : 'palette'}
-                      className="w-3.5 h-3.5"
-                    />
-                  </span>
-                  <span
-                    className={`text-xs font-bold truncate ${
-                      isDefault
-                        ? 'text-amber-800 dark:text-amber-300 font-black'
-                        : isActive
-                        ? 'text-fuchsia-700 dark:text-fuchsia-300'
-                        : 'text-slate-700 dark:text-slate-200 group-hover:text-fuchsia-600 dark:group-hover:text-fuchsia-400'
-                    }`}
-                  >
-                    {wp.name}
+                  </div>
+                  <span className="text-[7.5px] font-mono px-1 py-0.2 rounded bg-white/20 text-white/95 shrink-0 backdrop-blur-xs font-semibold">
+                    {wp.type === 'video' ? 'Video' : wp.type === 'codepen' ? 'Code' : wp.type === 'image' ? 'Ảnh' : 'CSS'}
                   </span>
                 </div>
+              </div>
 
+              {/* Footer controls dưới thumbnail */}
+              <div className="flex items-center justify-between mt-1 px-0.5 pt-0.5 border-t border-slate-100 dark:border-white/5">
                 {isCssCopyable && (
                   <button
                     type="button"
-                    onClick={(e) => handleCopyCardCss(e, wp)}
-                    title="Sao chép đoạn mã CSS vào bộ nhớ tạm"
-                    className={`text-[9.5px] font-mono px-1.5 py-0.5 rounded border transition cursor-pointer flex items-center gap-0.5 shrink-0 ${
+                    onClick={(e) => {
+                      handleCopyCardCss(e, wp);
+                    }}
+                    className={`text-[9px] font-mono px-1.5 py-0.5 rounded border transition-colors flex items-center gap-1 ${
                       isCopied
                         ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-300'

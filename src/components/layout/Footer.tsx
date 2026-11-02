@@ -30,13 +30,6 @@ export interface FooterProps {
   onChangeCustomAccent?: (hex: string) => void;
 }
 
-export const FONT_SCALE_OPTIONS = [
-  { id: 'sm' as const, label: 'Cỡ Chữ Nhỏ', subLabel: 'Thu gọn bố cục, hiển thị nhiều thông tin', badge: 'A-', percent: '90%', samplePx: '14.5px' },
-  { id: 'md' as const, label: 'Cỡ Chữ Chuẩn', subLabel: 'Kích thước mặc định cân đối, dễ đọc', badge: 'A', percent: '100%', samplePx: '16px' },
-  { id: 'lg' as const, label: 'Cỡ Chữ Lớn', subLabel: 'Tăng cỡ chữ, đọc êm mắt, rõ ràng', badge: 'A+', percent: '110%', samplePx: '17.5px' },
-  { id: '2xl' as const, label: 'Cỡ Chữ Cực Đại', subLabel: 'Tối đa khả năng tiếp cận và thị lực', badge: 'A+++', percent: '130%', samplePx: '20.5px' },
-];
-
 export const Footer: React.FC<FooterProps> = ({
   pages,
   currentPage,
@@ -67,33 +60,10 @@ export const Footer: React.FC<FooterProps> = ({
   const [isContactMenuOpen, setIsContactMenuOpen] = useState<boolean>(false);
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState<boolean>(false);
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState<boolean>(false);
-  const [currentFontScalePercent, setCurrentFontScalePercent] = useState<number>(100);
   const pageMenuContainerRef = useRef<HTMLDivElement>(null);
   const contactContainerRef = useRef<HTMLDivElement>(null);
   const themeMenuContainerRef = useRef<HTMLDivElement>(null);
   const languageMenuContainerRef = useRef<HTMLDivElement>(null);
-
-  // Lắng nghe thay đổi kích thước hiển thị để cập nhật tỷ lệ mặc định trên nút Footer
-  useEffect(() => {
-    try {
-      const sp = localStorage.getItem('hungthai_font_scale_percent');
-      if (sp) {
-        const val = parseInt(sp, 10);
-        if (!isNaN(val) && val >= 70 && val <= 160) {
-          setCurrentFontScalePercent(val);
-        }
-      }
-    } catch {}
-
-    const handleFontScaleChange = (e: Event) => {
-      const customEvent = e as CustomEvent<{ percent?: number }>;
-      if (customEvent.detail?.percent) {
-        setCurrentFontScalePercent(customEvent.detail.percent);
-      }
-    };
-    window.addEventListener('hungthai-font-scale-change', handleFontScaleChange);
-    return () => window.removeEventListener('hungthai-font-scale-change', handleFontScaleChange);
-  }, []);
 
   // Close popup menus when clicking outside
   useEffect(() => {
@@ -122,7 +92,7 @@ export const Footer: React.FC<FooterProps> = ({
   return (
     <footer
       id="app-footer"
-      className={`w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto h-[72px] glass-panel flex items-center justify-between px-2.5 sm:px-4 z-40 relative flex-shrink-0 transition-all duration-300 rounded-b-none rounded-tl-[24px] rounded-tr-[24px] border-b-0 border-x border-t ${
+      className={`w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto h-[72px] glass-panel flex items-center justify-between px-2.5 sm:px-4 z-40 relative flex-shrink-0 transition-all duration-300 rounded-none rounded-tl-[12px] rounded-tr-[12px] border-t-0 border-x border-b ${
         isDark
           ? 'border-2 border-cyan-400/30 bg-slate-950/85 backdrop-blur-xl shadow-[0_16px_45px_-6px_rgba(0,0,0,0.75),0_0_24px_rgba(34,211,238,0.22),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:border-cyan-400/50'
           : 'border-2 border-white/80 shadow-[0_14px_40px_-6px_rgba(30,27,75,0.18),0_4px_16px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)] hover:border-white/95 bg-white/80 backdrop-blur-xl'
@@ -147,7 +117,7 @@ export const Footer: React.FC<FooterProps> = ({
         className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-50 pointer-events-auto flex items-center justify-center shrink-0"
       >
         <div
-          className={`relative inline-flex items-center p-[2px] rounded-[12px] overflow-hidden group transition-all duration-300 hover:scale-[1.03] ${
+          className={`relative inline-flex items-center p-[2px] rounded-[999px] overflow-hidden group transition-all duration-300 hover:scale-[1.03] ${
             isDark
               ? 'shadow-[0_0_24px_rgba(34,211,238,0.45)] hover:shadow-[0_0_35px_rgba(34,211,238,0.7)]'
               : 'shadow-[0_0_18px_rgba(99,102,241,0.4)] hover:shadow-[0_0_28px_rgba(99,102,241,0.65)]'
@@ -162,9 +132,9 @@ export const Footer: React.FC<FooterProps> = ({
             }`}
           />
 
-          {/* Glassmorphism Inner Capsule (122px × 46px, bo cong 4 góc 999px hài hòa với Footer) */}
+          {/* Glassmorphism Inner Capsule (122px × 46px, bo cong 4 góc 999px) */}
           <div
-            className={`relative z-10 w-[122px] h-[46px] flex items-center justify-between px-1 rounded-[12px] backdrop-blur-xl border shadow-inner transition-colors duration-300 ${
+            className={`relative z-10 w-[122px] h-[46px] flex items-center justify-between px-1 rounded-[999px] backdrop-blur-xl border shadow-inner transition-colors duration-300 ${
               isDark
                 ? 'bg-slate-900/95 border-cyan-400/40 text-cyan-300 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)]'
                 : 'bg-white/90 border-white/90 text-indigo-900'
@@ -175,7 +145,7 @@ export const Footer: React.FC<FooterProps> = ({
               type="button"
               onClick={onPrevPage}
               title="Trang trước (Lùi trang)"
-              className={`w-[34px] h-[34px] rounded-[12px] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0 group/prev ${
+              className={`w-[34px] h-[34px] rounded-[999px] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0 group/prev ${
                 isDark
                   ? 'bg-slate-800 hover:bg-cyan-950/80 text-slate-200 hover:text-cyan-300 border border-white/10'
                   : 'bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600'
@@ -195,12 +165,12 @@ export const Footer: React.FC<FooterProps> = ({
                 setIsPageMenuOpen((prev) => !prev);
               }}
               title={`Đang ở ${activePage.shortTitle} (${String(currentPage + 1).padStart(2, '0')}/${String(pages.length).padStart(2, '0')}) — Nhấp để tới trang nhanh`}
-              className="flex-1 h-[34px] flex items-center justify-center cursor-pointer transition-transform hover:scale-105 px-0.5"
+              className="flex-1 h-[34px] flex items-center justify-center cursor-pointer transition-transform hover:scale-105 px-0.5 rounded-[999px]"
             >
               {currentPage === 6 ? (
                 <div
                   id="domains-page-counter-badge"
-                  className={`px-1.5 py-0.5 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                  className={`px-3 py-1 rounded-[999px] flex items-center justify-center transition-all duration-300 ${
                     isDark
                       ? 'bg-cyan-950/80 border border-cyan-400/60 shadow-[0_0_10px_rgba(34,211,238,0.3)] text-cyan-300'
                       : 'bg-indigo-50/90 border border-indigo-200/90 shadow-2xs text-indigo-700'
@@ -216,7 +186,7 @@ export const Footer: React.FC<FooterProps> = ({
               ) : (
                 <span
                   id="footer-page-counter"
-                  className={`text-xs sm:text-[13px] font-mono font-black tracking-tight whitespace-nowrap leading-none select-none text-center ${
+                  className={`text-xs sm:text-[13px] font-mono font-black tracking-tight whitespace-nowrap leading-none select-none text-center rounded-[999px] ${
                     isDark ? 'text-cyan-300 drop-shadow-[0_0_6px_rgba(34,211,238,0.5)]' : 'text-indigo-700'
                   }`}
                 >
@@ -230,7 +200,7 @@ export const Footer: React.FC<FooterProps> = ({
               type="button"
               onClick={onNextPage}
               title="Trang kế tiếp (Tới trang)"
-              className={`w-[34px] h-[34px] rounded-[12px] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0 group/next ${
+              className={`w-[34px] h-[34px] rounded-[999px] flex items-center justify-center transition-all duration-200 active:scale-90 hover:scale-105 shadow-xs cursor-pointer shrink-0 group/next ${
                 isDark
                   ? 'bg-slate-800 hover:bg-cyan-950/80 text-slate-200 hover:text-cyan-300 border border-white/10'
                   : 'bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600'
@@ -294,7 +264,7 @@ export const Footer: React.FC<FooterProps> = ({
                       onSelectPage(idx);
                       setIsPageMenuOpen(false);
                     }}
-                    className={`p-1.5 px-2.5 rounded-xl border text-left flex items-center gap-2 transition cursor-pointer font-semibold ${
+                    className={`p-1.5 px-3 rounded-[999px] border text-left flex items-center gap-2 transition cursor-pointer font-semibold ${
                       isDark
                         ? 'bg-slate-800/80 hover:bg-cyan-950/70 border-white/10 text-slate-200 hover:text-cyan-300'
                         : 'bg-white/80 hover:bg-slate-50 border-slate-100 text-slate-700'
@@ -325,7 +295,7 @@ export const Footer: React.FC<FooterProps> = ({
                     setIsPageMenuOpen(false);
                     onOpenPagesCarousel();
                   }}
-                  className={`w-full py-2 px-3 rounded-xl border text-xs font-bold font-play flex items-center justify-center gap-2 transition cursor-pointer ${
+                  className={`w-full py-2 px-3 rounded-[999px] border text-xs font-bold font-play flex items-center justify-center gap-2 transition cursor-pointer ${
                     isDark
                       ? 'bg-gradient-to-r from-cyan-600/30 to-indigo-600/30 hover:from-cyan-600/45 hover:to-indigo-600/45 border-cyan-400/40 text-cyan-200 shadow-[0_0_12px_rgba(34,211,238,0.2)]'
                       : 'bg-gradient-to-r from-indigo-50 to-sky-50 hover:from-indigo-100 hover:to-sky-100 border-indigo-200 text-indigo-700 shadow-2xs'
@@ -352,7 +322,7 @@ export const Footer: React.FC<FooterProps> = ({
                 SoundEngine.playTap();
                 setIsLanguageMenuOpen((prev) => !prev);
               }}
-              className={`footer-util-btn border transition-all duration-300 cursor-pointer ${
+              className={`footer-util-btn border transition-all duration-300 cursor-pointer rounded-full ${
                 isDark
                   ? 'border-emerald-400/60 shadow-[0_0_12px_rgba(52,211,153,0.3)] hover:border-emerald-300'
                   : 'border-emerald-300/90 shadow-xs hover:border-emerald-400'
@@ -366,8 +336,10 @@ export const Footer: React.FC<FooterProps> = ({
               title={language === 'en' ? 'Language: English (Click to change)' : 'Ngôn ngữ: Tiếng Việt (Bấm để chọn)'}
             >
               <div
-                className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform duration-300 group-hover:scale-110"
+                className="w-[36px] h-[36px] aspect-square rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform duration-300 group-hover:scale-110"
                 style={{
+                  borderRadius: '50%',
+                  aspectRatio: '1 / 1',
                   background: 'rgba(16, 185, 129, 0.2)',
                   color: '#047857',
                 }}
@@ -386,7 +358,7 @@ export const Footer: React.FC<FooterProps> = ({
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14 18h6" />
                 </svg>
               </div>
-              <div className="flex flex-col text-left leading-none">
+              <div className="hidden sm:flex flex-col text-left leading-none">
                 <span
                   className="text-xs font-bold whitespace-nowrap leading-none select-none tracking-tight font-play flex items-center gap-1"
                   style={{ color: isDark ? '#a7f3d0' : '#065f46' }}
@@ -425,7 +397,7 @@ export const Footer: React.FC<FooterProps> = ({
               const idx = pages.findIndex((p) => p.shortTitle === 'Hình Nền');
               onSelectPage(idx !== -1 ? idx : 12);
             }}
-            className={`footer-util-btn border -ml-[64px] transition-all duration-300 ${
+            className={`footer-util-btn border sm:-ml-[64px] -ml-[44px] transition-all duration-300 rounded-full ${
               isDark
                 ? 'border-rose-400/60 shadow-[0_0_12px_rgba(251,113,133,0.3)]'
                 : 'border-rose-300/90 shadow-xs'
@@ -440,8 +412,10 @@ export const Footer: React.FC<FooterProps> = ({
             title="Hình Nền"
           >
             <div
-              className="w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 shadow-xs"
+              className="w-[36px] h-[36px] aspect-square rounded-full flex items-center justify-center shrink-0 shadow-xs"
               style={{
+                borderRadius: '50%',
+                aspectRatio: '1 / 1',
                 background: isDark ? 'rgba(251, 113, 133, 0.25)' : 'rgba(244, 63, 94, 0.2)',
                 color: isDark ? '#fecdd3' : '#be123c',
               }}
@@ -452,7 +426,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
               </svg>
             </div>
-            <div className="flex flex-col text-left leading-none">
+            <div className="hidden sm:flex flex-col text-left leading-none">
               <span
                 className="text-xs font-bold whitespace-nowrap leading-none select-none tracking-tight font-play"
                 style={{ color: isDark ? '#fecdd3' : '#9f1239' }}
@@ -468,13 +442,9 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
           </button>
 
-
-
-
-
-          {/* Tiện ích 4: Avatar Hùng Thái biến đổi hình thái từ pill -> circle -> bay lên + Pure CSS Circle Menu (Màu 5: Xanh Chàm Hoàng Gia Royal Indigo) */}
-          <div ref={contactContainerRef} className="avatar-circle-menu-container -ml-[64px] z-42">
-            {/* Nút Avatar Morphing: Lúc bình thường là nút dài, click vào thu tròn và bay lên */}
+          {/* Tiện ích 4: Avatar Hùng Thái biến đổi hình thái từ pill -> circle -> bay lên + Pure CSS Circle Menu */}
+          <div ref={contactContainerRef} className="avatar-circle-menu-container sm:-ml-[64px] -ml-[44px] z-42">
+            {/* Nút Avatar Morphing */}
             <button
               id="avatar-hung-thai-morph-btn"
               type="button"
@@ -501,7 +471,8 @@ export const Footer: React.FC<FooterProps> = ({
               aria-label="Menu liên hệ Hùng Thái"
             >
               <div
-                className={`avatar-morph-inner ${
+                style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                className={`avatar-morph-inner w-[36px] h-[36px] aspect-square rounded-full overflow-hidden shrink-0 relative flex items-center justify-center ${
                   isDark
                     ? 'bg-indigo-950/80 text-indigo-300 ring-1 ring-indigo-400/50'
                     : 'bg-indigo-500/20 text-[#4f46e5] ring-1 ring-indigo-300'
@@ -510,7 +481,8 @@ export const Footer: React.FC<FooterProps> = ({
                 <img
                   src="https://i.ibb.co/RT3jX4Mv/H-ng-Th-i-Avata-Gif.gif"
                   alt="Hùng Thái"
-                  className="w-full h-full object-cover"
+                  style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                  className="w-full h-full aspect-square rounded-full object-cover"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
                       'https://placehold.co/100x100/4f46e5/ffffff?text=HT';
@@ -522,7 +494,7 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
 
               {/* Nhãn chữ co biến mất mượt mà khi thu thành hình tròn */}
-              <div className="avatar-morph-text flex flex-col items-start select-none">
+              <div className="avatar-morph-text hidden sm:flex flex-col items-start select-none">
                 <span
                   className={`text-xs font-bold whitespace-nowrap leading-tight tracking-tight font-play ${
                     isDark ? 'text-indigo-200' : 'text-[#3730a3]'
@@ -651,13 +623,13 @@ export const Footer: React.FC<FooterProps> = ({
             </div>
           </div>
 
-          {/* Tiện ích 5: Avatar AI Chat 24/7 (Màu 6: Tím Thạch Anh Neon Violet - zIndex cao nhất) */}
+          {/* Tiện ích 5: Avatar AI Chat 24/7 */}
           <button
             type="button"
             onClick={() => {
               if (onOpenAiChat) onOpenAiChat();
             }}
-            className={`footer-util-btn border -ml-[64px] cursor-pointer transition-all duration-300 ${
+            className={`footer-util-btn border sm:-ml-[64px] -ml-[44px] cursor-pointer transition-all duration-300 rounded-full ${
               isDark
                 ? 'border-purple-400/60 shadow-[0_0_16px_rgba(192,132,252,0.35)]'
                 : 'border-purple-300/90 shadow-xs'
@@ -672,7 +644,8 @@ export const Footer: React.FC<FooterProps> = ({
             title="Trợ lý AI Hùng Thái 24/7 (Nhấp để mở trò chuyện bung popup)"
           >
             <div
-              className={`w-[36px] h-[36px] rounded-full flex items-center justify-center shrink-0 relative overflow-hidden ring-1 shadow-xs ${
+              style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+              className={`w-[36px] h-[36px] aspect-square rounded-full flex items-center justify-center shrink-0 relative overflow-hidden ring-1 shadow-xs ${
                 isDark
                   ? 'bg-purple-950/80 text-purple-300 ring-purple-400/50'
                   : 'bg-purple-500/20 text-[#7c3aed] ring-purple-300'
@@ -681,7 +654,8 @@ export const Footer: React.FC<FooterProps> = ({
               <img
                 src="https://i.ibb.co/Hfhyt1Dg/Avata-Ti-Chuot-GIF.gif"
                 alt="Avata Ti Chuot GIF"
-                className="w-full h-full object-cover"
+                style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                className="w-full h-full aspect-square rounded-full object-cover"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src =
                     'https://placehold.co/100x100/8b5cf6/ffffff?text=AI';
@@ -689,7 +663,7 @@ export const Footer: React.FC<FooterProps> = ({
               />
               <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 rounded-full border border-white animate-pulse" />
             </div>
-            <div className="flex flex-col items-start select-none">
+            <div className="hidden sm:flex flex-col items-start select-none">
               <span
                 className="text-xs font-bold whitespace-nowrap leading-tight tracking-tight font-play"
                 style={{ color: isDark ? '#f3e8ff' : '#6b21a8' }}

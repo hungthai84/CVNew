@@ -1,6 +1,5 @@
 'use client';
 
-// Lucian UX/UI Prompt #223 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#223
 import React, { useState, useEffect, useRef } from 'react';
 import { ProjectData } from '@/types';
 import { WebIcon } from '@/components/ui/WebIcon';

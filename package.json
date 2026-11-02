@@ -9,6 +9,9 @@
     "build": "next build",
     "start": "node .next/standalone/server.js",
     "lint": "tsc --noEmit",
+    "check:lock": "node scripts/validate-lockfile.mjs",
+    "audit:deps": "node scripts/audit-deps.mjs",
+    "minify:assets": "node scripts/minify-json-assets.mjs",
     "sync:media": "node scripts/sync-cloudinary.mjs"
   },
   "dependencies": {
@@ -20,14 +23,12 @@
     "cloudinary": "^2.11.0",
     "clsx": "^2.1.1",
     "css-pro-layout": "^1.1.0",
-    "firebase": "^13.1.0",
     "gsap": "^3.15.0",
     "lucide-react": "^1.65.0",
     "motion": "^14.3.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-firebase-hooks": "^5.1.1",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {

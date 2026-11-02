@@ -1,4 +1,3 @@
-// Lucian UX/UI Prompt #333 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#333
 'use client';
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';

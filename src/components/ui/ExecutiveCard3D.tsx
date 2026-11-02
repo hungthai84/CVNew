@@ -1,4 +1,3 @@
-/* Lucian UX/UI Prompt #052 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#052 */
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -156,8 +155,7 @@ export const ExecutiveCard3D: React.FC<ExecutiveCard3DProps> = ({
         } as React.CSSProperties
       }
     >
-      <style jsx global>{`
-        /* Lucian UX/UI Prompt #052 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#052 */
+      <style>{`
         .u052-card {
           position: relative;
           width: 320px;

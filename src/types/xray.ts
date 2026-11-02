@@ -29,4 +29,10 @@ export interface XRaySelectedElementInfo {
   suggestedSelector: string;
   pageId: number;
   pageName: string;
+  filePath?: string;
+  ariaLabel?: string;
+  textSnippet?: string;
+  uniqueClassSnippet?: string;
+  parentContext?: string;
+  iconHint?: string;
 }

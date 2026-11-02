@@ -5,6 +5,8 @@ import {
   LayoutGrid, 
   Maximize2, 
   ChevronRight, 
+  ChevronDown,
+  SlidersHorizontal,
   Volume2, 
   VolumeX, 
   FolderGit2, 
@@ -13,10 +15,11 @@ import {
   Award,
   ExternalLink
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PROJECTS_DATA } from '@/data/projects';
 import { ProjectData, SiteTheme } from '@/types';
 import { Modal } from '@/components/ui/Modal';
-import { formatCardTitle } from '@/lib/utils';
+import { cn, formatCardTitle } from '@/lib/utils';
 import { SoundEngine } from '@/components/ui/SoundEngine';
 import { ProjectDetailView } from './ProjectDetailView';
 
@@ -137,8 +140,22 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
   const [mindmapProject, setMindmapProject] = useState<ProjectData | null>(null);
   const [activeSection, setActiveSection] = useState<string>('sec-overview');
   const [isBannerMuted, setIsBannerMuted] = useState<boolean>(true);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
+  const filterMenuRef = useRef<HTMLDivElement | null>(null);
 
   const bannerVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterMenuRef.current && !filterMenuRef.current.contains(event.target as Node)) {
+        setIsFilterDropdownOpen(false);
+      }
+    };
+    if (isFilterDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isFilterDropdownOpen]);
 
   useEffect(() => {
     if (selectedArticle) {
@@ -285,33 +302,119 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({ currentTheme = 'ligh
       {/* Khi chưa chọn xem chi tiết dự án: Hiển thị Hero Banner và Danh sách thẻ dự án */}
       {!selectedGroup && !selectedArticle ? (
         <>
+          {/* BANNER DỰ ÁN: Tiêu đề 4 chữ viết hoa chữ đầu còn lại viết thường, icon + tiêu đề lấy màu menu icon (#9333ea), câu nói font viết tay màu chữ vàng, nhóm nút thành 1 filter icon bên dưới bên trái, trong suốt 100% */}
+          <motion.div
+            initial={{ opacity: 0, y: -15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="hero-banner w-full h-44 sm:h-52 rounded-2xl overflow-visible relative bg-transparent border-0 shadow-none shrink-0 flex flex-col justify-between p-5 sm:p-7 z-30"
+          >
+            <div className="absolute inset-0 rounded-2xl overflow-hidden bg-transparent pointer-events-none">
+              <img
+                src="/images/projects/hero-banner.png"
+                alt="Dự án trọng điểm"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/images/education/hero-banner.png';
+                }}
+                className="absolute inset-0 w-full h-full object-cover object-center opacity-100 pointer-events-none filter brightness-110 contrast-110 saturate-110"
+              />
+              <div className="absolute inset-0 bg-transparent pointer-events-none" />
+            </div>
 
+            {/* Vùng Tiêu Đề: 4 chữ viết hoa chữ đầu còn lại viết thường, icon và tiêu đề lấy màu menu icon (#9333ea) */}
+            <div className="relative z-10 flex flex-col justify-start text-left max-w-2xl">
+              <div className="flex items-center gap-2.5" style={{ color: '#9333ea' }}>
+                <FolderGit2
+                  className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 bg-transparent border-0 p-0 shadow-none drop-shadow-[0_2px_8px_rgba(147,51,234,0.75)]"
+                  style={{ color: '#9333ea', stroke: '#9333ea' }}
+                />
+                <h1
+                  className="text-2xl sm:text-3xl md:text-4xl font-black font-play tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+                  style={{ color: '#9333ea', textTransform: 'none' }}
+                >
+                  Dự án trọng điểm
+                </h1>
+              </div>
 
-            <div className="flex items-center gap-2 flex-wrap shrink-0">
-              {/* Bộ lọc danh mục 5 nhóm dự án */}
-              <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
-                {PROJECT_CATEGORIES.map((cat) => {
-                  const isSelected = activeCategory === cat.id;
-                  return (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => {
-                        SoundEngine.playTap();
-                        setActiveCategory(cat.id);
-                      }}
-                      className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold whitespace-nowrap transition cursor-pointer border ${
-                        isSelected
-                          ? 'bg-cyan-600 text-white font-bold border-cyan-500 shadow-xs'
-                          : 'bg-white/80 dark:bg-slate-800/80 hover:bg-cyan-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-white/10'
-                      }`}
+              {/* Sub tiêu đề là câu nói chuyển sang font viết tay màu chữ vàng */}
+              <p
+                className="font-handwriting text-yellow-300 text-lg sm:text-xl font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] mt-1.5 select-none"
+                style={{ color: '#facc15' }}
+              >
+                "Mỗi dự án là một dấu ấn chuyển đổi số xuất sắc ♡"
+              </p>
+            </div>
+
+            {/* Nhóm các nút lại thành 1 filter icon ở bên dưới banner bên trái - filter dạng drop menu list, tiêu đề nhóm nút còn 4 từ */}
+            <div className="relative z-30 flex items-center justify-start mt-auto pt-2" ref={filterMenuRef}>
+              <div className="relative inline-block text-left">
+                <button
+                  type="button"
+                  onClick={() => {
+                    SoundEngine.playTap();
+                    setIsFilterDropdownOpen((prev) => !prev);
+                  }}
+                  className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/85 hover:bg-slate-900 text-purple-300 border border-purple-400/70 shadow-[0_4px_16px_rgba(0,0,0,0.55)] backdrop-blur-md transition-all cursor-pointer text-xs font-bold font-play active:scale-95 group"
+                  title="Bộ lọc dự án"
+                  aria-expanded={isFilterDropdownOpen}
+                  aria-haspopup="listbox"
+                >
+                  <SlidersHorizontal className="w-4 h-4 text-purple-300 transition-transform group-hover:rotate-45 shrink-0" />
+                  <span>Bộ lọc dự án</span>
+                  {activeCategory !== 'all' && (
+                    <span className="px-1.5 py-0.2 rounded-full bg-purple-500/25 border border-purple-400/50 text-[10px] font-mono text-purple-200">
+                      {PROJECT_CATEGORIES.find((c) => c.id === activeCategory)?.label}
+                    </span>
+                  )}
+                  <ChevronDown
+                    className={cn(
+                      'w-3.5 h-3.5 text-purple-300 transition-transform duration-200 shrink-0',
+                      isFilterDropdownOpen && 'rotate-180'
+                    )}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {isFilterDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                      transition={{ duration: 0.16 }}
+                      role="listbox"
+                      className="absolute left-0 top-[calc(100%+8px)] w-60 rounded-xl bg-slate-950/95 border border-purple-400/50 shadow-[0_12px_32px_rgba(0,0,0,0.75)] backdrop-blur-xl py-1.5 px-1.5 z-50 flex flex-col gap-1"
                     >
-                      {cat.label}
-                    </button>
-                  );
-                })}
+                      {PROJECT_CATEGORIES.map((cat) => {
+                        const isSelected = activeCategory === cat.id;
+                        return (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            role="option"
+                            aria-selected={isSelected}
+                            onClick={() => {
+                              SoundEngine.playTap();
+                              setActiveCategory(cat.id);
+                              setIsFilterDropdownOpen(false);
+                            }}
+                            className={cn(
+                              'w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold font-play transition-all cursor-pointer text-left',
+                              isSelected
+                                ? 'bg-purple-500/25 text-purple-200 border border-purple-400/60 shadow-xs'
+                                : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
+                            )}
+                          >
+                            <span>{cat.label}</span>
+                            {isSelected && <span className="w-2 h-2 rounded-full bg-purple-400" />}
+                          </button>
+                        );
+                      })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </div>
+          </motion.div>
 
           {/* NỘI DUNG CHÍNH: RESPONSIVE CARD GRID VIEW (LƯỚI 4 CỘT ĐỒNG BỘ 100% NHƯ THẺ HỌC VẤN) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4 items-stretch">

@@ -1,4 +1,3 @@
-// Lucian UX/UI Prompt #005 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#005
 'use client';
 
 import React, { useState, useEffect, useRef, useId } from 'react';

@@ -135,7 +135,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       id="app-header"
-      className={`neonav-bar w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto h-[64px] sm:h-[68px] glass-panel flex items-center justify-between p-[2px] z-40 relative flex-shrink-0 transition-all duration-300 rounded-t-none rounded-bl-[24px] rounded-br-[24px] border-t-0 border-x border-b ${
+      className={`neonav-bar w-[1200px] max-w-[calc(100%-16px)] sm:max-w-[calc(100%-40px)] mx-auto h-[64px] sm:h-[68px] glass-panel flex items-center justify-between p-[2px] z-40 relative flex-shrink-0 transition-all duration-300 rounded-none rounded-bl-[12px] rounded-br-[12px] border-t-0 border-x border-b ${
         isDark
           ? 'border-2 border-cyan-400/30 bg-slate-950/80 backdrop-blur-xl shadow-[0_16px_45px_-6px_rgba(0,0,0,0.75),0_0_24px_rgba(34,211,238,0.22),inset_0_1px_1px_rgba(255,255,255,0.15)]'
           : 'border-2 border-white/80 dark:border-white/20 shadow-[0_14px_40px_-6px_rgba(30,27,75,0.18),0_4px_16px_rgba(0,0,0,0.06),inset_0_1px_2px_rgba(255,255,255,0.95)]'
@@ -179,8 +179,8 @@ export const Header: React.FC<HeaderProps> = ({
             const isHovered = hoveredId === page.id;
             const isSelected = currentPage === page.id;
             const baseZIndex = index + 1;
-            // Nút hover nổi lên đỉnh cao nhất (50), nút đang chọn ở mức (40), nút mặc định theo thứ tự
-            const itemZIndex = isHovered ? 50 : isSelected ? 40 : baseZIndex;
+            // Khi chọn trang, nút đổi màu và nằm như mặc định (giữ nguyên baseZIndex và vị trí mặc định)
+            const itemZIndex = !isSelected && isHovered ? 50 : baseZIndex;
 
             let itemBg = page.bgNormal || page.bgLight || `${page.theme}15`;
             let itemBorder = page.borderColor || `${page.theme}45`;
@@ -192,37 +192,50 @@ export const Header: React.FC<HeaderProps> = ({
 
             if (currentTheme === 'dark-neon') {
               const neonData = PAGE_NEON_COLORS[page.id] || { neon: page.theme, glow: `${page.theme}80` };
-              iconColor = neonData.neon;
-              iconGlowFilter = isHovered
+              iconColor = isSelected ? '#FFFFFF' : neonData.neon;
+              iconGlowFilter = isHovered || isSelected
                 ? `drop-shadow(0 0 5px ${neonData.neon})`
                 : `drop-shadow(0 0 2px ${neonData.neon}80)`;
 
-              itemBg = isHovered
+              itemBg = isSelected
+                ? `linear-gradient(135deg, ${page.theme} 0%, ${neonData.neon}CC 100%)`
+                : isHovered
                 ? `${neonData.neon}28`
                 : 'rgba(15, 23, 42, 0.88)';
-              itemBorder = isHovered
+              itemBorder = isSelected
+                ? neonData.neon
+                : isHovered
                 ? `${neonData.neon}75`
                 : `${neonData.neon}35`;
-              itemBoxShadow = isHovered
+              itemBoxShadow = isSelected
+                ? `0 0 12px ${neonData.glow}`
+                : isHovered
                 ? `0 10px 25px -4px ${neonData.glow}, 0 0 14px ${neonData.neon}`
                 : '0 2px 4px rgba(0, 0, 0, 0.35)';
 
-              titleColor = iconColor;
-              titleTextShadow = isHovered
+              titleColor = isSelected ? '#FFFFFF' : iconColor;
+              titleTextShadow = isHovered || isSelected
                 ? `0 0 4px ${neonData.neon}80`
                 : 'none';
             } else {
-              itemBg = isHovered
+              iconColor = isSelected ? '#FFFFFF' : page.theme;
+              itemBg = isSelected
+                ? `linear-gradient(135deg, ${page.theme} 0%, ${page.theme}DD 100%)`
+                : isHovered
                 ? `linear-gradient(135deg, #FFFFFF 0%, ${page.bgLight || `${page.theme}18`} 100%)`
                 : `linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, ${page.bgLight || `${page.theme}12`} 100%)`;
-              itemBorder = isHovered
+              itemBorder = isSelected
+                ? page.theme
+                : isHovered
                 ? `${page.theme}85`
                 : page.borderColor || `${page.theme}45`;
-              itemBoxShadow = isHovered
+              itemBoxShadow = isSelected
+                ? `0 4px 12px -2px ${page.theme}50`
+                : isHovered
                 ? `0 8px 20px -3px ${page.theme}55`
                 : `0 2px 6px -1px ${page.theme}20`;
 
-              titleColor = iconColor;
+              titleColor = isSelected ? '#FFFFFF' : iconColor;
               titleTextShadow = 'none';
             }
 
@@ -236,11 +249,12 @@ export const Header: React.FC<HeaderProps> = ({
                 type="button"
                 onClick={() => {
                   SoundEngine.playTap();
+                  setHoveredId(null);
                   onSelectPage(page.id);
                 }}
                 onMouseEnter={() => setHoveredId(page.id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className="neonav-item relative h-[36px] sm:h-[38px] p-[2px] rounded-xl border cursor-pointer select-none transition-all duration-200 shrink-0 group/navitem flex items-center justify-center backdrop-blur-md"
+                className="neonav-item relative h-[36px] sm:h-[38px] p-[2px] rounded-[999px] border cursor-pointer select-none transition-all duration-200 shrink-0 group/navitem flex items-center justify-center backdrop-blur-md"
                 style={{
                   ['--nav-item-color' as string]: iconColor,
                   width: `${buttonWidth}px`,
@@ -252,7 +266,8 @@ export const Header: React.FC<HeaderProps> = ({
                   borderColor: itemBorder,
                   background: itemBg,
                   color: iconColor,
-                  transform: isHovered
+                  borderRadius: '999px',
+                  transform: !isSelected && isHovered
                     ? 'translateY(-3px) scale(1.05)'
                     : 'none',
                 }}
@@ -261,7 +276,9 @@ export const Header: React.FC<HeaderProps> = ({
                 {/* Nội dung nút có padding 2px, biểu tượng icon và chữ nằm ngang chuẩn xác */}
                 <div className="w-full h-full p-[2px] flex flex-row items-center justify-center gap-1.5 whitespace-nowrap overflow-hidden">
                   <span
-                    className="w-[16px] h-[16px] sm:w-[18px] sm:h-[18px] flex items-center justify-center shrink-0 transition-all duration-300 group-hover/navitem:scale-115"
+                    className={`w-[16px] h-[16px] sm:w-[18px] sm:h-[18px] flex items-center justify-center shrink-0 transition-all duration-300 ${
+                      isSelected ? '' : 'group-hover/navitem:scale-115'
+                    }`}
                     style={{
                       color: iconColor,
                       filter: iconGlowFilter,

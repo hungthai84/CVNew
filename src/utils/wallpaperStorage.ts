@@ -359,7 +359,8 @@ export async function setStoredItem<T>(key: string, value: T): Promise<void> {
   // 1. Immediately store in localStorage for permanent, cookie-free client persistence
   try {
     const strVal = typeof value === 'string' ? value : JSON.stringify(value);
-    if (strVal.length < 4_000_000) {
+    // Lưu các cấu hình nhỏ (< 500KB) vào localStorage để truy xuất tức thì; dữ liệu media lớn lưu tại IndexedDB
+    if (strVal.length < 500_000) {
       localStorage.setItem(key, strVal);
     }
   } catch (err) {

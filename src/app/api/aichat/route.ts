@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await ai.models.generateContent({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       contents: [
         { role: 'user', parts: [{ text: `System Instruction: ${SYSTEM_PROMPT}` }] },
         ...(history || []).map((h: any) => ({

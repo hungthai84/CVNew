@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Camera, SlidersHorizontal, ChevronDown } from 'lucide-react';
 import {
   MEMORIES_DATA,
   MEMORIES_COMPANIES,
@@ -9,7 +11,8 @@ import {
 import { MemoryPhoto } from '@/types';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
-import { formatCardTitle } from '@/lib/utils';
+import { cn, formatCardTitle } from '@/lib/utils';
+import { SoundEngine } from '@/components/ui/SoundEngine';
 
 export interface MemoriesViewProps {
   currentTheme?: string;
@@ -21,9 +24,11 @@ export const MemoriesView: React.FC<MemoriesViewProps> = ({ currentTheme = 'ligh
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState<boolean>(false);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
   const [activeLightboxIdx, setActiveLightboxIdx] = useState<number | null>(null);
   const [isSlideshowPlaying, setIsSlideshowPlaying] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const filterMenuRef = useRef<HTMLDivElement>(null);
   const filmstripRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on outside click
@@ -31,6 +36,9 @@ export const MemoriesView: React.FC<MemoriesViewProps> = ({ currentTheme = 'ligh
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setCompanyDropdownOpen(false);
+      }
+      if (filterMenuRef.current && !filterMenuRef.current.contains(e.target as Node)) {
+        setIsFilterDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -124,7 +132,6 @@ export const MemoriesView: React.FC<MemoriesViewProps> = ({ currentTheme = 'ligh
 
   return (
     <div className="w-full flex-grow flex flex-col gap-[15px] max-w-7xl mx-auto justify-start select-none relative text-slate-800 dark:text-slate-100 pb-8 text-left">
-      {/* 1. TOP HERO BANNER (ĐỒNG BỘ CHUẨN FORM TRANG LĨNH VỰC) */}
       {/* Style for crisp bright image, smooth zoom & fly-up animation from below */}
       <style
         dangerouslySetInnerHTML={{
@@ -156,102 +163,153 @@ export const MemoriesView: React.FC<MemoriesViewProps> = ({ currentTheme = 'ligh
         }}
       />
 
-      {/* Modal Popup Dropdown Lọc Công Ty (Tránh bị overflow-hidden của banner che khuất) */}
-      {companyDropdownOpen && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs"
-          onClick={() => setCompanyDropdownOpen(false)}
-        >
-          <div
-            className="w-full max-w-sm rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-2xl p-3 flex flex-col gap-2 animate-fadeIn"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-white/10">
-              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-bold text-sm">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                </svg>
-                <span>Lọc Theo Đơn Vị / Công Ty</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setCompanyDropdownOpen(false)}
-                className="w-6 h-6 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-300 text-xs cursor-pointer"
-              >
-                ✕
-              </button>
-            </div>
-            <div className="flex flex-col gap-1 max-h-72 overflow-y-auto no-scrollbar">
-              {MEMORIES_COMPANIES.map((comp) => {
-                const count =
-                  comp.id === 'all'
-                    ? MEMORIES_DATA.length
-                    : MEMORIES_DATA.filter((m) => m.companyId === comp.id).length;
-                const isActive = companyFilter === comp.id;
-                return (
-                  <button
-                    key={comp.id}
-                    type="button"
-                    onClick={() => {
-                      setCompanyFilter(comp.id);
-                      setCompanyDropdownOpen(false);
-                      showToast(`Đã lọc: ${comp.labelVi}`);
-                    }}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer ${
-                      isActive
-                        ? 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 font-bold'
-                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
-                  >
-                    <span className="truncate pr-2">{comp.labelVi}</span>
-                    <span className="text-[10px] font-mono opacity-70 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-1.5 py-0.5 rounded-md">
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+      {/* BANNER KỶ NIỆM: Tiêu đề 4 chữ viết hoa chữ đầu còn lại viết thường, icon + tiêu đề lấy màu menu icon (#16a34a), câu nói font viết tay màu chữ vàng, nhóm nút thành 1 filter icon bên dưới bên trái, trong suốt 100% */}
+      <motion.div
+        initial={{ opacity: 0, y: -15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="hero-banner w-full h-44 sm:h-52 rounded-2xl overflow-visible relative bg-transparent border-0 shadow-none shrink-0 flex flex-col justify-between p-5 sm:p-7 z-30"
+      >
+        <div className="absolute inset-0 rounded-2xl overflow-hidden bg-transparent pointer-events-none">
+          <img
+            src="/images/memories/hero-banner.png"
+            alt="Khoảnh khắc kỷ niệm"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/images/education/hero-banner.png';
+            }}
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-100 pointer-events-none filter brightness-110 contrast-110 saturate-110"
+          />
+          <div className="absolute inset-0 bg-transparent pointer-events-none" />
         </div>
-      )}
 
-      {/* Thanh Công Cụ Lọc Nhanh & Tìm Kiếm Kỷ Niệm (Glass Soft Toolbar) */}
-      <div className="w-full rounded-[12px] p-2.5 sm:p-3 bg-white/85 dark:bg-slate-900/85 border border-white/80 dark:border-white/10 backdrop-blur-xl shadow-xs flex flex-wrap items-center justify-between gap-2.5">
-        {/* Danh mục kỷ niệm & Nút chọn Đơn vị */}
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <button
-            type="button"
-            onClick={() => setCompanyDropdownOpen(true)}
-            className="px-3 py-1.5 rounded-full text-xs font-bold font-play bg-rose-50/90 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200/80 dark:border-rose-800/60 hover:bg-rose-100 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+        {/* Vùng Tiêu Đề: 4 chữ viết hoa chữ đầu còn lại viết thường, icon và tiêu đề lấy màu menu icon (#16a34a) */}
+        <div className="relative z-10 flex flex-col justify-start text-left max-w-2xl">
+          <div className="flex items-center gap-2.5" style={{ color: '#16a34a' }}>
+            <Camera
+              className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 bg-transparent border-0 p-0 shadow-none drop-shadow-[0_2px_8px_rgba(22,163,74,0.75)]"
+              style={{ color: '#16a34a', stroke: '#16a34a' }}
+            />
+            <h1
+              className="text-2xl sm:text-3xl md:text-4xl font-black font-play tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+              style={{ color: '#16a34a', textTransform: 'none' }}
+            >
+              Khoảnh khắc kỷ niệm
+            </h1>
+          </div>
+
+          {/* Sub tiêu đề là câu nói chuyển sang font viết tay màu chữ vàng */}
+          <p
+            className="font-handwriting text-yellow-300 text-lg sm:text-xl font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] mt-1.5 select-none"
+            style={{ color: '#facc15' }}
           >
-            <WebIcon name="building" className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
-            <span>
-              {MEMORIES_COMPANIES.find((c) => c.id === companyFilter)?.labelVi || 'Tất cả đơn vị'}
-            </span>
-            <WebIcon name="chevron-down" className="w-3 h-3 opacity-70" />
-          </button>
+            "Mỗi khoảnh khắc là một mảnh ghép tự hào của hành trình ♡"
+          </p>
+        </div>
 
-          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
-            {MEMORIES_CATEGORIES.map((cat) => {
-              const active = categoryFilter === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setCategoryFilter(cat.id)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-bold font-play transition-all cursor-pointer whitespace-nowrap border ${
-                    active
-                      ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white border-rose-500 shadow-2xs'
-                      : 'bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border-slate-200/80 dark:border-white/10 hover:text-rose-600 dark:hover:text-rose-300'
-                  }`}
+        {/* Nhóm các nút lại thành 1 filter icon ở bên dưới banner bên trái - filter dạng drop menu list, tiêu đề nhóm nút còn 4 từ */}
+        <div className="relative z-30 flex items-center justify-start mt-auto pt-2" ref={filterMenuRef}>
+          <div className="relative inline-block text-left">
+            <button
+              type="button"
+              onClick={() => {
+                SoundEngine.playTap();
+                setIsFilterDropdownOpen((prev) => !prev);
+              }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/85 hover:bg-slate-900 text-emerald-300 border border-emerald-400/70 shadow-[0_4px_16px_rgba(0,0,0,0.55)] backdrop-blur-md transition-all cursor-pointer text-xs font-bold font-play active:scale-95 group"
+              title="Bộ lọc kỷ niệm"
+              aria-expanded={isFilterDropdownOpen}
+              aria-haspopup="listbox"
+            >
+              <SlidersHorizontal className="w-4 h-4 text-emerald-300 transition-transform group-hover:rotate-45 shrink-0" />
+              <span>Bộ lọc kỷ niệm</span>
+              {(categoryFilter !== 'all' || companyFilter !== 'all') && (
+                <span className="px-1.5 py-0.2 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-[10px] font-mono text-emerald-200">
+                  {categoryFilter !== 'all'
+                    ? MEMORIES_CATEGORIES.find((c) => c.id === categoryFilter)?.labelVi
+                    : MEMORIES_COMPANIES.find((c) => c.id === companyFilter)?.labelVi}
+                </span>
+              )}
+              <ChevronDown
+                className={cn(
+                  'w-3.5 h-3.5 text-emerald-300 transition-transform duration-200 shrink-0',
+                  isFilterDropdownOpen && 'rotate-180'
+                )}
+              />
+            </button>
+
+            <AnimatePresence>
+              {isFilterDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                  transition={{ duration: 0.16 }}
+                  role="listbox"
+                  className="absolute left-0 top-[calc(100%+8px)] w-64 max-h-80 overflow-y-auto custom-scrollbar rounded-xl bg-slate-950/95 border border-emerald-400/50 shadow-[0_12px_32px_rgba(0,0,0,0.75)] backdrop-blur-xl py-1.5 px-1.5 z-50 flex flex-col gap-1"
                 >
-                  {cat.labelVi}
-                </button>
-              );
-            })}
+                  <div className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400/80">
+                    Theo chủ đề kỷ niệm
+                  </div>
+                  {MEMORIES_CATEGORIES.map((cat) => {
+                    const active = categoryFilter === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => {
+                          SoundEngine.playTap();
+                          setCategoryFilter(cat.id);
+                          setIsFilterDropdownOpen(false);
+                        }}
+                        className={cn(
+                          'w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-bold font-play transition-all cursor-pointer text-left',
+                          active
+                            ? 'bg-emerald-500/25 text-emerald-200 border border-emerald-400/60'
+                            : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
+                        )}
+                      >
+                        <span>{cat.labelVi}</span>
+                        {active && <span className="w-2 h-2 rounded-full bg-emerald-400" />}
+                      </button>
+                    );
+                  })}
+
+                  <div className="my-1 border-t border-white/10" />
+                  <div className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400/80">
+                    Theo đơn vị công tác
+                  </div>
+                  {MEMORIES_COMPANIES.map((comp) => {
+                    const isActive = companyFilter === comp.id;
+                    return (
+                      <button
+                        key={comp.id}
+                        type="button"
+                        onClick={() => {
+                          SoundEngine.playTap();
+                          setCompanyFilter(comp.id);
+                          setIsFilterDropdownOpen(false);
+                        }}
+                        className={cn(
+                          'w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-bold font-play transition-all cursor-pointer text-left',
+                          isActive
+                            ? 'bg-emerald-500/25 text-emerald-200 border border-emerald-400/60'
+                            : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
+                        )}
+                      >
+                        <span className="truncate">{comp.labelVi}</span>
+                        {isActive && <span className="w-2 h-2 rounded-full bg-emerald-400" />}
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
+      </motion.div>
 
+      {/* Thanh Công Cụ Tìm Kiếm Kỷ Niệm (Glass Soft Toolbar) */}
+      <div className="w-full rounded-[12px] p-2.5 sm:p-3 bg-white/85 dark:bg-slate-900/85 border border-white/80 dark:border-white/10 backdrop-blur-xl shadow-xs flex flex-wrap items-center justify-between gap-2.5">
         {/* Ô tìm kiếm & Bộ đếm ảnh */}
         <div className="flex items-center gap-2 ml-auto">
           <div className="relative">

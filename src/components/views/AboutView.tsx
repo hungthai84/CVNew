@@ -201,7 +201,7 @@ export interface AboutViewProps {
   onNavigatePage?: (pageIndex: number) => void;
 }
 
-/* Lucian UX/UI - Tích Hợp Hệ Sinh Thái & Thông Tin Cá Nhân (Phóng to, Nền Trong Suốt, Xoay Quanh Nhân Vật) */
+/* Tích Hợp Hệ Sinh Thái & Thông Tin Cá Nhân (Phóng to, Nền Trong Suốt, Xoay Quanh Nhân Vật) */
 interface IntegrationsUIProps {
   onOpenMap?: (location: { type: 'tam_tru' | 'cu_tru'; title: string; address: string; query: string }) => void;
   onNavigatePage?: (pageIndex: number) => void;
@@ -364,43 +364,14 @@ const IntegrationsUI: React.FC<IntegrationsUIProps> = ({ onOpenMap, onNavigatePa
     }
   };
 
-  const activeItem = activeIcon !== null ? personalItems[activeIcon] : null;
-
   return (
     <div
       className={`u306 mx-auto ${isHold ? 'is-hold' : ''}`}
       onMouseEnter={() => setIsHold(true)}
       onMouseLeave={() => setIsHold(false)}
     >
-      {/* Tiêu đề & Trạng thái trong suốt kính mờ cao cấp */}
-      <div className="u306-hd">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/65 backdrop-blur-md border border-cyan-400/40 text-cyan-300 text-[10.5px] font-mono font-bold shadow-lg mb-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-          <span>HỒ SƠ CÁ NHÂN &amp; KẾT NỐI</span>
-        </div>
-        <h3 className="font-play text-white text-base sm:text-lg font-black tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-          Tích Hợp Hệ Sinh Thái
-        </h3>
-        <div className="u306-cp mt-1">
-          {activeItem ? (
-            <button
-              type="button"
-              onClick={() => handleItemClick(activeItem)}
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/80 text-cyan-300 border border-cyan-400/60 text-[11px] font-bold cursor-pointer hover:scale-105 transition-transform backdrop-blur-md shadow-lg"
-            >
-              <span>{activeItem.label}:</span>
-              <span className="underline decoration-cyan-400">{activeItem.value}</span>
-            </button>
-          ) : (
-            <span className="inline-flex items-center px-3 py-0.5 rounded-full bg-slate-950/60 backdrop-blur-md text-[11px] text-white/95 font-medium border border-white/20 shadow-md">
-              Nguyễn Hùng Thái · Giáp Tý 1984 · Q7, TP.HCM · 22+ năm CX
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Vòng tròn quỹ đạo quay quanh nhân vật ở chính giữa */}
-      <div className="u306-st">
+      {/* Vòng tròn quỹ đạo quay quanh nhân vật ở chính giữa - tích hợp toàn bộ các icon thông tin cá nhân vào vòng xoay */}
+      <div className="u306-st flex flex-wrap items-center justify-center">
         {personalItems.map((item, idx) => (
           <div
             key={item.id}
@@ -411,14 +382,16 @@ const IntegrationsUI: React.FC<IntegrationsUIProps> = ({ onOpenMap, onNavigatePa
               <div className="u306-up" style={{ '--t': item.t, '--rdir': item.rdir } as any}>
                 <button
                   type="button"
-                  className={`u306-ic ${activeIcon === idx ? 'is-on' : ''}`}
+                  className={`u306-ic group/orbit ${activeIcon === idx ? 'is-on' : ''}`}
                   style={{ '--c': item.color } as any}
                   onMouseEnter={() => setActiveIcon(idx)}
                   onMouseLeave={() => setActiveIcon(null)}
                   onClick={() => handleItemClick(item)}
-                  title={`${item.label}: ${item.value} (Nhấp để mở)`}
+                  title={`${item.label}: ${item.value} (${item.shortLabel})`}
+                  aria-label={item.shortLabel}
                 >
-                  <WebIcon name={item.icon as any} className="w-4 h-4" />
+                  <WebIcon name={item.icon as any} className="w-4 h-4 shrink-0" />
+                  <span className="u306-lb">{item.shortLabel}</span>
                 </button>
               </div>
             </div>
@@ -431,32 +404,12 @@ const IntegrationsUI: React.FC<IntegrationsUIProps> = ({ onOpenMap, onNavigatePa
           title="Nguyễn Hùng Thái - Chuyên gia CX & Vận hành Dịch vụ"
           onClick={() => showToast('Nguyễn Hùng Thái · Chuyên gia Quản trị CX & Vận hành Contact Center')}
         >
-          <div className="w-4 h-4 rounded-full border border-cyan-400/80 bg-cyan-400/20 animate-ping pointer-events-none" />
-          <div className="w-2 h-2 rounded-full bg-cyan-300 shadow-[0_0_10px_#22d3ee] pointer-events-none" />
+          <div className="w-4 h-4 rounded-full border border-cyan-500/80 bg-cyan-500/20 animate-ping pointer-events-none" />
+          <div className="w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_10px_#06b6d4] pointer-events-none" />
         </div>
       </div>
 
-      {/* Dải Nút Nhãn Tắt Thông Tin Cá Nhân Ở Chân Khung */}
-      <div className="u306-ft flex items-center justify-center gap-1.5 flex-wrap px-2">
-        {personalItems.map((item, idx) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => handleItemClick(item)}
-            onMouseEnter={() => setActiveIcon(idx)}
-            onMouseLeave={() => setActiveIcon(null)}
-            className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold backdrop-blur-md transition-all cursor-pointer ${
-              activeIcon === idx
-                ? 'bg-cyan-500 text-slate-950 shadow-[0_0_15px_rgba(34,211,238,0.9)] scale-105 border border-cyan-300'
-                : 'bg-black/55 hover:bg-black/80 text-white border border-white/30 shadow-md hover:border-cyan-400'
-            }`}
-          >
-            {item.shortLabel}
-          </button>
-        ))}
-      </div>
-
-      <style jsx>{`
+      <style>{`
         .u306 {
           position: relative;
           width: 100%;
@@ -478,7 +431,7 @@ const IntegrationsUI: React.FC<IntegrationsUIProps> = ({ onOpenMap, onNavigatePa
         .u306-st {
           position: absolute;
           left: 50%;
-          top: 220px;
+          top: 235px;
           width: 0;
           height: 0;
           z-index: 5;
@@ -508,33 +461,61 @@ const IntegrationsUI: React.FC<IntegrationsUIProps> = ({ onOpenMap, onNavigatePa
         .u306-sl { position: absolute; left: 0; top: 0; }
         .u306-up {
           position: absolute;
-          left: -19px;
-          top: -19px;
+          left: -20px;
+          top: -20px;
           animation: u306-r var(--t) linear infinite;
           animation-direction: var(--rdir);
         }
         .u306-ic {
+          position: relative;
           display: grid;
           place-items: center;
-          width: 38px;
-          height: 38px;
+          width: 40px;
+          height: 40px;
           padding: 0;
-          border: 1px solid rgba(255, 255, 255, 0.35);
-          border-radius: 12px;
-          background: rgba(15, 23, 42, 0.85);
-          backdrop-filter: blur(8px);
-          box-shadow: 0 0 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.15);
+          border: 1.5px solid var(--c);
+          border-radius: 50% !important;
+          background: rgba(255, 255, 255, 0.96);
+          backdrop-filter: blur(12px);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.85);
           color: var(--c);
           cursor: pointer;
           transition: transform 0.3s cubic-bezier(0.3,1.6,0.5,1), box-shadow 0.3s;
         }
+        .u306-lb {
+          position: absolute;
+          top: calc(100% + 4px);
+          left: 50%;
+          transform: translateX(-50%);
+          white-space: nowrap;
+          font-size: 9.5px;
+          font-weight: 700;
+          line-height: 1.1;
+          padding: 2px 6px;
+          border-radius: 999px;
+          background: rgba(15, 23, 42, 0.88);
+          color: #f8fafc;
+          border: 1px solid var(--c);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+          pointer-events: none;
+          opacity: 0.92;
+          transition: all 0.25s ease;
+        }
+        .u306-ic:hover .u306-lb,
+        .u306-ic.is-on .u306-lb {
+          opacity: 1;
+          background: var(--c);
+          color: #ffffff;
+          transform: translateX(-50%) scale(1.06);
+        }
         .u306-ic:hover {
-          background: rgba(15, 23, 42, 0.95);
-          border-color: var(--c);
+          background: #ffffff;
+          transform: scale(1.15);
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18), 0 0 12px var(--c);
         }
         .u306-ic.is-on {
           transform: scale(1.25);
-          background: #0f172a;
+          background: #ffffff;
           box-shadow: 0 0 0 2px var(--c), 0 0 20px var(--c);
           border-color: var(--c);
         }
@@ -559,13 +540,6 @@ const IntegrationsUI: React.FC<IntegrationsUIProps> = ({ onOpenMap, onNavigatePa
           border-color: rgba(34, 211, 238, 0.95);
           box-shadow: 0 0 32px rgba(34, 211, 238, 0.7);
         }
-        .u306-ft {
-          position: absolute;
-          bottom: 4px;
-          left: 0;
-          right: 0;
-          z-index: 10;
-        }
       `}</style>
     </div>
   );
@@ -580,17 +554,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
   const [slideDirection, setSlideDirection] = useState<'next' | 'prev'>('next');
 
   // Yêu cầu 1: Bento Palette Theme Switcher ('pastel' | 'cyber' | 'emerald' | 'rose')
-  const [bentoPalette, setBentoPalette] = useState<BentoPaletteType>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('hungthai_bento_palette') as BentoPaletteType;
-        if (saved && (saved === 'pastel' || saved === 'cyber' || saved === 'emerald' || saved === 'rose')) {
-          return saved;
-        }
-      } catch {}
-    }
-    return 'pastel';
-  });
+  const [bentoPalette, setBentoPalette] = useState<BentoPaletteType>('pastel');
   const [isPaletteMenuOpen, setIsPaletteMenuOpen] = useState(false);
 
   const [isClientMounted, setIsClientMounted] = useState<boolean>(false);
@@ -602,6 +566,12 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
   useEffect(() => {
     setIsClientMounted(true);
     setViewMode('slides');
+    try {
+      const saved = localStorage.getItem('hungthai_bento_palette') as BentoPaletteType;
+      if (saved && (saved === 'pastel' || saved === 'cyber' || saved === 'emerald' || saved === 'rose')) {
+        setBentoPalette(saved);
+      }
+    } catch {}
   }, []);
 
   // Click outside to close about nav menu
@@ -657,7 +627,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
   // Video State & Controls
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlayingIntro, setIsPlayingIntro] = useState(false);
-  const [isVideoMuted, setIsVideoMuted] = useState<boolean>(() => getSavedMutedPref(true));
+  const [isVideoMuted, setIsVideoMuted] = useState<boolean>(true);
   const [videoCurrentTime, setVideoCurrentTime] = useState(0);
   const [isVideoPaused, setIsVideoPaused] = useState(false);
 
@@ -670,6 +640,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
 
   // Đồng bộ lưu & khôi phục trạng thái âm thanh qua CustomEvent
   useEffect(() => {
+    setIsVideoMuted(getSavedMutedPref(true));
     const handleAudioPref = (e: Event) => {
       const customEvent = e as CustomEvent<{ muted: boolean }>;
       if (customEvent.detail && typeof customEvent.detail.muted === 'boolean') {
@@ -1394,7 +1365,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
             <button
               type="button"
               onClick={handlePrevSlide}
-              className="absolute left-2 sm:left-3.5 lg:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 dark:bg-slate-900/95 hover:bg-blue-600 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-slate-950 text-slate-800 dark:text-white border-2 border-blue-500/80 dark:border-cyan-400/80 shadow-[0_0_20px_rgba(59,130,246,0.38)] dark:shadow-[0_0_20px_rgba(34,211,238,0.45)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 hover:scale-115 active:scale-95 cursor-pointer z-30 group"
+              className="absolute left-2 sm:left-3.5 lg:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 rounded-full aspect-square bg-white/95 dark:bg-slate-900/95 hover:bg-blue-600 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-slate-950 text-slate-800 dark:text-white border-2 border-blue-500/80 dark:border-cyan-400/80 shadow-[0_0_20px_rgba(59,130,246,0.38)] dark:shadow-[0_0_20px_rgba(34,211,238,0.45)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 hover:scale-115 active:scale-95 cursor-pointer z-30 group"
               title="Slide trước (Phím ←)"
               aria-label="Slide trước"
             >
@@ -1404,7 +1375,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
             <button
               type="button"
               onClick={handleNextSlide}
-              className="absolute right-2 sm:right-3.5 lg:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 dark:bg-slate-900/95 hover:bg-blue-600 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-slate-950 text-slate-800 dark:text-white border-2 border-blue-500/80 dark:border-cyan-400/80 shadow-[0_0_20px_rgba(59,130,246,0.38)] dark:shadow-[0_0_20px_rgba(34,211,238,0.45)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 hover:scale-115 active:scale-95 cursor-pointer z-30 group"
+              className="absolute right-2 sm:right-3.5 lg:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-11 sm:h-11 rounded-full aspect-square bg-white/95 dark:bg-slate-900/95 hover:bg-blue-600 hover:text-white dark:hover:bg-cyan-500 dark:hover:text-slate-950 text-slate-800 dark:text-white border-2 border-blue-500/80 dark:border-cyan-400/80 shadow-[0_0_20px_rgba(59,130,246,0.38)] dark:shadow-[0_0_20px_rgba(34,211,238,0.45)] backdrop-blur-xl flex items-center justify-center transition-all duration-300 hover:scale-115 active:scale-95 cursor-pointer z-30 group"
               title="Slide kế tiếp (Phím →)"
               aria-label="Slide kế tiếp"
             >
@@ -1417,7 +1388,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
         {/* CHẾ ĐỘ TRÌNH CHIẾU SLIDE 3 BƯỚC                                           */}
         {/* ========================================================================= */}
 
-        {/* SLIDE 1: TỔNG QUAN & VIDEO TRỢ LÝ ẢO */}
+        {/* SLIDE 1: TỔNG QUAN & VIDEO TRỢ LÝ ẢO (GIAO DIỆN SÁNG CAO CẤP) */}
         {viewMode === 'slides' && currentSlide === 0 && (
           <div
             key="about-slide-0"
@@ -1426,8 +1397,15 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
             }`}
           >
             <div
-              className={`relative overflow-hidden rounded-[12px] border border-slate-200/90 dark:border-white/10 p-5 sm:p-6 lg:p-7 flex flex-col justify-between shadow-xs backdrop-blur-xl bg-slate-900 text-left transition-all duration-500 group/hero flex-1 min-h-[360px] sm:min-h-[420px] ${
-                isPlayingIntro ? 'h-full min-h-[480px] sm:min-h-[540px] lg:min-h-[580px] shadow-2xl ring-1 ring-cyan-400/30' : ''
+              style={{
+                backgroundColor: 'transparent',
+                background: 'transparent',
+                backdropFilter: 'none',
+                WebkitBackdropFilter: 'none',
+                boxShadow: 'none',
+              }}
+              className={`rounded-[12px] border border-white/80 dark:border-white/20 relative overflow-hidden p-5 sm:p-6 lg:p-7 flex flex-col justify-between !bg-transparent dark:!bg-transparent !shadow-none !backdrop-blur-none text-left transition-all duration-500 group/hero flex-1 min-h-[360px] sm:min-h-[420px] ${
+                isPlayingIntro ? 'h-full min-h-[480px] sm:min-h-[540px] lg:min-h-[580px] ring-1 ring-cyan-400/30' : ''
               }`}
             >
               {/* Video Background Layer */}
@@ -1444,19 +1422,16 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                 src={isPlayingIntro ? ABOUT_INTRO_VIDEO_URL : ABOUT_IDLE_VIDEO_URL}
               />
 
-              {/* High-contrast Ambient Scrim Overlay */}
+              {/* Nền trong suốt 100% không phủ mờ */}
               <div
-                className={`absolute inset-0 bg-gradient-to-r pointer-events-none z-10 transition-opacity duration-500 ${
-                  isPlayingIntro
-                    ? 'from-black/50 via-black/20 to-black/30 dark:from-slate-950/60 dark:via-slate-950/20 dark:to-slate-950/40'
-                    : 'from-black/45 via-black/20 to-transparent dark:from-slate-950/55 dark:via-slate-950/25 dark:to-transparent'
-                }`}
+                style={{ backgroundColor: 'transparent', background: 'transparent' }}
+                className="absolute inset-0 !bg-transparent pointer-events-none z-10"
               />
 
               {/* Calligraphy note */}
               {!isPlayingIntro && (
                 <div className="hidden sm:block absolute left-[260px] lg:left-[280px] top-6 z-20 pointer-events-none">
-                  <span className="font-handwriting text-cyan-300 dark:text-cyan-400 text-xl font-bold select-none rotate-[-6deg] block drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
+                  <span className="font-handwriting text-slate-900 text-2xl font-bold select-none rotate-[-6deg] block drop-shadow-xs">
                     Luôn bên bạn ♡
                   </span>
                 </div>
@@ -1487,7 +1462,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                   }`}
                 >
                   <div>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 dark:bg-slate-800/90 shadow-2xs border border-slate-200/80 dark:border-white/10 text-xs font-bold text-slate-800 dark:text-slate-100 w-fit backdrop-blur-md">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 shadow-xs border border-slate-300 text-xs font-bold text-slate-800 w-fit backdrop-blur-md">
                       <span>👋</span>
                       <span>Xin chào,</span>
                       {isPlayingIntro && (
@@ -1497,12 +1472,12 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                       )}
                     </div>
 
-                    <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-black font-play !text-white leading-[1.15] mt-3 tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-                      Nguyễn Hùng Thái <span className="text-amber-400">✨</span>
+                    <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-black font-play text-slate-950 leading-[1.15] mt-3 tracking-tight drop-shadow-[0_1px_2px_rgba(255,255,255,0.95)]">
+                      Nguyễn Hùng Thái <span className="text-amber-500">✨</span>
                     </h2>
 
                     {!isPlayingIntro && (
-                      <p className="text-xs sm:text-[13px] !text-white/95 font-medium leading-relaxed mt-2.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
+                      <p className="text-xs sm:text-[13px] text-slate-700 font-bold leading-relaxed mt-2.5 drop-shadow-xs">
                         Chuyên gia Quản trị Trải nghiệm Khách hàng (CX) & Vận hành Contact Center với hơn 22 năm kinh nghiệm thực chiến.
                       </p>
                     )}
@@ -1510,7 +1485,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
 
                   {/* Cụm nút Giới thiệu bản thân đa năng nhóm chung Speaker */}
                   <div className="pt-4 flex items-center gap-3">
-                    <div className="relative inline-flex items-center p-[2px] rounded-full overflow-hidden transition-all duration-300 group/pill shadow-lg hover:shadow-[0_0_25px_rgba(59,130,246,0.55)]">
+                    <div className="relative inline-flex items-center p-[2px] rounded-full overflow-hidden transition-all duration-300 group/pill shadow-lg hover:shadow-[0_0_25px_rgba(59,130,246,0.45)]">
                       {/* Animated Conic Gradient Border Chạy Viền Màu */}
                       <div
                         className={`absolute inset-[-100%] animate-[spin_3.5s_linear_infinite] transition-opacity duration-300 opacity-90 group-hover/pill:opacity-100 blur-[0.5px] ${
@@ -1523,7 +1498,7 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                       <div
                         className={`relative z-10 flex items-center rounded-full backdrop-blur-xl transition-all duration-300 ${
                           !isPlayingIntro
-                            ? 'bg-slate-950/90 text-white'
+                            ? 'bg-white/95 text-slate-900 border border-slate-200'
                             : 'bg-gradient-to-r from-rose-950/95 via-pink-950/90 to-slate-950/95 text-white'
                         }`}
                       >
@@ -1535,16 +1510,18 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                             toggleVideoMute();
                           }}
                           title={isVideoMuted ? 'Bấm để mở âm thanh video' : 'Bấm để tắt âm thanh'}
-                          className={`px-3 py-2 flex items-center justify-center transition-all cursor-pointer rounded-l-full border-r border-white/15 ${
+                          className={`px-3 py-2 flex items-center justify-center transition-all cursor-pointer rounded-l-full border-r ${
+                            !isPlayingIntro ? 'border-slate-200' : 'border-white/15'
+                          } ${
                             !isVideoMuted
-                              ? 'text-cyan-300 bg-cyan-500/20'
-                              : 'text-slate-400 hover:text-white hover:bg-white/10'
+                              ? 'text-cyan-600 bg-cyan-50'
+                              : 'text-slate-500 hover:text-slate-800'
                           }`}
                         >
                           {!isVideoMuted ? (
-                            <Volume2 className="w-4 h-4 animate-bounce text-cyan-300" />
+                            <Volume2 className="w-4 h-4 animate-bounce text-cyan-600" />
                           ) : (
-                            <VolumeX className="w-4 h-4 text-slate-400" />
+                            <VolumeX className="w-4 h-4 text-slate-500" />
                           )}
                         </button>
 
@@ -1556,14 +1533,14 @@ export function AboutView({ currentTheme = 'light-glass', onNavigatePage }: Abou
                               e.stopPropagation();
                               handlePlayIntro();
                             }}
-                            className="px-4.5 py-2 flex items-center gap-2 font-bold font-play text-xs sm:text-sm text-white hover:text-cyan-200 transition-all cursor-pointer rounded-r-full group/btn"
+                            className="px-4.5 py-2 flex items-center gap-2 font-bold font-play text-xs sm:text-sm text-slate-900 hover:text-blue-600 transition-all cursor-pointer rounded-r-full group/btn"
                             title="Bấm để phát video 2 (Giới thiệu bản thân)"
                           >
-                            <div className="w-5.5 h-5.5 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white shadow-xs group-hover/btn:scale-110 transition-transform">
+                            <div className="w-5.5 h-5.5 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-xs group-hover/btn:scale-110 transition-transform">
                               <Play className="w-3 h-3 fill-current ml-0.5" />
                             </div>
                             <span>Giới thiệu bản thân</span>
-                            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+                            <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
                           </button>
                         ) : (
                           <button

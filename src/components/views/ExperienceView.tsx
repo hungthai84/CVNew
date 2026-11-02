@@ -56,14 +56,18 @@ import {
   UserCheck,
   ChevronLeft,
   ChevronRight,
+  SlidersHorizontal,
+  ChevronDown,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { EXPERIENCE_MILESTONES } from '@/data/experience';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { LivingBentoJobGrid } from '@/components/ui/LivingBentoJobGrid';
-import { formatCardTitle } from '@/lib/utils';
+import { cn, formatCardTitle } from '@/lib/utils';
 import { getCategoryTheme } from '@/utils/categoryTheme';
 import { GlassmorphicIconFrame } from '@/components/ui/GlassmorphicIconFrame';
+import { SoundEngine } from '@/components/ui/SoundEngine';
 
 const STORY_KEYS = ['2003', '2007', '2011', '2013', '2016', '2018', '2023', '2026'];
 
@@ -281,6 +285,20 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [isPhotoLightboxOpen, setIsPhotoLightboxOpen] = useState<boolean>(false);
   const [featuredProdPage, setFeaturedProdPage] = useState<number>(0);
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
+  const filterMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterMenuRef.current && !filterMenuRef.current.contains(event.target as Node)) {
+        setIsFilterDropdownOpen(false);
+      }
+    };
+    if (isFilterDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isFilterDropdownOpen]);
 
   // Tính năng 1: Panoramic History Slider
   const [sliderYearIndex, setSliderYearIndex] = useState<number>(3); // 2013 là mốc mặc định
@@ -952,8 +970,177 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
 
   return (
     <div
-      className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-0 max-w-full mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-y-auto no-scrollbar pb-2"
+      className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-3 max-w-full mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-y-auto no-scrollbar pb-2"
     >
+      {/* BANNER KINH NGHIỆM: Tiêu đề 4 chữ viết hoa chữ đầu còn lại viết thường, icon + tiêu đề lấy màu menu icon (#4f46e5), câu nói font viết tay màu chữ vàng, nhóm nút thành 1 filter icon bên dưới bên trái, trong suốt 100% */}
+      <motion.div
+        initial={{ opacity: 0, y: -15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="hero-banner w-full h-44 sm:h-52 rounded-2xl overflow-visible relative bg-transparent border-0 shadow-none shrink-0 flex flex-col justify-between p-5 sm:p-7 z-30"
+      >
+        <div className="absolute inset-0 rounded-2xl overflow-hidden bg-transparent pointer-events-none">
+          <img
+            src="https://res.cloudinary.com/q5tpzaxk/image/upload/v1793042018/Kinh_nghi%E1%BB%87m.png"
+            alt="Hành trình sự nghiệp"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/images/education/hero-banner.png';
+            }}
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-100 pointer-events-none filter brightness-110 contrast-110 saturate-110"
+          />
+          <div className="absolute inset-0 bg-transparent pointer-events-none" />
+        </div>
+
+        {/* Vùng Tiêu Đề: 4 chữ viết hoa chữ đầu còn lại viết thường, icon và tiêu đề lấy màu menu icon (#4f46e5) */}
+        <div className="relative z-10 flex flex-col justify-start text-left max-w-2xl">
+          <div className="flex items-center gap-2.5" style={{ color: '#4f46e5' }}>
+            <Briefcase
+              className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 bg-transparent border-0 p-0 shadow-none drop-shadow-[0_2px_8px_rgba(79,70,229,0.75)]"
+              style={{ color: '#4f46e5', stroke: '#4f46e5' }}
+            />
+            <h1
+              className="text-2xl sm:text-3xl md:text-4xl font-black font-play tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+              style={{ color: '#4f46e5', textTransform: 'none' }}
+            >
+              Hành trình sự nghiệp
+            </h1>
+          </div>
+
+          {/* Sub tiêu đề là câu nói chuyển sang font viết tay màu chữ vàng */}
+          <p
+            className="font-handwriting text-yellow-300 text-lg sm:text-xl font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] mt-1.5 select-none"
+            style={{ color: '#facc15' }}
+          >
+            "Tận tâm phụng sự, dẫn dắt bằng kết quả ♡"
+          </p>
+        </div>
+
+        {/* Nhóm các nút lại thành 1 filter icon ở bên dưới banner bên trái - filter dạng drop menu list, tiêu đề nhóm nút còn 4 từ */}
+        <div className="relative z-30 flex items-center justify-start mt-auto pt-2" ref={filterMenuRef}>
+          <div className="relative inline-block text-left">
+            <button
+              type="button"
+              onClick={() => {
+                SoundEngine.playTap();
+                setIsFilterDropdownOpen((prev) => !prev);
+              }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/85 hover:bg-slate-900 text-indigo-300 border border-indigo-400/70 shadow-[0_4px_16px_rgba(0,0,0,0.55)] backdrop-blur-md transition-all cursor-pointer text-xs font-bold font-play active:scale-95 group"
+              title="Bộ lọc cột mốc"
+              aria-expanded={isFilterDropdownOpen}
+              aria-haspopup="listbox"
+            >
+              <SlidersHorizontal className="w-4 h-4 text-indigo-300 transition-transform group-hover:rotate-45 shrink-0" />
+              <span>Bộ lọc cột mốc</span>
+              <span className="px-1.5 py-0.2 rounded-full bg-indigo-500/25 border border-indigo-400/50 text-[10px] font-mono text-indigo-200">
+                {activeTab === 'development' ? 'Lộ trình' : `${normalizedActiveKey}`}
+              </span>
+              <ChevronDown
+                className={cn(
+                  'w-3.5 h-3.5 text-indigo-300 transition-transform duration-200 shrink-0',
+                  isFilterDropdownOpen && 'rotate-180'
+                )}
+              />
+            </button>
+
+            <AnimatePresence>
+              {isFilterDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                  transition={{ duration: 0.16 }}
+                  role="listbox"
+                  className="absolute left-0 top-[calc(100%+8px)] w-64 max-h-80 overflow-y-auto custom-scrollbar rounded-xl bg-slate-950/95 border border-indigo-400/50 shadow-[0_12px_32px_rgba(0,0,0,0.75)] backdrop-blur-xl py-1.5 px-1.5 z-50 flex flex-col gap-1"
+                >
+                  <div className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-400/80">
+                    Chế độ hiển thị
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      SoundEngine.playTap();
+                      setShowJobCard(false);
+                      setActiveTab('history');
+                      setIsFilterDropdownOpen(false);
+                    }}
+                    className={cn(
+                      'w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-bold font-play transition-all cursor-pointer text-left',
+                      !showJobCard && activeTab === 'history'
+                        ? 'bg-indigo-500/25 text-indigo-200 border border-indigo-400/60'
+                        : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
+                    )}
+                  >
+                    <span>Lịch sử công tác (8 Mốc)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      SoundEngine.playTap();
+                      setShowJobCard(false);
+                      setActiveTab('development');
+                      setIsFilterDropdownOpen(false);
+                    }}
+                    className={cn(
+                      'w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-bold font-play transition-all cursor-pointer text-left',
+                      !showJobCard && activeTab === 'development'
+                        ? 'bg-indigo-500/25 text-indigo-200 border border-indigo-400/60'
+                        : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
+                    )}
+                  >
+                    <span>Lộ trình phát triển sự nghiệp</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      SoundEngine.playTap();
+                      setShowJobCard(false);
+                      setActiveTab('history');
+                      handleToggleStoryMode();
+                      setIsFilterDropdownOpen(false);
+                    }}
+                    className={cn(
+                      'w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-bold font-play transition-all cursor-pointer text-left',
+                      isStoryActive
+                        ? 'bg-amber-500/25 text-amber-200 border border-amber-400/60'
+                        : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
+                    )}
+                  >
+                    <span>{isStoryActive ? 'Dừng trình chiếu hành trình' : 'Trình chiếu hành trình tự động'}</span>
+                  </button>
+
+                  <div className="my-1 border-t border-white/10" />
+                  <div className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-400/80">
+                    Chọn nhanh cột mốc
+                  </div>
+                  {roadmapCards.map((c) => {
+                    const isSelected = normalizedActiveKey === c.key && showJobCard;
+                    return (
+                      <button
+                        key={c.key}
+                        type="button"
+                        onClick={() => {
+                          SoundEngine.playTap();
+                          handleOpenJobCard(c.key);
+                          setIsFilterDropdownOpen(false);
+                        }}
+                        className={cn(
+                          'w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-bold font-play transition-all cursor-pointer text-left',
+                          isSelected
+                            ? 'bg-indigo-500/25 text-indigo-200 border border-indigo-400/60'
+                            : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
+                        )}
+                      >
+                        <span className="truncate">{c.yearBadge} · {c.shortName}</span>
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </motion.div>
+
       {!showJobCard && (
         <>
           {activeTab === 'history' ? (
@@ -1173,16 +1360,18 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-white/35 via-transparent to-white/15 dark:from-slate-950/55 dark:to-transparent pointer-events-none" />
 
-                          {/* Circular Logo Medallion */}
+                          {/* Circular Logo Medallion - Lấp đầy 100% hình tròn và không tạo viền */}
                           <div
-                            className={`relative z-10 w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full overflow-hidden bg-white p-0 shadow-md transition-all duration-300 flex items-center justify-center shrink-0 ${
+                            style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                            className={`relative z-10 w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] aspect-square rounded-full overflow-hidden bg-transparent p-0 border-0 border-none ring-0 shadow-none transition-all duration-300 flex items-center justify-center shrink-0 ${
                               isSelected ? 'scale-105' : ''
                             }`}
                           >
                             <img
                               src={item.logo}
                               alt={item.shortName}
-                              className="w-full h-full object-cover rounded-full pointer-events-none select-none"
+                              style={{ borderRadius: '50%' }}
+                              className="w-full h-full object-cover rounded-full border-0 border-none ring-0 p-0 pointer-events-none select-none"
                             />
                           </div>
 
@@ -1194,12 +1383,14 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                                 handleOpenJobCard(item.key);
                               }}
                               title="Sản phẩm HTVC - Click để mở chi tiết công tác LBC"
-                              className="absolute bottom-1 right-2 z-30 w-6 h-6 rounded-full bg-white shadow-md overflow-hidden p-0.5 border border-emerald-400 flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"
+                              style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                              className="absolute bottom-1 right-2 z-30 w-6 h-6 aspect-square rounded-full bg-transparent shadow-none overflow-hidden p-0 border-0 border-none ring-0 flex items-center justify-center hover:scale-110 transition-transform cursor-pointer"
                             >
                               <img
                                 src="https://i.ibb.co/1fNw0hBq/HTVC.png"
                                 alt="Sản phẩm HTVC"
-                                className="w-full h-full object-cover rounded-full"
+                                style={{ borderRadius: '50%' }}
+                                className="w-full h-full object-cover rounded-full border-0 border-none ring-0 p-0"
                               />
                             </div>
                           )}
@@ -1244,8 +1435,8 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                             : 'shadow-[0_8px_24px_-4px_rgba(30,27,75,0.08),0_2px_8px_rgba(15,23,42,0.04)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.65)] hover:shadow-[0_16px_36px_-4px_rgba(30,27,75,0.16)]'
                         } ${isHighlightedInStory ? 'ring-2 ring-amber-400 shadow-md' : ''}`}
                       >
-                        {/* KHỐI 1: CÔNG TY LÀM */}
-                        <div className="w-full flex flex-col items-center gap-1 shrink-0 pb-1.5 border-b border-black/5 dark:border-white/10">
+                        {/* NHÓM 1: THÔNG TIN CÔNG TY & LOGO SẢN PHẨM */}
+                        <div className="w-full flex flex-col items-center gap-1.5 shrink-0 pb-1.5 border-b border-black/5 dark:border-white/10">
                           <div
                             className="flex items-center justify-center gap-1.5 w-full max-w-[98%]"
                             style={{ color: item.primaryColor }}
@@ -1262,42 +1453,43 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                             </h4>
                           </div>
 
-                          {/* Vị trí đảm nhiệm */}
+                          {item.products && item.products.length > 0 && (
+                            <div className="w-full pt-0.5 px-1 flex items-center justify-center gap-2 flex-wrap shrink-0">
+                              {item.products.map((p, pIdx) => (
+                                <div
+                                  key={pIdx}
+                                  style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                                  className="w-11 h-11 sm:w-12 sm:h-12 aspect-square rounded-full overflow-hidden bg-transparent p-0 border-0 border-none ring-0 shadow-none shrink-0 flex items-center justify-center transition-all duration-300 hover:scale-110 cursor-pointer"
+                                  title={p.name}
+                                >
+                                  <img
+                                    src={p.logo}
+                                    alt={p.name}
+                                    style={{ borderRadius: '50%' }}
+                                    className="w-full h-full object-cover rounded-full border-0 border-none ring-0 p-0 select-none pointer-events-none"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* NHÓM 2: CHỨC VỤ & QUẢN LÝ SỐ LƯỢNG */}
+                        <div className="w-full flex flex-col items-center gap-1 shrink-0 py-1.5 px-2 rounded-xl bg-white/60 dark:bg-slate-900/50 border border-black/5 dark:border-white/10">
                           <div className="flex items-center justify-center gap-1 text-[11px] font-bold text-slate-700 dark:text-slate-200 leading-tight truncate max-w-[98%]">
                             <Briefcase className="w-3 h-3 text-slate-500 dark:text-slate-400 shrink-0" />
                             <span className="truncate">{item.roleSummary}</span>
                           </div>
 
-                          {/* Số lượng nhân viên quản lý */}
                           <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/90 dark:bg-slate-800/90 border border-slate-200/90 dark:border-white/15 text-slate-700 dark:text-slate-200 text-[9.5px] font-bold font-mono shadow-2xs">
                             <Users className="w-2.5 h-2.5 shrink-0" style={{ color: item.primaryColor }} />
                             <span>Quản lý: {item.headcountLabel}</span>
                           </div>
                         </div>
 
-                        {/* KHỐI 2: SẢN PHẨM CỦA CÔNG TY */}
-                        {item.products && item.products.length > 0 && (
-                          <div className="w-full py-1 px-1 flex items-center justify-center gap-2 flex-wrap shrink-0">
-                            {item.products.map((p, pIdx) => (
-                              <div
-                                key={pIdx}
-                                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white p-0.5 border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.12)] shrink-0 flex items-center justify-center transition-all duration-300 hover:scale-110 cursor-pointer"
-                                style={{ borderColor: `${item.primaryColor}45` }}
-                                title={p.name}
-                              >
-                                <img
-                                  src={p.logo}
-                                  alt={p.name}
-                                  className="w-full h-full object-contain rounded-full select-none pointer-events-none"
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* KHỐI 3: 3 NHIỆM VỤ CỐT LÕI VỚI NÚT TRÒN ĐẶC MÀU CHUẨN HÌNH THAM KHẢO */}
+                        {/* NHÓM 3: DANH SÁCH CÔNG VIỆC */}
                         {item.bullets && item.bullets.length > 0 && (
-                          <div className="w-full flex-1 flex flex-col justify-center gap-1.5 my-0.5 px-1 text-left">
+                          <div className="w-full flex-1 flex flex-col justify-center gap-1.5 my-0.5 px-1.5 py-1.5 rounded-xl bg-white/40 dark:bg-slate-900/35 border border-black/5 dark:border-white/5 text-left">
                             {item.bullets.map((b, bIdx) => (
                               <div
                                 key={bIdx}
@@ -1772,11 +1964,15 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
             <div className="w-full p-4 sm:p-5 rounded-[12px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border border-white/95 dark:border-white/10 shadow-[0_10px_30px_-5px_rgba(30,27,75,0.05)] dark:shadow-[0_10px_30px_-5px_rgba(0,0,0,0.5)] grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
               {/* Col 1-5: Logo & Company Name & Roles & Scale */}
               <div className="lg:col-span-5 flex items-start sm:items-center gap-3.5 min-w-0">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-white/10 shadow-xs p-2 flex items-center justify-center shrink-0">
+                <div
+                  style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                  className="w-14 h-14 sm:w-16 sm:h-16 aspect-square rounded-full bg-transparent border-0 border-none ring-0 shadow-none p-0 overflow-hidden flex items-center justify-center shrink-0"
+                >
                   <img
                     src={activeMilestone.logo}
                     alt={activeMilestone.company}
-                    className="w-full h-full object-contain"
+                    style={{ borderRadius: '50%' }}
+                    className="w-full h-full object-cover rounded-full border-0 border-none ring-0 p-0"
                   />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -1833,15 +2029,21 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                 <h4 className="text-xs font-black font-play text-[#1E1B4B] dark:text-white mb-2">
                   {formatCardTitle("Thương hiệu tiêu biểu")}
                 </h4>
-                <div className="grid grid-cols-3 gap-2 items-center">
+                <div className="flex flex-wrap gap-2 items-center">
                   {brandsList.map((b, bIdx) => (
                     <div
                       key={bIdx}
-                      className="p-1.5 rounded-xl bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-white/10 flex items-center justify-center h-12 sm:h-13 shadow-xs transition-all"
+                      style={b.logo ? { borderRadius: '50%', aspectRatio: '1 / 1' } : undefined}
+                      className={b.logo ? "w-11 h-11 sm:w-12 sm:h-12 aspect-square rounded-full bg-transparent border-0 border-none ring-0 shadow-none p-0 overflow-hidden flex items-center justify-center transition-all shrink-0" : "p-1.5 rounded-full bg-white/90 dark:bg-slate-800/90 border-0 flex items-center justify-center h-11 px-3 transition-all"}
                       title={b.name}
                     >
                       {b.logo ? (
-                        <img src={b.logo} alt={b.name} className="max-h-9 sm:max-h-10 max-w-[90%] object-contain drop-shadow-xs" />
+                        <img
+                          src={b.logo}
+                          alt={b.name}
+                          style={{ borderRadius: '50%' }}
+                          className="w-full h-full object-cover rounded-full border-0 border-none ring-0 p-0"
+                        />
                       ) : (
                         <span className={`text-[10px] font-black uppercase text-center leading-tight truncate px-1 ${b.textColor || 'text-slate-800 dark:text-slate-200'}`}>
                           {b.name}
@@ -1960,13 +2162,19 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                 </div>
 
                 <div className="relative z-10 max-w-[62%] sm:max-w-[56%] space-y-2">
-                  <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/30 shadow-xs">
-                    <img
-                      src={activeMilestone.logo}
-                      alt="Logo"
-                      className="h-7 sm:h-8 max-w-[90px] object-contain bg-white rounded px-1.5 py-0.5 shadow-2xs"
-                    />
-                    <span className="text-[11px] font-mono font-black text-white/95">
+                  <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full border-0 shadow-none">
+                    <div
+                      style={{ borderRadius: '50%', aspectRatio: '1 / 1' }}
+                      className="w-7 h-7 sm:w-8 sm:h-8 aspect-square rounded-full overflow-hidden p-0 border-0 border-none ring-0 bg-transparent shrink-0"
+                    >
+                      <img
+                        src={activeMilestone.logo}
+                        alt="Logo"
+                        style={{ borderRadius: '50%' }}
+                        className="w-full h-full object-cover rounded-full border-0 border-none ring-0 p-0"
+                      />
+                    </div>
+                    <span className="text-[11px] font-mono font-black text-white/95 pr-1">
                       {activeMilestone.period}
                     </span>
                   </div>
@@ -1986,11 +2194,17 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ currentTheme = '
                   {brandsList.map((b, bIdx) => (
                     <div
                       key={bIdx}
-                      className="logo-pill-light p-1.5 px-3 rounded-full bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-white/20 text-[10px] font-bold shadow-xs flex items-center justify-center transition-transform"
+                      style={b.logo ? { borderRadius: '50%', aspectRatio: '1 / 1' } : undefined}
+                      className={b.logo ? "w-9 h-9 sm:w-10 sm:h-10 aspect-square rounded-full p-0 bg-transparent border-0 border-none ring-0 shadow-none overflow-hidden flex items-center justify-center transition-transform shrink-0" : "p-1.5 px-3 rounded-full bg-white/95 dark:bg-slate-800/95 text-slate-800 dark:text-slate-100 border-0 text-[10px] font-bold flex items-center justify-center transition-transform"}
                       title={b.name}
                     >
                       {b.logo ? (
-                        <img src={b.logo} alt={b.name} className="h-6 sm:h-7 max-w-[100px] object-contain drop-shadow-xs" />
+                        <img
+                          src={b.logo}
+                          alt={b.name}
+                          style={{ borderRadius: '50%' }}
+                          className="w-full h-full object-cover rounded-full border-0 border-none ring-0 p-0"
+                        />
                       ) : (
                         <span>{b.name}</span>
                       )}

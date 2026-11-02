@@ -2,19 +2,108 @@
 
 export const DEFAULT_VOICE_STORAGE_KEY = 'hungthai_default_voice_uri';
 export const VOICE_CHANGE_EVENT = 'hungthai-voice-change';
+export const GEMINI_PUCK_VOICE_URI = 'gemini-puck-vi-mien-tay';
 
 export type BrowserEnvironment = 'edge' | 'chrome' | 'other';
+export type PuckSpeakingStyle = 'friendly' | 'professional' | 'narration';
+export type PuckPitchPreset = 'low' | 'natural' | 'warm';
 
 export interface EnhancedVoiceOption {
   voiceURI: string;
   name: string;
   lang: string;
   category: 'vi' | 'multilingual';
-  provider: 'microsoft' | 'google' | 'apple' | 'system';
+  provider: 'gemini' | 'microsoft' | 'google' | 'apple' | 'system';
   isDefaultEdge?: boolean;
   isDefaultChrome?: boolean;
+  isGeminiPuck?: boolean;
   badgeLabel?: string;
   nativeVoice?: SpeechSynthesisVoice;
+}
+
+export interface GeminiPuckTtsResult {
+  audioBase64: string;
+  audioDataUrl: string;
+  mimeType: string;
+  voiceName: string;
+  model: string;
+  language: string;
+  accent: string;
+  speakingStyle: PuckSpeakingStyle;
+  speakingRate: number;
+  pitch: PuckPitchPreset;
+  processedText: string;
+  accentLimitationNote: string;
+}
+
+// Active HTMLAudioElement instance for Gemini PUCK playback across the site
+let activeGeminiAudio: HTMLAudioElement | null = null;
+
+/**
+ * Dừng mọi âm thanh TTS đang phát (cả Gemini PUCK Audio và Web Speech API)
+ */
+export function stopActiveSpeech(): void {
+  if (activeGeminiAudio) {
+    try {
+      activeGeminiAudio.pause();
+      activeGeminiAudio.currentTime = 0;
+    } catch {}
+    activeGeminiAudio = null;
+  }
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch {}
+  }
+}
+
+/**
+ * Gọi API `/api/tts` thực tế sử dụng Google Gemini TTS – Voice: PUCK (Miền Tây Nam Bộ)
+ */
+export async function generateGeminiPuckSpeech(params: {
+  text: string;
+  speakingStyle?: PuckSpeakingStyle;
+  speakingRate?: number;
+  pitch?: PuckPitchPreset;
+}): Promise<GeminiPuckTtsResult> {
+  const response = await fetch('/api/tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      text: params.text,
+      speakingStyle: params.speakingStyle || 'friendly',
+      speakingRate: params.speakingRate ?? 1.0,
+      pitch: params.pitch || 'natural',
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || !data.audioBase64) {
+    throw new Error(
+      data?.error || 'Không thể tạo giọng đọc PUCK từ Google Gemini TTS.'
+    );
+  }
+
+  const mimeType = data.mimeType || 'audio/wav';
+  const audioDataUrl = `data:${mimeType};base64,${data.audioBase64}`;
+
+  return {
+    audioBase64: data.audioBase64,
+    audioDataUrl,
+    mimeType,
+    voiceName: data.voiceName || 'PUCK',
+    model: data.model || 'gemini-3.8-flash-lite-tts',
+    language: data.language || 'vi-VN',
+    accent: data.accent || 'Southern Vietnamese – Mekong Delta (Miền Tây Nam Bộ)',
+    speakingStyle: data.speakingStyle || params.speakingStyle || 'friendly',
+    speakingRate: data.speakingRate ?? params.speakingRate ?? 1.0,
+    pitch: data.pitch || params.pitch || 'natural',
+    processedText: data.processedText || params.text,
+    accentLimitationNote:
+      data.accentLimitationNote ||
+      'PUCK là giọng tổng hợp có sẵn của Google Gemini TTS kết hợp chỉ dẫn phát âm tiếng Việt Nam Bộ (ưu tiên sắc thái Miền Tây Nam Bộ).',
+  };
 }
 
 /**
@@ -29,9 +118,21 @@ export function detectBrowserEnvironment(): BrowserEnvironment {
 }
 
 /**
- * Danh sách giọng đọc chủ động bổ sung (Proactive Presets) cho Microsoft & Chrome và Đa ngôn ngữ
+ * Danh sách giọng đọc chủ động bổ sung (Proactive Presets)
+ * Ưu tiên số 1: Google Gemini TTS – PUCK (Nam Miền Tây Nam Bộ • vi-VN)
  */
 export const PROACTIVE_PRESET_VOICES: EnhancedVoiceOption[] = [
+  // GIỌNG AI CHỦ ĐẠO: GOOGLE GEMINI TTS - PUCK (MIỀN TÂY NAM BỘ)
+  {
+    voiceURI: GEMINI_PUCK_VOICE_URI,
+    name: 'Google Gemini TTS – PUCK (Nam Miền Tây Nam Bộ • Ấm áp, Gần gũi)',
+    lang: 'vi-VN',
+    category: 'vi',
+    provider: 'gemini',
+    isGeminiPuck: true,
+    badgeLabel: 'Gemini PUCK • Miền Tây',
+  },
+
   // GIỌNG MICROSOFT TIẾNG VIỆT
   {
     voiceURI: 'microsoft-nam-minh-vi-vn',
@@ -130,29 +231,22 @@ export const PROACTIVE_PRESET_VOICES: EnhancedVoiceOption[] = [
 ];
 
 /**
- * Trả về Voice URI mặc định theo môi trường trình duyệt:
- * - Microsoft Edge -> Nam Minh
- * - Chrome -> Tiếng Việt 5
+ * Trả về Voice URI mặc định: ưu tiên Google Gemini TTS – PUCK (Miền Tây Nam Bộ)
  */
 export function getDefaultVoiceURIForBrowser(): string {
-  const env = detectBrowserEnvironment();
-  if (env === 'edge') {
-    return 'microsoft-nam-minh-vi-vn';
-  }
-  return 'google-tieng-viet-5-vi-vn';
+  return GEMINI_PUCK_VOICE_URI;
 }
 
 /**
  * Lấy Voice URI đã lưu làm mặc định trong localStorage.
- * Nếu chưa lưu, tự động trả về giọng mặc định theo trình duyệt (Edge: Nam Minh, Chrome: Tiếng Việt 5).
  */
 export function getSavedVoiceURI(): string {
-  if (typeof window === 'undefined') return getDefaultVoiceURIForBrowser();
+  if (typeof window === 'undefined') return GEMINI_PUCK_VOICE_URI;
   try {
     const saved = localStorage.getItem(DEFAULT_VOICE_STORAGE_KEY);
     if (saved && saved.trim()) return saved;
   } catch {}
-  return getDefaultVoiceURIForBrowser();
+  return GEMINI_PUCK_VOICE_URI;
 }
 
 /**
@@ -164,7 +258,6 @@ export function saveDefaultVoiceURI(voiceURI: string): void {
     localStorage.setItem(DEFAULT_VOICE_STORAGE_KEY, voiceURI);
   } catch {}
 
-  // Kích hoạt custom event để mọi component lắng nghe cập nhật ngay lập tức
   window.dispatchEvent(
     new CustomEvent(VOICE_CHANGE_EVENT, {
       detail: { voiceURI },
@@ -183,7 +276,9 @@ export function getMergedEnhancedVoices(nativeVoices: SpeechSynthesisVoice[]): E
   for (const preset of PROACTIVE_PRESET_VOICES) {
     let matchedNative: SpeechSynthesisVoice | undefined;
 
-    if (preset.voiceURI === 'microsoft-nam-minh-vi-vn') {
+    if (preset.voiceURI === GEMINI_PUCK_VOICE_URI) {
+      matchedNative = undefined;
+    } else if (preset.voiceURI === 'microsoft-nam-minh-vi-vn') {
       matchedNative = nativeVoices.find((v) => /nam\s*minh/i.test(v.name));
     } else if (preset.voiceURI === 'microsoft-hoai-my-vi-vn') {
       matchedNative = nativeVoices.find((v) => /hoai\s*my/i.test(v.name));
@@ -258,14 +353,7 @@ export function getMergedEnhancedVoices(nativeVoices: SpeechSynthesisVoice[]): E
 }
 
 /**
- * Tìm giọng đọc tối ưu nhất từ danh sách voices native:
- * 1. Khớp URI đã lưu mặc định (hoặc URI truyền vào)
- * 2. Khớp với preset giọng tương ứng (Nam Minh hoặc Tiếng Việt 5)
- * 3. Tự động áp dụng giọng mặc định theo môi trường trình duyệt:
- *    - Microsoft Edge: Ưu tiên Nam Minh
- *    - Google Chrome: Ưu tiên Tiếng Việt 5
- * 4. Ưu tiên giọng Tiếng Việt
- * 5. Fallback về giọng đầu tiên
+ * Tìm giọng đọc tối ưu nhất từ danh sách voices native (fallback khi không dùng Gemini PUCK):
  */
 export function findBestVoice(
   voices: SpeechSynthesisVoice[],
@@ -275,19 +363,16 @@ export function findBestVoice(
 
   const targetURI = preferredURI || getSavedVoiceURI();
 
-  // 1. Kiểm tra trực tiếp khớp voiceURI
-  if (targetURI) {
+  if (targetURI && targetURI !== GEMINI_PUCK_VOICE_URI) {
     const directMatch = voices.find((v) => v.voiceURI === targetURI);
     if (directMatch) return directMatch;
 
-    // 2. Nếu target là preset Nam Minh
     if (
       targetURI === 'microsoft-nam-minh-vi-vn' ||
       /nam\s*minh/i.test(targetURI)
     ) {
       const nm = voices.find((v) => /nam\s*minh/i.test(v.name));
       if (nm) return nm;
-      // Nếu không có Nam Minh trên trình duyệt này, fallback về giọng tiếng Việt
       const viVoice = voices.find(
         (v) =>
           v.lang.toLowerCase().includes('vi') ||
@@ -297,7 +382,6 @@ export function findBestVoice(
       if (viVoice) return viVoice;
     }
 
-    // 3. Nếu target là preset Tiếng Việt 5
     if (
       targetURI === 'google-tieng-viet-5-vi-vn' ||
       /tiếng việt 5|tieng viet 5/i.test(targetURI)
@@ -315,7 +399,6 @@ export function findBestVoice(
       if (viVoice) return viVoice;
     }
 
-    // 4. Nếu target là preset đa ngôn ngữ (vd: US English, Japanese, v.v.)
     const matchedPreset = PROACTIVE_PRESET_VOICES.find((p) => p.voiceURI === targetURI);
     if (matchedPreset) {
       const langMatch = voices.find((v) =>
@@ -325,7 +408,6 @@ export function findBestVoice(
     }
   }
 
-  // 5. Mặc định theo trình duyệt nếu không có cấu hình trước
   const browserEnv = detectBrowserEnvironment();
   if (browserEnv === 'edge') {
     const edgeDefault = voices.find((v) => /nam\s*minh/i.test(v.name));
@@ -337,7 +419,6 @@ export function findBestVoice(
     if (chromeDefault) return chromeDefault;
   }
 
-  // 6. Ưu tiên giọng Tiếng Việt chung
   const viVoice = voices.find(
     (v) =>
       /nam\s*minh/i.test(v.name) ||
@@ -351,13 +432,11 @@ export function findBestVoice(
 }
 
 /**
- * Tìm giọng đọc Tiếng Anh chuyên nghiệp nhất từ danh sách voices native:
- * Ưu tiên: Google US English, Microsoft Jenny Online (Natural), Microsoft Guy, Samantha, Alex, Daniel...
+ * Tìm giọng đọc Tiếng Anh chuyên nghiệp nhất từ danh sách voices native
  */
 export function findBestEnglishVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined {
   if (!voices || voices.length === 0) return undefined;
 
-  // 1. Ưu tiên các giọng Online Natural / Neural / Studio chuyên nghiệp
   const premiumEnVoice = voices.find(
     (v) =>
       v.lang.toLowerCase().startsWith('en') &&
@@ -366,7 +445,6 @@ export function findBestEnglishVoice(voices: SpeechSynthesisVoice[]): SpeechSynt
   );
   if (premiumEnVoice) return premiumEnVoice;
 
-  // 2. Ưu tiên Google US English hoặc Microsoft US English
   const googleOrMsEn = voices.find(
     (v) =>
       v.lang.toLowerCase().startsWith('en') &&
@@ -374,7 +452,6 @@ export function findBestEnglishVoice(voices: SpeechSynthesisVoice[]): SpeechSynt
   );
   if (googleOrMsEn) return googleOrMsEn;
 
-  // 3. Bất kỳ giọng tiếng Anh nào
   const anyEn = voices.find((v) => v.lang.toLowerCase().startsWith('en'));
   if (anyEn) return anyEn;
 
@@ -382,24 +459,24 @@ export function findBestEnglishVoice(voices: SpeechSynthesisVoice[]): SpeechSynt
 }
 
 /**
- * Đọc văn bản toàn website bằng giọng đọc mặc định đã chọn
+ * Đọc văn bản toàn website bằng giọng đọc mặc định đã chọn (Ưu tiên Google Gemini TTS - PUCK Miền Tây Nam Bộ)
  */
 export function speakSiteText(
   text: string,
   options?: {
     rate?: number;
     pitch?: number;
+    speakingStyle?: PuckSpeakingStyle;
     preferredVoiceURI?: string;
     onStart?: () => void;
     onEnd?: () => void;
-    onError?: () => void;
+    onError?: (err?: string) => void;
   }
 ): void {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+  if (typeof window === 'undefined') return;
 
-  window.speechSynthesis.cancel();
+  stopActiveSpeech();
 
-  // Dọn dẹp ký tự markdown
   const cleanText = text
     .replace(/\*\*(.*?)\*\*/g, '$1')
     .replace(/[•#*>\-]/g, ' ')
@@ -408,12 +485,55 @@ export function speakSiteText(
 
   if (!cleanText) return;
 
+  const targetVoiceURI = options?.preferredVoiceURI || getSavedVoiceURI();
+  const rate = Math.min(1.15, Math.max(0.85, options?.rate ?? 1.0));
+  const pitchVal = options?.pitch ?? 1.0;
+  const pitchPreset: PuckPitchPreset =
+    pitchVal < 0.96 ? 'low' : pitchVal > 1.06 ? 'warm' : 'natural';
+
+  // Nếu đang chọn giọng Google Gemini TTS – PUCK (mặc định), gọi API thực tế /api/tts
+  if (!targetVoiceURI || targetVoiceURI === GEMINI_PUCK_VOICE_URI) {
+    generateGeminiPuckSpeech({
+      text: cleanText,
+      speakingStyle: options?.speakingStyle || 'friendly',
+      speakingRate: rate,
+      pitch: pitchPreset,
+    })
+      .then((res) => {
+        const audio = new Audio(res.audioDataUrl);
+        audio.playbackRate = rate;
+        activeGeminiAudio = audio;
+        audio.onplay = () => {
+          options?.onStart?.();
+        };
+        audio.onended = () => {
+          activeGeminiAudio = null;
+          options?.onEnd?.();
+        };
+        audio.onerror = () => {
+          activeGeminiAudio = null;
+          options?.onError?.('Lỗi phát âm thanh PUCK.');
+        };
+        audio.play().catch((err) => {
+          activeGeminiAudio = null;
+          options?.onError?.(err?.message || 'Không thể tự động phát âm thanh.');
+        });
+      })
+      .catch((err) => {
+        options?.onError?.(err instanceof Error ? err.message : 'Lỗi kết nối Gemini TTS');
+      });
+    return;
+  }
+
+  // Fallback cho các giọng trình duyệt khác khi người dùng chủ động chọn Microsoft/Chrome
+  if (!('speechSynthesis' in window)) return;
+
   const utterance = new SpeechSynthesisUtterance(cleanText);
-  utterance.rate = options?.rate ?? 1.0;
-  utterance.pitch = options?.pitch ?? 1.05;
+  utterance.rate = rate;
+  utterance.pitch = pitchVal;
 
   const voices = window.speechSynthesis.getVoices();
-  const chosenVoice = findBestVoice(voices, options?.preferredVoiceURI);
+  const chosenVoice = findBestVoice(voices, targetVoiceURI);
   if (chosenVoice) {
     utterance.voice = chosenVoice;
     utterance.lang = chosenVoice.lang || 'vi-VN';
@@ -423,7 +543,7 @@ export function speakSiteText(
 
   if (options?.onStart) utterance.onstart = options.onStart;
   if (options?.onEnd) utterance.onend = options.onEnd;
-  if (options?.onError) utterance.onerror = options.onError;
+  if (options?.onError) utterance.onerror = () => options.onError?.();
 
   window.speechSynthesis.speak(utterance);
 }

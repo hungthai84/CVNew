@@ -1,4 +1,3 @@
-// Lucian UX/UI Prompt #044 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#044
 'use client';
 
 import React, { useState } from 'react';
@@ -33,11 +32,11 @@ export const LucianAccordion: React.FC<LucianAccordionProps> = ({
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       const next = (index + 1) % items.length;
-      document.getElementById(`lucian-faq-btn-${next}`)?.focus();
+      document.getElementById(`faq-btn-${next}`)?.focus();
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       const prev = (index - 1 + items.length) % items.length;
-      document.getElementById(`lucian-faq-btn-${prev}`)?.focus();
+      document.getElementById(`faq-btn-${prev}`)?.focus();
     }
   };
 
@@ -57,10 +56,10 @@ export const LucianAccordion: React.FC<LucianAccordionProps> = ({
             }`}
           >
             <button
-              id={`lucian-faq-btn-${i}`}
+              id={`faq-btn-${i}`}
               type="button"
               aria-expanded={isOpen}
-              aria-controls={`lucian-faq-ans-${i}`}
+              aria-controls={`faq-ans-${i}`}
               onClick={() => toggle(i)}
               onKeyDown={(e) => handleKeyDown(e, i)}
               className="w-full flex items-center justify-between gap-3 px-3.5 py-2.5 text-left cursor-pointer focus-visible:outline-2 focus-visible:outline-indigo-500 focus-visible:outline-offset-2 rounded-2xl transition-colors"
@@ -104,9 +103,9 @@ export const LucianAccordion: React.FC<LucianAccordionProps> = ({
 
             {/* Answer region with smooth accordion expansion */}
             <div
-              id={`lucian-faq-ans-${i}`}
+              id={`faq-ans-${i}`}
               role="region"
-              aria-labelledby={`lucian-faq-btn-${i}`}
+              aria-labelledby={`faq-btn-${i}`}
               className={`grid transition-[grid-template-rows] duration-300 ease-out ${
                 isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
               }`}

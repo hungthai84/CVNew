@@ -242,6 +242,14 @@ class CustomSoundEngine {
     }
   }
 
+  public playSuccess() {
+    this.playThemeChime();
+  }
+
+  public playNotification() {
+    this.playGlassChime(0.12);
+  }
+
   // Âm thanh tích tắc kim đồng hồ cơ cao cấp (Swiss Mechanical Clock Tick)
   public playClockTick() {
     if (!this.enabled) return;

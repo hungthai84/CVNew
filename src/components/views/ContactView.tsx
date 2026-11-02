@@ -340,7 +340,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
                 type="button"
                 onClick={() => setActiveTab('card')}
                 className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-400/30 text-indigo-600 dark:text-cyan-300 font-bold text-[10px] transition cursor-pointer"
-                title="Mở Thẻ Danh Thiếp Điện Tử 3D (Lucian UX/UI #052)"
+                title="Mở Thẻ Danh Thiếp Điện Tử 3D"
               >
                 <WebIcon name="layers" className="w-3 h-3" />
                 <span>Thẻ 3D</span>
@@ -848,13 +848,13 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
             </div>
           )}
 
-          {/* TAB 3: Thẻ Danh Thiếp Điện Tử Tương Tác 3D (Lucian UX/UI Prompt #052) */}
+          {/* TAB 3: Thẻ Danh Thiếp Điện Tử Tương Tác 3D */}
           {activeTab === 'card' && (
             <div className="flex-1 flex flex-col items-center justify-between gap-2.5 relative z-10 min-h-0 py-1 overflow-y-auto no-scrollbar">
               <div className="text-center space-y-1 shrink-0">
                 <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-600 dark:text-cyan-300 text-[10px] font-mono font-bold tracking-wider uppercase">
                   <WebIcon name="layers" className="w-3 h-3 animate-pulse" />
-                  <span>Executive Credential Card · Lucian UX/UI #052</span>
+                  <span>Executive Credential Card 3D</span>
                 </div>
                 <h3 className="text-sm sm:text-base font-black font-play text-slate-900 dark:text-white">
                   Danh Thiếp Lãnh Đạo CSKH 3D
@@ -864,7 +864,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ currentTheme = 'light-
                 </p>
               </div>
 
-              {/* Component ExecutiveCard3D từ Lucian UX/UI */}
+              {/* Component ExecutiveCard3D */}
               <div className="w-full flex-1 flex items-center justify-center my-auto min-h-0 py-1">
                 <ExecutiveCard3D />
               </div>

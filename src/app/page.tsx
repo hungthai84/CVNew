@@ -38,7 +38,7 @@ import { LetterView } from '@/components/views/LetterView';
 import { AboutView } from '@/components/views/AboutView';
 import { ServicesView } from '@/components/views/ServicesView';
 import { SkillsView } from '@/components/views/SkillsView';
-import EducationView from '@/components/views/EducationView';
+import { EducationView } from '@/components/views/EducationView';
 import { ExperienceView } from '@/components/views/ExperienceView';
 import { ProjectsView } from '@/components/views/ProjectsView';
 import { SystemsView } from '@/components/views/SystemsView';
@@ -72,7 +72,6 @@ export default function HomePage() {
   const [showBackToTop, setShowBackToTop] = useState<boolean>(false);
   const [isZenMode, setIsZenMode] = useState<boolean>(false);
   const [zenCountdown, setZenCountdown] = useState<number | null>(null);
-  const [responsiveViewport, setResponsiveViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
 
   // Wallpaper Slideshow Live State
   const [slideshowProgress, setSlideshowProgress] = useState<number>(0);
@@ -410,38 +409,6 @@ export default function HomePage() {
           document.documentElement.classList.remove('dark');
         }
 
-        // 1.1 Khôi phục persistent Display settings làm mặc định
-        try {
-          const savedPercent = localStorage.getItem('hungthai_font_scale_percent');
-          let scaleVal = 100;
-          if (savedPercent) {
-            const parsed = parseInt(savedPercent, 10);
-            if (!isNaN(parsed) && parsed >= 70 && parsed <= 160) {
-              scaleVal = parsed;
-            }
-          }
-          const scaleRatio = scaleVal / 100;
-          let scaleKey: 'sm' | 'md' | 'lg' | '2xl' = 'md';
-          if (scaleVal <= 85) scaleKey = 'sm';
-          else if (scaleVal >= 125) scaleKey = '2xl';
-          else if (scaleVal >= 110) scaleKey = 'lg';
-
-          document.documentElement.style.fontSize = `${(16 * scaleRatio).toFixed(1)}px`;
-          document.documentElement.style.setProperty('--a11y-fs', scaleRatio.toFixed(2));
-          document.documentElement.setAttribute('data-font-scale', scaleKey);
-
-          // A11y accessibility flags
-          if (localStorage.getItem('hungthai_a11y_high_contrast') === '1') {
-            document.documentElement.classList.add('a11y-high-contrast');
-          }
-          if (localStorage.getItem('hungthai_a11y_highlight_links') === '1') {
-            document.documentElement.classList.add('a11y-highlight-links');
-          }
-          if (localStorage.getItem('hungthai_a11y_wide_lines') === '1') {
-            document.documentElement.classList.add('a11y-wide-line-height');
-          }
-        } catch {}
-
         // 2. Load advanced wallpaper settings
         const loadedSettings = await loadWallpaperSettings();
         setWallpaperSettings(loadedSettings);
@@ -705,7 +672,9 @@ export default function HomePage() {
             onScrollCapture={handleContentScrollCapture}
             key={`content-${currentPage}`}
             id="content-display"
-            className="animate-page-enter flex-1 p-[15px] overflow-y-auto snap-y snap-proximity scroll-pt-[15px] scroll-smooth glass-scrollbar relative flex flex-col gap-[15px] h-full w-full min-w-0"
+            className={`animate-page-enter flex-1 overflow-y-auto snap-y snap-proximity scroll-pt-[15px] scroll-smooth glass-scrollbar relative flex flex-col h-full w-full min-w-0 ${
+              currentPage === 0 ? 'p-0 gap-0 overflow-hidden' : 'p-[15px] gap-[15px]'
+            }`}
           >
             {currentPage === 0 && (
               <HomeView

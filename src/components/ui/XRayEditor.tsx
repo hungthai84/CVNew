@@ -108,16 +108,81 @@ export const XRayEditor: React.FC<XRayEditorProps> = ({
     },
   ];
 
-  // Helper: Find human-friendly summary of an element
+  // Helper: Find human-friendly summary of an element with high-precision file & code detection
   const inspectElement = (el: HTMLElement): XRaySelectedElementInfo => {
     const rect = el.getBoundingClientRect();
     const tag = el.tagName.toLowerCase();
-    const text = (el.innerText || el.textContent || '').trim().replace(/\s+/g, ' ');
-    const textSnippet = text.length > 55 ? text.substring(0, 52) + '...' : text;
+
+    // 1. Detect actual file source
+    let detectedFile = '';
+    let locationName = currentPageName;
+
+    if (el.closest('#app-header')) {
+      detectedFile = 'src/components/layout/Header.tsx';
+      locationName = 'Thanh điều hướng Header';
+    } else if (el.closest('#app-footer')) {
+      detectedFile = 'src/components/layout/Footer.tsx';
+      locationName = 'Chân trang Footer';
+    } else if (el.closest('#weather-widget') || el.closest('.weather-widget')) {
+      detectedFile = 'src/components/layout/WeatherWidget.tsx';
+      locationName = 'Tiện ích Thời tiết (Footer)';
+    } else if (el.closest('#ai-chat-modal')) {
+      detectedFile = 'src/components/ui/AiChatModal.tsx';
+      locationName = 'Trợ lý AI Chat Modal';
+    } else if (el.closest('#pages-3d-carousel-modal')) {
+      detectedFile = 'src/components/ui/Pages3DCarouselModal.tsx';
+      locationName = 'Modal 3D Carousel';
+    } else if (el.closest('#background-layer')) {
+      detectedFile = 'src/components/layout/BackgroundLayer.tsx';
+      locationName = 'Lớp hình nền BackgroundLayer';
+    } else {
+      const fileSourceMap: Record<number, string> = {
+        0: 'src/components/views/HomeView.tsx',
+        1: 'src/components/views/LetterView.tsx',
+        2: 'src/components/views/AboutView.tsx',
+        3: 'src/components/views/ServicesView.tsx',
+        4: 'src/components/views/SkillsView.tsx',
+        5: 'src/components/views/EducationView.tsx',
+        6: 'src/components/views/ExperienceView.tsx',
+        7: 'src/components/views/ProjectsView.tsx',
+        8: 'src/components/views/SystemsView.tsx',
+        9: 'src/components/views/InterviewView.tsx',
+        10: 'src/components/views/HoroscopeView.tsx',
+        11: 'src/components/views/MemoriesView.tsx',
+        12: 'src/components/views/ContactView.tsx',
+        13: 'src/components/views/WallpaperView.tsx',
+      };
+      detectedFile = fileSourceMap[currentPageId] || 'src/app/page.tsx';
+    }
+
+    // 2. Extract meaningful text or labels
+    const rawAriaLabel = el.getAttribute('aria-label') || '';
+    const rawTitle = el.getAttribute('title') || '';
+    const rawAlt = el.getAttribute('alt') || '';
+    const rawPlaceholder = (el as HTMLInputElement).placeholder || '';
+
+    // Direct text of element (prefer direct child text to avoid huge ancestor text dumps)
+    let directText = '';
+    for (let i = 0; i < el.childNodes.length; i++) {
+      const node = el.childNodes[i];
+      if (node.nodeType === Node.TEXT_NODE) {
+        directText += node.textContent || '';
+      }
+    }
+    directText = directText.trim().replace(/\s+/g, ' ');
+
+    const fullText = (el.innerText || el.textContent || '').trim().replace(/\s+/g, ' ');
+    const chosenText = rawTitle || rawAriaLabel || rawAlt || rawPlaceholder || directText || fullText;
+    const textSnippet = chosenText.length > 45 ? chosenText.substring(0, 42) + '...' : chosenText;
+
+    // Detect if element has an icon
+    const hasSvg = !!el.querySelector('svg');
+    const iconHint = hasSvg ? ' (kèm biểu tượng icon)' : '';
 
     let summary = '';
     if (tag === 'button') summary = textSnippet ? `Nút bấm "${textSnippet}"` : 'Nút bấm tương tác';
-    else if (tag === 'img') summary = `Hình ảnh (${el.getAttribute('alt') || 'Graphic'})`;
+    else if (tag === 'a') summary = textSnippet ? `Liên kết "${textSnippet}"` : 'Thẻ liên kết (Link)';
+    else if (tag === 'img') summary = `Hình ảnh (${rawAlt || rawTitle || 'Graphic'})`;
     else if (tag === 'video') summary = 'Khung phát Video';
     else if (/^h[1-6]$/.test(tag)) summary = `Tiêu đề ${tag.toUpperCase()} "${textSnippet}"`;
     else if (tag === 'p') summary = textSnippet ? `Đoạn văn "${textSnippet}"` : 'Đoạn văn bản';
@@ -125,18 +190,26 @@ export const XRayEditor: React.FC<XRayEditorProps> = ({
     else if (tag === 'aside') summary = 'Thẻ cột bên phải (Aside/Sidebar)';
     else if (tag === 'nav' || tag === 'header') summary = 'Thanh điều hướng Header/Menu';
     else if (tag === 'footer') summary = 'Khung chân trang Footer';
+    else if (tag === 'input') summary = `Ô nhập liệu "${rawPlaceholder || textSnippet}"`;
     else summary = textSnippet ? `Khối <${tag}> "${textSnippet}"` : `Khối đối tượng <${tag}>`;
 
     const classNameStr = typeof el.className === 'string' ? el.className : '';
+    const classList = classNameStr.split(/\s+/).filter(Boolean);
+    // Take 2-3 most distinctive Tailwind classes (e.g., rounded, bg-, text-, border-)
+    const distinctiveClasses = classList
+      .filter((c) => /^(rounded|bg-|border|text-|shadow|aspect|flex|grid)/.test(c))
+      .slice(0, 3)
+      .join(' ');
+
     const suggestedSelector = el.id
       ? `#${el.id}`
-      : `${tag}${classNameStr ? '.' + classNameStr.split(' ')[0] : ''}`;
+      : `${tag}${distinctiveClasses ? '.' + distinctiveClasses.replace(/\s+/g, '.') : ''}`;
 
     return {
       tag,
       id: el.id,
       className: classNameStr,
-      innerTextSummary: summary,
+      innerTextSummary: summary + iconHint,
       rect: {
         top: rect.top + window.scrollY,
         left: rect.left + window.scrollX,
@@ -145,7 +218,11 @@ export const XRayEditor: React.FC<XRayEditorProps> = ({
       },
       suggestedSelector,
       pageId: currentPageId,
-      pageName: currentPageName,
+      pageName: locationName,
+      filePath: detectedFile,
+      ariaLabel: rawAriaLabel || rawTitle,
+      textSnippet,
+      uniqueClassSnippet: distinctiveClasses,
     };
   };
 
@@ -203,7 +280,7 @@ export const XRayEditor: React.FC<XRayEditorProps> = ({
       const info = inspectElement(target);
       setSelectedElement(info);
       setTargetObject(info.innerTextSummary);
-      setTargetPage(currentPageName);
+      setTargetPage(info.pageName || currentPageName);
       setGeneratedPrompt(''); // Clear previous generated prompt to prompt user to generate new
 
       // Turn off inspect crosshair and open editor popup
@@ -260,7 +337,7 @@ export const XRayEditor: React.FC<XRayEditorProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isActive, isEditorPopupOpen, isLibraryOpen]);
 
-  // Generate 1-line concise Vietnamese prompt
+  // Generate actionable, crystal-clear Vietnamese prompt with 100% precision identification
   const handleGeneratePrompt = useCallback(() => {
     const actionObj = actionOptions.find((a) => a.type === actionType);
     const actionText = actionObj ? actionObj.label : 'Chỉnh sửa';
@@ -273,30 +350,25 @@ export const XRayEditor: React.FC<XRayEditorProps> = ({
         : 'Áp dụng trên toàn website';
 
     const objName = targetObject.trim() || 'Đối tượng được chọn';
-    const tagInfo = selectedElement?.tag ? ` (<${selectedElement.tag}>)` : '';
+    const tag = selectedElement?.tag || 'element';
+    const idSnippet = selectedElement?.id ? `, id="${selectedElement.id}"` : '';
+    const classSnippet = selectedElement?.uniqueClassSnippet ? `, class="${selectedElement.uniqueClassSnippet}"` : '';
+    const currentFilePath = selectedElement?.filePath || 'src/app/page.tsx';
     const note = actionCustomNote.trim() ? ` - ${actionCustomNote.trim()}` : '';
 
-    const fileSourceMap: Record<number, string> = {
-      0: 'src/components/views/HomeView.tsx',
-      1: 'src/components/views/LetterView.tsx',
-      2: 'src/components/views/AboutView.tsx',
-      3: 'src/components/views/ServicesView.tsx',
-      4: 'src/components/views/SkillsView.tsx',
-      5: 'src/components/views/EducationView.tsx',
-      6: 'src/components/views/ExperienceView.tsx',
-      7: 'src/components/views/ProjectsView.tsx',
-      8: 'src/components/views/SystemsView.tsx',
-      9: 'src/components/views/InterviewView.tsx',
-      10: 'src/components/views/HoroscopeView.tsx',
-      11: 'src/components/views/MemoriesView.tsx',
-      12: 'src/components/views/ContactView.tsx',
-      13: 'src/components/views/WallpaperView.tsx',
-    };
-    const currentFilePath = fileSourceMap[currentPageId] || 'src/app/page.tsx';
-    const singleLinePrompt = `[Trang: ${targetPage} | File: ${currentFilePath}] Tại ${targetPage}, với ${objName}${tagInfo}: ${actionText}${note} (Phạm vi: ${pageScopeText}).`;
+    // Code locator hint to ensure immediate, unambiguous execution
+    const codeLocatorHint = selectedElement?.id
+      ? `id="${selectedElement.id}"`
+      : selectedElement?.textSnippet
+      ? `chứa nội dung "${selectedElement.textSnippet}"`
+      : selectedElement?.uniqueClassSnippet
+      ? `lớp CSS "${selectedElement.uniqueClassSnippet}"`
+      : `thẻ <${tag}>`;
+
+    const singleLinePrompt = `[Trang: ${targetPage} | File: ${currentFilePath}] Tại ${targetPage}, với ${objName} (<${tag}>${idSnippet}${classSnippet}): ${actionText}${note} (Phạm vi: ${pageScopeText}). [Đặc điểm nhận diện mã nguồn: Tìm thẻ <${tag}> ${codeLocatorHint} trong file ${currentFilePath}].`;
 
     setGeneratedPrompt(singleLinePrompt);
-    showToast('Đã sinh prompt tiếng Việt 1 dòng thành công!');
+    showToast('Đã sinh prompt chuẩn hóa có vị trí file & mã nhận diện chính xác!');
     return singleLinePrompt;
   }, [targetPage, targetObject, selectedElement, actionType, actionCustomNote, scope]);
 

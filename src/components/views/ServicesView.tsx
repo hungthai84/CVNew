@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { DOMAINS_DATA } from '@/data/domains';
 import { DomainData, SiteTheme } from '@/types';
@@ -24,6 +24,7 @@ import {
   Clock, 
   ArrowLeft, 
   ChevronRight,
+  ChevronDown,
   Activity,
   Layers,
   RotateCw,
@@ -42,9 +43,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ParallaxTiltIcon } from '@/components/domains/ParallaxTiltIcon';
-import { BeforeAfterImpactSlider } from '@/components/domains/BeforeAfterImpactSlider';
 import { TechStackExplorerModal } from '@/components/domains/TechStackExplorerModal';
-import { DOMAIN_CASE_STUDIES, DOMAIN_BEFORE_AFTER_DATA } from '@/data/domainCaseStudies';
+import { DOMAIN_CASE_STUDIES } from '@/data/domainCaseStudies';
 
 export interface ServicesViewProps {
   currentTheme?: SiteTheme;
@@ -284,11 +284,25 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
   const [speechVoices, setSpeechVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState<string>('');
 
-  // 4. Modal Detail Tabs: 'overview' (Trụ cột vận hành) | 'casestudy' (Case study thực chiến) | 'impact' (Đo lường trước sau)
-  const [activeDetailTab, setActiveDetailTab] = useState<'overview' | 'casestudy' | 'impact'>('overview');
+  // 4. Modal Detail Tabs: 'overview' (Trụ cột vận hành) | 'casestudy' (Case study thực chiến)
+  const [activeDetailTab, setActiveDetailTab] = useState<'overview' | 'casestudy'>('overview');
 
   // 5. Bộ lọc Lĩnh vực theo Quy mô Đội ngũ & Chỉ số KPI (KPI Threshold Filter)
   const [kpiFilter, setKpiFilter] = useState<'all' | 'team-100' | 'csat-98' | 'both'>('all');
+  const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
+  const filterMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterMenuRef.current && !filterMenuRef.current.contains(event.target as Node)) {
+        setIsFilterDropdownOpen(false);
+      }
+    };
+    if (isFilterDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isFilterDropdownOpen]);
 
   // 6. Bản đồ Hệ sinh thái Công nghệ Tương tác (Interactive Tech Stack Explorer Popup)
   const [techExplorerState, setTechExplorerState] = useState<{
@@ -1203,14 +1217,136 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
     return matchesFilter && matchesKpi;
   });
 
+  const SERVICE_FILTER_OPTIONS = [
+    { id: 'all', label: 'Tất cả 6 lĩnh vực dịch vụ' },
+    { id: 'telecom', label: '01. Dịch vụ viễn thông' },
+    { id: 'commerce', label: '02. Thương mại & Thanh toán' },
+    { id: 'finance', label: '03. Tài chính & Bảo hiểm' },
+    { id: 'gaming', label: '04. Trò chơi điện tử (eSports)' },
+    { id: 'systems', label: '06. Xây dựng hệ thống CSKH' },
+  ];
+
   return (
     <div
-      className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-hidden"
+      className="w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-[15px] max-w-7xl mx-auto select-none relative text-slate-800 dark:text-slate-100 overflow-y-auto no-scrollbar"
     >
-      {/* ĐÃ XÓA KHỎI LỌC ĐỐI TÁC THEO YÊU CẦU NGƯỜI DÙNG */}
+      {/* BANNER DỊCH VỤ: Tiêu đề 4 chữ viết hoa chữ đầu còn lại viết thường, icon + tiêu đề lấy màu menu icon (#f59e0b), câu nói font viết tay màu chữ vàng, nhóm nút thành 1 filter icon bên dưới bên trái, trong suốt 100% */}
+      <motion.div
+        initial={{ opacity: 0, y: -15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="hero-banner w-full h-44 sm:h-52 rounded-2xl overflow-visible relative bg-transparent border-0 shadow-none shrink-0 flex flex-col justify-between p-5 sm:p-7 z-30"
+      >
+        <div className="absolute inset-0 rounded-2xl overflow-hidden bg-transparent pointer-events-none">
+          <img
+            src="/images/services/hero-banner.png"
+            alt="Dịch vụ chuyên môn"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/images/education/hero-banner.png';
+            }}
+            className="absolute inset-0 w-full h-full object-cover object-center opacity-100 pointer-events-none filter brightness-110 contrast-110 saturate-110"
+          />
+          <div className="absolute inset-0 bg-transparent pointer-events-none" />
+        </div>
+
+        {/* Vùng Tiêu Đề: 4 chữ viết hoa chữ đầu còn lại viết thường, icon và tiêu đề lấy màu menu icon (#f59e0b) */}
+        <div className="relative z-10 flex flex-col justify-start text-left max-w-2xl">
+          <div className="flex items-center gap-2.5" style={{ color: '#f59e0b' }}>
+            <Layers
+              className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 bg-transparent border-0 p-0 shadow-none drop-shadow-[0_2px_8px_rgba(245,158,11,0.75)]"
+              style={{ color: '#f59e0b', stroke: '#f59e0b' }}
+            />
+            <h1
+              className="text-2xl sm:text-3xl md:text-4xl font-black font-play tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+              style={{ color: '#f59e0b', textTransform: 'none' }}
+            >
+              Dịch vụ chuyên môn
+            </h1>
+          </div>
+
+          {/* Sub tiêu đề là câu nói chuyển sang font viết tay màu chữ vàng */}
+          <p
+            className="font-handwriting text-yellow-300 text-lg sm:text-xl font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] mt-1.5 select-none"
+            style={{ color: '#facc15' }}
+          >
+            "Chất lượng dịch vụ là thước đo uy tín thương hiệu ♡"
+          </p>
+        </div>
+
+        {/* Nhóm các nút lại thành 1 filter icon ở bên dưới banner bên trái - filter dạng drop menu list, tiêu đề nhóm nút còn 4 từ */}
+        <div className="relative z-30 flex items-center justify-start mt-auto pt-2" ref={filterMenuRef}>
+          <div className="relative inline-block text-left">
+            <button
+              type="button"
+              onClick={() => {
+                SoundEngine.playTap();
+                setIsFilterDropdownOpen((prev) => !prev);
+              }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/85 hover:bg-slate-900 text-amber-300 border border-amber-400/70 shadow-[0_4px_16px_rgba(0,0,0,0.55)] backdrop-blur-md transition-all cursor-pointer text-xs font-bold font-play active:scale-95 group"
+              title="Bộ lọc dịch vụ"
+              aria-expanded={isFilterDropdownOpen}
+              aria-haspopup="listbox"
+            >
+              <SlidersHorizontal className="w-4 h-4 text-amber-300 transition-transform group-hover:rotate-45 shrink-0" />
+              <span>Bộ lọc dịch vụ</span>
+              {(filter !== 'all' || selectedDomain) && (
+                <span className="px-1.5 py-0.2 rounded-full bg-amber-500/25 border border-amber-400/50 text-[10px] font-mono text-amber-200">
+                  {selectedDomain ? selectedDomain.id : SERVICE_FILTER_OPTIONS.find((o) => o.id === filter)?.label.split('.')[0]}
+                </span>
+              )}
+              <ChevronDown
+                className={cn(
+                  'w-3.5 h-3.5 text-amber-300 transition-transform duration-200 shrink-0',
+                  isFilterDropdownOpen && 'rotate-180'
+                )}
+              />
+            </button>
+
+            <AnimatePresence>
+              {isFilterDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                  transition={{ duration: 0.16 }}
+                  role="listbox"
+                  className="absolute left-0 top-[calc(100%+8px)] w-64 rounded-xl bg-slate-950/95 border border-amber-400/50 shadow-[0_12px_32px_rgba(0,0,0,0.75)] backdrop-blur-xl py-1.5 px-1.5 z-50 flex flex-col gap-1"
+                >
+                  {SERVICE_FILTER_OPTIONS.map((opt) => {
+                    const isActive = filter === opt.id && !selectedDomain;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        role="option"
+                        aria-selected={isActive}
+                        onClick={() => {
+                          SoundEngine.playTap();
+                          setSelectedDomain(null);
+                          setFilter(opt.id);
+                          setIsFilterDropdownOpen(false);
+                        }}
+                        className={cn(
+                          'w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold font-play transition-all cursor-pointer text-left',
+                          isActive
+                            ? 'bg-amber-500/25 text-amber-200 border border-amber-400/60 shadow-xs'
+                            : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
+                        )}
+                      >
+                        <span>{opt.label}</span>
+                        {isActive && <span className="w-2 h-2 rounded-full bg-amber-400" />}
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </motion.div>
 
       {/* 3. VÙNG HIỂN THỊ NỘI DUNG LĨNH VỰC (GRID CARD EXPANSION TRANSITION - THẺ MỞ RỘNG TOÀN BỘ LƯỚI) */}
-      <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden">
+      <div className="w-full flex-1 min-h-0 relative flex flex-col overflow-hidden glass-pastel">
         <AnimatePresence mode="wait">
           {!selectedDomain ? (
             /* Grid View 3x2 tự động co giãn chiều cao vừa khít thẻ chính với khoảng cách 15px */
@@ -1285,20 +1421,28 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                       style={{
                         backfaceVisibility: 'hidden',
                         WebkitBackfaceVisibility: 'hidden',
-                        background: cfg.cardBg,
+                        background: domain.id === '01'
+                          ? (isDark ? 'rgba(15, 23, 42, 0.85)' : 'rgba(255, 255, 255, 0.85)')
+                          : cfg.cardBg,
+                        border: domain.id === '01'
+                          ? (isDark ? '1px solid rgba(34, 211, 238, 0.4)' : '1px solid rgba(196, 181, 253, 0.6)')
+                          : undefined,
+                        boxShadow: domain.id === '01' ? 'none' : undefined,
                         backdropFilter: 'blur(0.65em)',
                         WebkitBackdropFilter: 'blur(0.65em)',
                         ['--card-accent-color' as string]: cfg.accentColor,
                       }}
                     >
                       {/* Soft ambient background */}
-                      <div
-                        className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full pointer-events-none transition-all duration-500 opacity-75 group-hover/card:opacity-100 group-hover/card:scale-120 blur-2xl"
-                        style={{ background: cfg.ambientGlow }}
-                      />
+                      {domain.id !== '01' && (
+                        <div
+                          className="absolute -right-8 -bottom-8 w-48 h-48 rounded-full pointer-events-none transition-all duration-500 opacity-75 group-hover/card:opacity-100 group-hover/card:scale-120 blur-2xl"
+                          style={{ background: cfg.ambientGlow }}
+                        />
+                      )}
                       <div className="absolute -right-6 -top-6 w-36 h-36 rounded-full bg-white/60 dark:bg-white/5 blur-xl pointer-events-none group-hover/card:scale-125 transition-transform duration-500" />
 
-                      {/* Top Row: Icon (không khung tròn) + Tiêu đề 4 chữ */}
+                      {/* Top Row: Icon + Tiêu đề (Kiểu dáng 7.1. Thế mạnh vận hành cho Dịch vụ viễn thông) */}
                       <div className="relative z-10 flex items-center justify-between gap-2 shrink-0 w-full">
                         <div className="flex items-center gap-2.5 min-w-0 flex-1">
                           <ParallaxTiltIcon maxTilt={18} glowColor={cfg.accentColor} className="shrink-0">
@@ -1320,10 +1464,16 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                               }}
                               title={domain.titleVi}
                             >
-                              {formatCardTitle(cfg.fourWordTitle || domain.titleVi)}
+                              {domain.id === '01' ? '7.1. Dịch vụ viễn thông' : formatCardTitle(cfg.fourWordTitle || domain.titleVi)}
                             </motion.h2>
                           </div>
                         </div>
+
+                        {domain.id === '01' && (
+                          <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold text-blue-700 dark:text-cyan-300 bg-blue-500/10 dark:bg-cyan-500/10 rounded-full border border-blue-200/30 dark:border-cyan-500/20 uppercase tracking-wider shrink-0">
+                            S
+                          </span>
+                        )}
                       </div>
 
                       {/* Middle Section: Left Content (7 cols) + Right 3D Illustration (5 cols) */}
@@ -1433,9 +1583,11 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                                 onMouseLeave={() => setHoveredLogoKey(null)}
                                 style={{
                                   zIndex: isHoveredLogo ? 50 : 10 + logoIdx,
+                                  borderRadius: '50%',
+                                  aspectRatio: '1 / 1',
                                 }}
                                 className={cn(
-                                  'w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-transparent p-0 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer group/logo relative border-0 shadow-none overflow-hidden',
+                                  'w-8 h-8 sm:w-9 sm:h-9 aspect-square rounded-full bg-transparent p-0 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer group/logo relative border-0 border-none ring-0 shadow-none overflow-hidden',
                                   isHoveredLogo ? 'scale-125 -translate-y-0.5' : 'hover:scale-115',
                                   isSelectedLogo && 'scale-115'
                                 )}
@@ -1444,7 +1596,8 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                                 <img
                                   src={logoSrc}
                                   alt={logo.alt}
-                                  className="w-full h-full object-contain block rounded-full shrink-0 pointer-events-none select-none transition-transform duration-200 relative z-1"
+                                  style={{ borderRadius: '50%' }}
+                                  className="w-full h-full object-cover block rounded-full border-0 border-none ring-0 p-0 shrink-0 pointer-events-none select-none transition-transform duration-200 relative z-1"
                                   loading="lazy"
                                 />
 
@@ -1813,9 +1966,11 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                             onMouseLeave={() => setHoveredLogoKey(null)}
                             style={{
                               zIndex: isHovered ? 50 : 10 + lIdx,
+                              borderRadius: '50%',
+                              aspectRatio: '1 / 1',
                             }}
                             className={cn(
-                              'w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full bg-white p-0 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer relative shadow-md overflow-hidden border-0',
+                              'w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] aspect-square rounded-full bg-transparent p-0 flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer relative shadow-none overflow-hidden border-0 border-none ring-0',
                               isHovered ? 'scale-110 -translate-y-0.5' : 'hover:scale-105'
                             )}
                             title={`${logo.name} — ${brandMeta.role}`}
@@ -1823,7 +1978,8 @@ export const ServicesView: React.FC<ServicesViewProps> = ({ currentTheme = 'ligh
                             <img
                               src={logoSrc}
                               alt={logo.alt}
-                              className="w-full h-full object-contain block rounded-full shrink-0 pointer-events-none select-none"
+                              style={{ borderRadius: '50%' }}
+                              className="w-full h-full object-cover block rounded-full border-0 border-none ring-0 p-0 shrink-0 pointer-events-none select-none"
                               loading="lazy"
                             />
                           </div>

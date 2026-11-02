@@ -354,7 +354,7 @@ export const Pages3DCarousel: React.FC<Pages3DCarouselProps> = ({
               <button
                 type="button"
                 onClick={handlePrev}
-                className={`w-9 h-9 rounded-xl flex items-center justify-center border transition-all cursor-pointer ${
+                className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all cursor-pointer ${
                   isDark
                     ? 'bg-slate-800/80 hover:bg-slate-700 text-cyan-300 border-white/10'
                     : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200 shadow-xs'
@@ -368,7 +368,7 @@ export const Pages3DCarousel: React.FC<Pages3DCarouselProps> = ({
               <button
                 type="button"
                 onClick={handleNext}
-                className={`w-9 h-9 rounded-xl flex items-center justify-center border transition-all cursor-pointer ${
+                className={`w-9 h-9 rounded-full flex items-center justify-center border transition-all cursor-pointer ${
                   isDark
                     ? 'bg-slate-800/80 hover:bg-slate-700 text-cyan-300 border-white/10'
                     : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200 shadow-xs'

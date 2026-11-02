@@ -13,6 +13,12 @@ import {
   VOICE_CHANGE_EVENT,
   getMergedEnhancedVoices,
   detectBrowserEnvironment,
+  GEMINI_PUCK_VOICE_URI,
+  generateGeminiPuckSpeech,
+  stopActiveSpeech,
+  PuckSpeakingStyle,
+  PuckPitchPreset,
+  GeminiPuckTtsResult,
 } from '@/utils/speechVoice';
 
 export interface ChatMessage {
@@ -169,8 +175,12 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
   const [selectedVoiceURI, setSelectedVoiceURI] = useState<string>('');
   const [voiceTab, setVoiceTab] = useState<'vi' | 'multilingual' | 'all'>('vi');
   const [voiceSearchQuery, setVoiceSearchQuery] = useState<string>('');
+  const [browserEnv, setBrowserEnv] = useState<'edge' | 'chrome' | 'other'>('other');
 
-  const browserEnv = useMemo(() => detectBrowserEnvironment(), []);
+  useEffect(() => {
+    setBrowserEnv(detectBrowserEnvironment());
+  }, []);
+
   const enhancedVoices = useMemo(() => getMergedEnhancedVoices(voices), [voices]);
 
   const filteredVoices = useMemo(() => {
@@ -190,7 +200,19 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
   }, [enhancedVoices, voiceTab, voiceSearchQuery]);
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [speechRate, setSpeechRate] = useState<number>(1.0);
-  const [speechPitch, setSpeechPitch] = useState<number>(1.05);
+  const [speechPitch, setSpeechPitch] = useState<number>(1.0);
+  const [puckStyle, setPuckStyle] = useState<PuckSpeakingStyle>('friendly');
+  const [puckPitchPreset, setPuckPitchPreset] = useState<PuckPitchPreset>('natural');
+  const [studioText, setStudioText] = useState<string>(
+    'Xin chào quý đối tác và anh chị! Tôi là giọng đọc AI PUCK phong cách miền Tây Nam Bộ của chuyên gia Nguyễn Hùng Thái. Rất vui được đồng hành, chia sẻ về hành trình hơn 20 năm quản trị dịch vụ khách hàng và các dự án chuyển đổi số.'
+  );
+  const [isGeneratingTts, setIsGeneratingTts] = useState<boolean>(false);
+  const [ttsError, setTtsError] = useState<string | null>(null);
+  const [ttsResult, setTtsResult] = useState<GeminiPuckTtsResult | null>(null);
+  const [isPlayerPlaying, setIsPlayerPlaying] = useState<boolean>(false);
+  const [playerCurrentTime, setPlayerCurrentTime] = useState<number>(0);
+  const [playerDuration, setPlayerDuration] = useState<number>(0);
+  const studioAudioRef = useRef<HTMLAudioElement | null>(null);
   const [isAutoSpeakEnabled, setIsAutoSpeakEnabled] = useState<boolean>(false);
   const settingsRef = useRef<HTMLDivElement>(null);
   const settingsBtnRef = useRef<HTMLButtonElement>(null);
@@ -300,22 +322,26 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
     }, 450);
   };
 
-  // Speak text function
-  const handleSpeak = (text: string, msgId?: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-      showToast('Trình duyệt không hỗ trợ phát âm thanh lời nói');
-      return;
-    }
+  // Speak text function (Ưu tiên Google Gemini TTS - PUCK Miền Tây Nam Bộ)
+  const handleSpeak = async (text: string, msgId?: string) => {
+    if (typeof window === 'undefined') return;
 
     // If already speaking this message, stop it
     if (isSpeaking && currentSpeakingId === msgId) {
-      window.speechSynthesis.cancel();
+      stopActiveSpeech();
+      if (studioAudioRef.current) {
+        studioAudioRef.current.pause();
+      }
       setIsSpeaking(false);
+      setIsPlayerPlaying(false);
       setCurrentSpeakingId(null);
       return;
     }
 
-    window.speechSynthesis.cancel();
+    stopActiveSpeech();
+    if (studioAudioRef.current) {
+      studioAudioRef.current.pause();
+    }
 
     // Clean markdown bold and bullet points
     const cleanText = text
@@ -323,6 +349,72 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
       .replace(/[•#*>\-]/g, ' ')
       .replace(/\n+/g, '. ')
       .trim();
+
+    if (!cleanText) return;
+
+    // Khi chọn giọng PUCK (Google Gemini TTS - Miền Tây Nam Bộ)
+    if (!selectedVoiceURI || selectedVoiceURI === GEMINI_PUCK_VOICE_URI) {
+      try {
+        setIsSpeaking(true);
+        if (msgId) setCurrentSpeakingId(msgId);
+        showToast('Đang tạo giọng đọc AI PUCK (Miền Tây Nam Bộ)...');
+
+        const result = await generateGeminiPuckSpeech({
+          text: cleanText,
+          speakingStyle: puckStyle,
+          speakingRate: speechRate,
+          pitch: puckPitchPreset,
+        });
+
+        setTtsResult(result);
+        setTtsError(null);
+
+        const audio = new Audio(result.audioDataUrl);
+        audio.playbackRate = speechRate;
+        studioAudioRef.current = audio;
+
+        audio.onloadedmetadata = () => {
+          setPlayerDuration(audio.duration || 0);
+        };
+        audio.ontimeupdate = () => {
+          setPlayerCurrentTime(audio.currentTime || 0);
+        };
+        audio.onplay = () => {
+          setIsSpeaking(true);
+          setIsPlayerPlaying(true);
+          if (msgId) setCurrentSpeakingId(msgId);
+        };
+        audio.onpause = () => {
+          setIsPlayerPlaying(false);
+        };
+        audio.onended = () => {
+          setIsSpeaking(false);
+          setIsPlayerPlaying(false);
+          setCurrentSpeakingId(null);
+          setPlayerCurrentTime(0);
+        };
+        audio.onerror = () => {
+          setIsSpeaking(false);
+          setIsPlayerPlaying(false);
+          setCurrentSpeakingId(null);
+        };
+
+        await audio.play();
+      } catch (err) {
+        setIsSpeaking(false);
+        setIsPlayerPlaying(false);
+        setCurrentSpeakingId(null);
+        const message = err instanceof Error ? err.message : 'Lỗi kết nối Google Gemini TTS';
+        setTtsError(message);
+        showToast(message);
+      }
+      return;
+    }
+
+    if (!('speechSynthesis' in window)) {
+      showToast('Trình duyệt không hỗ trợ phát âm thanh lời nói');
+      return;
+    }
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.rate = speechRate;
@@ -353,6 +445,123 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
 
     window.speechSynthesis.speak(utterance);
     showToast('Đang phát âm thanh lời nói...');
+  };
+
+  // Hàm Tạo Giọng Đọc PUCK trực tiếp trong Studio
+  const handleGenerateStudioVoice = async (regenerate: boolean = false) => {
+    const cleanInput = studioText.trim();
+    if (!cleanInput) {
+      showToast('Vui lòng nhập văn bản cần đọc!');
+      return;
+    }
+
+    SoundEngine.playTap();
+    setIsGeneratingTts(true);
+    setTtsError(null);
+
+    if (studioAudioRef.current) {
+      studioAudioRef.current.pause();
+      setIsPlayerPlaying(false);
+    }
+
+    try {
+      setSelectedVoiceURI(GEMINI_PUCK_VOICE_URI);
+      saveDefaultVoiceURI(GEMINI_PUCK_VOICE_URI);
+
+      const result = await generateGeminiPuckSpeech({
+        text: cleanInput,
+        speakingStyle: puckStyle,
+        speakingRate: speechRate,
+        pitch: puckPitchPreset,
+      });
+
+      setTtsResult(result);
+
+      const audio = new Audio(result.audioDataUrl);
+      audio.playbackRate = speechRate;
+      studioAudioRef.current = audio;
+
+      audio.onloadedmetadata = () => {
+        setPlayerDuration(audio.duration || 0);
+      };
+      audio.ontimeupdate = () => {
+        setPlayerCurrentTime(audio.currentTime || 0);
+      };
+      audio.onplay = () => {
+        setIsPlayerPlaying(true);
+        setIsSpeaking(true);
+        setCurrentSpeakingId('studio-puck-preview');
+      };
+      audio.onpause = () => {
+        setIsPlayerPlaying(false);
+      };
+      audio.onended = () => {
+        setIsPlayerPlaying(false);
+        setIsSpeaking(false);
+        setCurrentSpeakingId(null);
+        setPlayerCurrentTime(0);
+      };
+
+      await audio.play();
+      showToast(
+        regenerate
+          ? 'Đã tạo lại giọng đọc AI PUCK (Miền Tây Nam Bộ) thành công!'
+          : 'Đã tạo và phát giọng đọc AI PUCK (Miền Tây Nam Bộ)!'
+      );
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Không thể tạo giọng đọc PUCK từ Google Gemini TTS.';
+      setTtsError(message);
+      showToast(message);
+    } finally {
+      setIsGeneratingTts(false);
+    }
+  };
+
+  const handleToggleStudioPlayPause = () => {
+    const audio = studioAudioRef.current;
+    if (!audio && ttsResult) {
+      const newAudio = new Audio(ttsResult.audioDataUrl);
+      newAudio.playbackRate = speechRate;
+      studioAudioRef.current = newAudio;
+      newAudio.onloadedmetadata = () => setPlayerDuration(newAudio.duration || 0);
+      newAudio.ontimeupdate = () => setPlayerCurrentTime(newAudio.currentTime || 0);
+      newAudio.onplay = () => setIsPlayerPlaying(true);
+      newAudio.onpause = () => setIsPlayerPlaying(false);
+      newAudio.onended = () => {
+        setIsPlayerPlaying(false);
+        setPlayerCurrentTime(0);
+      };
+      newAudio.play();
+      return;
+    }
+    if (!audio) return;
+    if (audio.paused) {
+      audio.playbackRate = speechRate;
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  };
+
+  const handleSeekStudioAudio = (newTime: number) => {
+    const audio = studioAudioRef.current;
+    if (!audio) return;
+    const clamped = Math.max(0, Math.min(playerDuration || 0, newTime));
+    audio.currentTime = clamped;
+    setPlayerCurrentTime(clamped);
+  };
+
+  const handleDownloadStudioAudio = () => {
+    if (!ttsResult?.audioDataUrl) return;
+    SoundEngine.playTap();
+    const link = document.createElement('a');
+    link.href = ttsResult.audioDataUrl;
+    link.download = `puck-vietnamese-mien-tay-${Date.now()}.wav`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('Đã tải xuống file âm thanh giọng đọc PUCK (.WAV)!');
   };
 
   const scrollToBottom = () => {
@@ -715,27 +924,26 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
           </div>
         </div>
 
-        {/* Modal Cấu Hình Giọng Nói Nằm Giữa Popup Chat (Glass UI) */}
+        {/* Modal Cấu Hình & Tạo Giọng Nói AI PUCK (Miền Tây Nam Bộ) */}
         {showSettings && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center p-3.5 bg-black/50 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="absolute inset-0 z-50 flex items-center justify-center p-2.5 sm:p-3.5 bg-black/55 backdrop-blur-md animate-in fade-in duration-150">
             <div
               ref={settingsRef}
-              className="w-full max-w-[340px] max-h-[92%] overflow-y-auto glass-scrollbar rounded-[12px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-slate-200 dark:border-slate-700 shadow-2xl p-4 flex flex-col gap-3 text-left text-slate-800 dark:text-slate-100 animate-in zoom-in-95 duration-150 select-none"
+              className="w-full max-w-[390px] max-h-[95%] overflow-y-auto glass-scrollbar rounded-[12px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-2xl border border-slate-200 dark:border-slate-700 shadow-2xl p-3.5 sm:p-4 flex flex-col gap-3 text-left text-slate-800 dark:text-slate-100 animate-in zoom-in-95 duration-150 select-none"
             >
               {/* Header Cài đặt */}
               <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700/80">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-cyan-400 border border-blue-200 dark:border-blue-800 flex items-center justify-center shadow-xs">
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.4" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
+                  <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-cyan-400 border border-blue-200 dark:border-blue-800 flex items-center justify-center shadow-xs">
+                    <WebIcon name="volume-high" className="w-4 h-4" />
                   </div>
                   <div>
                     <span className="text-xs font-black text-slate-800 dark:text-slate-100 font-play block leading-tight">
-                      Cấu hình giọng nói AI
+                      AI Voice Studio – PUCK (Miền Tây Nam Bộ)
                     </span>
-                    <span className="text-[9.5px] text-slate-500 dark:text-slate-400">Hệ thống giọng nói thông minh</span>
+                    <span className="text-[9.5px] text-slate-500 dark:text-slate-400">
+                      Google Gemini TTS • Nam giới trưởng thành, ấm áp, gần gũi
+                    </span>
                   </div>
                 </div>
                 <button
@@ -747,273 +955,327 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
                 </button>
               </div>
 
-              {/* Mục 1: Chọn giọng đọc */}
+              {/* 2, 3, 4: Thông tin cấu hình cố định: Voice PUCK, Language vi-VN, Accent Miền Tây Nam Bộ */}
+              <div className="grid grid-cols-3 gap-1.5">
+                <div className="p-2 rounded-xl bg-blue-50/90 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/70 flex flex-col gap-0.5">
+                  <span className="text-[8.5px] font-bold uppercase tracking-wider text-blue-600 dark:text-cyan-400">
+                    Voice Name
+                  </span>
+                  <span className="text-[11px] font-black font-play text-slate-900 dark:text-white">
+                    PUCK (Nam)
+                  </span>
+                  <span className="text-[8.5px] text-slate-500 dark:text-slate-400 truncate">
+                    Gemini TTS
+                  </span>
+                </div>
+
+                <div className="p-2 rounded-xl bg-emerald-50/90 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/70 flex flex-col gap-0.5">
+                  <span className="text-[8.5px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                    Ngôn ngữ
+                  </span>
+                  <span className="text-[11px] font-black font-play text-slate-900 dark:text-white">
+                    Tiếng Việt
+                  </span>
+                  <span className="text-[8.5px] text-slate-500 dark:text-slate-400 font-mono">
+                    vi-VN
+                  </span>
+                </div>
+
+                <div className="p-2 rounded-xl bg-amber-50/90 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/70 flex flex-col gap-0.5">
+                  <span className="text-[8.5px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                    Âm sắc vùng
+                  </span>
+                  <span className="text-[11px] font-black font-play text-slate-900 dark:text-white truncate">
+                    Miền Tây
+                  </span>
+                  <span className="text-[8.5px] text-slate-500 dark:text-slate-400 truncate">
+                    Nam Bộ ấm áp
+                  </span>
+                </div>
+              </div>
+
+              {/* 1. Text Input: Nhập văn bản tiếng Việt cần tạo giọng đọc */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-wider block font-sans">
-                    1. Chọn Giọng Đọc
+                  <span className="text-[10px] font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-wider">
+                    1. Văn Bản Cần Đọc (Text Input)
                   </span>
-                  <span className="text-[9px] font-mono text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-full border border-slate-200 dark:border-slate-700">
-                    {browserEnv === 'edge' ? 'Trình duyệt: Edge' : browserEnv === 'chrome' ? 'Trình duyệt: Chrome' : 'Trình duyệt Web'}
+                  <span className="text-[9px] text-slate-500 font-mono">
+                    {studioText.length}/4000
                   </span>
                 </div>
 
-                {/* Phím tắt chọn nhanh Giọng Trình Duyệt */}
-                <div className="grid grid-cols-2 gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedVoiceURI('microsoft-nam-minh-vi-vn');
-                      saveDefaultVoiceURI('microsoft-nam-minh-vi-vn');
-                      showToast('Đã chọn giọng Nam Minh (Microsoft Edge)');
-                    }}
-                    className={`p-1.5 rounded-xl border text-left transition cursor-pointer flex flex-col gap-0.5 ${
-                      selectedVoiceURI === 'microsoft-nam-minh-vi-vn' || /nam\s*minh/i.test(selectedVoiceURI)
-                        ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
-                        : 'bg-slate-50 dark:bg-slate-800/80 hover:bg-blue-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10px] font-black truncate font-play">Nam Minh</span>
-                      <span className={`text-[7.5px] font-bold px-1 py-0.2 rounded-xs uppercase tracking-tighter ${
-                        selectedVoiceURI === 'microsoft-nam-minh-vi-vn' || /nam\s*minh/i.test(selectedVoiceURI)
-                          ? 'bg-white/20 text-white'
-                          : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
-                      }`}>
-                        Edge MS
-                      </span>
-                    </div>
-                    <span className={`text-[8.5px] truncate ${
-                      selectedVoiceURI === 'microsoft-nam-minh-vi-vn' || /nam\s*minh/i.test(selectedVoiceURI)
-                        ? 'text-white/80'
-                        : 'text-slate-500 dark:text-slate-400'
-                    }`}>
-                      Mặc định Microsoft Edge
-                    </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedVoiceURI('google-tieng-viet-5-vi-vn');
-                      saveDefaultVoiceURI('google-tieng-viet-5-vi-vn');
-                      showToast('Đã chọn giọng Tiếng Việt 5 (Chrome)');
-                    }}
-                    className={`p-1.5 rounded-xl border text-left transition cursor-pointer flex flex-col gap-0.5 ${
-                      selectedVoiceURI === 'google-tieng-viet-5-vi-vn' || /tiếng việt 5|tieng viet 5/i.test(selectedVoiceURI)
-                        ? 'bg-blue-600 text-white border-blue-500 shadow-sm'
-                        : 'bg-slate-50 dark:bg-slate-800/80 hover:bg-blue-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10px] font-black truncate font-play">Tiếng Việt 5</span>
-                      <span className={`text-[7.5px] font-bold px-1 py-0.2 rounded-xs uppercase tracking-tighter ${
-                        selectedVoiceURI === 'google-tieng-viet-5-vi-vn' || /tiếng việt 5|tieng viet 5/i.test(selectedVoiceURI)
-                          ? 'bg-white/20 text-white'
-                          : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
-                      }`}>
-                        Chrome
-                      </span>
-                    </div>
-                    <span className={`text-[8.5px] truncate ${
-                      selectedVoiceURI === 'google-tieng-viet-5-vi-vn' || /tiếng việt 5|tieng viet 5/i.test(selectedVoiceURI)
-                        ? 'text-white/80'
-                        : 'text-slate-500 dark:text-slate-400'
-                    }`}>
-                      Mặc định Google Chrome
-                    </span>
-                  </button>
+                {/* Mẫu câu nhanh phù hợp website cá nhân, thuyết minh dự án, hỗ trợ CSKH */}
+                <div className="flex items-center gap-1 flex-wrap">
+                  {[
+                    {
+                      label: 'Giới thiệu bản thân',
+                      sample:
+                        'Xin chào quý đối tác và anh chị! Tôi là giọng đọc PUCK phong cách miền Tây Nam Bộ của chuyên gia Nguyễn Hùng Thái. Với hơn 20 năm gắn bó cùng nghề dịch vụ khách hàng tại TP.HCM và miền Nam, chúng tôi luôn lấy sự chân thành và tận tâm làm gốc.',
+                    },
+                    {
+                      label: 'Thuyết minh dự án',
+                      sample:
+                        'Dự án chuyển đổi số hệ thống CSKH 360 độ giúp tối ưu hóa 25% chi phí vận hành, rút ngắn thời gian xử lý sự cố dưới 15 phút và duy trì cam kết chất lượng SLA đạt 98%.',
+                    },
+                    {
+                      label: 'Hỗ trợ khách hàng',
+                      sample:
+                        'Dạ, em xin kính chào anh chị! Nếu anh chị cần tư vấn về giải pháp tổng đài, xây dựng quy trình CSKH hoặc kết nối hợp tác trực tiếp qua SĐT 0903.011.699, em luôn sẵn lòng hỗ trợ ngay ạ.',
+                    },
+                  ].map((item, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setStudioText(item.sample)}
+                      className="px-2 py-0.5 rounded-md text-[9.5px] font-bold bg-slate-100 hover:bg-blue-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
                 </div>
 
-                {/* Bộ lọc phân loại */}
-                <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
-                  <button
-                    type="button"
-                    onClick={() => setVoiceTab('vi')}
-                    className={`flex-1 py-1 rounded-md text-[9px] font-black transition cursor-pointer ${
-                      voiceTab === 'vi'
-                        ? 'bg-blue-600 text-white shadow-xs'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    🇻🇳 Tiếng Việt
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setVoiceTab('multilingual')}
-                    className={`flex-1 py-1 rounded-md text-[9px] font-black transition cursor-pointer ${
-                      voiceTab === 'multilingual'
-                        ? 'bg-blue-600 text-white shadow-xs'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    🌐 Đa ngôn ngữ
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setVoiceTab('all')}
-                    className={`flex-1 py-1 rounded-md text-[9px] font-black transition cursor-pointer ${
-                      voiceTab === 'all'
-                        ? 'bg-blue-600 text-white shadow-xs'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    Tất cả
-                  </button>
+                <textarea
+                  rows={3}
+                  value={studioText}
+                  onChange={(e) => setStudioText(e.target.value)}
+                  placeholder="Nhập văn bản tiếng Việt cần chuyển thành giọng nói PUCK Miền Tây Nam Bộ..."
+                  className="w-full p-2.5 rounded-xl text-[11px] leading-relaxed bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-blue-500 resize-none select-text"
+                />
+              </div>
+
+              {/* 5. Speaking Style: Friendly / Professional / Narration */}
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-wider block">
+                  2. Phong Cách Đọc (Speaking Style)
+                </span>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {[
+                    { id: 'friendly' as PuckSpeakingStyle, label: 'Friendly', sub: 'Thân thiện, gần gũi' },
+                    { id: 'professional' as PuckSpeakingStyle, label: 'Professional', sub: 'Chuyên nghiệp' },
+                    { id: 'narration' as PuckSpeakingStyle, label: 'Narration', sub: 'Thuyết minh ấm áp' },
+                  ].map((st) => (
+                    <button
+                      key={st.id}
+                      type="button"
+                      onClick={() => setPuckStyle(st.id)}
+                      className={`p-1.5 rounded-xl border text-left transition cursor-pointer flex flex-col ${
+                        puckStyle === st.id
+                          ? 'bg-blue-600 text-white border-blue-500 shadow-xs'
+                          : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-blue-400'
+                      }`}
+                    >
+                      <span className="text-[10px] font-black font-play leading-tight">{st.label}</span>
+                      <span
+                        className={`text-[8.5px] truncate ${
+                          puckStyle === st.id ? 'text-blue-100' : 'text-slate-500 dark:text-slate-400'
+                        }`}
+                      >
+                        {st.sub}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 6 & 7: Tốc độ đọc (0.95x - 1.05x) & Cao độ (Nam trung trầm tự nhiên) */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between text-[10px]">
+                    <span className="font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-wider">
+                      3. Tốc Độ:
+                    </span>
+                    <span className="font-bold text-slate-700 dark:text-slate-200 font-mono">
+                      {speechRate.toFixed(2)}x
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    {[
+                      { val: 0.95, label: '0.95x' },
+                      { val: 1.0, label: '1.00x' },
+                      { val: 1.05, label: '1.05x' },
+                    ].map((item) => (
+                      <button
+                        key={item.val}
+                        type="button"
+                        onClick={() => {
+                          setSpeechRate(item.val);
+                          if (studioAudioRef.current) {
+                            studioAudioRef.current.playbackRate = item.val;
+                          }
+                        }}
+                        className={`py-1 px-1 rounded-lg text-[9.5px] font-bold font-mono transition cursor-pointer border ${
+                          Math.abs(speechRate - item.val) < 0.01
+                            ? 'bg-blue-600 border-blue-500 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                {/* Ô tìm kiếm giọng nói nhanh */}
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={voiceSearchQuery}
-                    onChange={(e) => setVoiceSearchQuery(e.target.value)}
-                    placeholder="Tìm kiếm giọng (tên, ngôn ngữ)..."
-                    className="w-full px-2.5 py-1 text-[10px] rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:border-blue-500"
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between text-[10px]">
+                    <span className="font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-wider">
+                      4. Cao Độ:
+                    </span>
+                    <span className="font-bold text-slate-700 dark:text-slate-200 text-[9.5px]">
+                      {puckPitchPreset === 'low'
+                        ? 'Trầm ấm'
+                        : puckPitchPreset === 'warm'
+                        ? 'Ấm sáng'
+                        : 'Trung trầm'}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    {[
+                      { id: 'low' as PuckPitchPreset, pitchNum: 0.95, label: 'Trầm' },
+                      { id: 'natural' as PuckPitchPreset, pitchNum: 1.0, label: 'Chuẩn' },
+                      { id: 'warm' as PuckPitchPreset, pitchNum: 1.05, label: 'Ấm' },
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          setPuckPitchPreset(item.id);
+                          setSpeechPitch(item.pitchNum);
+                        }}
+                        className={`py-1 px-1 rounded-lg text-[9.5px] font-bold transition cursor-pointer border ${
+                          puckPitchPreset === item.id
+                            ? 'bg-blue-600 border-blue-500 text-white shadow-xs'
+                            : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 8 & 12: Generate Voice & Regenerate */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  disabled={isGeneratingTts}
+                  onClick={() => handleGenerateStudioVoice(false)}
+                  className="flex-1 py-2 px-3 rounded-xl text-xs font-black font-play bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 hover:opacity-95 disabled:opacity-60 text-white shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <WebIcon
+                    name={isGeneratingTts ? 'sync' : 'volume-high'}
+                    className={`w-3.5 h-3.5 ${isGeneratingTts ? 'animate-spin' : ''}`}
                   />
-                  {voiceSearchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setVoiceSearchQuery('')}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 hover:text-slate-600 cursor-pointer"
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
+                  <span>
+                    {isGeneratingTts ? 'Đang tạo giọng PUCK...' : 'Tạo Giọng Đọc PUCK'}
+                  </span>
+                </button>
 
-                {/* Danh sách cuộn các giọng nói đã lọc */}
-                <div className="max-h-32 overflow-y-auto glass-scrollbar space-y-1 p-1 rounded-xl bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800">
-                  {filteredVoices.length === 0 ? (
-                    <span className="p-2 text-xs text-slate-400 italic block text-center">Không tìm thấy giọng nói phù hợp</span>
-                  ) : (
-                    filteredVoices.map((v) => {
-                      const isChosen =
-                        v.voiceURI === selectedVoiceURI ||
-                        (v.nativeVoice && v.nativeVoice.voiceURI === selectedVoiceURI) ||
-                        (v.voiceURI === 'microsoft-nam-minh-vi-vn' && /nam\s*minh/i.test(selectedVoiceURI)) ||
-                        (v.voiceURI === 'google-tieng-viet-5-vi-vn' && /tiếng việt 5|tieng viet 5/i.test(selectedVoiceURI));
-
-                      return (
-                        <button
-                          key={v.voiceURI}
-                          type="button"
-                          onClick={() => {
-                            setSelectedVoiceURI(v.voiceURI);
-                            saveDefaultVoiceURI(v.voiceURI);
-                            showToast(`Đã chọn "${v.name}"`);
-                          }}
-                          className={`w-full text-left p-1.5 px-2 rounded-lg text-[10px] transition cursor-pointer flex items-center justify-between gap-1.5 ${
-                            isChosen
-                              ? 'bg-blue-600 text-white font-bold shadow-xs'
-                              : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium'
-                          }`}
-                        >
-                          <div className="min-w-0 flex-1 truncate">
-                            <span className="block truncate leading-tight font-sans">{v.name}</span>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className={`text-[8.5px] font-mono ${isChosen ? 'text-blue-100' : 'text-slate-500'}`}>
-                                {v.lang}
-                              </span>
-                              {v.badgeLabel && (
-                                <span className={`text-[8px] px-1 py-0.2 rounded-xs font-semibold ${
-                                  isChosen ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
-                                }`}>
-                                  {v.badgeLabel}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          {v.category === 'vi' ? (
-                            <span className={`px-1.5 py-0.5 rounded-xs text-[8.5px] font-black shrink-0 ${
-                              isChosen ? 'bg-white/20 text-white' : 'bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-cyan-400'
-                            }`}>
-                              VN
-                            </span>
-                          ) : (
-                            <span className={`px-1.5 py-0.5 rounded-xs text-[8.5px] font-bold shrink-0 uppercase ${
-                              isChosen ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
-                            }`}>
-                              {v.lang.split(/[-_]/)[0]}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
+                {ttsResult && (
+                  <button
+                    type="button"
+                    disabled={isGeneratingTts}
+                    onClick={() => handleGenerateStudioVoice(true)}
+                    title="Tạo lại giọng đọc (Regenerate)"
+                    className="py-2 px-3 rounded-xl text-[11px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1 cursor-pointer shrink-0"
+                  >
+                    <WebIcon name="sync" className="w-3.5 h-3.5 text-indigo-600 dark:text-cyan-400" />
+                    <span>Tạo lại</span>
+                  </button>
+                )}
               </div>
 
-              {/* Mục 2: Tốc độ đọc (Rate) */}
-              <div className="space-y-1">
-                <div className="flex items-center justify-between text-[10px]">
-                  <span className="font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-wider font-sans">
-                    2. Tốc Độ Đọc:
-                  </span>
-                  <span className="font-bold text-slate-700 dark:text-slate-200 font-mono">{speechRate.toFixed(1)}x</span>
+              {/* Hiển thị lỗi nếu có */}
+              {ttsError && (
+                <div className="p-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-[10px] text-rose-700 dark:text-rose-300 font-medium">
+                  ⚠️ {ttsError}
                 </div>
-                <div className="grid grid-cols-3 gap-1">
-                  {[
-                    { val: 0.85, label: 'Chậm (0.8x)' },
-                    { val: 1.0, label: 'Chuẩn (1.0x)' },
-                    { val: 1.25, label: 'Nhanh (1.2x)' },
-                  ].map((item) => (
+              )}
+
+              {/* 9, 10, 11: Audio Preview, Audio Player (Phát, Tạm dừng, Tua) & Download Audio (.WAV) */}
+              {ttsResult && (
+                <div className="p-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-blue-300/70 dark:border-cyan-500/40 flex flex-col gap-2 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                      <span className="text-[10.5px] font-black font-play text-slate-800 dark:text-white truncate">
+                        Bản thu PUCK • Miền Tây Nam Bộ
+                      </span>
+                    </div>
+                    <span className="text-[9.5px] font-mono font-bold text-blue-600 dark:text-cyan-400 shrink-0">
+                      {playerCurrentTime.toFixed(1)}s / {(playerDuration || 0).toFixed(1)}s
+                    </span>
+                  </div>
+
+                  {/* Thanh tua (Seek bar) */}
+                  <input
+                    type="range"
+                    min={0}
+                    max={playerDuration > 0 ? playerDuration : 1}
+                    step={0.1}
+                    value={playerCurrentTime}
+                    onChange={(e) => handleSeekStudioAudio(parseFloat(e.target.value))}
+                    className="w-full h-1.5 bg-slate-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                  />
+
+                  {/* Cụm nút điều khiển: Tua lùi -5s, Phát/Tạm dừng, Tua tới +5s, Tải file .WAV */}
+                  <div className="flex items-center justify-between gap-1.5">
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleSeekStudioAudio(playerCurrentTime - 5)}
+                        className="px-2 py-1 rounded-lg text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 cursor-pointer"
+                        title="Tua lùi 5 giây"
+                      >
+                        -5s
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleToggleStudioPlayPause}
+                        className="px-3 py-1 rounded-lg text-[10.5px] font-black bg-blue-600 hover:bg-blue-700 text-white shadow-2xs flex items-center gap-1 cursor-pointer"
+                      >
+                        <WebIcon name={isPlayerPlaying ? 'pause' : 'play'} className="w-3 h-3" />
+                        <span>{isPlayerPlaying ? 'Tạm dừng' : 'Phát'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleSeekStudioAudio(playerCurrentTime + 5)}
+                        className="px-2 py-1 rounded-lg text-[10px] font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 cursor-pointer"
+                        title="Tua tới 5 giây"
+                      >
+                        +5s
+                      </button>
+                    </div>
+
                     <button
-                      key={item.val}
                       type="button"
-                      onClick={() => setSpeechRate(item.val)}
-                      className={`py-1 px-1.5 rounded-lg text-[10px] font-bold transition cursor-pointer border ${
-                        speechRate === item.val
-                          ? 'bg-blue-600 border-blue-500 text-white shadow-xs'
-                          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-750'
-                      }`}
+                      onClick={handleDownloadStudioAudio}
+                      className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-2xs flex items-center gap-1 cursor-pointer"
+                      title="Tải file âm thanh WAV thực tế về máy"
                     >
-                      {item.label}
+                      <WebIcon name="download" className="w-3 h-3" />
+                      <span>Tải WAV</span>
                     </button>
-                  ))}
+                  </div>
                 </div>
+              )}
+
+              {/* Thông báo kỹ thuật minh bạch về giọng PUCK & sắc thái Miền Tây Nam Bộ */}
+              <div className="p-2 rounded-xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-[9.5px] text-amber-900 dark:text-amber-200 leading-snug">
+                <strong>Lưu ý kỹ thuật:</strong> PUCK là giọng nam tổng hợp sẵn có của Google Gemini TTS. Hệ thống giữ nguyên giọng PUCK gốc kết hợp bộ tiền xử lý tiếng Việt và chỉ dẫn phát âm Nam Bộ (ưu tiên âm sắc Miền Tây Nam Bộ ấm áp, gần gũi, dễ nghe cho cả 3 miền); API không có mã accent phương ngữ Miền Tây tách rời độc lập.
               </div>
 
-              {/* Mục 3: Cao độ âm vực (Pitch) */}
-              <div className="space-y-1">
-                <div className="flex items-center justify-between text-[10px]">
-                  <span className="font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-wider font-sans">
-                    3. Âm Vực / Cao Độ:
-                  </span>
-                  <span className="font-bold text-slate-700 dark:text-slate-200 font-sans">
-                    {speechPitch === 0.9 ? 'Trầm' : speechPitch === 1.2 ? 'Trong trẻo' : 'Tự nhiên'}
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-1">
-                  {[
-                    { val: 0.9, label: 'Trầm' },
-                    { val: 1.05, label: 'Tự nhiên' },
-                    { val: 1.2, label: 'Trong trẻo' },
-                  ].map((item) => (
-                    <button
-                      key={item.val}
-                      type="button"
-                      onClick={() => setSpeechPitch(item.val)}
-                      className={`py-1 px-1.5 rounded-lg text-[10px] font-bold transition cursor-pointer border ${
-                        speechPitch === item.val
-                          ? 'bg-blue-600 border-blue-500 text-white shadow-xs'
-                          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-750'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Mục 4: Tự động phát âm thanh khi phản hồi */}
+              {/* Tự động phát âm thanh khi Tí Chuột trả lời & Lưu mặc định */}
               <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                 <div className="text-left">
                   <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200 block">
-                    Tự động đọc tin nhắn AI
+                    Tự động đọc phản hồi bằng giọng PUCK
                   </span>
                   <span className="text-[9px] text-slate-500 dark:text-slate-400 block">
-                    Phát giọng đọc ngay khi Tí Chuột trả lời
+                    Phát giọng đọc ngay khi Trợ lý AI trả lời
                   </span>
                 </div>
                 <button
@@ -1027,33 +1289,14 @@ export const AiChatModal: React.FC<AiChatModalProps> = ({
                 </button>
               </div>
 
-              {/* Cụm 2 nút hành động: Thử giọng & Lưu vào làm mặc định */}
-              <div className="flex flex-col gap-2 pt-1">
-                {/* Nút Thử Giọng */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleSpeak(
-                      'Xin chào! Tôi là Tí Chuột, trợ lý AI thông minh của chuyên gia Nguyễn Hùng Thái.',
-                      'test-voice-preview'
-                    );
-                  }}
-                  className="w-full py-1.5 rounded-xl text-[11px] font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <WebIcon name="volume-high" className="w-3.5 h-3.5 text-blue-600 dark:text-cyan-400" />
-                  <span>{isSpeaking && currentSpeakingId === 'test-voice-preview' ? 'Dừng đọc thử' : 'Nghe Thử Giọng Nói'}</span>
-                </button>
-
-                {/* Nút Lưu Vào Làm Mặc Định */}
-                <button
-                  type="button"
-                  onClick={handleSaveAsDefault}
-                  className="w-full py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white shadow-md hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer font-play active:scale-[0.98]"
-                >
-                  <WebIcon name="check-circle" className="w-4 h-4 text-white" />
-                  <span>Lưu vào làm mặc định</span>
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleSaveAsDefault}
+                className="w-full py-2 rounded-xl text-xs font-black bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-600 text-white shadow-md hover:opacity-95 transition flex items-center justify-center gap-2 cursor-pointer font-play active:scale-[0.98]"
+              >
+                <WebIcon name="check-circle" className="w-4 h-4 text-white" />
+                <span>Lưu cấu hình PUCK làm mặc định</span>
+              </button>
             </div>
           </div>
         )}

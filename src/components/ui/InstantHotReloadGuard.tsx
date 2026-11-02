@@ -32,7 +32,7 @@ export class InstantHotReloadGuard extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({ errorInfo });
-    console.error('🛡️ [Instant Hot-Reload Guard] Phát hiện lỗi Runtime:', error, errorInfo);
+    console.warn('🛡️ [Instant Hot-Reload Guard] Bắt lỗi Runtime:', error?.message);
   }
 
   componentDidMount() {

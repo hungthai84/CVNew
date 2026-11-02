@@ -22,13 +22,16 @@ import {
   Users,
   ExternalLink,
   ArrowLeftRight,
+  SlidersHorizontal,
+  ChevronDown,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { SYSTEMS_DATA } from '@/data/systems';
 import { SystemData, SiteTheme } from '@/types';
 import { useToast } from '@/components/ui/Toast';
 import { WebIcon } from '@/components/ui/WebIcon';
 import { SoundEngine } from '@/components/ui/SoundEngine';
-import { formatCardTitle } from '@/lib/utils';
+import { cn, formatCardTitle } from '@/lib/utils';
 import { getSavedMutedPref, saveMutedPref, AUDIO_PREF_EVENT } from '@/utils/audioPreference';
 import { DataFlowMatrixModal } from '@/components/ui/DataFlowMatrixModal';
 
@@ -586,9 +589,9 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
   };
 
   const REFERENCE_GRID_ORDER = [
-    'crm', 'csc', 'sdp',
-    'okr', 'bpm', 'clp',
-    'ai', 'hrm', 'pos',
+    'csc', 'sdp', 'okr',
+    'bpm', 'ai', 'hrm',
+    'crm', 'clp', 'pos',
     'erp', 'lms', 'bi',
   ];
 
@@ -1269,54 +1272,137 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
         }}
       />
 
-      <div className="w-full h-full flex-1 flex flex-col lg:flex-row gap-[15px] items-stretch justify-start relative z-10 overflow-hidden">
-        {/* VÙNG CHÍNH: LƯỚI 12 HỆ THỐNG C-LEVEL HOẶC BẢNG MA TRẬN SO SÁNH 12 PHẦN MỀM */}
-        <div className="flex-1 min-h-0 flex flex-col h-full overflow-hidden">
-          {/* HÀNG 1: HEADER TIÊU ĐỀ THẺ HỆ THỐNG + CHUYỂN ĐỔI DẠNG THẺ + SƠ ĐỒ TỔNG */}
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-1.5 shrink-0 border-b border-slate-200/70 dark:border-white/10">
-            <div className="flex items-center gap-2 min-w-0 flex-wrap">
-              <WebIcon name="layers" className="w-5 h-5 text-sky-600 dark:text-cyan-400 stroke-[2.2] shrink-0" />
-              <h2 className="text-sm sm:text-base font-black font-play text-sky-600 dark:text-cyan-400 tracking-tight leading-none">
-                {formatCardTitle('Hệ Thống Vận Hành')}
-              </h2>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-50 dark:bg-cyan-500/20 text-indigo-700 dark:text-cyan-300 border border-indigo-200 dark:border-cyan-400/30 shrink-0">
-                {filteredSystems.length}/12
-              </span>
+      <div className="w-full h-full flex-1 flex flex-col gap-[15px] items-stretch justify-start relative z-10 overflow-y-auto no-scrollbar">
+        {/* BANNER HỆ THỐNG: Tiêu đề 4 chữ viết hoa chữ đầu còn lại viết thường, icon + tiêu đề lấy màu menu icon (#ea580c), câu nói font viết tay màu chữ vàng, nhóm nút thành 1 filter icon bên dưới bên trái, trong suốt 100% */}
+        <motion.div
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="hero-banner w-full h-44 sm:h-52 rounded-2xl overflow-visible relative bg-transparent border-0 shadow-none shrink-0 flex flex-col justify-between p-5 sm:p-7 z-30"
+        >
+          <div className="absolute inset-0 rounded-2xl overflow-hidden bg-transparent pointer-events-none">
+            <img
+              src="/images/systems/hero-banner.png"
+              alt="Hệ thống vận hành"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = '/images/education/hero-banner.png';
+              }}
+              className="absolute inset-0 w-full h-full object-cover object-center opacity-100 pointer-events-none filter brightness-110 contrast-110 saturate-110"
+            />
+            <div className="absolute inset-0 bg-transparent pointer-events-none" />
+          </div>
+
+          {/* Vùng Tiêu Đề: 4 chữ viết hoa chữ đầu còn lại viết thường, icon và tiêu đề lấy màu menu icon (#ea580c) */}
+          <div className="relative z-10 flex flex-col justify-start text-left max-w-2xl">
+            <div className="flex items-center gap-2.5" style={{ color: '#ea580c' }}>
+              <Network
+                className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 bg-transparent border-0 p-0 shadow-none drop-shadow-[0_2px_8px_rgba(234,88,12,0.75)]"
+                style={{ color: '#ea580c', stroke: '#ea580c' }}
+              />
+              <h1
+                className="text-2xl sm:text-3xl md:text-4xl font-black font-play tracking-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]"
+                style={{ color: '#ea580c', textTransform: 'none' }}
+              >
+                Hệ thống vận hành
+              </h1>
             </div>
 
-            {/* Cụm nút chức năng góc phải: Chuyển đổi Chế độ Thẻ + Sơ Đồ Tổng */}
-            <div className="flex items-center gap-1.5 flex-wrap shrink-0">
-              <div className="inline-flex items-center p-0.5 rounded-full bg-slate-200/75 dark:bg-slate-800/80 border border-slate-300/70 dark:border-white/15">
-                <button
-                  type="button"
-                  onClick={() => {
-                    SoundEngine.playTap();
-                    setViewMode('grid');
-                  }}
-                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold font-play transition cursor-pointer ${
-                    viewMode === 'grid'
-                      ? 'bg-sky-600 text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                  title="Chế độ xem lưới 12 thẻ hệ thống 3D"
-                >
-                  <LayoutGrid className="w-3 h-3" />
-                  <span>Dạng thẻ</span>
-                </button>
-              </div>
+            {/* Sub tiêu đề là câu nói chuyển sang font viết tay màu chữ vàng */}
+            <p
+              className="font-handwriting text-yellow-300 text-lg sm:text-xl font-bold drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] mt-1.5 select-none"
+              style={{ color: '#facc15' }}
+            >
+              "Hệ thống thông minh, vận hành tinh gọn và đồng bộ ♡"
+            </p>
+          </div>
 
-              {/* Nút mở Modal Sơ Đồ Ma Trận Dòng Chảy Toàn Cục */}
+          {/* Nhóm các nút lại thành 1 filter icon ở bên dưới banner bên trái - filter dạng drop menu list, tiêu đề nhóm nút còn 4 từ */}
+          <div className="relative z-30 flex items-center justify-start mt-auto pt-2" ref={filterDropdownRef}>
+            <div className="relative inline-block text-left">
               <button
                 type="button"
-                onClick={() => setIsDataFlowModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold font-play transition-all duration-300 shadow-xs cursor-pointer border bg-gradient-to-r from-sky-500/15 via-indigo-500/15 to-purple-500/15 hover:from-sky-500/25 hover:via-indigo-500/25 hover:to-purple-500/25 text-sky-700 dark:text-cyan-300 border-sky-400/40 dark:border-cyan-400/50 hover:shadow-[0_0_15px_rgba(56,189,248,0.35)] active:scale-95"
-                title="Mở sơ đồ ma trận dòng chảy dữ liệu tương tác giữa các hệ thống"
+                onClick={() => {
+                  SoundEngine.playTap();
+                  setIsFilterDropdownOpen((prev) => !prev);
+                }}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/85 hover:bg-slate-900 text-orange-300 border border-orange-400/70 shadow-[0_4px_16px_rgba(0,0,0,0.55)] backdrop-blur-md transition-all cursor-pointer text-xs font-bold font-play active:scale-95 group"
+                title="Bộ lọc hệ thống"
+                aria-expanded={isFilterDropdownOpen}
+                aria-haspopup="listbox"
               >
-                <Activity className="w-3.5 h-3.5 text-sky-500 dark:text-cyan-400 animate-pulse" />
-                <span>Sơ đồ tổng</span>
+                <SlidersHorizontal className="w-4 h-4 text-orange-300 transition-transform group-hover:rotate-45 shrink-0" />
+                <span>Bộ lọc hệ thống</span>
+                {activeCategory !== 'all' && (
+                  <span className="px-1.5 py-0.2 rounded-full bg-orange-500/25 border border-orange-400/50 text-[10px] font-mono text-orange-200">
+                    {ecosystemSegments.find((s) => s.id === activeCategory)?.label}
+                  </span>
+                )}
+                <ChevronDown
+                  className={cn(
+                    'w-3.5 h-3.5 text-orange-300 transition-transform duration-200 shrink-0',
+                    isFilterDropdownOpen && 'rotate-180'
+                  )}
+                />
               </button>
+
+              <AnimatePresence>
+                {isFilterDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                    transition={{ duration: 0.16 }}
+                    role="listbox"
+                    className="absolute left-0 top-[calc(100%+8px)] w-64 rounded-xl bg-slate-950/95 border border-orange-400/50 shadow-[0_12px_32px_rgba(0,0,0,0.75)] backdrop-blur-xl py-1.5 px-1.5 z-50 flex flex-col gap-1"
+                  >
+                    {ecosystemSegments.map((seg) => {
+                      const isActive = activeCategory === seg.id;
+                      return (
+                        <button
+                          key={seg.id}
+                          type="button"
+                          role="option"
+                          aria-selected={isActive}
+                          onClick={() => {
+                            SoundEngine.playTap();
+                            setActiveCategory(seg.id);
+                            setExpandedSystemId(null);
+                            setIsFilterDropdownOpen(false);
+                          }}
+                          className={cn(
+                            'w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold font-play transition-all cursor-pointer text-left',
+                            isActive
+                              ? 'bg-orange-500/25 text-orange-200 border border-orange-400/60 shadow-xs'
+                              : 'text-slate-200 hover:bg-white/10 hover:text-white border border-transparent'
+                          )}
+                        >
+                          <span>{seg.label} ({seg.count})</span>
+                          {isActive && <span className="w-2 h-2 rounded-full bg-orange-400" />}
+                        </button>
+                      );
+                    })}
+                    <div className="my-1 border-t border-white/10" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        SoundEngine.playTap();
+                        setIsDataFlowModalOpen(true);
+                        setIsFilterDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold font-play text-cyan-300 hover:bg-white/10 transition-all cursor-pointer text-left"
+                    >
+                      <span>Mở Sơ Đồ Tổng Luồng Dữ Liệu</span>
+                      <Activity className="w-3.5 h-3.5 text-cyan-400" />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
+        </motion.div>
+
+        {/* VÙNG CHÍNH: LƯỚI 12 HỆ THỐNG C-LEVEL HOẶC BẢNG MA TRẬN SO SÁNH 12 PHẦN MỀM */}
+        <div className="flex-1 min-h-0 flex flex-col h-full overflow-hidden glass-pastel">
 
           {/* NỘI DUNG CHÍNH: CHẾ ĐỘ BẢNG MA TRẬN TÍNH NĂNG (MATRIX) HOẶC LƯỚI 12 THẺ HỆ THỐNG (GRID) */}
           {filteredSystems.length === 0 ? (
@@ -1477,6 +1563,7 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                 const isFlipped = !!flippedCardIds[item.id];
                 const isExpanded = expandedSystemId === item.id;
                 const isCrm = item.id === 'crm';
+                const isCsc = item.id === 'csc';
                 const config = SYSTEM_DESIGN_MAP[item.id] || {
                   displayTitle: formatCardTitle(item.nameVi),
                   subtitle: item.descVi,
@@ -1658,13 +1745,26 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                           onMouseEnter={() => setHoveredCardId(item.id)}
                           onMouseLeave={() => setHoveredCardId(null)}
                           title={`Nhấp để mở rộng chi tiết thẻ: ${config.displayTitle} (${item.abbr})`}
-                          className="system-flip-front system-item cursor-pointer relative overflow-hidden p-2.5 sm:p-3 flex flex-col justify-between select-none rounded-[12px] group transition-all duration-300 border hover:border-sky-400/60 dark:hover:border-cyan-400/60 hover:shadow-xl"
-                          style={{
-                            background: config.gradient,
-                            borderColor: 'rgba(255, 255, 255, 0.28)',
-                            boxShadow: `0 10px 26px -4px rgba(0, 0, 0, 0.55), 0 0 18px ${config.cardTheme}35, inset 0 1px 1.5px rgba(255, 255, 255, 0.4)`,
-                            color: '#ffffff',
-                          }}
+                          className={`system-flip-front system-item cursor-pointer relative overflow-hidden p-2.5 sm:p-3 flex flex-col justify-between select-none rounded-[12px] group transition-all duration-300 border ${
+                            isCsc
+                              ? 'border-slate-300/60 dark:border-white/10 hover:border-slate-400 dark:hover:border-white/20'
+                              : 'hover:border-sky-400/60 dark:hover:border-cyan-400/60 hover:shadow-xl'
+                          }`}
+                          style={
+                            isCsc
+                              ? {
+                                  background: 'transparent',
+                                  borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(226, 232, 240, 0.8)',
+                                  boxShadow: 'none',
+                                  color: isDark ? '#ffffff' : '#0f172a',
+                                }
+                              : {
+                                  background: config.gradient,
+                                  borderColor: 'rgba(255, 255, 255, 0.28)',
+                                  boxShadow: `0 10px 26px -4px rgba(0, 0, 0, 0.55), 0 0 18px ${config.cardTheme}35, inset 0 1px 1.5px rgba(255, 255, 255, 0.4)`,
+                                  color: '#ffffff',
+                                }
+                          }
                         >
                           {/* KHI RÊ CHUỘT VÀO THẺ HỆ THỐNG: HIỂN THỊ VIDEO TOÀN THẺ HỆ THỐNG */}
                           {item.videoUrl && (
@@ -1674,22 +1774,32 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                             />
                           )}
 
-                          {/* Ambient Glow Orb */}
-                          <div
-                            className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full pointer-events-none blur-2xl"
-                            style={{
-                              background: isDark
-                                ? 'radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 70%)'
-                                : `radial-gradient(circle, ${config.cardTheme}28 0%, transparent 70%)`,
-                            }}
-                          />
+                          {/* Ambient Glow Orb (Xóa hiệu ứng đối với CSC) */}
+                          {!isCsc && (
+                            <div
+                              className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full pointer-events-none blur-2xl"
+                              style={{
+                                background: isDark
+                                  ? 'radial-gradient(circle, rgba(255,255,255,0.22) 0%, transparent 70%)'
+                                  : `radial-gradient(circle, ${config.cardTheme}28 0%, transparent 70%)`,
+                              }}
+                            />
+                          )}
 
                           {/* Nội dung Mặt Trước: Tên viết tắt, Tiêu đề 4 từ, Mô tả & Khung hình gấp đôi */}
                           <div className="relative z-10 flex flex-col justify-between h-full text-left">
                             {/* Hàng Đỉnh: Tên đầy đủ + Nút website bo cong 999px */}
-                            <div className="flex items-center justify-between gap-1.5 pb-1.5 border-b border-white/20">
+                            <div className={`flex items-center justify-between gap-1.5 pb-1.5 border-b ${
+                              isCsc
+                                ? 'border-slate-200 dark:border-white/10'
+                                : 'border-white/20'
+                            }`}>
                               <span
-                                className="text-[10px] sm:text-[10.5px] font-bold font-mono tracking-tight truncate text-white/90"
+                                className={`text-[10px] sm:text-[10.5px] font-bold font-mono tracking-tight truncate ${
+                                  isCsc
+                                    ? 'text-slate-600 dark:text-slate-300'
+                                    : 'text-white/90'
+                                }`}
                                 title={item.fullName}
                               >
                                 {item.fullName}
@@ -1701,7 +1811,11 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                                     e.stopPropagation();
                                     handleOpenUrl(e, item.url);
                                   }}
-                                  className="px-2.5 py-0.5 rounded-[12px] text-[9.5px] font-bold bg-white/20 hover:bg-white text-white hover:text-slate-900 border border-white/30 transition-all flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs"
+                                  className={`px-2.5 py-0.5 rounded-[999px] text-[9.5px] font-bold transition-all flex items-center gap-1 cursor-pointer shrink-0 shadow-2xs ${
+                                    isCsc
+                                      ? 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-300/80 dark:border-white/20'
+                                      : 'bg-white/20 hover:bg-white text-white hover:text-slate-900 border border-white/30'
+                                  }`}
                                   title={`Mở website hệ thống ${item.abbr}`}
                                 >
                                   <span>Website</span>
@@ -1717,16 +1831,29 @@ export const SystemsView: React.FC<SystemsViewProps> = ({ currentTheme }) => {
                                 className="flex flex-col min-w-0 flex-1 pr-1"
                               >
                                 <h3
-                                  className="font-black font-play text-[17px] sm:text-[18.5px] lg:text-[19.5px] leading-tight tracking-tight flex items-center gap-1.5 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]"
+                                  className={`font-black font-play text-[17px] sm:text-[18.5px] lg:text-[19.5px] leading-tight tracking-tight flex items-center gap-1.5 ${
+                                    isCsc
+                                      ? 'text-slate-900 dark:text-white drop-shadow-none'
+                                      : 'text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.4)]'
+                                  }`}
                                 >
-                                  <WebIcon name={config.iconName} className="w-5 h-5 shrink-0 opacity-95 text-white" />
+                                  <WebIcon
+                                    name={config.iconName}
+                                    className={`w-5 h-5 shrink-0 opacity-95 ${
+                                      isCsc
+                                        ? 'text-sky-500 dark:text-cyan-400'
+                                        : 'text-white'
+                                    }`}
+                                  />
                                   <span className="truncate">{config.displayTitle}</span>
                                 </h3>
 
                                 {/* Thẻ hệ thống hiển thị mô tả rõ ràng */}
                                 <p
                                   className={`text-[10.5px] sm:text-[11px] font-medium leading-snug line-clamp-3 mt-1 ${
-                                    isVividDarkFace
+                                    isCsc
+                                      ? 'text-slate-600 dark:text-slate-300'
+                                      : isVividDarkFace
                                       ? 'text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.35)]'
                                       : 'text-slate-700 dark:text-slate-200'
                                   }`}
